@@ -42,4 +42,34 @@
         <name>yarn.nodemanager.vmem-check-enabled</name>  
         <value>false</value>  
     </property>  
+    <!-- 配置日志服务器的地址,work节点使用 -->
+    <property>
+	<name>yarn.log.server.url</name>
+	<value>http://hdp101:19888/jobhistory/logs/</value>
+    </property>
+    <!-- 配置日志过期时间,单位秒 -->
+    <property>
+	<name>yarn.log-aggregation.retain-seconds</name>
+	<value>86400</value>
+    </property>
+    <property>
+      <name>yarn.resourcemanager.scheduler.class</name>
+      <value>org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler</value>
+    </property>
+    <!--以下为解决spark-shell 以yarn client模式运行报错问题而增加的配置,估计spark-summit也会有这个问题。2个配置只用配置一个即可解决问题，当然都配置也没问题-->
+    <!--是否启动一个线程检查每个任务正使用的虚拟内存量，如果任务超出分配值，则直接将其杀掉，默认是true。-->
+    <property>
+	<name>yarn.nodemanager.vmem-check-enabled</name>
+	<value>false</value>
+    </property>
+    <!--是否启动一个线程检查每个任务正使用的物理内存量，如果任务超出分配值，则直接将其杀掉，默认是true。-->
+    <property>
+	<name>yarn.nodemanager.pmem-check-enabled</name>
+	<value>false</value>
+    </property>
+    <!--任务每使用1MB物理内存，最多可使用虚拟内存量，默认是2.1-->
+    <property>
+	<name>yarn.nodemanager.vmem-pmem-ratio</name>
+	<value>4</value>
+    </property>
 </configuration>

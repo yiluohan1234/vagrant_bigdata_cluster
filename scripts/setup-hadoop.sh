@@ -1,46 +1,38 @@
 #!/bin/bash
 #set -x
-
-# https://hadoop.apache.org/docs/r2.4.1/hadoop-yarn/hadoop-yarn-common/yarn-default.xml
-
 source "/vagrant/scripts/common.sh"
+#source "/home/vagrant/scripts/common.sh"
 
-setupHadoop() {
-    log info "creating hadoop directories"
+setup_hadoop() {
+    local app_name=$1
+    log info "creating $app_name directories"
     mkdir -p ${INSTALL_PATH}/hadoop/tmp
-    mkdir -p ${INSTALL_PATH}/hadoop/data/data
-    mkdir -p ${INSTALL_PATH}/hadoop/data/data
+    mkdir -p ${INSTALL_PATH}/hadoop/tmp/dfs/name
+    mkdir -p ${INSTALL_PATH}/hadoop/tmp/dfs/data
 	
-    log info "copying over hadoop configuration files"
+    log info "copying over $app_name configuration files"
     cp -f $HADOOP_RES_DIR/* $HADOOP_CONF_DIR
 }
 
-setupEnvVars() {
-    echo "creating hadoop environment variables"
-    hadoop_path=${INSTALL_PATH}/hadoop
-    echo "# hadoop environment" >> $PROFILE
-    echo "export HADOOP_HOME=$hadoop_path" >> $PROFILE
-    echo 'export PATH=${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin:$PATH' >> $PROFILE
-    echo -e "\n" >> $PROFILE
-    
-}
-
-installHadoop() {
-    log info "install hadoop"
+download_hadoop() {
+    local app_name=$1
+    log info "install $app_name"
     if resourceExists $HADOOP_ARCHIVE; then
         installFromLocal $HADOOP_ARCHIVE
     else
         installFromRemote $HADOOP_ARCHIVE $HADOOP_MIRROR_DOWNLOAD
     fi
     mv ${INSTALL_PATH}/$HADOOP_VERSION ${INSTALL_PATH}/hadoop
+    sudo chown -R vagrant:vagrant $INSTALL_PATH/hadoop
+    rm ${DOWNLOAD_PATH}/$HADOOP_ARCHIVE
 }
 
-formatHdfs() {
+format_hdfs() {
     log info "formatting HDFS"
     hdfs namenode -format
 }
 
-startDaemons() {
+start_daemons() {
     log info "starting Hadoop daemons"
     $HADOOP_PREFIX/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs start namenode
     $HADOOP_PREFIX/sbin/hadoop-daemons.sh --config $HADOOP_CONF_DIR --script hdfs start datanode
@@ -73,7 +65,7 @@ startDaemons() {
     jps
 }
 
-setupHdfs() {
+setup_hdfs() {
     log info "creating user home directory in hdfs"
     hdfs dfs -mkdir -p /user/root
     hdfs dfs -mkdir -p /user/vagrant
@@ -86,13 +78,17 @@ setupHdfs() {
     hdfs dfs -mkdir -p /var
     hdfs dfs -chmod -R 777 /var
 }
-log info "setup hadoop"
+install_hadoop() {
+    local app_name="hadoop"
+    log info "setup $app_name"
 
-installHadoop
-setupHadoop
-setupEnvVars
-source $PROFILE
-#formatHdfs
-#startDaemons
-#setupHdfs
+    download_hadoop $app_name
+    setup_hadoop $app_name
+    setupEnv_app $app_name sbin
+    source $PROFILE
+    #format_hdfs
+    #start_daemons
+    #setupHdfs
+}
+install_hadoop
 

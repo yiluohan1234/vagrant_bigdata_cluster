@@ -19,11 +19,11 @@
 <configuration>
     <property>
         <name>dfs.namenode.name.dir</name>
-        <value>/home/vagrant/apps/hadoop/data/name</value>
+        <value>/home/vagrant/apps/hadoop/tmp/dfs/name</value>
     </property>
     <property>
         <name>dfs.datanode.data.dir</name>
-        <value>/home/vagrant/apps/hadoop/data/data</value>
+        <value>/home/vagrant/apps/hadoop/tmp/dfs/data</value>
     </property>
     <property>
         <name>dfs.replication</name>
@@ -36,7 +36,7 @@
     </property>
     <property>
         <name>dfs.secondary.http.address</name>
-        <value>hdp-node-01:50090</value>
+        <value>hdp101:50090</value>
     </property>
     <!-- HDFS中启用权限检查配置-->
     <property>

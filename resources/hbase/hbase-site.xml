@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+  		<property>
+              <name>hbase.rootdir</name>
+              <value>hdfs://hdp101:9000/hbase</value>
+      </property>
+      <!-- 完全分布模式 -->
+      <property>
+              <name>hbase.cluster.distributed</name>
+              <value>true</value>
+      </property>
+      <!-- 0.98后的新变动，之前版本没有.port,默认端口为60000 -->
+      <property>
+              <name>hbase.master.port</name>
+              <value>16000</value>
+      </property>
+      <property>
+              <name>hbase.zookeeper.quorum</name>
+              <value>192.168.10.101:2181,192.168.10.102:2181,192.168.10.103:2181</value>
+      </property>
+      <property>
+              <name>hbase.zookeeper.property.dataDir</name>
+       		  <value>/home/vagrant/apps/zookeeper/data</value>
+      </property>
+</configuration>
