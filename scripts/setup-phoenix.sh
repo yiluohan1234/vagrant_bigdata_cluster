@@ -5,6 +5,7 @@ if [ "$IS_VAGRANT" == "true" ];then
 else
     source "/home/vagrant/scripts/common.sh"
 fi
+
 setup_phoenix() {
     local app_name=$1
 

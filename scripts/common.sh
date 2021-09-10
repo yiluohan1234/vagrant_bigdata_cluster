@@ -1,14 +1,22 @@
 #!/bin/bash
+# 配置文件目录
 RESOURCE_PATH=/home/vagrant/resources
 
+# 安装目录
 INSTALL_PATH=/home/vagrant/apps
+
+# 组件下载目录
 DOWNLOAD_PATH=/home/vagrant/downloads
 
 # 是否用vagrant安装集群
 IS_VAGRANT="true"
 
+# 环境变量配置文件
 PROFILE=~/.bashrc
+
+# hostname
 HOSTNAME=("hdp101" "hdp102" "hdp103")
+
 # ssh
 SSH_CONF=/home/vagrant/resources/ssh
 
@@ -73,8 +81,6 @@ FLUME_MIRROR_DOWNLOAD=https://archive.apache.org/dist/flume/1.6.0/apache-flume-1
 FLUME_RES_DIR=$RESOURCE_PATH/flume
 FLUME_CONF_DIR=$INSTALL_PATH/flume/conf
 
-
-
 # scala
 SCALA_VERSION=scala-2.11.12
 SCALA_ARCHIVE=${SCALA_VERSION}.tgz
@@ -103,7 +109,6 @@ FLINK_MIRROR_DOWNLOAD=https://archive.apache.org/dist/flink/flink-1.12.4/flink-1
 FLINK_RES_DIR=$RESOURCE_PATH/flink
 FLINK_CONF_DIR=$INSTALL_PATH/flink/conf
 
-
 # mysql_connector
 MYSQL_CONNECTOR_VERSION=mysql-connector-java-5.1.49
 MYSQL_CONNECTOR_ARCHIVE=${MYSQL_CONNECTOR_VERSION}.tar.gz
@@ -114,6 +119,7 @@ MYSQL_VERSION=mysql-5.7.30
 MYSQL_ARCHIVE=${MYSQL_VERSION}-linux-glibc2.12-x86_64.tar.gz
 MYSQL_MIRROR_DOWNLOAD=https://cdn.mysql.com/archives/mysql-5.7/mysql-5.7.30-linux-glibc2.12-x86_64.tar.gz
 MYSQL_RES_DIR=$RESOURCE_PATH/mysql
+
 # log
 DATETIME=`date "+%F %T"`
  
@@ -162,6 +168,7 @@ log() {
        usage
     fi
 }
+
 # 判断resource文件是否存在
 # eg: resourceExists hadoop2.7.2.tar.gz
 resourceExists() 
@@ -174,6 +181,7 @@ resourceExists()
         return 1
     fi
 }
+
 # 判断文件是否存在
 # eg: fileExists /home/vagrant/text.txt
 fileExists()
@@ -186,6 +194,7 @@ fileExists()
         return 1
     fi
 }
+
 # 判断软件是否安装
 # eg: command_exists expect
 command_exists() {
@@ -248,6 +257,9 @@ setupEnv_app() {
     fi
     echo -e "\n" >> $PROFILE
 }
+
+# wget mysql connector
+# eg: wget_mysql_connector /home/vagrant/apps/hive/lib
 wget_mysql_connector(){
     local CP_PATH=$1
     if resourceExists $MYSQL_CONNECTOR_ARCHIVE; then

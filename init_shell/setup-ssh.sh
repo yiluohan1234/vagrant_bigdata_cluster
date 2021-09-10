@@ -1,8 +1,6 @@
 #!/bin/bash
 
-
 [ ! -f /home/vagrant/.ssh/id_rsa.pub ] && ssh-keygen -t rsa -q -f /home/vagrant/.ssh/id_rsa -P ''
-
 
 for ip in `cat /etc/hosts|grep -vE localhost | awk '{print $2}'`; do
     port="22"

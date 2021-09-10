@@ -5,6 +5,7 @@ else
     source "/home/vagrant/scripts/common.sh"
 fi
 set -x
+
 # 安装mysql并为hive配置环境
 install_mysql()
 {

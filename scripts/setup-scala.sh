@@ -18,7 +18,6 @@ download_scala() {
     rm $DOWNLOAD_PATH/$SCALA_ARCHIVE
 }
 
-
 install_scala() {
     local app_name="scala"
     log info "setup $app_name"
@@ -30,6 +29,7 @@ install_scala() {
     fi
     source $PROFILE
 }
+
 if [ "$IS_VAGRANT" == "true" ];then
     install_scala
 fi

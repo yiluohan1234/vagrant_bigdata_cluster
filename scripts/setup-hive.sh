@@ -17,7 +17,6 @@ setup_hive() {
     wget_mysql_connector ${INSTALL_PATH}/hive/lib
 }
 
-
 download_hive() {
     local app_name=$1
     log info "install $app_name"

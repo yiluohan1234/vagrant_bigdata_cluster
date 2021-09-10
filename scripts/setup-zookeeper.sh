@@ -15,6 +15,7 @@ do
         i) MYID=${OPTARG};;
     esac
 done
+
 setup_zookeeper() {
     local app_name=$1
     log info "creating $app_name directories"
@@ -42,6 +43,7 @@ download_zookeeper() {
     sudo chown -R vagrant:vagrant $INSTALL_PATH/zookeeper
     rm $DOWNLOAD_PATH/$ZOOKEEPER_ARCHIVE
 }
+
 dispatch_zookeeper() {
     local app_name=$1
     log info "dispatch $app_name" 

@@ -42,6 +42,7 @@ download_kafka() {
     sudo chown -R vagrant:vagrant $INSTALL_PATH/$app_name
     rm $DOWNLOAD_PATH/$KAFKA_ARCHIVE
 }
+
 dispatch_kafka() {
     local app_name=$1
     #dispatch_app $app_name
