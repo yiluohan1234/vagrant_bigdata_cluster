@@ -23,7 +23,7 @@
 
 ## 二、基本硬件准备
 
-1. 每个节点的默认内存是1G，集群默认启动三个节点，你的机器至少需要3G
+1. 每个节点的默认内存是2G，集群默认启动三个节点，你的机器至少需要6G
 2. 我的测试环境：Vagrant 2.2.14， Virtualbox 6.0.14
 
 ```
@@ -36,7 +36,7 @@ mysql -h${HOSTNAME}  -P${PORT}  -u${USERNAME} -p${PASSWORD} -e "use mysql; updat
 
 ## 三、安装集群环境
 
-1. [下载和安装VirtualBOx](https://www.virtualbox.org/wiki/Downloads)
+1. [下载和安装VirtualBOX](https://www.virtualbox.org/wiki/Downloads)
 2. [下载和安装Vagrant](http://www.vagrantup.com/downloads.html)
 3. 克隆本项目到本地，并cd到项目所在目录
 4. 执行`vagrant up` 创建虚拟机
@@ -55,7 +55,6 @@ mysql -h${HOSTNAME}  -P${PORT}  -u${USERNAME} -p${PASSWORD} -e "use mysql; updat
 
    注意：要同步更改`KAFKA_VERSION`和`KAFKA_MIRROR_DOWNLOAD`，保证对应版本可以下载。
 
-   
 
 ## 五、集群安装完毕后相关组件初始化及启动
 
@@ -103,8 +102,12 @@ mysql -h${HOSTNAME}  -P${PORT}  -u${USERNAME} -p${PASSWORD} -e "use mysql; updat
 
 可以通过以下链接访问插件的页面。
 
-1. [NameNode](http://hdp101:50070)
-2. [ResourceManager](http://hdp101:8088)
-3. [JobHistory](http://hdp101:19888/jobhistory)
-4. [Spark](http://hdp101:8080/)
-5. [Flink](http://hdp101:8381/)
+[NameNode](http://hdp101:50070)
+
+[ResourceManager](http://hdp101:8088)
+
+[JobHistory](http://hdp101:19888/jobhistory)
+
+[Spark](http://hdp101:8080/)
+
+[Flink](http://hdp101:8381/)

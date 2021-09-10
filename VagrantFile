@@ -60,17 +60,17 @@ Vagrant.configure("2") do |config|
                 s.privileged = false
             end
             if i == nodeRange.first
-				node.vm.provision "shell" do |s|
-					s.path = "scripts/setup-sqoop.sh"
+                node.vm.provision "shell" do |s|
+                    s.path = "scripts/setup-sqoop.sh"
                     s.privileged = false
-				end
-			end
+                end
+            end
             if i == nodeRange.first
-				node.vm.provision "shell" do |s|
-					s.path = "scripts/setup-maven.sh"
+                node.vm.provision "shell" do |s|
+                    s.path = "scripts/setup-maven.sh"
                     s.privileged = false
-				end
-			end
+                end
+            end
             node.vm.provision "shell",  path: "scripts/setup-scala.sh", privileged: false
             node.vm.provision "shell",  path: "scripts/setup-spark.sh", privileged: false
             node.vm.provision "shell",  path: "scripts/setup-kafka.sh", privileged: false
@@ -79,10 +79,10 @@ Vagrant.configure("2") do |config|
             node.vm.provision "shell",  path: "scripts/setup-flink.sh", privileged: false
             node.vm.provision "shell",  path: "scripts/setup-hive.sh", privileged: false
             if i == nodeRange.last
-				node.vm.provision "shell" do |s|
-					s.path = "scripts/setup-mysql.sh"
-				end
-			end
+                node.vm.provision "shell" do |s|
+                    s.path = "scripts/setup-mysql.sh"
+                end
+            end
             # config.vm.provision "shell", path: "init.sh", privileged: false
             # node.vm.provision "shell" do |s|
             #     s.path = "scripts/setup-ssh-create.sh"
