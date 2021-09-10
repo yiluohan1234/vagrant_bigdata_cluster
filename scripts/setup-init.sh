@@ -1,20 +1,25 @@
 #!/bin/bash
 # at /home/vagrant
-source "/vagrant/scripts/common.sh"
+if [ "$IS_VAGRANT" == "true" ];then
+    source "/vagrant/scripts/common.sh"
+else
+    source "/home/vagrant/scripts/common.sh"
+fi
 #---basic install---
-yum install -y sshpass
+# -q（不显示安装的过程）
+yum install -y -q sshpass
+yum install -y -q lrzsz
+yum install -y -q expect
         
 :<<skip
 sudo yum install -y vim-enhanced
 sudo yum install -y nmap-ncat
-sudo yum install -y lrzsz
 sudo yum install -y net-tools
 sudo yum install -y epel-release  
 sudo yum install -y lsof
 sudo yum install -y nc
 sudo yum install -y unzip
 sudo yum install -y zip
-sudo yum install -y expect
 skip
 #---ssh---
 mv /home/vagrant/resources/sshd_config /etc/ssh/sshd_config

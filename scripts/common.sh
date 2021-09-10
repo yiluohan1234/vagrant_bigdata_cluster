@@ -2,12 +2,13 @@
 RESOURCE_PATH=/home/vagrant/resources
 
 INSTALL_PATH=/home/vagrant/apps
-[ ! -d $INSTALL_PATH ] && mkdir -p $INSTALL_PATH
 DOWNLOAD_PATH=/home/vagrant/downloads
-[ ! -d $DOWNLOAD_PATH ] && mkdir -p $DOWNLOAD_PATH
+
+# 是否用vagrant安装集群
+IS_VAGRANT="true"
 
 PROFILE=~/.bashrc
-HOSTNAME=("hdp-node-01" "hdp-node-02" "hdp-node-03")
+HOSTNAME=("hdp101" "hdp102" "hdp103")
 # ssh
 SSH_CONF=/home/vagrant/resources/ssh
 
@@ -70,15 +71,15 @@ FLUME_VERSION=apache-flume-1.6.0-bin
 FLUME_ARCHIVE=${FLUME_VERSION}.tar.gz
 FLUME_MIRROR_DOWNLOAD=https://archive.apache.org/dist/flume/1.6.0/apache-flume-1.6.0-bin.tar.gz
 FLUME_RES_DIR=$RESOURCE_PATH/flume
-FLUME_CONF_DIR=$INSTALL_PATH/phoenix/conf
+FLUME_CONF_DIR=$INSTALL_PATH/flume/conf
 
 
 
 # scala
-SCALA_VERSION=scala-2.12.8
+SCALA_VERSION=scala-2.11.12
 SCALA_ARCHIVE=${SCALA_VERSION}.tgz
-#SCALA_MIRROR_DOWNLOAD=https://downloads.lightbend.com/scala/2.11.8/scala-2.11.8.tgz 
-SCALA_MIRROR_DOWNLOAD=https://distfiles.macports.org/scala2.12/scala-2.12.8.tgz 
+# SCALA_MIRROR_DOWNLOAD=https://downloads.lightbend.com/scala/2.11.12/scala-2.11.12.tgz 
+SCALA_MIRROR_DOWNLOAD=https://distfiles.macports.org/scala2.11/scala-2.11.12.tgz
 
 # maven
 # 注意：Maven 3.3.x 可以构建 Flink，但是不能正确地屏蔽掉指定的依赖。Maven 3.2.5 可以正确地构建库文件
@@ -112,7 +113,7 @@ MYSQL_CONNECTOR_MIRROR_DOWNLOAD=http://mirrors.sohu.com/mysql/Connector-J/$MYSQL
 MYSQL_VERSION=mysql-5.7.30
 MYSQL_ARCHIVE=${MYSQL_VERSION}-linux-glibc2.12-x86_64.tar.gz
 MYSQL_MIRROR_DOWNLOAD=https://cdn.mysql.com/archives/mysql-5.7/mysql-5.7.30-linux-glibc2.12-x86_64.tar.gz
-MYSQL_RES_DIR=$CUR/conf/mysql
+MYSQL_RES_DIR=$RESOURCE_PATH/mysql
 # log
 DATETIME=`date "+%F %T"`
  
@@ -165,7 +166,7 @@ log() {
 # eg: resourceExists hadoop2.7.2.tar.gz
 resourceExists() 
 {
-    FILE=${RESOURCE_PATH}/$1
+    FILE=${DOWNLOAD_PATH}/$1
     if [ -e $FILE ]
     then
         return 0
@@ -249,13 +250,11 @@ setupEnv_app() {
 }
 wget_mysql_connector(){
     local CP_PATH=$1
-    LOCAL_ARCHIVE=MYSQL_CONNECTOR_ARCHIVE
-    REMOTE_MIRROR_DOWNLOAD=MYSQL_CONNECTOR_MIRROR_DOWNLOAD
-    FILE=$DOWNLOAD_PATH/$LOCAL_ARCHIVE
-
-    log info "install $LOCAL_ARCHIVE from remote file"
-    curl -o $FILE -O -L $REMOTE_MIRROR_DOWNLOAD
-    tar -xzf $FILE -C $DOWNLOAD_PATH
-    cp $DOWNLOAD_PATH/$MYSQL_CONNECTOR_VERSION/${MYSQL_CONNECTOR_VERSION}.jar $CP_PATH
-    rm -rf $DOWNLOAD_PATH/mysql-connector-java-5.1.49*
+    if resourceExists $MYSQL_CONNECTOR_ARCHIVE; then
+        installFromLocal $MYSQL_CONNECTOR_ARCHIVE
+    else
+        installFromRemote $MYSQL_CONNECTOR_ARCHIVE $MYSQL_CONNECTOR_MIRROR_DOWNLOAD
+    fi
+    cp $INSTALL_PATH/$MYSQL_CONNECTOR_VERSION/${MYSQL_CONNECTOR_VERSION}.jar $CP_PATH
+    rm -rf $INSTALL_PATH/mysql-connector-java-5.1.49
 }

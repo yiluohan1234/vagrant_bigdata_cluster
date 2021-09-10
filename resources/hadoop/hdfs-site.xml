@@ -27,7 +27,7 @@
     </property>
     <property>
         <name>dfs.replication</name>
-        <value>3</value>
+        <value>1</value>
     </property>
     <property> 
         <name>dfs.http.address</name>
@@ -36,7 +36,7 @@
     </property>
     <property>
         <name>dfs.secondary.http.address</name>
-        <value>hdp101:50090</value>
+        <value>hdp102:50090</value>
     </property>
     <!-- HDFS中启用权限检查配置-->
     <property>

@@ -1,7 +1,10 @@
 #!/bin/bash
 #set -x
-source "/vagrant/scripts/common.sh"
-#source "/home/vagrant/scripts/common.sh"
+if [ "$IS_VAGRANT" == "true" ];then
+    source "/vagrant/scripts/common.sh"
+else
+    source "/home/vagrant/scripts/common.sh"
+fi
 
 # sh setup-hosts.sh -i myid
 # 4,5,6
@@ -20,9 +23,11 @@ setup_zookeeper() {
     touch ${INSTALL_PATH}/zookeeper/data/myid
     log info "copying over $app_name configuration files"
     cp -f $ZOOKEEPER_RES_DIR/* $ZOOKEEPER_CONF_DIR
-    echo -e "\n" >> ${INSTALL_PATH}/zookeeper/bin/zkEnv.sh
-    echo "export JAVA_HOME=/home/vagrant/apps/java" >> ${INSTALL_PATH}/zookeeper/bin/zkEnv.sh
-    echo $MYID >>${INSTALL_PATH}/zookeeper/data/myid
+    if [ "$IS_VAGRANT" == "true" ];then
+        echo -e "\n" >> ${INSTALL_PATH}/zookeeper/bin/zkEnv.sh
+        echo "export JAVA_HOME=/home/vagrant/apps/java" >> ${INSTALL_PATH}/zookeeper/bin/zkEnv.sh
+        echo $MYID >>${INSTALL_PATH}/zookeeper/data/myid
+    fi
 }
 
 download_zookeeper() {
@@ -53,6 +58,12 @@ install_zookeeper() {
     download_zookeeper $app_name
     setup_zookeeper $app_name
     setupEnv_app $app_name
+    if [ "$IS_VAGRANT" != "true" ];then
+        dispatch_zookeeper $app_name
+    fi
     source $PROFILE
 }
-install_zookeeper
+
+if [ "$IS_VAGRANT" == "true" ];then
+    install_zookeeper
+fi

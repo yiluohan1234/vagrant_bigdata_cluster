@@ -1,5 +1,10 @@
 #!/bin/bash
-source "/vagrant/scripts/common.sh"
+if [ "$IS_VAGRANT" == "true" ];then
+    source "/vagrant/scripts/common.sh"
+else
+    source "/home/vagrant/scripts/common.sh"
+fi
+
 TOTAL_NODES=3
 # sh 
 # sh setup-hosts.sh -s 4 -t 3
@@ -13,7 +18,7 @@ do
     esac
 done
 
-function setupHosts {
+setup_hosts() {
     log info "modifying /etc/hosts file"
     echo "127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4" >> /etc/nhosts
     echo "::1         localhost localhost.localdomain localhost6 localhost6.localdomain6" >> /etc/nhosts
@@ -28,4 +33,4 @@ function setupHosts {
 
 
 log info "setup centos hosts file"
-setupHosts
+setup_hosts

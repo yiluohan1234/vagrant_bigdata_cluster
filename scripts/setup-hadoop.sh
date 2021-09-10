@@ -1,7 +1,10 @@
 #!/bin/bash
 #set -x
-source "/vagrant/scripts/common.sh"
-#source "/home/vagrant/scripts/common.sh"
+if [ "$IS_VAGRANT" == "true" ];then
+    source "/vagrant/scripts/common.sh"
+else
+    source "/home/vagrant/scripts/common.sh"
+fi
 
 setup_hadoop() {
     local app_name=$1
@@ -85,10 +88,17 @@ install_hadoop() {
     download_hadoop $app_name
     setup_hadoop $app_name
     setupEnv_app $app_name sbin
+    #dispatch_app $app_name
+    if [ "$IS_VAGRANT" != "true" ];then
+        dispatch_app $app_name
+    fi
+
     source $PROFILE
     #format_hdfs
     #start_daemons
     #setupHdfs
 }
-install_hadoop
 
+if [ "$IS_VAGRANT" == "true" ];then
+    install_hadoop
+fi
