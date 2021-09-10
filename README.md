@@ -21,6 +21,23 @@
 | Flink     | StandaloneSession <br> ClusterEntrypoint                 | TaskManagerRunner          | TaskManagerRunner |
 | Flume     | flume                                              | flume                      | flume             |
 
+组件版本：
+
+```
+Java：1.8
+Hadoop：2.7.2
+Sqoop：1.4.6
+MySQL：5.6
+Kafka：0.11.0.3
+Zookeeper：3.4.10
+Hbase：1.2.5
+Scala：2.11.12
+Spark：2.4.6
+Maven：3.2.5
+Flink：1.12.4
+Flume：1.6
+```
+
 ## 二、基本硬件准备
 
 1. 每个节点的默认内存是2G，集群默认启动三个节点，你的机器至少需要6G
