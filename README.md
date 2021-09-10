@@ -5,10 +5,10 @@
 本集群创建的组件如下表所示。
 
 | 组件      | hdp101                                             | hdp102                     | hdp103            |
-| --------- | :------------------------------------------------- | -------------------------- | ----------------- |
-| OS        | centos7.6                                          | centos7.6                  | centos7.6         |
-| JDK       | jdk1.8                                             | jdk1.8                     | jdk1.8            |
-| HDFS      | NameNode/JobHistoryServer/ApplicationHistoryServer | DataNode/SecondaryNameNode | DataNode          |
+| :-: | :-------------  | -------------------------- | ----------------- |
+| OS   | centos7.6                                          | centos7.6             | centos7.6         |
+| JDK  | jdk1.8                                             | jdk1.8                     | jdk1.8            |
+| HDFS      | NameNode <br> JobHistoryServer <br> ApplicationHistoryServer | DataNode <br> SecondaryNameNode | DataNode          |
 | YARN      | ResourceManager                                    | NodeManager                | NodeManager       |
 | Sqoop     | sqoop                                              | NA                         | NA                |
 | MySQL     | NA                                                 | NA                         | MySQL Server      |
@@ -18,7 +18,7 @@
 | Scala     | scala2.11.12                                       | scala2.11.12               | scala2.11.12      |
 | Spark     | master/HistoryServer                               | worker                     | worker            |
 | Maven     | mvn                                                | NA                         | NA                |
-| Flink     | StandaloneSessionClusterEntrypoint                 | TaskManagerRunner          | TaskManagerRunner |
+| Flink     | StandaloneSession <br> ClusterEntrypoint                 | TaskManagerRunner          | TaskManagerRunner |
 | Flume     | flume                                              | flume                      | flume             |
 
 ## 二、基本硬件准备
