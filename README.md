@@ -10,6 +10,7 @@
 | JDK  | jdk1.8                                             | jdk1.8                     | jdk1.8            |
 | HDFS      | NameNode <br> JobHistoryServer <br> ApplicationHistoryServer | DataNode <br> SecondaryNameNode | DataNode          |
 | YARN      | ResourceManager                                    | NodeManager                | NodeManager       |
+| Hive | Hive | NA | NA |
 | HBase     | HMaster                                            | HRegionServer              | HRegionServer     |
 | Spark     | master/HistoryServer                               | worker                     | worker            |
 | Flink     | StandaloneSession <br> ClusterEntrypoint                 | TaskManagerRunner          | TaskManagerRunner |
@@ -43,17 +44,27 @@ MySQL: 5.7.30
 
 ## 二、基本硬件准备
 
-1. 每个节点的默认内存是2G，集群默认启动三个节点，你的机器至少需要6G
+1. 集群默认启动三个节点，每个节点的默认内存是2G，所以你的机器至少需要6G
 2. 我的测试环境：Vagrant 2.2.14， Virtualbox 6.0.14
 
 ## 三、安装集群环境
 
 1. [下载和安装VirtualBOX](https://www.virtualbox.org/wiki/Downloads)
+
 2. [下载和安装Vagrant](http://www.vagrantup.com/downloads.html)
+
 3. 克隆本项目到本地，并cd到项目所在目录
+
+   ```
+   git clone https://github.com/yiluohan1234/vagrant_bigdata_cluster
+   cd vagrant_bigdata_cluster
+   ```
+
 4. 执行`vagrant up` 创建虚拟机
-5. 执行 `vagrant ssh` 登录到你创建的虚拟机，或通过SecureCRT等工具进行登录
-6. 如果你想要删除虚拟机，可以通过执行`vagrant destroy` 实现
+
+5. 可以通过执行 `vagrant ssh` 登录到你创建的虚拟机，或通过SecureCRT等工具进行登录
+
+6. 如果你想要删除虚拟机，可以通过执行`vagrant destroy` 来实现
 
 ## 四、自定义集群环境配置
 
@@ -65,7 +76,7 @@ MySQL: 5.7.30
 2. `scripts/common.sh`
    这个文件可以设置各个组件的版本。
 
-   注意：要同步更改`KAFKA_VERSION`和`KAFKA_MIRROR_DOWNLOAD`，保证对应版本可以下载。
+   > 注意：部分组件需要同步更改`XXX_VERSION`和`XXX_MIRROR_DOWNLOAD`，保证能下载到组件版本。
 
 
 ## 五、集群安装完毕后相关组件初始化及启动
@@ -81,7 +92,7 @@ sh setup-ssh.sh
 
 ### 2、启动hadoop与测试
 
-#### 启动
+#### 1）启动
 
 在hdp101机器上执行以下命令对hadoop集群进行格式化，并启动hdfs和yarn。
 
@@ -99,7 +110,7 @@ sh setup-ssh.sh
 [vagrant@hdp101 ~]$ sh init_shell/start-tool.sh yarn start
 ```
 
-#### 测试
+#### 2）测试
 
 通过执行下列命令可以测试yarn是否安装成功。
 
@@ -109,7 +120,7 @@ sh setup-ssh.sh
 
 ### 3、启动Spark（Standalone ）与测试
 
-#### 启动
+#### 1）启动
 
 在hdp101机器上执行以下命令。
 
@@ -123,7 +134,7 @@ sh setup-ssh.sh
 [vagrant@hdp101 ~]$ sh init_shell/start-tool.sh spark start
 ```
 
-#### 测试
+#### 2）测试
 
 通过执行下列命令可以测试spark是否安装成功。
 
@@ -139,7 +150,7 @@ sh setup-ssh.sh
 
 ### 4、启动Flink
 
-#### 启动
+#### 1）启动
 
 在hdp01机器上执行以下命令。
 
@@ -153,7 +164,7 @@ sh setup-ssh.sh
 [vagrant@hdp101 ~]$ sh init_shell/start-tool.sh flink start
 ```
 
-#### 测试
+#### 2）测试
 
 通过执行下列命令可以测试Flink是否安装成功。
 
@@ -164,7 +175,7 @@ sh setup-ssh.sh
 
 ### 5、启动Hive与测试
 
-#### 启动
+#### 1）启动
 
 在hdp103节点登录MySQL数据库，创建hive的元数据库。
 
@@ -182,7 +193,7 @@ sh setup-ssh.sh
 [vagrant@hdp101 ~]$ schematool -initSchema -dbType mysql
 ```
 
-#### Hive服务启动与测试
+#### 2）Hive服务启动与测试
 
 ```
 # 创建数据文件
@@ -214,7 +225,7 @@ hive (default)> select * from stu;
 
 ## 六. Web UI
 
-可以通过以下链接访问插件的页面。
+可以通过以下链接访问大数据组件的web页面。
 
 [NameNode](http://hdp101:50070)
 
