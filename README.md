@@ -10,32 +10,35 @@
 | JDK  | jdk1.8                                             | jdk1.8                     | jdk1.8            |
 | HDFS      | NameNode <br> JobHistoryServer <br> ApplicationHistoryServer | DataNode <br> SecondaryNameNode | DataNode          |
 | YARN      | ResourceManager                                    | NodeManager                | NodeManager       |
+| HBase     | HMaster                                            | HRegionServer              | HRegionServer     |
+| Spark     | master/HistoryServer                               | worker                     | worker            |
+| Flink     | StandaloneSession <br> ClusterEntrypoint                 | TaskManagerRunner          | TaskManagerRunner |
+| Zookeeper | QuorumPeerMain                                     | QuorumPeerMain             | QuorumPeerMain    |
+| Kafka     | kafka                                              | Kafka                      | Kafka             |
+| Flume     | flume                                              | flume                      | flume             |
+| Scala     | scala2.11.12                                       | scala2.11.12               | scala2.11.12      |
+| Maven     | mvn                                                | NA                         | NA                |
 | Sqoop     | sqoop                                              | NA                         | NA                |
 | MySQL     | NA                                                 | NA                         | MySQL Server      |
-| Kafka     | kafka                                              | Kafka                      | Kafka             |
-| Zookeeper | QuorumPeerMain                                     | QuorumPeerMain             | QuorumPeerMain    |
-| HBase     | HMaster                                            | HRegionServer              | HRegionServer     |
-| Scala     | scala2.11.12                                       | scala2.11.12               | scala2.11.12      |
-| Spark     | master/HistoryServer                               | worker                     | worker            |
-| Maven     | mvn                                                | NA                         | NA                |
-| Flink     | StandaloneSession <br> ClusterEntrypoint                 | TaskManagerRunner          | TaskManagerRunner |
-| Flume     | flume                                              | flume                      | flume             |
+
 
 组件版本：
 
 ```
-Java：1.8
-Hadoop：2.7.2
-Sqoop：1.4.6
-MySQL：5.6.51
-Kafka：0.11.0.3
-Zookeeper：3.4.10
-Hbase：1.2.5
-Scala：2.11.12
-Spark：2.4.6
-Maven：3.2.5
-Flink：1.12.4
-Flume：1.6
+Java: 1.8
+Hadoop: 2.7.2
+Hive: 2.3.4
+Hbase: 1.2.5
+Spark: 2.4.6
+Flink: 1.12.4
+Zookeeper: 3.4.10
+Kafka: 0.11.0.3
+Flume: 1.6.0
+Scala: 2.11.12
+Maven: 3.2.5
+Sqoop: 1.4.6
+MySQl Connector: 5.1.49
+MySQL: 5.7.30
 ```
 
 ## 二、基本硬件准备
