@@ -22,7 +22,7 @@ download_flume() {
     else
         installFromRemote $FLUME_ARCHIVE $FLUME_MIRROR_DOWNLOAD
     fi
-    mv ${INSTALL_PATH}/"${FLUME_VERSION}" ${INSTALL_PATH}/$app_name
+    mv ${INSTALL_PATH}/"apache-${FLUME_VERSION}-bin" ${INSTALL_PATH}/$app_name
     sudo chown -R vagrant:vagrant $INSTALL_PATH/$app_name
     rm $DOWNLOAD_PATH/$FLUME_ARCHIVE
     

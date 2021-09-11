@@ -150,15 +150,14 @@ sh setup-ssh.sh
 [vagrant@hdp101 ~]$ sh init_shell/start-tool.sh flink start
 ```
 
+#### 测试
 
+通过执行下列命令可以测试Flink是否安装成功。
 
 ```
-nc -l 9000
-flink run $FLINK_HOME/examples/batch/WordCount.jar
-flink run $FLINK_HOME/examples/streaming/SocketWindowWordCount.jar --hostname hdp102 --port 9000
+# 批量WordCount
+[vagrant@hdp101 ~]$ flink run $FLINK_HOME/examples/batch/WordCount.jar
 ```
-
-
 
 ### 5、启动Hive与测试
 

@@ -22,7 +22,7 @@ SSH_CONF=/home/vagrant/resources/ssh
 
 # java
 JAVA_ARCHIVE=jdk-8u201-linux-x64.tar.gz
-JAVA_MIRROR_DOWNLOAD=https://repo.huaweicloud.com/java/jdk/8u201-b09/jdk-8u201-linux-x64.tar.gz
+JAVA_MIRROR_DOWNLOAD=https://repo.huaweicloud.com/java/jdk/8u201-b09/$JAVA_ARCHIVE
 
 # hadoop
 # 支持版本：3.3.1, 3.3.0, 3.2.2-3.2.0, 3.1.4-3.1.0, 3.0.3-3.0.0, 2.9.2-2.9.0, 2.8.5-2.8.0, 2.7.7-2.7.0等
@@ -41,11 +41,35 @@ HIVE_MIRROR_DOWNLOAD=http://archive.apache.org/dist/hive/$HIVE_VERSION/$HIVE_ARC
 HIVE_RES_DIR=$RESOURCE_PATH/hive
 HIVE_CONF_DIR=$INSTALL_PATH/hive/conf
 
+# hbase
+# 支持版本：2.4.5-2.4.0, 2.3.6-2.3.0, 2.2.7-2.2.0, 2.1.10-2.1.0, 2.0.6-2.0.0等
+HBASE_VERSION=hbase-1.2.5
+HBASE_ARCHIVE=${HBASE_VERSION}-bin.tar.gz
+HBASE_MIRROR_DOWNLOAD=http://archive.apache.org/dist/hbase/1.2.5/$HBASE_ARCHIVE
+HBASE_RES_DIR=$RESOURCE_PATH/hbase
+HBASE_CONF_DIR=$INSTALL_PATH/hbase/conf
+
+# spark
+# 支持版本：具体见下载地址
+SPARK_VERSION=spark-2.4.6
+SPARK_ARCHIVE=$SPARK_VERSION-bin-hadoop2.7.tgz
+SPARK_MIRROR_DOWNLOAD=http://archive.apache.org/dist/spark/$SPARK_VERSION/$SPARK_ARCHIVE
+SPARK_RES_DIR=$RESOURCE_PATH/spark
+SPARK_CONF_DIR=$INSTALL_PATH/spark/conf
+
+# flink
+# 支持版本：具体见下载地址
+FLINK_VERSION=flink-1.12.4
+FLINK_ARCHIVE=$FLINK_VERSION-bin-scala_2.11.tgz
+FLINK_MIRROR_DOWNLOAD=https://archive.apache.org/dist/flink/$FLINK_VERSION/$FLINK_VERSION-bin-scala_2.11.tgz
+FLINK_RES_DIR=$RESOURCE_PATH/flink
+FLINK_CONF_DIR=$INSTALL_PATH/flink/conf
+
 # sqoop
 # 支持版本：1.99.7-1.99.1, 1.4.7-1.4.2（版本和下载地址要对应）
 SQOOP_VERSION=sqoop-1.4.6
 SQOOP_ARCHIVE=${SQOOP_VERSION}.bin__hadoop-2.0.4-alpha.tar.gz
-SQOOP_MIRROR_DOWNLOAD=http://archive.apache.org/dist/sqoop/1.4.6/sqoop-1.4.6.bin__hadoop-2.0.4-alpha.tar.gz
+SQOOP_MIRROR_DOWNLOAD=http://archive.apache.org/dist/sqoop/1.4.6/$SQOOP_ARCHIVE
 SQOOP_RES_DIR=$RESOURCE_PATH/sqoop
 SQOOP_CONF_DIR=$INSTALL_PATH/sqoop/conf
 
@@ -61,31 +85,23 @@ ZOOKEEPER_CONF_DIR=$INSTALL_PATH/zookeeper/conf
 # 支持版本：具体查看下载地址
 KAFKA_VERSION=kafka_2.11-0.11.0.3
 KAFKA_ARCHIVE=${KAFKA_VERSION}.tgz
-KAFKA_MIRROR_DOWNLOAD=https://archive.apache.org/dist/kafka/0.11.0.3/kafka_2.11-0.11.0.3.tgz
+KAFKA_MIRROR_DOWNLOAD=https://archive.apache.org/dist/kafka/0.11.0.3/$KAFKA_ARCHIVE
 KAFKA_RES_DIR=$RESOURCE_PATH/kafka
 KAFKA_CONF_DIR=$INSTALL_PATH/kafka/config
-
-# hbase
-# 支持版本：2.4.5-2.4.0, 2.3.6-2.3.0, 2.2.7-2.2.0, 2.1.10-2.1.0, 2.0.6-2.0.0等
-HBASE_VERSION=hbase-1.2.5
-HBASE_ARCHIVE=${HBASE_VERSION}-bin.tar.gz
-HBASE_MIRROR_DOWNLOAD=http://archive.apache.org/dist/hbase/1.2.5/hbase-1.2.5-bin.tar.gz 
-HBASE_RES_DIR=$RESOURCE_PATH/hbase
-HBASE_CONF_DIR=$INSTALL_PATH/hbase/conf
 
 # phoenix
 # 支持版本：具体查看下载地址
 PHOENIX_VERSION=apache-phoenix-4.8.1-HBase-1.2-bin
 PHOENIX_ARCHIVE=${PHOENIX_VERSION}.tar.gz
-PHOENIX_MIRROR_DOWNLOAD=https://archive.apache.org/dist/phoenix/apache-phoenix-4.8.1-HBase-1.2/bin/apache-phoenix-4.8.1-HBase-1.2-bin.tar.gz
+PHOENIX_MIRROR_DOWNLOAD=https://archive.apache.org/dist/phoenix/apache-phoenix-4.8.1-HBase-1.2/bin/$PHOENIX_ARCHIVE
 PHOENIX_RES_DIR=$RESOURCE_PATH/phoenix
 PHOENIX_CONF_DIR=$INSTALL_PATH/phoenix/conf
 
 # flume
 # 支持版本：1.9.0, 1.8.0, 1.7.0, 1.6.0, 1.5.2-1.5.0等
-FLUME_VERSION=apache-flume-1.6.0-bin
-FLUME_ARCHIVE=${FLUME_VERSION}.tar.gz
-FLUME_MIRROR_DOWNLOAD=https://archive.apache.org/dist/flume/1.6.0/apache-flume-1.6.0-bin.tar.gz
+FLUME_VERSION=flume-1.6.0
+FLUME_ARCHIVE=apache-${FLUME_VERSION}-bin.tar.gz
+FLUME_MIRROR_DOWNLOAD=https://archive.apache.org/dist/flume/1.6.0/$FLUME_ARCHIVE
 FLUME_RES_DIR=$RESOURCE_PATH/flume
 FLUME_CONF_DIR=$INSTALL_PATH/flume/conf
 
@@ -94,32 +110,16 @@ FLUME_CONF_DIR=$INSTALL_PATH/flume/conf
 SCALA_VERSION=scala-2.11.12
 SCALA_ARCHIVE=${SCALA_VERSION}.tgz
 # SCALA_MIRROR_DOWNLOAD=https://downloads.lightbend.com/scala/2.11.12/scala-2.11.12.tgz 
-SCALA_MIRROR_DOWNLOAD=https://distfiles.macports.org/scala2.11/scala-2.11.12.tgz
+SCALA_MIRROR_DOWNLOAD=https://distfiles.macports.org/scala2.11/$SCALA_ARCHIVE
 
 # maven
 # 支持版本：具体见下载地址
 # 注意：Maven 3.3.x 可以构建 Flink，但是不能正确地屏蔽掉指定的依赖。Maven 3.2.5 可以正确地构建库文件
 MAVEN_VERSION=apache-maven-3.2.5
 MAVEN_ARCHIVE=${MAVEN_VERSION}-bin.tar.gz
-MAVEN_MIRROR_DOWNLOAD=https://archive.apache.org/dist/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.tar.gz
+MAVEN_MIRROR_DOWNLOAD=https://archive.apache.org/dist/maven/maven-3/3.2.5/binaries/$MAVEN_ARCHIVE
 MAVEN_RES_DIR=$RESOURCE_PATH/maven
 MAVEN_CONF_DIR=$INSTALL_PATH/maven/conf
-
-# spark
-# 支持版本：具体见下载地址
-SPARK_VERSION=spark-2.4.6
-SPARK_ARCHIVE=$SPARK_VERSION-bin-hadoop2.tgz
-SPARK_MIRROR_DOWNLOAD=http://archive.apache.org/dist/spark/$SPARK_VERSION/$SPARK_VERSION-bin-hadoop2.7.tgz
-SPARK_RES_DIR=$RESOURCE_PATH/spark
-SPARK_CONF_DIR=$INSTALL_PATH/spark/conf
-
-# flink
-# 支持版本：具体见下载地址
-FLINK_VERSION=flink-1.12.4
-FLINK_ARCHIVE=$FLINK_VERSION-bin-scala_2.11.tgz
-FLINK_MIRROR_DOWNLOAD=https://archive.apache.org/dist/flink/flink-1.12.4/flink-1.12.4-bin-scala_2.11.tgz
-FLINK_RES_DIR=$RESOURCE_PATH/flink
-FLINK_CONF_DIR=$INSTALL_PATH/flink/conf
 
 # mysql_connector
 # 支持版本：具体见下载地址
