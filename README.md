@@ -5,8 +5,8 @@
 本集群创建的组件如下表所示。
 
 | 组件      | hdp101                                             | hdp102                     | hdp103            |
-| :-: | :-------------  | -------------------------- | ----------------- |
-| OS   | centos7.6                                          | centos7.6             | centos7.6         |
+| :-: | ---  | -------------------------- | ----------------- |
+| OS   | centos7.6  | centos7.6             | centos7.6         |
 | JDK  | jdk1.8                                             | jdk1.8                     | jdk1.8            |
 | HDFS      | NameNode <br> JobHistoryServer <br> ApplicationHistoryServer | DataNode <br> SecondaryNameNode | DataNode          |
 | YARN      | ResourceManager                                    | NodeManager                | NodeManager       |
@@ -27,7 +27,7 @@
 Java：1.8
 Hadoop：2.7.2
 Sqoop：1.4.6
-MySQL：5.6
+MySQL：5.6.51
 Kafka：0.11.0.3
 Zookeeper：3.4.10
 Hbase：1.2.5
@@ -42,14 +42,6 @@ Flume：1.6
 
 1. 每个节点的默认内存是2G，集群默认启动三个节点，你的机器至少需要6G
 2. 我的测试环境：Vagrant 2.2.14， Virtualbox 6.0.14
-
-```
-mysql -h${HOSTNAME}  -P${PORT}  -u${USERNAME} -p${PASSWORD} -e "create user 'hive'@'%' IDENTIFIED BY 'hive';GRANT ALL PRIVILEGES ON *.* TO 'hive'@'%' WITH GRANT OPTION;grant all on *.* to 'hive'@'localhost' identified by 'hive';flush privileges; quit"
-
-mysql -h${HOSTNAME}  -P${PORT}  -u${USERNAME} -p${PASSWORD} -e "use mysql; update user set host = '%' where user = 'root';update user set authentication_string=password('199037') where user='root'; update user set authentication_string=password('199037'),plugin='mysql_native_password' where user='root';grant all on *.* to root@'%' identified by '199037' with grant option;grant all privileges on *.* to 'root'@'%' identified by '199037' with grant option;flush privileges;quit
-```
-
-
 
 ## 三、安装集群环境
 
@@ -77,9 +69,16 @@ mysql -h${HOSTNAME}  -P${PORT}  -u${USERNAME} -p${PASSWORD} -e "use mysql; updat
 
 ### 1、ssh免登陆
 
-在每台机器上执行`init_shell/setup-ssh.sh`
+在每台机器上执行以下
 
-### 2、启动hadoop
+```
+cd init_shell
+sh setup-ssh.sh
+```
+
+### 2、启动hadoop与测试
+
+#### 启动
 
 在hdp101机器上执行以下命令对hadoop集群进行格式化，并启动hdfs和yarn。
 
@@ -90,29 +89,125 @@ mysql -h${HOSTNAME}  -P${PORT}  -u${USERNAME} -p${PASSWORD} -e "use mysql; updat
 [vagrant@hdp101 ~]$ mr-jobhistory-daemon.sh start historyserver 
 ```
 
+或者
+
+```
+[vagrant@hdp101 ~]$ sh init_shell/start-tool.sh dfs start
+[vagrant@hdp101 ~]$ sh init_shell/start-tool.sh yarn start
+```
+
+#### 测试
+
 通过执行下列命令可以测试yarn是否安装成功。
 
 ```
 [vagrant@hdp101 ~]$ yarn jar /home/vagrant/apps/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.2.jar pi 2 100
 ```
 
-### 3、启动Spark（Standalone ）
+### 3、启动Spark（Standalone ）与测试
 
-在hdp01机器上执行以下命令。
+#### 启动
+
+在hdp101机器上执行以下命令。
 
 ```
 [vagrant@hdp101 ~]$ $SPARK_HOME/sbin/start-all.sh
 ```
 
+或者
+
+```
+[vagrant@hdp101 ~]$ sh init_shell/start-tool.sh spark start
+```
+
+#### 测试
+
 通过执行下列命令可以测试spark是否安装成功。
 
 ```
+[vagrant@hdp101 ~]$ hdfs dfs -mkdir /spark-log
 [vagrant@hdp101 ~]$ spark-submit --class org.apache.spark.examples.SparkPi \
     --master yarn \
     --num-executors 1 \
     --executor-cores 2 \
    /home/vagrant/apps/spark/examples/jars/spark-examples*.jar \
     100
+```
+
+### 4、启动Flink
+
+#### 启动
+
+在hdp01机器上执行以下命令。
+
+```
+[vagrant@hdp101 ~]$ $FLINK_HOME/bin/start-cluster.sh
+```
+
+或者
+
+```
+[vagrant@hdp101 ~]$ sh init_shell/start-tool.sh flink start
+```
+
+
+
+```
+nc -l 9000
+flink run $FLINK_HOME/examples/batch/WordCount.jar
+flink run $FLINK_HOME/examples/streaming/SocketWindowWordCount.jar --hostname hdp102 --port 9000
+```
+
+
+
+### 5、启动Hive与测试
+
+#### 启动
+
+在hdp103节点登录MySQL数据库，创建hive的元数据库。
+
+```
+# 创建hive的元数据库
+[vagrant@hdp103 ~]$ mysql -uroot -p199037 -e "create user 'hive'@'%' IDENTIFIED BY 'hive';GRANT ALL PRIVILEGES ON *.* TO 'hive'@'%' WITH GRANT OPTION;grant all on *.* to 'hive'@'localhost' identified by 'hive';flush privileges; quit"
+
+# 进行远程访问授权
+[vagrant@hdp103 ~]$ mysql -uroot -p199037 -e "use mysql; update user set authentication_string=password('199037') where user='root'; update user set authentication_string=password('199037'),plugin='mysql_native_password' where user='root';grant all on *.* to root@'%' identified by '199037' with grant option;grant all privileges on *.* to 'root'@'%' identified by '199037' with grant option;flush privileges;quit"
+```
+
+在hdp101节点，初始化元数据，看到 schemaTool completed ，即初始化成功！
+
+```
+[vagrant@hdp101 ~]$ schematool -initSchema -dbType mysql
+```
+
+#### Hive服务启动与测试
+
+```
+# 创建数据文件
+[vagrant@hdp101 ~]$ vi ~/stu.txt
+
+```
+
+内容如下：
+
+```
+00001,zhangsan
+00002,lisi
+00003,wangwu
+00004,zhaoliu
+```
+
+创建库表并加载数据到Hive表
+
+```
+# 启动hive
+[vagrant@hdp101 ~]$ hive
+# 创建表
+hive (default)>  CREATE TABLE stu(id INT,name STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
+# 加载数据
+hive (default)> load data local inpath '/home/vagrant/stu.txt' into table stu;
+# 查看库表
+hive (default)> select * from stu;
 ```
 
 ## 六. Web UI

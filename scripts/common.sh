@@ -25,6 +25,7 @@ JAVA_ARCHIVE=jdk-8u201-linux-x64.tar.gz
 JAVA_MIRROR_DOWNLOAD=https://repo.huaweicloud.com/java/jdk/8u201-b09/jdk-8u201-linux-x64.tar.gz
 
 # hadoop
+# 支持版本：3.3.1, 3.3.0, 3.2.2-3.2.0, 3.1.4-3.1.0, 3.0.3-3.0.0, 2.9.2-2.9.0, 2.8.5-2.8.0, 2.7.7-2.7.0等
 HADOOP_VERSION=hadoop-2.7.2
 HADOOP_ARCHIVE=$HADOOP_VERSION.tar.gz
 HADOOP_MIRROR_DOWNLOAD=http://archive.apache.org/dist/hadoop/core/$HADOOP_VERSION/$HADOOP_ARCHIVE
@@ -33,6 +34,7 @@ HADOOP_PREFIX=$INSTALL_PATH/hadoop
 HADOOP_CONF_DIR=$HADOOP_PREFIX/etc/hadoop
 
 # hive
+# 支持版本：3.1.2-3.1.0, 3.0.0, 2.3.9,-2.3.0, 2.2.0, 2.1.1, 2.1.0, 2.0.1, 2.0.0等
 HIVE_VERSION=hive-2.3.4
 HIVE_ARCHIVE=apache-$HIVE_VERSION-bin.tar.gz
 HIVE_MIRROR_DOWNLOAD=http://archive.apache.org/dist/hive/$HIVE_VERSION/$HIVE_ARCHIVE
@@ -40,6 +42,7 @@ HIVE_RES_DIR=$RESOURCE_PATH/hive
 HIVE_CONF_DIR=$INSTALL_PATH/hive/conf
 
 # sqoop
+# 支持版本：1.99.7-1.99.1, 1.4.7-1.4.2（版本和下载地址要对应）
 SQOOP_VERSION=sqoop-1.4.6
 SQOOP_ARCHIVE=${SQOOP_VERSION}.bin__hadoop-2.0.4-alpha.tar.gz
 SQOOP_MIRROR_DOWNLOAD=http://archive.apache.org/dist/sqoop/1.4.6/sqoop-1.4.6.bin__hadoop-2.0.4-alpha.tar.gz
@@ -47,6 +50,7 @@ SQOOP_RES_DIR=$RESOURCE_PATH/sqoop
 SQOOP_CONF_DIR=$INSTALL_PATH/sqoop/conf
 
 # zookeeper
+# 支持版本：3.7.0, 3.6.3-3.6.0, 3.5.9-3.5.5, 3.4.14-3.4.0, 3.3.6-3.3.3
 ZOOKEEPER_VERSION=zookeeper-3.4.10
 ZOOKEEPER_ARCHIVE=${ZOOKEEPER_VERSION}.tar.gz
 ZOOKEEPER_MIRROR_DOWNLOAD=http://archive.apache.org/dist/zookeeper/$ZOOKEEPER_VERSION/$ZOOKEEPER_ARCHIVE
@@ -54,6 +58,7 @@ ZOOKEEPER_RES_DIR=$RESOURCE_PATH/zookeeper
 ZOOKEEPER_CONF_DIR=$INSTALL_PATH/zookeeper/conf
 
 # kafka
+# 支持版本：具体查看下载地址
 KAFKA_VERSION=kafka_2.11-0.11.0.3
 KAFKA_ARCHIVE=${KAFKA_VERSION}.tgz
 KAFKA_MIRROR_DOWNLOAD=https://archive.apache.org/dist/kafka/0.11.0.3/kafka_2.11-0.11.0.3.tgz
@@ -61,6 +66,7 @@ KAFKA_RES_DIR=$RESOURCE_PATH/kafka
 KAFKA_CONF_DIR=$INSTALL_PATH/kafka/config
 
 # hbase
+# 支持版本：2.4.5-2.4.0, 2.3.6-2.3.0, 2.2.7-2.2.0, 2.1.10-2.1.0, 2.0.6-2.0.0等
 HBASE_VERSION=hbase-1.2.5
 HBASE_ARCHIVE=${HBASE_VERSION}-bin.tar.gz
 HBASE_MIRROR_DOWNLOAD=http://archive.apache.org/dist/hbase/1.2.5/hbase-1.2.5-bin.tar.gz 
@@ -68,6 +74,7 @@ HBASE_RES_DIR=$RESOURCE_PATH/hbase
 HBASE_CONF_DIR=$INSTALL_PATH/hbase/conf
 
 # phoenix
+# 支持版本：具体查看下载地址
 PHOENIX_VERSION=apache-phoenix-4.8.1-HBase-1.2-bin
 PHOENIX_ARCHIVE=${PHOENIX_VERSION}.tar.gz
 PHOENIX_MIRROR_DOWNLOAD=https://archive.apache.org/dist/phoenix/apache-phoenix-4.8.1-HBase-1.2/bin/apache-phoenix-4.8.1-HBase-1.2-bin.tar.gz
@@ -75,6 +82,7 @@ PHOENIX_RES_DIR=$RESOURCE_PATH/phoenix
 PHOENIX_CONF_DIR=$INSTALL_PATH/phoenix/conf
 
 # flume
+# 支持版本：1.9.0, 1.8.0, 1.7.0, 1.6.0, 1.5.2-1.5.0等
 FLUME_VERSION=apache-flume-1.6.0-bin
 FLUME_ARCHIVE=${FLUME_VERSION}.tar.gz
 FLUME_MIRROR_DOWNLOAD=https://archive.apache.org/dist/flume/1.6.0/apache-flume-1.6.0-bin.tar.gz
@@ -82,12 +90,14 @@ FLUME_RES_DIR=$RESOURCE_PATH/flume
 FLUME_CONF_DIR=$INSTALL_PATH/flume/conf
 
 # scala
+# 支持版本：2.10.X, 2.11.X, 2.12.X, 2.13.X
 SCALA_VERSION=scala-2.11.12
 SCALA_ARCHIVE=${SCALA_VERSION}.tgz
 # SCALA_MIRROR_DOWNLOAD=https://downloads.lightbend.com/scala/2.11.12/scala-2.11.12.tgz 
 SCALA_MIRROR_DOWNLOAD=https://distfiles.macports.org/scala2.11/scala-2.11.12.tgz
 
 # maven
+# 支持版本：具体见下载地址
 # 注意：Maven 3.3.x 可以构建 Flink，但是不能正确地屏蔽掉指定的依赖。Maven 3.2.5 可以正确地构建库文件
 MAVEN_VERSION=apache-maven-3.2.5
 MAVEN_ARCHIVE=${MAVEN_VERSION}-bin.tar.gz
@@ -96,6 +106,7 @@ MAVEN_RES_DIR=$RESOURCE_PATH/maven
 MAVEN_CONF_DIR=$INSTALL_PATH/maven/conf
 
 # spark
+# 支持版本：具体见下载地址
 SPARK_VERSION=spark-2.4.6
 SPARK_ARCHIVE=$SPARK_VERSION-bin-hadoop2.tgz
 SPARK_MIRROR_DOWNLOAD=http://archive.apache.org/dist/spark/$SPARK_VERSION/$SPARK_VERSION-bin-hadoop2.7.tgz
@@ -103,18 +114,21 @@ SPARK_RES_DIR=$RESOURCE_PATH/spark
 SPARK_CONF_DIR=$INSTALL_PATH/spark/conf
 
 # flink
+# 支持版本：具体见下载地址
 FLINK_VERSION=flink-1.12.4
-FLINK_ARCHIVE=$FLINK_VERSION-bin-scala_2.12.tgz
-FLINK_MIRROR_DOWNLOAD=https://archive.apache.org/dist/flink/flink-1.12.4/flink-1.12.4-bin-scala_2.12.tgz
+FLINK_ARCHIVE=$FLINK_VERSION-bin-scala_2.11.tgz
+FLINK_MIRROR_DOWNLOAD=https://archive.apache.org/dist/flink/flink-1.12.4/flink-1.12.4-bin-scala_2.11.tgz
 FLINK_RES_DIR=$RESOURCE_PATH/flink
 FLINK_CONF_DIR=$INSTALL_PATH/flink/conf
 
 # mysql_connector
+# 支持版本：具体见下载地址
 MYSQL_CONNECTOR_VERSION=mysql-connector-java-5.1.49
 MYSQL_CONNECTOR_ARCHIVE=${MYSQL_CONNECTOR_VERSION}.tar.gz
 MYSQL_CONNECTOR_MIRROR_DOWNLOAD=http://mirrors.sohu.com/mysql/Connector-J/$MYSQL_CONNECTOR_ARCHIVE
 
 # mysql
+# 支持版本：具体见下载地址
 MYSQL_VERSION=mysql-5.7.30
 MYSQL_ARCHIVE=${MYSQL_VERSION}-linux-glibc2.12-x86_64.tar.gz
 MYSQL_MIRROR_DOWNLOAD=https://cdn.mysql.com/archives/mysql-5.7/mysql-5.7.30-linux-glibc2.12-x86_64.tar.gz
@@ -169,7 +183,7 @@ log() {
     fi
 }
 
-# 判断resource文件是否存在
+# 判断DOWN_PATH下文件是否存在
 # eg: resourceExists hadoop2.7.2.tar.gz
 resourceExists() 
 {
@@ -182,7 +196,7 @@ resourceExists()
     fi
 }
 
-# 判断文件是否存在
+# 判断某一目录文件是否存在
 # eg: fileExists /home/vagrant/text.txt
 fileExists()
 {
@@ -201,7 +215,7 @@ command_exists() {
     command -v "$@" > /dev/null 2>&1
 }
 
-# 从本地安装
+# 从本地DOWLOAD_PATH解压组件到INSTALL_PATH
 # eg: installFromLocal $HADOOP_ARCHIVE
 installFromLocal() {
     LOCAL_ARCHIVE=$1
@@ -211,7 +225,7 @@ installFromLocal() {
 	
 }
 
-# 从网上下载安装
+# 从网上下载组件到DOWNLOAD_PATH，并解压到INSTALL_PATH
 # eg: installFromRemote $HADOOP_ARCHIVE $HADOOP_MIRROR_DOWNLOAD
 installFromRemote() {
     LOCAL_ARCHIVE=$1
@@ -239,7 +253,7 @@ dispatch_app(){
         fi
     done
 }
-# set app variable
+# 设置app_name的环境变量
 # eg:setupEnv_app kafka
 setupEnv_app() {
     local app_name=$1
@@ -258,7 +272,7 @@ setupEnv_app() {
     echo -e "\n" >> $PROFILE
 }
 
-# wget mysql connector
+# 下载mysql connector的jar到某一目录
 # eg: wget_mysql_connector /home/vagrant/apps/hive/lib
 wget_mysql_connector(){
     local CP_PATH=$1
