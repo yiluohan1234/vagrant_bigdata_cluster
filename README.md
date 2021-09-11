@@ -152,7 +152,7 @@ sh setup-ssh.sh
 
 #### 1）启动
 
-在hdp01机器上执行以下命令。
+在hdp101机器上执行以下命令。
 
 ```
 [vagrant@hdp101 ~]$ $FLINK_HOME/bin/start-cluster.sh
