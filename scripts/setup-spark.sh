@@ -13,16 +13,14 @@ setup_spark() {
     cp -f $SPARK_RES_DIR/slaves $SPARK_CONF_DIR
     cp -f $SPARK_RES_DIR/spark-defaults.conf $SPARK_CONF_DIR
     cp -f $SPARK_RES_DIR/spark-env.sh $SPARK_CONF_DIR
-    #install_mysql_connector $INSTALL_PATH/spark/jars
+    wget_mysql_connector $INSTALL_PATH/spark/jars
+    
     # yarn-site.xml
-    #cp -f $SPARK_RES_DIR/yarn-site.xml $HADOOP_CONF_DIR
-    #scp -r $HADOOP_CONF_DIR/yarn-site.xml vagrant@hdp-node-02:$HADOOP_CONF_DIR
-    #scp -r $HADOOP_CONF_DIR/yarn-site.xml vagrant@hdp-node-03:$HADOOP_CONF_DIR
+    #cp -f $HADOOP_RES_DIR/yarn-site.xml $SPARK_CONF_DIR
+    
     # hive-site.xml
-    #cp -f $SPARK_RES_DIR/hive-site.xml $HIVE_CONF_DIR
+    #cp -f $HIVE_RES_DIR/hive-site.xml $SPARK_CONF_DIR
     #cp -rf $INSTALL_PATH/spark/jars/*.jar ${INSTALL_PATH}/hive/lib/
-    #scp -r ${INSTALL_PATH}/hive/lib vagrant@hdp-node-02:${INSTALL_PATH}/hive/lib
-    #scp -r ${INSTALL_PATH}/hive/lib vagrant@hdp-node-03:${INSTALL_PATH}/hive/lib
 }
 
 download_spark() {
