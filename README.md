@@ -8,12 +8,12 @@
 | :-: | ---  | -------------------------- | ----------------- |
 | OS   | centos7.6  | centos7.6             | centos7.6         |
 | JDK  | jdk1.8                                             | jdk1.8                     | jdk1.8            |
-| HDFS      | NameNode <br> JobHistoryServer <br> ApplicationHistoryServer | DataNode <br> SecondaryNameNode | DataNode          |
+| HDFS      | NameNode<br>JobHistoryServer<br>ApplicationHistoryServer | DataNode<br>SecondaryNameNode | DataNode          |
 | YARN      | ResourceManager                                    | NodeManager                | NodeManager       |
 | Hive | Hive | NA | NA |
 | HBase     | HMaster                                            | HRegionServer              | HRegionServer     |
-| Spark     | master/HistoryServer                               | worker                     | worker            |
-| Flink     | StandaloneSession <br> ClusterEntrypoint                 | TaskManagerRunner          | TaskManagerRunner |
+| Spark     | master<br>HistoryServer                               | worker                     | worker            |
+| Flink     | StandaloneSession<br>ClusterEntrypoint                 | TaskManagerRunner          | TaskManagerRunner |
 | Zookeeper | QuorumPeerMain                                     | QuorumPeerMain             | QuorumPeerMain    |
 | Kafka     | kafka                                              | Kafka                      | Kafka             |
 | Flume     | flume                                              | flume                      | flume             |
@@ -106,8 +106,8 @@ sh setup-ssh.sh
 或者
 
 ```
-[vagrant@hdp101 ~]$ sh init_shell/start-tool.sh dfs start
-[vagrant@hdp101 ~]$ sh init_shell/start-tool.sh yarn start
+[vagrant@hdp101 ~]$ bigstart dfs start
+[vagrant@hdp101 ~]$ bigstart yarn start
 ```
 
 #### 2）测试
@@ -131,7 +131,7 @@ sh setup-ssh.sh
 或者
 
 ```
-[vagrant@hdp101 ~]$ sh init_shell/start-tool.sh spark start
+[vagrant@hdp101 ~]$ bigstart spark start
 ```
 
 #### 2）测试
@@ -140,6 +140,7 @@ sh setup-ssh.sh
 
 ```
 [vagrant@hdp101 ~]$ hdfs dfs -mkdir /spark-log
+[vagrant@hdp101 ~]$ spark-submit --master spark://hdp101:7077 --deploy-mode cluster --class org.apache.spark.examples.SparkPi $SPARK_HOME/examples/jars/spark-examples_2.11-2.4.6.jar 100
 [vagrant@hdp101 ~]$ spark-submit --class org.apache.spark.examples.SparkPi \
     --master yarn \
     --num-executors 1 \
@@ -161,7 +162,7 @@ sh setup-ssh.sh
 或者
 
 ```
-[vagrant@hdp101 ~]$ sh init_shell/start-tool.sh flink start
+[vagrant@hdp101 ~]$ bigstart flink start
 ```
 
 #### 2）测试
