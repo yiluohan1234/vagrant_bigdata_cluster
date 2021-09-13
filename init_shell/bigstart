@@ -1,6 +1,4 @@
 #!/bin/bash
-
-CUR=$(cd `dirname 0`;pwd)
 INSTALL_PATH=/home/vagrant/apps
 zk(){
     usage="Usage: $0 (start|stop|status)"
@@ -172,7 +170,7 @@ hbase(){
 
 args()
 {
-    usage="Usage: $0 (dfs|yarn.. start|stop)"
+    usage="Usage: $0 (dfs|yarn|zk|kafka|spark|flink|hbase|start|stop)"
  
     if [ $# -lt 2 ]; then
         echo $usage
