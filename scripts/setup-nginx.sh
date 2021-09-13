@@ -17,6 +17,8 @@ setup_nginx() {
     make&&make install
     rm $DOWNLOAD_PATH/$NGINX_ARCHIVE
     rm -rf $INSTALL_PATH/$NGINX_VERSION
+    # 让当前用户的某个应用程序可以使用1024以下端口
+    sudo setcap cap_net_bind_service=+eip ${INSTALL_PATH}/nginx/sbin/nginx
     
 }
 

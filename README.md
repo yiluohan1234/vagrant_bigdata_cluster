@@ -67,6 +67,15 @@ MySQL: 5.7.30
 6. 如果你想要删除虚拟机，可以通过执行`vagrant destroy` 来实现
 
 ## 四、自定义集群环境配置
+基本目录结构
+
+```
+resources
+scripts
+.gitignore
+README.md
+VagrantFile
+```
 
 你可以通过修改`VagrantFile`、`scripts/common.sh`文件和`resources/组件名称`目录下各个组件的配置文件文件来实现自定义集群。
 
@@ -86,8 +95,7 @@ MySQL: 5.7.30
 在每台机器上执行以下
 
 ```
-cd init_shell
-sh setup-ssh.sh
+setssh
 ```
 
 ### 2、启动hadoop与测试
@@ -140,12 +148,12 @@ sh setup-ssh.sh
 
 ```
 [vagrant@hdp101 ~]$ hdfs dfs -mkdir /spark-log
-[vagrant@hdp101 ~]$ spark-submit --master spark://hdp101:7077 --deploy-mode cluster --class org.apache.spark.examples.SparkPi $SPARK_HOME/examples/jars/spark-examples_2.11-2.4.6.jar 100
+[vagrant@hdp101 ~]$ spark-submit --master spark://hdp101:7077 --deploy-mode cluster --class org.apache.spark.examples.SparkPi $SPARK_HOME/examples/jars/spark-examples*.jar 100
 [vagrant@hdp101 ~]$ spark-submit --class org.apache.spark.examples.SparkPi \
     --master yarn \
     --num-executors 1 \
     --executor-cores 2 \
-   /home/vagrant/apps/spark/examples/jars/spark-examples*.jar \
+   $SPARK_HOME/examples/jars/spark-examples*.jar \
     100
 ```
 
