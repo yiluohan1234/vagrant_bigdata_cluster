@@ -8,6 +8,9 @@ INSTALL_PATH=/home/vagrant/apps
 # 组件下载目录
 DOWNLOAD_PATH=/home/vagrant/downloads
 
+# 初始化集群目录
+INIT_PATH=$RESOURCE_PATH/initialization
+
 # 是否用vagrant安装集群
 IS_VAGRANT="true"
 
