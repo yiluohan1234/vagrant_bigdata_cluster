@@ -38,6 +38,7 @@ MAVEN_VERSION=apache-maven-3.2.5
 MYSQL_CONNECTOR_VERSION=mysql-connector-java-5.1.49
 MYSQL_VERSION=mysql-5.7.30
 PHOENIX_VERSION=apache-phoenix-4.8.1-HBase-1.2-bin
+NGINX_VERSION=nginx-1.18.0
 
 # 获取app的版本号
 # eg: get_app_version_num $HIVE_VERSION '-' 2
@@ -164,6 +165,12 @@ PHOENIX_ARCHIVE=${PHOENIX_VERSION}.tar.gz
 PHOENIX_MIRROR_DOWNLOAD=https://archive.apache.org/dist/phoenix/apache-phoenix-4.8.1-HBase-1.2/bin/$PHOENIX_ARCHIVE
 PHOENIX_RES_DIR=$RESOURCE_PATH/phoenix
 PHOENIX_CONF_DIR=$INSTALL_PATH/phoenix/conf
+
+# nginx
+# 支持版本：具体见下载地址
+NGINX_VERSION_NUM=`get_app_version_num $NGINX_VERSION '-' 2`
+NGINX_ARCHIVE=${NGINX_VERSION}.tar.gz
+NGINX_MIRROR_DOWNLOAD=http://nginx.org/download/$NGINX_ARCHIVE
 
 # log
 DATETIME=`date "+%F %T"`
