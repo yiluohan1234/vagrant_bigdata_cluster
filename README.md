@@ -181,10 +181,10 @@ sh setup-ssh.sh
 
 ```
 # 创建hive的元数据库
-[vagrant@hdp103 ~]$ mysql -uroot -p199037 -e "create user 'hive'@'%' IDENTIFIED BY 'hive';GRANT ALL PRIVILEGES ON *.* TO 'hive'@'%' WITH GRANT OPTION;grant all on *.* to 'hive'@'localhost' identified by 'hive';flush privileges; quit"
+[vagrant@hdp103 ~]$ mysql -uroot -p199037 -e "create user 'hive'@'%' IDENTIFIED BY 'hive';GRANT ALL PRIVILEGES ON *.* TO 'hive'@'%' WITH GRANT OPTION;grant all on *.* to 'hive'@'localhost' identified by 'hive';flush privileges;"
 
 # 进行远程访问授权
-[vagrant@hdp103 ~]$ mysql -uroot -p199037 -e "use mysql; update user set authentication_string=password('199037') where user='root'; update user set authentication_string=password('199037'),plugin='mysql_native_password' where user='root';grant all on *.* to root@'%' identified by '199037' with grant option;grant all privileges on *.* to 'root'@'%' identified by '199037' with grant option;flush privileges;quit"
+[vagrant@hdp103 ~]$ mysql -uroot -p199037 -e "use mysql; update user set authentication_string=password('199037') where user='root'; update user set authentication_string=password('199037'),plugin='mysql_native_password' where user='root';grant all on *.* to root@'%' identified by '199037' with grant option;grant all privileges on *.* to 'root'@'%' identified by '199037' with grant option;flush privileges;"
 ```
 
 在hdp101节点，初始化元数据，看到 schemaTool completed ，即初始化成功！
