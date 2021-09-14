@@ -39,6 +39,7 @@ MYSQL_CONNECTOR_VERSION=mysql-connector-java-5.1.49
 MYSQL_VERSION=mysql-5.7.30
 PHOENIX_VERSION=apache-phoenix-4.8.1-HBase-1.2-bin
 NGINX_VERSION=nginx-1.18.0
+ES_VERSION=elasticsearch-7.6.0
 
 # 获取app的版本号
 # eg: get_app_version_num $HIVE_VERSION '-' 2
@@ -171,6 +172,15 @@ PHOENIX_CONF_DIR=$INSTALL_PATH/phoenix/conf
 NGINX_VERSION_NUM=`get_app_version_num $NGINX_VERSION '-' 2`
 NGINX_ARCHIVE=${NGINX_VERSION}.tar.gz
 NGINX_MIRROR_DOWNLOAD=http://nginx.org/download/$NGINX_ARCHIVE
+
+# es
+# 支持版本：具体见下载地址
+# https://mirrors.huaweicloud.com/elasticsearch/7.12.1/elasticsearch-7.12.1-linux-x86_64.tar.gz
+ES_VERSION_NUM=`get_app_version_num $ES_VERSION '-' 2`
+ES_ARCHIVE=$ES_VERSION-linux-x86_64.tar.gz
+ES_MIRROR_DOWNLOAD=https://mirrors.huaweicloud.com/elasticsearch/$ES_VERSION_NUM/$ES_ARCHIVE
+ES_RES_DIR=$RESOURCE_PATH/elasticsearch
+ES_CONF_DIR=$INSTALL_PATH/elasticsearch/config
 
 # log
 DATETIME=`date "+%F %T"`

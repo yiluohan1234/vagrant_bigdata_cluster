@@ -46,7 +46,7 @@ download_kafka() {
 dispatch_kafka() {
     local app_name=$1
     #dispatch_app $app_name
-    for i in {"hdp-node-02","hdp-node-03"};
+    for i in {"hdp102","hdp103"};
     do
         ip=`cat /etc/hosts |grep $i|awk '{print $1}'`
         ip_end=${ip##*.} 

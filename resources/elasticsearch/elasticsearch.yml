@@ -1,0 +1,31 @@
+# ======================== Elasticsearch Configuration =========================
+# 设置集群名字，其他节点也要一样的名字才能加入集区
+cluster.name: "hdp-testing-es"
+# 主节点
+node.master: true
+# 唯一节点名字
+node.name: ${HOSTNAME}
+# 数据存放目录
+path.data: /home/vagrant/apps/elasticsearch/datas
+# 日志存放目录
+path.logs: /home/vagrant/apps/elasticsearch/logs
+# 绑定ip，否则不能通过远程ip：port访问
+network.host: 192.168.10.101
+http.port: 9200
+# 集群通信端口
+transport.port: 9300
+# ======================== Discovery =========================
+# 所有的集群节点，使其自动发现加入集群（该配置与discovery.zen.ping.unicast.hosts冲突，二选其一）
+# discovery.seed_hosts: ["192.168.10.101:9300", "192.168.10.102:9300", "192.168.10.103:9300"]
+# 指定启动时master节点
+cluster.initial_master_nodes: ["hdp101"]
+# 候选主节点数，官方推荐（N/2）+1
+discovery.zen.minimum_master_nodes: 2
+# 候选主节点
+discovery.zen.ping.unicast.hosts: ["hdp101", "hdp102", "hdp103"]
+bootstrap.system_call_filter: false
+bootstrap.memory_lock: false
+# 是否支持跨域
+http.cors.enabled: true
+# 支持所有域名
+http.cors.allow-origin: "*"
