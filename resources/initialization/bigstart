@@ -168,6 +168,38 @@ hbase(){
     esac
 }
 
+elasticsearch(){
+    usage="Usage: $0 (start|stop|restart)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            for i in {"hdp101","hdp102","hdp103"};
+            do
+                echo "-----$1 $i elasticsearch-------"
+                ssh $i "source /etc/profile;$INSTALL_PATH/elasticsearch/bin/elasticsearch -d -p pid"
+            done
+            ;;
+        stop)
+            for j in {"hdp101","hdp102","hdp103"};
+            do
+                echo "-----$1 $j elasticsearch-------"
+                ssh $j  "kill -9 \$(ps ax |grep -i 'elasticsearch'| grep java| grep -v grep| awk '{print \$1}')"
+            done
+            ;;
+        restart)
+            elasticsearch stop
+            elasticsearch start
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
 args()
 {
     usage="Usage: $0 (dfs|yarn|zk|kafka|spark|flink|hbase|start|stop)"
@@ -199,9 +231,12 @@ args()
 	  kafka)
 		kafka $2
 		;;
-          *)
-                echo $usage
-                ;;
+      es)
+		elasticsearch $2
+		;;
+       *)
+        echo $usage
+        ;;
     esac
 }
 args $@
