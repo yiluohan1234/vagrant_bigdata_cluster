@@ -40,6 +40,7 @@ MYSQL_VERSION=mysql-5.7.30
 PHOENIX_VERSION=apache-phoenix-4.8.1-HBase-1.2-bin
 NGINX_VERSION=nginx-1.18.0
 ES_VERSION=elasticsearch-7.6.0
+KIBANA_VERSION=kibana-7.6.0
 
 # 获取app的版本号
 # eg: get_app_version_num $HIVE_VERSION '-' 2
@@ -176,11 +177,21 @@ NGINX_MIRROR_DOWNLOAD=http://nginx.org/download/$NGINX_ARCHIVE
 # es
 # 支持版本：具体见下载地址
 # https://mirrors.huaweicloud.com/elasticsearch/7.12.1/elasticsearch-7.12.1-linux-x86_64.tar.gz
+# https://mirrors.huaweicloud.com/elasticsearch/6.6.0/elasticsearch-6.6.0.tar.gz
 ES_VERSION_NUM=`get_app_version_num $ES_VERSION '-' 2`
 ES_ARCHIVE=$ES_VERSION-linux-x86_64.tar.gz
 ES_MIRROR_DOWNLOAD=https://mirrors.huaweicloud.com/elasticsearch/$ES_VERSION_NUM/$ES_ARCHIVE
 ES_RES_DIR=$RESOURCE_PATH/elasticsearch
 ES_CONF_DIR=$INSTALL_PATH/elasticsearch/config
+
+# kibana
+# 支持版本：具体见下载地址
+# https://mirrors.huaweicloud.com/kibana/7.12.0/kibana-7.12.0-linux-x86_64.tar.gz
+KIBANA_VERSION_NUM=`get_app_version_num $KIBANA_VERSION '-' 2`
+KIBANA_ARCHIVE=$KIBANA_VERSION-linux-x86_64.tar.gz
+KIBANA_MIRROR_DOWNLOAD=https://mirrors.huaweicloud.com/kibana/$KIBANA_VERSION_NUM/$KIBANA_ARCHIVE
+KIBANA_RES_DIR=$RESOURCE_PATH/kibana
+KIBANA_CONF_DIR=$INSTALL_PATH/kibana/config
 
 # log
 DATETIME=`date "+%F %T"`
