@@ -231,12 +231,12 @@ args()
 	  kafka)
 		kafka $2
 		;;
-      es)
+	  es)
 		elasticsearch $2
 		;;
-       *)
-        echo $usage
-        ;;
+	  *)
+		echo $usage
+		;;
     esac
 }
 args $@
