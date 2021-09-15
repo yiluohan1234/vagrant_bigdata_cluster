@@ -30,6 +30,7 @@ download_nginx() {
     else
         installFromRemote $NGINX_ARCHIVE $NGINX_MIRROR_DOWNLOAD
     fi
+    rm $DOWNLOAD_PATH/$NGINX_ARCHIVE
 }
 
 install_nginx() {
