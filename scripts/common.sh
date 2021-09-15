@@ -41,6 +41,7 @@ PHOENIX_VERSION=apache-phoenix-4.8.1-HBase-1.2-bin
 NGINX_VERSION=nginx-1.18.0
 ES_VERSION=elasticsearch-7.6.0
 KIBANA_VERSION=kibana-7.6.0
+REDIS_VERSION=redis-6.2.1
 
 # 获取app的版本号
 # eg: get_app_version_num $HIVE_VERSION '-' 2
@@ -192,6 +193,15 @@ KIBANA_ARCHIVE=$KIBANA_VERSION-linux-x86_64.tar.gz
 KIBANA_MIRROR_DOWNLOAD=https://mirrors.huaweicloud.com/kibana/$KIBANA_VERSION_NUM/$KIBANA_ARCHIVE
 KIBANA_RES_DIR=$RESOURCE_PATH/kibana
 KIBANA_CONF_DIR=$INSTALL_PATH/kibana/config
+
+# redis
+# 支持版本：具体见下载地址
+# https://mirrors.huaweicloud.com/redis/redis-6.2.1.tar.gz
+REDIS_VERSION_NUM=`get_app_version_num $REDIS_VERSION '-' 2`
+REDIS_ARCHIVE=$REDIS_VERSION.tar.gz
+REDIS_MIRROR_DOWNLOAD=https://mirrors.huaweicloud.com/redis/$REDIS_ARCHIVE
+REDIS_RES_DIR=$RESOURCE_PATH/redis
+REDIS_CONF_DIR=$INSTALL_PATH/redis/config
 
 # log
 DATETIME=`date "+%F %T"`

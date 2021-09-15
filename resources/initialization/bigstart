@@ -200,6 +200,27 @@ elasticsearch(){
     esac
 }
 
+kibana(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            nohup ${INSTALL_PATH}/kibana/bin/kibana > ${INSTALL_PATH}/kibana/logs/kibana.log 2>&1 &
+            ;;
+        stop)
+            #ps -ef |grep kibana |grep -v grep |awk '{print $2}' |xargs kill
+            kill -9 $(ps -ef |grep kibana| grep -v grep| awk '{print $2}')
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
 args()
 {
     usage="Usage: $0 (dfs|yarn|zk|kafka|spark|flink|hbase|start|stop)"
@@ -230,6 +251,9 @@ args()
 		;;
 	  kafka)
 		kafka $2
+		;;
+	  kibana)
+		kibana $2
 		;;
 	  es)
 		elasticsearch $2
