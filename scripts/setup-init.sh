@@ -26,11 +26,11 @@ systemctl restart sshd.service
 
 [ ! -d $INSTALL_PATH ] && mkdir -p $INSTALL_PATH
 [ ! -d $DOWNLOAD_PATH ] && mkdir -p $DOWNLOAD_PATH
-[ ! -d $INIT_SHELL_PATH ] && mkdir -p $INIT_SHELL_PATH
+[ ! -d $INIT_SHELL_BIN ] && mkdir -p $INIT_SHELL_BIN
 
 chown -R vagrant:vagrant $INSTALL_PATH
 chown -R vagrant:vagrant $DOWNLOAD_PATH
-chown -R vagrant:vagrant $INIT_SHELL_PATH
+chown -R vagrant:vagrant $INIT_SHELL_BIN
 
 # 启动elasticsearch需要的设置
 # 更改最大文件句柄数和最大线程数限制

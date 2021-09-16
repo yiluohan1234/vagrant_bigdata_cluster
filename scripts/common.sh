@@ -10,7 +10,7 @@ DOWNLOAD_PATH=/home/vagrant/downloads
 
 # 初始化集群目录
 INIT_PATH=$RESOURCE_PATH/initialization
-INIT_SHELL_PATH=$INSTALL_PATH/init_shell/bin
+INIT_SHELL_BIN=$INSTALL_PATH/init_shell/bin
 
 # 是否用vagrant安装集群
 IS_VAGRANT="true"
