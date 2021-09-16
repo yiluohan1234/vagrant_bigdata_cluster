@@ -15,12 +15,6 @@ setup_hadoop() {
 	
     log info "copying over $app_name configuration files"
     cp -f $HADOOP_RES_DIR/* $HADOOP_CONF_DIR
-    # 复制初始化程序到hadoop的bin目录
-    log info "copy init shell to $INSTALL_PATH/hadoop/bin"
-    cp $INIT_PATH/* $INSTALL_PATH/hadoop/bin
-    chmod 777 $INSTALL_PATH/hadoop/bin/jpsall
-    chmod 777 $INSTALL_PATH/hadoop/bin/bigstart
-    chmod 777 $INSTALL_PATH/hadoop/bin/setssh
 }
 
 download_hadoop() {

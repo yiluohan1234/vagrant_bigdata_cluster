@@ -11,24 +11,26 @@ yum install -y -q sshpass
 yum install -y -q lrzsz
 yum install -y -q expect
         
-:<<skip
-sudo yum install -y vim-enhanced
-sudo yum install -y nmap-ncat
-sudo yum install -y net-tools
-sudo yum install -y epel-release  
-sudo yum install -y lsof
-sudo yum install -y nc
-sudo yum install -y unzip
-sudo yum install -y zip
-skip
+yum install -y vim-enhanced
+yum install -y nmap-ncat
+yum install -y net-tools
+yum install -y epel-release  
+yum install -y lsof
+yum install -y nc
+yum install -y unzip
+yum install -y zip
+yum install -y rsync
 #---ssh---
 mv /home/vagrant/resources/sshd_config /etc/ssh/sshd_config
 systemctl restart sshd.service
 
 [ ! -d $INSTALL_PATH ] && mkdir -p $INSTALL_PATH
 [ ! -d $DOWNLOAD_PATH ] && mkdir -p $DOWNLOAD_PATH
+[ ! -d $INIT_SHELL_PATH ] && mkdir -p $INIT_SHELL_PATH
+
 chown -R vagrant:vagrant $INSTALL_PATH
 chown -R vagrant:vagrant $DOWNLOAD_PATH
+chown -R vagrant:vagrant $INIT_SHELL_PATH
 
 # 启动elasticsearch需要的设置
 # 更改最大文件句柄数和最大线程数限制
