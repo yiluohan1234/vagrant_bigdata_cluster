@@ -168,38 +168,6 @@ hbase(){
     esac
 }
 
-elasticsearch(){
-    usage="Usage: $0 (start|stop|restart)"
-
-    if [ $# -lt 1 ]; then
-        echo $usage
-        exit 1
-    fi
-    case $1 in
-        start)
-            for i in {"hdp101","hdp102","hdp103"};
-            do
-                echo "-----$1 $i elasticsearch-------"
-                ssh $i "source /etc/profile;$INSTALL_PATH/elasticsearch/bin/elasticsearch -d -p pid"
-            done
-            ;;
-        stop)
-            for j in {"hdp101","hdp102","hdp103"};
-            do
-                echo "-----$1 $j elasticsearch-------"
-                ssh $j  "kill -9 \$(ps ax |grep -i 'elasticsearch'| grep java| grep -v grep| awk '{print \$1}')"
-            done
-            ;;
-        restart)
-            elasticsearch stop
-            elasticsearch start
-            ;;
-        *)
-            echo $usage
-            ;;
-    esac
-}
-
 kibana(){
     usage="Usage: $0 (start|stop)"
 
@@ -219,6 +187,88 @@ kibana(){
             echo $usage
             ;;
     esac
+}
+
+elasticsearch(){
+    usage="Usage: $0 (start|stop|restart)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            for i in {"hdp101","hdp102","hdp103"};
+            do
+                echo "-----$1 $i elasticsearch-------"
+                ssh $i "source /etc/profile;$INSTALL_PATH/elasticsearch/bin/elasticsearch -d -p pid"
+            done
+            kibana start
+            ;;
+        stop)
+            for j in {"hdp101","hdp102","hdp103"};
+            do
+                echo "-----$1 $j elasticsearch-------"
+                ssh $j  "kill -9 \$(ps ax |grep -i 'elasticsearch'| grep java| grep -v grep| awk '{print \$1}')"
+            done
+            kibana stop
+            ;;
+        restart)
+            elasticsearch stop
+            elasticsearch start
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+redis(){
+#redis服务器监听的端口
+REDISPORT=6379
+ 
+#服务端所处位置
+EXEC=${INSTALL_PATH}/redis/bin/redis-server
+ 
+#客户端位置
+CLIEXEC=${INSTALL_PATH}/redis/bin/redis-cli
+ 
+#redis的PID文件位置，需要修改
+PIDFILE=${INSTALL_PATH}/redis/run/redis_${REDISPORT}.pid
+ 
+#redis的配置文件位置，需将${REDISPORT}修改为文件名
+CONF="${INSTALL_PATH}/redis/conf/redis.conf"
+ 
+case "$1" in
+    start)
+        if [ -f $PIDFILE ]
+        then
+                echo "$PIDFILE exists, process is already running or crashed"
+        else
+                echo "Starting Redis server..."
+                $EXEC $CONF
+        fi
+        ;;
+    stop)
+        if [ ! -f $PIDFILE ]
+        then
+                echo "$PIDFILE does not exist, process is not running"
+        else
+                PID=$(cat $PIDFILE)
+                echo "Stopping ..."
+                $CLIEXEC -p $REDISPORT shutdown
+                while [ -x /proc/${PID} ]
+                do
+                    echo "Waiting for Redis to shutdown ..."
+                    sleep 1
+                done
+                echo "Redis stopped"
+        fi
+        ;;
+    *)
+        echo "Please use start or stop as first argument"
+        ;;
+esac
 }
 
 args()
@@ -257,6 +307,9 @@ args()
 		;;
 	  es)
 		elasticsearch $2
+		;;
+	  redis)
+		redis $2
 		;;
 	  *)
 		echo $usage
