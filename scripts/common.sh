@@ -202,7 +202,7 @@ REDIS_VERSION_NUM=`get_app_version_num $REDIS_VERSION '-' 2`
 REDIS_ARCHIVE=$REDIS_VERSION.tar.gz
 REDIS_MIRROR_DOWNLOAD=https://mirrors.huaweicloud.com/redis/$REDIS_ARCHIVE
 REDIS_RES_DIR=$RESOURCE_PATH/redis
-REDIS_CONF_DIR=$INSTALL_PATH/redis/config
+REDIS_CONF_DIR=$INSTALL_PATH/redis/conf
 
 # log
 DATETIME=`date "+%F %T"`

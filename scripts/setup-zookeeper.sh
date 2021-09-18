@@ -20,10 +20,26 @@ setup_zookeeper() {
     local app_name=$1
     log info "creating $app_name directories"
     mkdir -p ${INSTALL_PATH}/zookeeper/data 
-    mkdir -p ${INSTALL_PATH}/zookeeper/log
+    mkdir -p ${INSTALL_PATH}/zookeeper/logs
     touch ${INSTALL_PATH}/zookeeper/data/myid
     log info "copying over $app_name configuration files"
     cp -f $ZOOKEEPER_RES_DIR/* $ZOOKEEPER_CONF_DIR
+
+    # log4j.properties
+    log4j_path=$ZOOKEEPER_CONF_DIR/log4j.properties
+    log_path=${INSTALL_PATH}/zookeeper/logs
+    sed -i 's@^zookeeper.root.logger=INFO, CONSOLE*@zookeeper.root.logger=INFO, CONSOLE, ROLLINGFILE@' $log4j_path
+    sed -i 's@^zookeeper.log.dir=.*@zookeeper.log.dir='$log_path'@' $log4j_path
+
+    # zkServer.sh
+    zkserver_path=${INSTALL_PATH}/zookeeper/bin/zkServer.sh
+    sed -i 's@^_ZOO_DAEMON_OUT="$ZOO_LOG_DIR/zookeeper.out"*@_ZOO_DAEMON_OUT="$ZOO_LOG_DIR/zookeeper.log"@' $zkserver_path
+
+    # zkEnv.sh
+    zkenv_path=${INSTALL_PATH}/zookeeper/bin/zkEnv.sh
+    sed -i 's@ZOO_LOG_DIR="."*@ZOO_LOG_DIR="$ZOOBINDIR/../logs"@' $zkenv_path
+    sed -i 's@ZOO_LOG4J_PROP="INFO,CONSOLE"*@ZOO_LOG4J_PROP="INFO,CONSOLE,ROLLINGFILE"@' $zkenv_path
+
     if [ "$IS_VAGRANT" == "true" ];then
         echo -e "\n" >> ${INSTALL_PATH}/zookeeper/bin/zkEnv.sh
         echo "export JAVA_HOME=/home/vagrant/apps/java" >> ${INSTALL_PATH}/zookeeper/bin/zkEnv.sh
