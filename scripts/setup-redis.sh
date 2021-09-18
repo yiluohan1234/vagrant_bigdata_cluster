@@ -15,8 +15,11 @@ setup_redis() {
     cd ${INSTALL_PATH}
  
     log info "copying over $app_name configuration files"
-    mkdir -p $INSTALL_PATH/redis/config
+    mkdir -p $INSTALL_PATH/redis/conf
+    mkdir -p $INSTALL_PATH/run
+    mkdir -p $INSTALL_PATH/logs
     cp $INSTALL_PATH/$REDIS_VERSION/redis.conf $REDIS_CONF_DIR
+    echo "dir $INSTALL_PATH/logs"
 
     rm $DOWNLOAD_PATH/$REDIS_ARCHIVE
     rm -rf $INSTALL_PATH/$REDIS_VERSION
