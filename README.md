@@ -135,7 +135,7 @@ setssh
 通过执行下列命令可以测试yarn是否安装成功。
 
 ```
-[vagrant@hdp101 ~]$ yarn jar /home/vagrant/apps/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.2.jar pi 2 100
+[vagrant@hdp101 ~]$ yarn jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.2.jar pi 2 100
 ```
 
 ### 3、启动Spark（Standalone ）与测试
@@ -203,9 +203,6 @@ setssh
 ```
 # 创建hive的元数据库
 [vagrant@hdp103 ~]$ mysql -uroot -p199037 -e "create user 'hive'@'%' IDENTIFIED BY 'hive';GRANT ALL PRIVILEGES ON *.* TO 'hive'@'%' WITH GRANT OPTION;grant all on *.* to 'hive'@'localhost' identified by 'hive';flush privileges;"
-
-# 进行远程访问授权
-[vagrant@hdp103 ~]$ mysql -uroot -p199037 -e "use mysql; update user set authentication_string=password('199037') where user='root'; update user set authentication_string=password('199037'),plugin='mysql_native_password' where user='root';grant all on *.* to root@'%' identified by '199037' with grant option;grant all privileges on *.* to 'root'@'%' identified by '199037' with grant option;flush privileges;"
 ```
 
 在hdp101节点，初始化元数据，看到 schemaTool completed ，即初始化成功！
@@ -246,16 +243,36 @@ hive (default)> select * from stu;
 
 ### 6、启动Elasticsearch
 
-在hdp101节点登录MySQL数据库，创建hive的元数据库。
+在hdp101节点登录执行以下命令。
 
 ```
-[vagrant@hdp101 ~]$ bigstart es start
+[vagrant@hdp101 ~]$ bigstart es start(或stop)
 ```
 
-jps查看一下进程：
+jpsall查看一下进程：
 
 ```
+[vagrant@hdp101 ~]$ jpsall 
+--------------------- hdp101节点 ---------------------
+3185 Kafka
+2899 QuorumPeerMain
+3365 Elasticsearch
+--------------------- hdp102节点 ---------------------
+25511 QuorumPeerMain
+25800 Kafka
+25964 Elasticsearch
+--------------------- hdp103节点 ---------------------
+26276 Kafka
+26440 Elasticsearch
+25993 QuorumPeerMain
+```
 
+### 7、启动Kibana
+
+在hdp101节点登录执行以下命令。
+
+```
+[vagrant@hdp101 ~]$ bigstart kibana start(或stop)
 ```
 
 
