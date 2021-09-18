@@ -11,6 +11,10 @@ setup_maven() {
 	
     log info "copying over $app_name configuration files"
     cp -f $MAVEN_RES_DIR/* $MAVEN_CONF_DIR
+
+    if [ $INSTALL_PATH != /home/vagrant/apps ];then
+        sed -i "s@/home/vagrant/apps@$INSTALL_PATH@g" `grep '/home/vagrant/apps' -rl $MAVEN_CONF_DIR/`
+    fi
 }
 
 

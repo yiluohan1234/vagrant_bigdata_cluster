@@ -86,6 +86,9 @@ dfs(){
         stop)
             sh $INSTALL_PATH/hadoop/sbin/stop-dfs.sh
             ;;
+        format)
+            sh $INSTALL_PATH/hadoop/bin/hdfs namenode -format
+            ;;
         *)
             echo $usage
             ;;
@@ -203,7 +206,6 @@ elasticsearch(){
                 echo "-----$1 $i elasticsearch-------"
                 ssh $i "source /etc/profile;$INSTALL_PATH/elasticsearch/bin/elasticsearch -d -p pid"
             done
-            kibana start
             ;;
         stop)
             for j in {"hdp101","hdp102","hdp103"};
@@ -211,7 +213,6 @@ elasticsearch(){
                 echo "-----$1 $j elasticsearch-------"
                 ssh $j  "kill -9 \$(ps ax |grep -i 'elasticsearch'| grep java| grep -v grep| awk '{print \$1}')"
             done
-            kibana stop
             ;;
         restart)
             elasticsearch stop
@@ -271,6 +272,46 @@ case "$1" in
 esac
 }
 
+rt_logger(){
+    usage="Usage: $0 (start|stop|restart)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            for i in {"hdp101","hdp102","hdp103"};
+            do
+                echo "-----$1 $i rt_logger-------"
+                ssh $i "nohup $INSTALL_PATH/java/bin/java -Xms32m -Xmx64m -jar /home/vagrant/rt_gmall/rt_logger/gmall2021-logger-0.0.1-SNAPSHOT.jar > /dev/null 2>&1 &"
+                if [ $i == "hdp101" ];then
+                    echo "============start NGINX============"
+                    $INSTALL_PATH/nginx/sbin/nginx
+                fi
+            done
+            #echo "============start NGINX============"
+            #$INSTALL_PATH/nginx/sbin/nginx
+            ;;
+        stop)
+            #echo "============NGINX============"
+            #nginx -s stop
+            for j in {"hdp101","hdp102","hdp103"};
+            do
+                echo "-----$1 $j rt_logger-------"
+                ssh $j  "kill -9 \$(ps -ef|grep gmall2021-logger-0.0.1-SNAPSHOT.jar| grep -v grep| awk '{print \$2}')"
+                if [ $j == "hdp101" ];then
+                    echo "============NGINX============"
+                    $INSTALL_PATH/nginx/sbin/nginx -s stop
+                fi
+            done
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
 args()
 {
     usage="Usage: $0 (dfs|yarn|zk|kafka|spark|flink|hbase|start|stop)"
@@ -310,6 +351,9 @@ args()
 		;;
 	  redis)
 		redis $2
+		;;
+	  logger)
+		rt_logger $2
 		;;
 	  *)
 		echo $usage

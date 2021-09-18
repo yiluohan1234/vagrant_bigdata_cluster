@@ -22,6 +22,10 @@ setup_es() {
         #sed -i 's/^node.name: .*/node.name: '$hostname'/' $file_path
         sed -i 's@^network.host: .*@network.host: '$node_host'@' $file_path
     fi
+    
+    if [ $INSTALL_PATH != /home/vagrant/apps ];then
+        sed -i "s@/home/vagrant/apps@$INSTALL_PATH@g" `grep '/home/vagrant/apps' -rl $ES_CONF_DIR/`
+    fi
 }
 
 download_es() {

@@ -12,6 +12,10 @@ setup_hbase() {
     cp -f $HBASE_RES_DIR/* $HBASE_CONF_DIR
     cp $INSTALL_PATH/hadoop/etc/hadoop/core-site.xml $INSTALL_PATH/hbase/conf/
     cp $INSTALL_PATH/hadoop/etc/hadoop/hdfs-site.xml $INSTALL_PATH/hbase/conf/
+
+    if [ $INSTALL_PATH != /home/vagrant/apps ];then
+        sed -i "s@/home/vagrant/apps@$INSTALL_PATH@g" `grep '/home/vagrant/apps' -rl $HBASE_CONF_DIR/`
+    fi
 }
 
 download_hbase() {

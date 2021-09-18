@@ -12,6 +12,11 @@ setup_kibana() {
     local app_name=$1
     log info "copying over $app_name configuration files"
     cp -f $KIBANA_RES_DIR/* $KIBANA_CONF_DIR
+    mkdir -p ${INSTALL_PATH}/kibana/logs
+
+    if [ $INSTALL_PATH != /home/vagrant/apps ];then
+        sed -i "s@/home/vagrant/apps@$INSTALL_PATH@g" `grep '/home/vagrant/apps' -rl $KIBANA_CONF_DIR/`
+    fi
 }
 
 download_kibana() {

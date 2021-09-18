@@ -28,7 +28,9 @@ setup_redis() {
     sed -i 's@^logfile ""*@logfile "'$INSTALL_PATH'/redis/logs"@' $REDIS_CONF_DIR/redis.conf
     sed -i 's@^dir ./*@dir '$INSTALL_PATH'/redis/data@' $REDIS_CONF_DIR/redis.conf
     
-
+    if [ $INSTALL_PATH != /home/vagrant/apps ];then
+        sed -i "s@/home/vagrant/apps@$INSTALL_PATH@g" `grep '/home/vagrant/apps' -rl $REDIS_CONF_DIR/`
+    fi
     rm $DOWNLOAD_PATH/$REDIS_ARCHIVE
     rm -rf $INSTALL_PATH/$REDIS_VERSION
 }

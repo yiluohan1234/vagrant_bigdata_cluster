@@ -4,6 +4,8 @@
 
 本集群创建的组件如下表所示。
 
+
+
 | 组件      | hdp101                                             | hdp102                     | hdp103            |
 | :-: | ---  | -------------------------- | ----------------- |
 | OS   | centos7.6  | centos7.6             | centos7.6         |
@@ -21,6 +23,12 @@
 | Maven     | mvn                                                | NA                         | NA                |
 | Sqoop     | sqoop                                              | NA                         | NA                |
 | MySQL     | NA                                                 | NA                         | MySQL Server      |
+| Nginx | Nginx | NA | NA |
+| Redis | Redis | NA                            | NA |
+| Elasticsearch | Elasticsearch | Elasticsearch | Elasticsearch |
+| Kibana | Kibana | NA | NA |
+
+
 
 
 组件版本：
@@ -40,6 +48,10 @@ Maven: 3.2.5
 Sqoop: 1.4.6
 MySQl Connector: 5.1.49
 MySQL: 5.7.30
+Nginx: 1.18.0
+Redis: 6.2.1
+Elasticsearch: 7.6.0
+Kibana: 7.6.0
 ```
 
 ## 二、基本硬件准备
@@ -232,6 +244,22 @@ hive (default)> load data local inpath '/home/vagrant/stu.txt' into table stu;
 hive (default)> select * from stu;
 ```
 
+### 6、启动Elasticsearch
+
+在hdp101节点登录MySQL数据库，创建hive的元数据库。
+
+```
+[vagrant@hdp101 ~]$ bigstart es start
+```
+
+jps查看一下进程：
+
+```
+
+```
+
+
+
 ## 六. Web UI
 
 可以通过以下链接访问大数据组件的web页面。
@@ -245,3 +273,5 @@ hive (default)> select * from stu;
 [Spark](http://hdp101:8080/)
 
 [Flink](http://hdp101:8381/)
+
+[Elasticsearch](http://hdp101:9200/_cat/nodes?v)

@@ -15,6 +15,10 @@ setup_hadoop() {
 	
     log info "copying over $app_name configuration files"
     cp -f $HADOOP_RES_DIR/* $HADOOP_CONF_DIR
+
+    if [ $INSTALL_PATH != /home/vagrant/apps ];then
+        sed -i "s@/home/vagrant/apps@$INSTALL_PATH@g" `grep '/home/vagrant/apps' -rl $HADOOP_CONF_DIR/`
+    fi
 }
 
 download_hadoop() {

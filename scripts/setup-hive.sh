@@ -15,6 +15,10 @@ setup_hive() {
     log info "copying over $app_name configuration files"
     cp -f $HIVE_RES_DIR/* $HIVE_CONF_DIR
     wget_mysql_connector ${INSTALL_PATH}/hive/lib
+
+    if [ $INSTALL_PATH != /home/vagrant/apps ];then
+        sed -i "s@/home/vagrant/apps@$INSTALL_PATH@g" `grep '/home/vagrant/apps' -rl $HIVE_CONF_DIR/`
+    fi
 }
 
 download_hive() {
