@@ -45,6 +45,10 @@ setup_zookeeper() {
         echo "export JAVA_HOME=/home/vagrant/apps/java" >> ${INSTALL_PATH}/zookeeper/bin/zkEnv.sh
         echo $MYID >>${INSTALL_PATH}/zookeeper/data/myid
     fi
+    
+    if [ $INSTALL_PATH != /home/vagrant/apps ];then
+        sed -i "s@/home/vagrant/apps@$INSTALL_PATH@g" `grep '/home/vagrant/apps' -rl $ZOOKEEPER_CONF_DIR/`
+    fi
 }
 
 download_zookeeper() {

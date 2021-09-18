@@ -3,7 +3,7 @@
 RESOURCE_PATH=/home/vagrant/resources
 
 # 安装目录
-INSTALL_PATH=/home/vagrant/apps
+INSTALL_PATH=/home/vagrant/.apps
 
 # 组件下载目录
 DOWNLOAD_PATH=/home/vagrant/downloads
@@ -175,6 +175,8 @@ PHOENIX_CONF_DIR=$INSTALL_PATH/phoenix/conf
 NGINX_VERSION_NUM=`get_app_version_num $NGINX_VERSION '-' 2`
 NGINX_ARCHIVE=${NGINX_VERSION}.tar.gz
 NGINX_MIRROR_DOWNLOAD=http://nginx.org/download/$NGINX_ARCHIVE
+NGINX_RES_DIR=$RESOURCE_PATH/nginx
+NGINX_CONF_DIR=$INSTALL_PATH/nginx/conf
 
 # es
 # 支持版本：具体见下载地址

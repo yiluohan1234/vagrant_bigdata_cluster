@@ -26,6 +26,10 @@ setup_kafka() {
         sed -i 's@^listeners=.*@listeners='$value'@' $file_path
         sed -i 's@^advertised.listeners=.*@advertised.listeners='$value'@' $file_path
     fi
+
+    if [ $INSTALL_PATH != /home/vagrant/apps ];then
+        sed -i "s@/home/vagrant/apps@$INSTALL_PATH@g" `grep '/home/vagrant/apps' -rl $KAFKA_CONF_DIR/`
+    fi
 }
 
 download_kafka() {

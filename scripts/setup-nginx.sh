@@ -19,6 +19,12 @@ setup_nginx() {
     rm -rf $INSTALL_PATH/$NGINX_VERSION
     # 让当前用户的某个应用程序可以使用1024以下端口
     sudo setcap cap_net_bind_service=+eip ${INSTALL_PATH}/nginx/sbin/nginx
+
+    cp $NGINX_RES_DIR/* $NGINX_CONF_DIR
+
+    if [ $INSTALL_PATH != /home/vagrant/apps ];then
+        sed -i "s@/home/vagrant/apps@$INSTALL_PATH@g" `grep '/home/vagrant/apps' -rl $NGINX_CONF_DIR/`
+    fi
     
 }
 

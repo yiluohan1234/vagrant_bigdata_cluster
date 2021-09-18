@@ -12,6 +12,10 @@ setup_flume() {
     log info "copying over $app_name configuration files"
     cp -f $FLUME_RES_DIR/flume-env.sh $FLUME_CONF_DIR
     cp ${INSTALL_PATH}/flume/conf/flume-conf.properties.template ${INSTALL_PATH}/flume/conf/flume-conf.properties
+
+    if [ $INSTALL_PATH != /home/vagrant/apps ];then
+        sed -i "s@/home/vagrant/apps@$INSTALL_PATH@g" `grep '/home/vagrant/apps' -rl $FLUME_CONF_DIR/`
+    fi
 }
 
 download_flume() {
