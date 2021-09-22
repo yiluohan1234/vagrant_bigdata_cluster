@@ -8,7 +8,8 @@ fi
 # 安装mysql并为hive配置环境
 install_mysql()
 {
-    rpm -Uvh http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
+    #rpm -Uvh http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
+    rpm -Uvh https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
     yum install -y -q mysql mysql-server mysql-libs
     service mysqld start
     systemctl start mysqld.service
