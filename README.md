@@ -35,9 +35,9 @@
 
 ```
 Java: 1.8
-Hadoop: 2.7.2
+Hadoop: 2.7.6
 Hive: 2.3.4
-Hbase: 1.2.5
+Hbase: 1.2.6
 Spark: 2.4.6
 Flink: 1.12.4
 Zookeeper: 3.4.10
@@ -45,7 +45,7 @@ Kafka: 0.11.0.3
 Flume: 1.6.0
 Scala: 2.11.12
 Maven: 3.2.5
-Sqoop: 1.4.6
+Sqoop: 1.4.7
 MySQl Connector: 5.1.49
 MySQL: 5.7.30
 Nginx: 1.18.0
@@ -135,7 +135,7 @@ setssh
 通过执行下列命令可以测试yarn是否安装成功。
 
 ```
-[vagrant@hdp101 ~]$ yarn jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.2.jar pi 2 100
+[vagrant@hdp101 ~]$ yarn jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples*.jar pi 2 100
 ```
 
 ### 3、启动Spark（Standalone ）与测试

@@ -1,5 +1,5 @@
 #!/bin/bash
-INSTALL_PATH=/home/vagrant/apps
+INSTALL_PATH=/home/vagrant/.apps
 zk(){
     usage="Usage: $0 (start|stop|status)"
  

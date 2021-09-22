@@ -24,7 +24,7 @@ download_sqoop() {
     else
         installFromRemote $SQOOP_ARCHIVE $SQOOP_MIRROR_DOWNLOAD
     fi
-    mv ${INSTALL_PATH}/"${SQOOP_VERSION}.bin__hadoop-2.0.4-alpha" ${INSTALL_PATH}/sqoop
+    mv ${INSTALL_PATH}/"${SQOOP_VERSION}.bin__hadoop-2.6.0" ${INSTALL_PATH}/sqoop
     sudo chown -R vagrant:vagrant $INSTALL_PATH/sqoop
     rm $DOWNLOAD_PATH/$SQOOP_ARCHIVE
 }
