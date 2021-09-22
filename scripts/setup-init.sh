@@ -11,6 +11,8 @@ yum install -y -q sshpass
 yum install -y -q lrzsz
 yum install -y -q expect
 yum install -y -q vim-enhanced
+yum install -y -q unzip
+yum install -y -q zip
 :<<skip        
 yum install -y nmap-ncat
 yum install -y net-tools
