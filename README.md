@@ -161,12 +161,7 @@ setssh
 ```
 [vagrant@hdp101 ~]$ hdfs dfs -mkdir /spark-log
 [vagrant@hdp101 ~]$ spark-submit --master spark://hdp101:7077 --deploy-mode cluster --class org.apache.spark.examples.SparkPi $SPARK_HOME/examples/jars/spark-examples*.jar 100
-[vagrant@hdp101 ~]$ spark-submit --class org.apache.spark.examples.SparkPi \
-    --master yarn \
-    --num-executors 1 \
-    --executor-cores 2 \
-   $SPARK_HOME/examples/jars/spark-examples*.jar \
-    100
+[vagrant@hdp101 ~]$ spark-submit --class org.apache.spark.examples.SparkPi --master yarn --num-executors 1 --executor-cores 2 $SPARK_HOME/examples/jars/spark-examples*.jar 100
 ```
 
 ### 4、启动Flink
@@ -239,6 +234,12 @@ hive (default)>  CREATE TABLE stu(id INT,name STRING) ROW FORMAT DELIMITED FIELD
 hive (default)> load data local inpath '/home/vagrant/stu.txt' into table stu;
 # 查看库表
 hive (default)> select * from stu;
+OK
+1       zhangsan
+2       lisi
+3       wangwu
+4       zhaoliu
+Time taken: 3.301 seconds, Fetched: 4 row(s)
 ```
 
 ### 6、启动Elasticsearch
