@@ -46,7 +46,7 @@ PHOENIX_VERSION=apache-phoenix-4.14.0-HBase-1.2-bin.tar.gz
 NGINX_VERSION=nginx-1.18.0
 ES_VERSION=elasticsearch-7.6.0
 KIBANA_VERSION=kibana-7.6.0
-REDIS_VERSION=redis-6.2.1
+REDIS_VERSION=redis-5.0.12
 
 # 获取app的版本号
 # eg: get_app_version_num $HIVE_VERSION '-' 2

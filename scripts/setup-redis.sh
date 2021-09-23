@@ -22,10 +22,10 @@ setup_redis() {
     cp $INSTALL_PATH/$REDIS_VERSION/redis.conf $REDIS_CONF_DIR
     
     #bind 127.0.0.1 -::1
-    sed -i 's@^bind 127.0.0.1 -::1*@#bind 127.0.0.1 -::1@' $REDIS_CONF_DIR/redis.conf
+    sed -i 's@^bind 127.0.0.1*@#bind 127.0.0.1 -::1@' $REDIS_CONF_DIR/redis.conf
     sed -i 's@^daemonize no*@daemonize yes@' $REDIS_CONF_DIR/redis.conf
     sed -i 's@^pidfile /var/run/redis_6379.pid*@pidfile '$INSTALL_PATH'/redis/run/redis_6379.pid@' $REDIS_CONF_DIR/redis.conf
-    sed -i 's@^logfile ""*@logfile "'$INSTALL_PATH'/redis/logs"@' $REDIS_CONF_DIR/redis.conf
+    #sed -i 's@^logfile ""*@logfile "'$INSTALL_PATH'/redis/logs"@' $REDIS_CONF_DIR/redis.conf
     sed -i 's@^dir ./*@dir '$INSTALL_PATH'/redis/data@' $REDIS_CONF_DIR/redis.conf
     sed -i 's@protected-mode yes@protected-mode no@' $REDIS_CONF_DIR/redis.conf
     
