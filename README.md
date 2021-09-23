@@ -114,20 +114,20 @@ setssh
 
 #### 1）启动
 
-在hdp101机器上执行以下命令对hadoop集群进行格式化，并启动hdfs和yarn。
+在`hdp101`机器上执行以下命令对hadoop集群进行格式化，并启动hdfs和yarn。
 
 ```
-[vagrant@hdp101 ~]$ hdfs namenode -format
-[vagrant@hdp101 ~]$ start-dfs.sh
-[vagrant@hdp101 ~]$ start-yarn.sh
-[vagrant@hdp101 ~]$ mr-jobhistory-daemon.sh start historyserver 
+hdfs namenode -format
+start-dfs.sh
+start-yarn.sh
+mr-jobhistory-daemon.sh start historyserver 
 ```
 
 或者
 
 ```
-[vagrant@hdp101 ~]$ bigstart dfs start
-[vagrant@hdp101 ~]$ bigstart yarn start
+bigstart dfs start
+bigstart yarn start
 ```
 
 #### 2）测试
@@ -135,23 +135,23 @@ setssh
 通过执行下列命令可以测试yarn是否安装成功。
 
 ```
-[vagrant@hdp101 ~]$ yarn jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples*.jar pi 2 100
+yarn jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples*.jar pi 2 100
 ```
 
 ### 3、启动Spark（Standalone ）与测试
 
 #### 1）启动
 
-在hdp101机器上执行以下命令。
+在`hdp101`机器上执行以下命令。
 
 ```
-[vagrant@hdp101 ~]$ $SPARK_HOME/sbin/start-all.sh
+$SPARK_HOME/sbin/start-all.sh
 ```
 
 或者
 
 ```
-[vagrant@hdp101 ~]$ bigstart spark start
+bigstart spark start
 ```
 
 #### 2）测试
@@ -159,25 +159,25 @@ setssh
 通过执行下列命令可以测试spark是否安装成功。
 
 ```
-[vagrant@hdp101 ~]$ hdfs dfs -mkdir /spark-log
-[vagrant@hdp101 ~]$ spark-submit --master spark://hdp101:7077 --deploy-mode cluster --class org.apache.spark.examples.SparkPi $SPARK_HOME/examples/jars/spark-examples*.jar 100
-[vagrant@hdp101 ~]$ spark-submit --class org.apache.spark.examples.SparkPi --master yarn --num-executors 1 --executor-cores 2 $SPARK_HOME/examples/jars/spark-examples*.jar 100
+hdfs dfs -mkdir /spark-log
+spark-submit --master spark://hdp101:7077 --deploy-mode cluster --class org.apache.spark.examples.SparkPi $SPARK_HOME/examples/jars/spark-examples*.jar 100
+spark-submit --class org.apache.spark.examples.SparkPi --master yarn --num-executors 1 --executor-cores 2 $SPARK_HOME/examples/jars/spark-examples*.jar 100
 ```
 
 ### 4、启动Flink
 
 #### 1）启动
 
-在hdp101机器上执行以下命令。
+在`hdp101`机器上执行以下命令。
 
 ```
-[vagrant@hdp101 ~]$ $FLINK_HOME/bin/start-cluster.sh
+$FLINK_HOME/bin/start-cluster.sh
 ```
 
 或者
 
 ```
-[vagrant@hdp101 ~]$ bigstart flink start
+bigstart flink start
 ```
 
 #### 2）测试
@@ -186,31 +186,33 @@ setssh
 
 ```
 # 批量WordCount
-[vagrant@hdp101 ~]$ flink run $FLINK_HOME/examples/batch/WordCount.jar
+flink run $FLINK_HOME/examples/batch/WordCount.jar
 ```
 
 ### 5、启动Hive与测试
 
 #### 1）启动
 
-在hdp103节点登录MySQL数据库，创建hive的元数据库。
+~~在`hdp103`节点登录MySQL数据库，创建hive的元数据库。~~（已在mysql安装时完成，**mysql默认密码为199037**）
 
 ```
 # 创建hive的元数据库
-[vagrant@hdp103 ~]$ mysql -uroot -p199037 -e "create user 'hive'@'%' IDENTIFIED BY 'hive';GRANT ALL PRIVILEGES ON *.* TO 'hive'@'%' WITH GRANT OPTION;grant all on *.* to 'hive'@'localhost' identified by 'hive';flush privileges;"
+mysql -uroot -p199037 -e "create user 'hive'@'%' IDENTIFIED BY 'hive';GRANT ALL PRIVILEGES ON *.* TO 'hive'@'%' WITH GRANT OPTION;grant all on *.* to 'hive'@'localhost' identified by 'hive';flush privileges;"
 ```
 
-在hdp101节点，初始化元数据，看到 schemaTool completed ，即初始化成功！
+在`hdp101`节点，初始化元数据，看到 schemaTool completed ，即初始化成功！
 
 ```
-[vagrant@hdp101 ~]$ schematool -initSchema -dbType mysql
+schematool -initSchema -dbType mysql
 ```
 
 #### 2）Hive服务启动与测试
 
+在`hdp101`节点，创建测试数据
+
 ```
 # 创建数据文件
-[vagrant@hdp101 ~]$ vi ~/stu.txt
+vi ~/stu.txt
 
 ```
 
@@ -244,10 +246,10 @@ Time taken: 3.301 seconds, Fetched: 4 row(s)
 
 ### 6、启动Elasticsearch
 
-在hdp101节点登录执行以下命令。
+在`hdp101`节点登录执行以下命令。
 
 ```
-[vagrant@hdp101 ~]$ bigstart es start(或stop)
+bigstart es start(或stop)
 ```
 
 jpsall查看一下进程：
@@ -270,10 +272,10 @@ jpsall查看一下进程：
 
 ### 7、启动Kibana
 
-在hdp101节点登录执行以下命令。
+在`hdp101`节点登录执行以下命令。
 
 ```
-[vagrant@hdp101 ~]$ bigstart kibana start(或stop)
+bigstart kibana start(或stop)
 ```
 
 
@@ -282,14 +284,16 @@ jpsall查看一下进程：
 
 可以通过以下链接访问大数据组件的web页面。
 
-[NameNode](http://hdp101:50070)
+[HDFS](http://hdp101:50070)
 
 [ResourceManager](http://hdp101:8088)
 
-[JobHistory](http://hdp101:19888/jobhistory)
+[JobHistor](http://hdp101:19888/jobhistory)
 
 [Spark](http://hdp101:8080/)
 
 [Flink](http://hdp101:8381/)
 
 [Elasticsearch](http://hdp101:9200/_cat/nodes?v)
+
+[Kibana](http://hdp101:5601/)
