@@ -172,22 +172,46 @@ hbase(){
 }
 
 kibana(){
-    usage="Usage: $0 (start|stop)"
+    USAGE="Usage: $0 (start|stop|status)"
+    PIDFILE=$INSTALL_PATH/kibana/kibana.pid
+    LOGFILE=kibana-console_`date '+%Y-%m-%d'`.log
 
-    if [ $# -lt 1 ]; then
-        echo $usage
-        exit 1
-    fi
     case $1 in
         start)
-            nohup ${INSTALL_PATH}/kibana/bin/kibana > ${INSTALL_PATH}/kibana/logs/kibana.log 2>&1 &
+            echo "Staring kibana..."
+            nohup ${INSTALL_PATH}/kibana/bin/kibana > ${INSTALL_PATH}/kibana/logs/$LOGFILE 2>&1 &
+            echo $! > $PIDFILE
             ;;
         stop)
             #ps -ef |grep kibana |grep -v grep |awk '{print $2}' |xargs kill
-            kill -9 $(ps -ef |grep kibana| grep -v grep| awk '{print $2}')
+            #kill -9 $(ps -ef |grep kibana| grep -v grep| awk '{print $2}')
+            if [ -f "$PIDFILE" ] ; then
+                echo "Stoping kibana ..."    
+                kill `cat $PIDFILE`
+                sleep 1
+                rm -rf $PIDFILE
+                echo "Stop kibana success"
+            else
+                echo "kibana is not running"
+                exit 0
+            fi
+            ;;
+        status)
+            if [ -f "$PIDFILE" ] ; then
+                pid=`cat $PIDFILE`
+                if [[ pid -gt 0 ]]
+                then
+                    echo "[$(date '+%Y-%m-%d %T')] kibana is running.( pid:$pid )"
+                else
+                    echo "[$(date '+%Y-%m-%d %T')] kibana is not running"
+                fi
+            else 
+                echo "Kibana is not running"
+            fi
             ;;
         *)
-            echo $usage
+            echo $USAGE
+            exit 1
             ;;
     esac
 }
