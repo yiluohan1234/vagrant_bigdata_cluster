@@ -249,36 +249,36 @@ elasticsearch(){
 }
 
 redis(){
-#redis服务器监听的端口
-REDISPORT=6379
- 
-#服务端所处位置
-EXEC=${INSTALL_PATH}/redis/bin/redis-server
- 
-#客户端位置
-CLIEXEC=${INSTALL_PATH}/redis/bin/redis-cli
- 
-#redis的PID文件位置，需要修改
-PIDFILE=${INSTALL_PATH}/redis/run/redis_${REDISPORT}.pid
- 
-#redis的配置文件位置，需将${REDISPORT}修改为文件名
-CONF="${INSTALL_PATH}/redis/conf/redis.conf"
- 
-case "$1" in
-    start)
-        if [ -f $PIDFILE ]
-        then
+    #redis服务器监听的端口
+    REDISPORT=6379
+    
+    #服务端所处位置
+    EXEC=${INSTALL_PATH}/redis/bin/redis-server
+    
+    #客户端位置
+    CLIEXEC=${INSTALL_PATH}/redis/bin/redis-cli
+    
+    #redis的PID文件位置，需要修改
+    PIDFILE=${INSTALL_PATH}/redis/run/redis_${REDISPORT}.pid
+    
+    #redis的配置文件位置，需将${REDISPORT}修改为文件名
+    CONF="${INSTALL_PATH}/redis/conf/redis.conf"
+    
+    case "$1" in
+        start)
+            if [ -f $PIDFILE ]
+            then
                 echo "$PIDFILE exists, process is already running or crashed"
-        else
+            else
                 echo "Starting Redis server..."
                 $EXEC $CONF
-        fi
-        ;;
-    stop)
-        if [ ! -f $PIDFILE ]
-        then
+            fi
+            ;;
+        stop)
+            if [ ! -f $PIDFILE ]
+            then
                 echo "$PIDFILE does not exist, process is not running"
-        else
+            else
                 PID=$(cat $PIDFILE)
                 echo "Stopping ..."
                 $CLIEXEC -p $REDISPORT shutdown
@@ -288,12 +288,12 @@ case "$1" in
                     sleep 1
                 done
                 echo "Redis stopped"
-        fi
-        ;;
-    *)
-        echo "Please use start or stop as first argument"
-        ;;
-esac
+            fi
+            ;;
+        *)
+            echo "Please use start or stop as first argument"
+            ;;
+    esac
 }
 
 rt_logger(){
