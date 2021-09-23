@@ -290,8 +290,12 @@ redis(){
                 echo "Redis stopped"
             fi
             ;;
+        restart|force-reload)
+            ${0} stop
+            ${0} start
+            ;;
         *)
-            echo "Please use start or stop as first argument"
+            echo "Usage: /etc/init.d/redis {start|stop|restart|force-reload}"
             ;;
     esac
 }
