@@ -113,13 +113,6 @@
 # Specifies locale to be used for all localizable strings, dates and number formats.
 # Supported languages are the following: English - en , by default , Chinese - zh-CN .
 #i18n.locale: "en"
-# 默认值5601，没有需要可以不修改
-server.port: 5601
 # 允许远程访问，也可以直接设置为“0.0.0.0”
 server.host: "0.0.0.0"
 elasticsearch.hosts: ["http://hdp101:9200", "http://hdp102:9200", "http://hdp103:9200"]
-# 找到i18n.locale:这行，修改如下：
-i18n.locale: "zh-CN"  #此处是修改为中文
-xpack.encryptedSavedObjects.encryptionKey: encryptedSavedObjects12345678909876543210
-xpack.security.encryptionKey: encryptionKeysecurity12345678909876543210
-xpack.reporting.encryptionKey: encryptionKeyreporting12345678909876543210
