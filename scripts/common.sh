@@ -44,8 +44,8 @@ MYSQL_CONNECTOR_VERSION=mysql-connector-java-5.1.49
 MYSQL_VERSION=mysql-5.7.30
 PHOENIX_VERSION=apache-phoenix-4.14.0-HBase-1.2-bin.tar.gz
 NGINX_VERSION=nginx-1.18.0
-ES_VERSION=elasticsearch-7.6.0
-KIBANA_VERSION=kibana-7.6.0
+ES_VERSION=elasticsearch-6.6.0
+KIBANA_VERSION=kibana-6.6.0
 REDIS_VERSION=redis-5.0.12
 
 # 获取app的版本号
@@ -214,7 +214,7 @@ NGINX_CONF_DIR=$INSTALL_PATH/nginx/conf
 # https://mirrors.huaweicloud.com/elasticsearch/7.12.1/elasticsearch-7.12.1-linux-x86_64.tar.gz
 # https://mirrors.huaweicloud.com/elasticsearch/6.6.0/elasticsearch-6.6.0.tar.gz
 ES_VERSION_NUM=`get_app_version_num $ES_VERSION '-' 2`
-ES_ARCHIVE=$ES_VERSION-linux-x86_64.tar.gz
+ES_ARCHIVE=$ES_VERSION.tar.gz
 ES_MIRROR_DOWNLOAD=https://mirrors.huaweicloud.com/elasticsearch/$ES_VERSION_NUM/$ES_ARCHIVE
 ES_RES_DIR=$RESOURCE_PATH/elasticsearch
 ES_CONF_DIR=$INSTALL_PATH/elasticsearch/config

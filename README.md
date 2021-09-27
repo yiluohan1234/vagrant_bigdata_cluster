@@ -50,8 +50,8 @@ MySQl Connector: 5.1.49
 MySQL: 5.7.30
 Nginx: 1.18.0
 Redis: 5.0.12
-Elasticsearch: 7.6.0
-Kibana: 7.6.0
+Elasticsearch: 6.6.0
+Kibana: 6.6.0
 ```
 
 ## 二、基本硬件准备
