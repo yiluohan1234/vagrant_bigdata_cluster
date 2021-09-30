@@ -13,15 +13,12 @@ yum install -y -q expect
 yum install -y -q vim-enhanced
 yum install -y -q unzip
 yum install -y -q zip
-:<<skip        
 yum install -y nmap-ncat
 yum install -y net-tools
 yum install -y epel-release  
 yum install -y lsof
 yum install -y nc
-yum install -y unzip
-yum install -y zip
-skip
+
 #---ssh---
 mv /home/vagrant/resources/sshd_config /etc/ssh/sshd_config
 systemctl restart sshd.service
