@@ -13,7 +13,7 @@
 
 <property>
     <name>javax.jdo.option.ConnectionURL</name>
-    <value>jdbc:mysql://hdp103:3306/hive?createDatabaseIfNotExist=true</value>
+    <value>jdbc:mysql://hdp103:3306/hive?createDatabaseIfNotExist=true&amp;useSSL=false</value>
 </property>
 <property>
     <name>javax.jdo.option.ConnectionDriverName</name>

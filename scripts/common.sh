@@ -41,7 +41,7 @@ FLUME_VERSION=flume-1.6.0
 SCALA_VERSION=scala-2.11.12
 MAVEN_VERSION=apache-maven-3.2.5
 MYSQL_CONNECTOR_VERSION=mysql-connector-java-5.1.49
-MYSQL_VERSION=mysql-5.7.30
+MYSQL_VERSION=mysql-5.7.35
 PHOENIX_VERSION=apache-phoenix-4.14.0-HBase-1.2-bin.tar.gz
 NGINX_VERSION=nginx-1.18.0
 ES_VERSION=elasticsearch-6.6.0
@@ -192,13 +192,12 @@ MYSQL_CONNECTOR_VERSION_NUM=`get_app_version_num $MYSQL_CONNECTOR_VERSION '-' 4`
 MYSQL_CONNECTOR_ARCHIVE=${MYSQL_CONNECTOR_VERSION}.tar.gz
 MYSQL_CONNECTOR_MIRROR_DOWNLOAD=https://repo.huaweicloud.com/mysql/Downloads/Connector-J/$MYSQL_CONNECTOR_ARCHIVE
 
-# mysql
-# 支持版本：具体见下载地址
-MYSQL_VERSION_NUM=`get_app_version_num $MYSQL_VERSION '-' 2`
-MYSQL_ARCHIVE=${MYSQL_VERSION}-linux-glibc2.12-x86_64.tar.gz
-MYSQL_MIRROR_DOWNLOAD=https://cdn.mysql.com/archives/mysql-${MYSQL_VERSION_NUM%.*}/$MYSQL_VERSION-linux-glibc2.12-x86_64.tar.gz
+# https://mirrors.huaweicloud.com/mysql/Downloads/MySQL-5.7/mysql-5.7.35-linux-glibc2.12-x86_64.tar.gz
+MYSQL_VERSION_NUM=`get_app_version_num $ES_VERSION '-' 2`
+MYSQL_ARCHIVE=$MYSQL_VERSION-linux-glibc2.12-x86_64.tar.gz
+MYSQL_MIRROR_DOWNLOAD=https://mirrors.huaweicloud.com/mysql/Downloads/MySQL-5.7/$MYSQL_ARCHIVE
 MYSQL_RES_DIR=$RESOURCE_PATH/mysql
-
+MYSQL_CONF_DIR=$INSTALL_PATH/mysql
 # nginx
 # 支持版本：具体见下载地址
 # https://nginx.org/download/nginx-1.18.0.tar.gz
@@ -221,7 +220,7 @@ ES_CONF_DIR=$INSTALL_PATH/elasticsearch/config
 
 # kibana
 # 支持版本：具体见下载地址
-# https://mirrors.huaweicloud.com/kibana/7.12.0/kibana-7.12.0-linux-x86_64.tar.gz
+# https://mirrors.huaweicloud.com/kibana/6.6.0/kibana-6.6.0-linux-x86_64.tar.gz
 KIBANA_VERSION_NUM=`get_app_version_num $KIBANA_VERSION '-' 2`
 KIBANA_ARCHIVE=$KIBANA_VERSION-linux-x86_64.tar.gz
 KIBANA_MIRROR_DOWNLOAD=https://mirrors.huaweicloud.com/kibana/$KIBANA_VERSION_NUM/$KIBANA_ARCHIVE
