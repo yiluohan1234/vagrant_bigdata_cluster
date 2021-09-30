@@ -47,7 +47,7 @@ Scala: 2.11.12
 Maven: 3.2.5
 Sqoop: 1.4.7
 MySQl Connector: 5.1.49
-MySQL: 5.7.30
+MySQL: 5.7.35
 Nginx: 1.18.0
 Redis: 5.0.12
 Elasticsearch: 6.6.0
@@ -160,8 +160,17 @@ bigstart spark start
 
 ```
 hdfs dfs -mkdir /spark-log
-spark-submit --master spark://hdp101:7077 --deploy-mode cluster --class org.apache.spark.examples.SparkPi $SPARK_HOME/examples/jars/spark-examples*.jar 100
-spark-submit --class org.apache.spark.examples.SparkPi --master yarn --num-executors 1 --executor-cores 2 $SPARK_HOME/examples/jars/spark-examples*.jar 100
+
+spark-submit --master spark://hdp101:7077 \
+--deploy-mode cluster \
+--class org.apache.spark.examples.SparkPi \
+$SPARK_HOME/examples/jars/spark-examples*.jar 100
+
+spark-submit --class org.apache.spark.examples.SparkPi \
+--master yarn \
+--num-executors 1 \
+--executor-cores 2 \
+$SPARK_HOME/examples/jars/spark-examples*.jar 100
 ```
 
 ### 4、启动Flink
@@ -288,7 +297,7 @@ bigstart kibana start(或stop)
 
 [ResourceManager](http://hdp101:8088)
 
-[JobHistor](http://hdp101:19888/jobhistory)
+[JobHistory](http://hdp101:19888/jobhistory)
 
 [Spark](http://hdp101:8080/)
 
