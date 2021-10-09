@@ -340,6 +340,68 @@ rt_logger(){
     esac
 }
 
+canal(){
+    usage="Usage: $0 (start|stop)"
+ 
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            sh $INSTALL_PATH/canal/bin/startup.sh
+            ;;
+        stop)
+            sh $INSTALL_PATH/canal/bin/stop.sh
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+Maxwell(){
+    USAGE="Usage: $0 (start|stop|status)"
+    PIDFILE=$INSTALL_PATH/maxwell/maxwell.pid
+
+    case $1 in
+        start)
+            echo "Staring Maxwell ..."
+            nohup ${INSTALL_PATH}/maxwell/bin/maxwell --config ${INSTALL_PATH}/maxwell/config.properties > /dev/null 2>&1 &
+            echo $! > $PIDFILE
+            ;;
+        stop)
+            if [ -f "$PIDFILE" ] ; then
+                echo "Stoping Maxwell ..."    
+                kill `cat $PIDFILE`
+                sleep 1
+                rm -rf $PIDFILE
+                echo "Stop Maxwell success"
+            else
+                echo "Maxwell is not running"
+                exit 0
+            fi
+            ;;
+        status)
+            if [ -f "$PIDFILE" ] ; then
+                pid=`cat $PIDFILE`
+                if [[ pid -gt 0 ]]
+                then
+                    echo "[$(date '+%Y-%m-%d %T')] Maxwell is running.( pid:$pid )"
+                else
+                    echo "[$(date '+%Y-%m-%d %T')] Maxwell is not running"
+                fi
+            else 
+                echo "Maxwell is not running"
+            fi
+            ;;
+        *)
+            echo $USAGE
+            exit 1
+            ;;
+    esac
+}
+
 args()
 {
     usage="Usage: $0 (dfs|yarn|zk|kafka|spark|flink|hbase|start|stop)"
@@ -382,6 +444,12 @@ args()
 		;;
 	  logger)
 		rt_logger $2
+		;;
+	  maxwell)
+		Maxwell $2
+		;;
+	  canal)
+		canal $2
 		;;
 	  *)
 		echo $usage
