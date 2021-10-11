@@ -26,17 +26,25 @@ get_app_version_num() {
 RESOURCE_PATH=/home/vagrant/resources
 
 # 安装目录
-INSTALL_PATH=/home/vagrant/apps
+INSTALL_PATH=/home/vagrant/.apps
 
 # 组件下载目录
 DOWNLOAD_PATH=/home/vagrant/downloads
 
+# 初始化集群目录
+INIT_PATH=$RESOURCE_PATH/initialization
+INIT_SHELL_BIN=$INSTALL_PATH/init_shell/bin
+
 # 是否用vagrant安装集群
-IS_VAGRANT="false"
+IS_VAGRANT="true"
 
 # 环境变量配置文件
 PROFILE=~/.bashrc
 
+# 下载组建的镜像地址
+# 1:https://archive.apache.org/dist
+# 2:https://mirrors.huaweicloud.com/apache
+DOWNLOAD_REPO=https://mirrors.huaweicloud.com/apache
 # hostname
 HOSTNAME=("hdp101" "hdp102" "hdp103")
 
