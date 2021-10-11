@@ -42,7 +42,7 @@ SCALA_VERSION=scala-2.11.12
 MAVEN_VERSION=apache-maven-3.2.5
 MYSQL_CONNECTOR_VERSION=mysql-connector-java-5.1.49
 MYSQL_VERSION=mysql-5.7.35
-PHOENIX_VERSION=apache-phoenix-4.14.0-HBase-1.2-bin.tar.gz
+PHOENIX_VERSION=apache-phoenix-4.14.0-HBase-1.2-bin
 NGINX_VERSION=nginx-1.18.0
 ES_VERSION=elasticsearch-6.6.0
 KIBANA_VERSION=kibana-6.6.0
@@ -172,7 +172,7 @@ MAVEN_CONF_DIR=$INSTALL_PATH/maven/conf
 # phoenix
 # 支持版本：具体查看下载地址
 #        https://archive.apache.org/dist/phoenix/apache-phoenix-4.14.0-HBase-1.2/bin/apache-phoenix-4.14.0-HBase-1.2-bin.tar.gz
-# https://mirrors.huaweicloud.com/apache/phoenix/apache-phoenix-4.14.1-HBase-1.2/bin/apache-phoenix-4.14.1-HBase-1.2-bin.tar.gz
+# https://mirrors.huaweicloud.com/apache/phoenix/apache-phoenix-4.14.0-HBase-1.2/bin/apache-phoenix-4.14.0-HBase-1.2-bin.tar.gz
 PHOENIX_VERSION_NUM=`get_app_version_num $PHOENIX_VERSION '-' 3`
 PHOENIX_ARCHIVE=${PHOENIX_VERSION}.tar.gz
 PHOENIX_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/phoenix/apache-phoenix-4.14.0-HBase-1.2/bin/$PHOENIX_ARCHIVE
