@@ -47,6 +47,8 @@ NGINX_VERSION=nginx-1.18.0
 ES_VERSION=elasticsearch-6.6.0
 KIBANA_VERSION=kibana-6.6.0
 REDIS_VERSION=redis-5.0.12
+CANAL_VERSION=canal.deployer-1.1.5
+MAXWELL_VERSION=maxwell-1.25.0
 
 # 获取app的版本号
 # eg: get_app_version_num $HIVE_VERSION '-' 2
@@ -236,6 +238,24 @@ REDIS_ARCHIVE=$REDIS_VERSION.tar.gz
 REDIS_MIRROR_DOWNLOAD=https://mirrors.huaweicloud.com/redis/$REDIS_ARCHIVE
 REDIS_RES_DIR=$RESOURCE_PATH/redis
 REDIS_CONF_DIR=$INSTALL_PATH/redis/conf
+
+# canal
+# 支持版本：具体见下载地址
+# https://github.com/alibaba/canal/releases/download/canal-1.1.5/canal.deployer-1.1.5.tar.gz
+CANAL_VERSION_NUM=`get_app_version_num $CANAL_VERSION '-' 2`
+CANAL_ARCHIVE=${CANAL_VERSION}.tar.gz
+CANAL_MIRROR_DOWNLOAD=https://github.com/alibaba/canal/releases/download/canal-1.1.5/canal.deployer-1.1.5.tar.gz
+CANAL_RES_DIR=$RESOURCE_PATH/canal
+CANAL_CONF_DIR=$INSTALL_PATH/canal/conf
+
+# maxwell
+# 支持版本：具体见下载地址
+# https://github.com/zendesk/maxwell/releases/download/v1.25.0/maxwell-1.25.0.tar.gz
+MAXWELL_VERSION_NUM=`get_app_version_num $MAXWELL_VERSION '-' 2`
+MAXWELL_ARCHIVE=${MAXWELL_VERSION}.tar.gz
+MAXWELL_MIRROR_DOWNLOAD=https://github.com/zendesk/maxwell/releases/download/v1.25.0/maxwell-1.25.0.tar.gz
+MAXWELL_RES_DIR=$RESOURCE_PATH/maxwell
+MAXWELL_CONF_DIR=$INSTALL_PATH/maxwell
 
 # log
 DATETIME=`date "+%F %T"`

@@ -18,6 +18,7 @@ yum install -y net-tools
 yum install -y epel-release  
 yum install -y lsof
 yum install -y nc
+yum install -y wget
 
 #---ssh---
 mv /home/vagrant/resources/sshd_config /etc/ssh/sshd_config

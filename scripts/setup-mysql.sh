@@ -62,6 +62,14 @@ setup_mysql() {
 
     # 进行远程访问授权
     ${mysql_install_dir}/bin/mysql -uroot -p${dbrootpwd} -e "use mysql; update user set authentication_string=password(\"${dbrootpwd}\") where user='root'; update user set authentication_string=password(\"${dbrootpwd}\"),plugin='mysql_native_password' where user='root';grant all on *.* to root@'%' identified by \"${dbrootpwd}\" with grant option;grant all privileges on *.* to 'root'@'%' identified by \"${dbrootpwd}\" with grant option;flush privileges;"
+    
+    # canal数据库用户名和密码赋权
+    ${mysql_install_dir}/bin/mysql -uroot -p${dbrootpwd} -e "GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'canal'@'%' IDENTIFIED BY 'canal';flush privileges;"
+    
+    # 在数据库中建立一个maxwell 库用于存储 Maxwell的元数据
+    ${mysql_install_dir}/bin/mysql -uroot -p${dbrootpwd} -e "CREATE DATABASE maxwell;GRANT ALL ON maxwell.* TO 'maxwell'@'%' IDENTIFIED BY 'maxwell';GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO maxwell@'%';flush privileges;"
+    
+    
     service mysqld stop
 }
 
