@@ -1,5 +1,7 @@
 #!/bin/bash
-if [ "$IS_VAGRANT" == "true" ];then
+#set -x
+
+if [ "${IS_VAGRANT}" == "true" ];then
     source "/vagrant/scripts/common.sh"
 else
     source "/home/vagrant/scripts/common.sh"
@@ -7,40 +9,45 @@ fi
 
 download_java() {
     local app_name=$1
-    log info "install $app_name"
-    if resourceExists $JAVA_ARCHIVE; then
-        installFromLocal $JAVA_ARCHIVE
+    local app_name_upper=`get_string_upper ${app_name}`
+    local app_version=$(eval echo \$${app_name_upper}_VERSION)
+    local archive=$(eval echo \$${app_name_upper}_ARCHIVE)
+    local download_url=$(eval echo \$${app_name_upper}_MIRROR_DOWNLOAD)
+
+    log info "install ${app_name}"
+    if resourceExists ${archive}; then
+        installFromLocal ${archive}
     else
-        installFromRemote $JAVA_ARCHIVE $JAVA_MIRROR_DOWNLOAD
+        installFromRemote ${archive} ${download_url}
     fi
-    mv ${INSTALL_PATH}/jdk1.8.0_201 ${INSTALL_PATH}/java
-    chown -R vagrant:vagrant $INSTALL_PATH/java
-    rm ${DOWNLOAD_PATH}/$JAVA_ARCHIVE
+    mv ${INSTALL_PATH}/jdk1.8.0_201 ${INSTALL_PATH}/${app_name}
+    sudo chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
+    rm ${DOWNLOAD_PATH}/${archive}
 }
 
 setupEnv_java() {
     local app_name=$1
-    log info "creating $app_name environment variables"
+    log info "creating ${app_name} environment variables"
     app_path=${INSTALL_PATH}/java
-    echo "# jdk environment" >> $PROFILE
-    echo "export JAVA_HOME=$app_path" >> $PROFILE
-    echo 'export JRE_HOME=${JAVA_HOME}/jre' >> $PROFILE
-    echo 'export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib' >> $PROFILE
-    echo 'export PATH=${JAVA_HOME}/bin:${JRE_HOME}/bin:$PATH' >> $PROFILE
-    echo -e "\n" >> $PROFILE
+    echo "# jdk environment" >> ${PROFILE}
+    echo "export JAVA_HOME=${app_path}" >> ${PROFILE}
+    echo 'export JRE_HOME=${JAVA_HOME}/jre' >> ${PROFILE}
+    echo 'export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib' >> ${PROFILE}
+    echo 'export PATH=${JAVA_HOME}/bin:${JRE_HOME}/bin:$PATH' >> ${PROFILE}
+    echo -e "\n" >> ${PROFILE}
 }
 
 install_java() {
     local app_name="java"
-    log info "setup $app_name"
-    download_java $app_name
-    setupEnv_java $app_name
-    if [ "$IS_VAGRANT" != "true" ];then
-        dispatch_app $app_name
+    log info "setup ${app_name}"
+    download_java ${app_name}
+    setupEnv_java ${app_name}
+    if [ "${IS_VAGRANT}" != "true" ];then
+        dispatch_app ${app_name}
     fi
-    source $PROFILE
+    source ${PROFILE}
 }
 
-if [ "$IS_VAGRANT" == "true" ];then
+if [ "${IS_VAGRANT}" == "true" ];then
     install_java
 fi

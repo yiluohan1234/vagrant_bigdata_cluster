@@ -44,7 +44,7 @@ MYSQL_CONNECTOR_VERSION=mysql-connector-java-5.1.49
 MYSQL_VERSION=mysql-5.7.35
 PHOENIX_VERSION=apache-phoenix-4.14.0-HBase-1.2-bin
 NGINX_VERSION=nginx-1.18.0
-ES_VERSION=elasticsearch-6.6.0
+ELASTICSEARCH_VERSION=elasticsearch-6.6.0
 KIBANA_VERSION=kibana-6.6.0
 REDIS_VERSION=redis-5.0.12
 CANAL_VERSION=canal.deployer-1.1.5
@@ -175,7 +175,7 @@ MAVEN_CONF_DIR=$INSTALL_PATH/maven/conf
 # https://mirrors.huaweicloud.com/apache/phoenix/apache-phoenix-4.14.0-HBase-1.2/bin/apache-phoenix-4.14.0-HBase-1.2-bin.tar.gz
 PHOENIX_VERSION_NUM=`get_app_version_num $PHOENIX_VERSION '-' 3`
 PHOENIX_ARCHIVE=${PHOENIX_VERSION}.tar.gz
-PHOENIX_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/phoenix/apache-phoenix-4.14.0-HBase-1.2/bin/$PHOENIX_ARCHIVE
+PHOENIX_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/phoenix/apache-phoenix-${PHOENIX_VERSION_NUM}-HBase-${HBASE_VERSION_NUM:0:3}/bin/$PHOENIX_ARCHIVE
 PHOENIX_RES_DIR=$RESOURCE_PATH/phoenix
 PHOENIX_CONF_DIR=$INSTALL_PATH/phoenix/conf
 
@@ -214,11 +214,11 @@ NGINX_CONF_DIR=$INSTALL_PATH/nginx/conf
 # 支持版本：具体见下载地址
 # https://mirrors.huaweicloud.com/elasticsearch/7.12.1/elasticsearch-7.12.1-linux-x86_64.tar.gz
 # https://mirrors.huaweicloud.com/elasticsearch/6.6.0/elasticsearch-6.6.0.tar.gz
-ES_VERSION_NUM=`get_app_version_num $ES_VERSION '-' 2`
-ES_ARCHIVE=$ES_VERSION.tar.gz
-ES_MIRROR_DOWNLOAD=https://mirrors.huaweicloud.com/elasticsearch/$ES_VERSION_NUM/$ES_ARCHIVE
-ES_RES_DIR=$RESOURCE_PATH/elasticsearch
-ES_CONF_DIR=$INSTALL_PATH/elasticsearch/config
+ELASTICSEARCH_VERSION_NUM=`get_app_version_num $ELASTICSEARCH_VERSION '-' 2`
+ELASTICSEARCH_ARCHIVE=$ELASTICSEARCH_VERSION.tar.gz
+ELASTICSEARCH_MIRROR_DOWNLOAD=https://mirrors.huaweicloud.com/elasticsearch/$ELASTICSEARCH_VERSION_NUM/$ELASTICSEARCH_ARCHIVE
+ELASTICSEARCH_RES_DIR=$RESOURCE_PATH/elasticsearch
+ELASTICSEARCH_CONF_DIR=$INSTALL_PATH/elasticsearch/config
 
 # kibana
 # 支持版本：具体见下载地址
@@ -338,6 +338,14 @@ command_exists() {
     command -v "$@" > /dev/null 2>&1
 }
 
+# 将字符串变为大写
+# eg: get_string_upper es
+get_string_upper() {
+    local app_name=$1
+    app_name_upper=$(echo $app_name | tr '[a-z]' '[A-Z]')
+    echo $app_name_upper
+}
+
 # 从本地DOWLOAD_PATH解压组件到INSTALL_PATH
 # eg: installFromLocal $HADOOP_ARCHIVE
 installFromLocal() {
@@ -345,7 +353,6 @@ installFromLocal() {
     log info "install $LOCAL_ARCHIVE from local file"
     FILE=$DOWNLOAD_PATH/$LOCAL_ARCHIVE
     tar -xzf $FILE -C $INSTALL_PATH
-	
 }
 
 # 从网上下载组件到DOWNLOAD_PATH，并解压到INSTALL_PATH

@@ -1,6 +1,6 @@
 #!/bin/bash
 #set -x
-if [ "$IS_VAGRANT" == "true" ];then
+if [ "${IS_VAGRANT}" == "true" ];then
     source "/vagrant/scripts/common.sh"
 else
     source "/home/vagrant/scripts/common.sh"
@@ -8,43 +8,53 @@ fi
 
 setup_hbase() {
     local app_name=$1
-    log info "copying over $app_name configuration files"
-    cp -f $HBASE_RES_DIR/* $HBASE_CONF_DIR
-    cp $INSTALL_PATH/hadoop/etc/hadoop/core-site.xml $INSTALL_PATH/hbase/conf/
-    cp $INSTALL_PATH/hadoop/etc/hadoop/hdfs-site.xml $INSTALL_PATH/hbase/conf/
+    local app_name_upper=`get_string_upper ${app_name}`
+    local res_dir=$(eval echo \$${app_name_upper}_RES_DIR)
+    local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
+
+    log info "copying over ${app_name} configuration files"
+    cp -f ${res_dir}/* ${conf_dir}
+    cp ${INSTALL_PATH}/hadoop/etc/hadoop/core-site.xml ${INSTALL_PATH}/hbase/conf/
+    cp ${INSTALL_PATH}/hadoop/etc/hadoop/hdfs-site.xml ${INSTALL_PATH}/hbase/conf/
 
     if [ $INSTALL_PATH != /home/vagrant/apps ];then
-        sed -i "s@/home/vagrant/apps@$INSTALL_PATH@g" `grep '/home/vagrant/apps' -rl $HBASE_CONF_DIR/`
+        sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
     fi
 }
 
 download_hbase() {
     local app_name=$1
-    log info "install $app_name"
-    if resourceExists $HBASE_ARCHIVE; then
-        installFromLocal $HBASE_ARCHIVE
+    local app_name_upper=`get_string_upper ${app_name}`
+    local app_version=$(eval echo \$${app_name_upper}_VERSION)
+    local archive=$(eval echo \$${app_name_upper}_ARCHIVE)
+    local download_url=$(eval echo \$${app_name_upper}_MIRROR_DOWNLOAD)
+
+    log info "install ${app_name}"
+    if resourceExists ${archive}; then
+        installFromLocal ${archive}
     else
-        installFromRemote $HBASE_ARCHIVE $HBASE_MIRROR_DOWNLOAD
+        installFromRemote ${archive} ${download_url}
     fi
-    mv ${INSTALL_PATH}/"${HBASE_VERSION}" ${INSTALL_PATH}/$app_name
-    sudo chown -R vagrant:vagrant $INSTALL_PATH/$app_name
-    rm $DOWNLOAD_PATH/$HBASE_ARCHIVE
+    mv ${INSTALL_PATH}/"${app_version}" ${INSTALL_PATH}/${app_name}
+    sudo chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
+    rm ${DOWNLOAD_PATH}/${archive}
 }
 
 install_hbase() {
     local app_name="hbase"
-    log info "setup $app_name"
+    log info "setup ${app_name}"
 
-    download_hbase $app_name
-    setup_hbase $app_name
-    #dispatch_app $app_name
-    if [ "$IS_VAGRANT" != "true" ];then
-        dispatch_app $app_name
+    download_hbase ${app_name}
+    setup_hbase ${app_name}
+    setupEnv_app ${app_name}
+
+    if [ "${IS_VAGRANT}" != "true" ];then
+        dispatch_app ${app_name}
     fi
-    setupEnv_app $app_name
-    source $PROFILE
+    
+    source ${PROFILE}
 }
 
-if [ "$IS_VAGRANT" == "true" ];then
+if [ "${IS_VAGRANT}" == "true" ];then
     install_hbase
 fi
