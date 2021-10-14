@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ "$IS_VAGRANT" == "true" ];then
+if [ "${IS_VAGRANT}" == "true" ];then
     source "/vagrant/scripts/common.sh"
 else
     source "/home/vagrant/scripts/common.sh"
@@ -7,29 +7,34 @@ fi
 
 download_scala() {
     local app_name=$1
-    log info "install $app_name"
-    if resourceExists $SCALA_ARCHIVE; then
-        installFromLocal $SCALA_ARCHIVE
+    local app_name_upper=`get_string_upper ${app_name}`
+    local app_version=$(eval echo \$${app_name_upper}_VERSION)
+    local archive=$(eval echo \$${app_name_upper}_ARCHIVE)
+    local download_url=$(eval echo \$${app_name_upper}_MIRROR_DOWNLOAD)
+
+    log info "install ${app_name}"
+    if resourceExists ${archive}; then
+        installFromLocal ${archive}
     else
-        installFromRemote $SCALA_ARCHIVE $SCALA_MIRROR_DOWNLOAD
+        installFromRemote ${archive} ${download_url}
     fi
-    mv ${INSTALL_PATH}/$SCALA_VERSION ${INSTALL_PATH}/$app_name
-    sudo chown -R vagrant:vagrant $INSTALL_PATH/$app_name
-    rm $DOWNLOAD_PATH/$SCALA_ARCHIVE
+    mv ${INSTALL_PATH}/"${app_version}" ${INSTALL_PATH}/${app_name}
+    sudo chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
+    rm ${DOWNLOAD_PATH}/${archive}
 }
 
 install_scala() {
     local app_name="scala"
-    log info "setup $app_name"
-    download_scala $app_name
-    setupEnv_app $app_name
-    # dispatch_app $app_name
-    if [ "$IS_VAGRANT" != "true" ];then
-        dispatch_app $app_name
+    log info "setup ${app_name}"
+    download_scala ${app_name}
+    setupEnv_app ${app_name}
+
+    if [ "${IS_VAGRANT}" != "true" ];then
+        dispatch_app ${app_name}
     fi
-    source $PROFILE
+    source ${PROFILE}
 }
 
-if [ "$IS_VAGRANT" == "true" ];then
+if [ "${IS_VAGRANT}" == "true" ];then
     install_scala
 fi

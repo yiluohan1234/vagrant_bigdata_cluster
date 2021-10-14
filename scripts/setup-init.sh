@@ -1,6 +1,6 @@
 #!/bin/bash
 # at /home/vagrant
-if [ "$IS_VAGRANT" == "true" ];then
+if [ "${IS_VAGRANT}" == "true" ];then
     source "/vagrant/scripts/common.sh"
 else
     source "/home/vagrant/scripts/common.sh"
@@ -13,12 +13,12 @@ yum install -y -q expect
 yum install -y -q vim-enhanced
 yum install -y -q unzip
 yum install -y -q zip
-yum install -y nmap-ncat
-yum install -y net-tools
-yum install -y epel-release  
-yum install -y lsof
-yum install -y nc
-yum install -y wget
+yum install -y -q nmap-ncat
+yum install -y -q net-tools
+yum install -y -q epel-release  
+yum install -y -q lsof
+yum install -y -q nc
+yum install -y -q wget
 
 #---ssh---
 mv /home/vagrant/resources/sshd_config /etc/ssh/sshd_config

@@ -1,7 +1,7 @@
 #!/bin/bash
 #set -x
 
-if [ "$IS_VAGRANT" == "true" ];then
+if [ "${IS_VAGRANT}" == "true" ];then
     source "/vagrant/scripts/common.sh"
 else
     source "/home/vagrant/scripts/common.sh"
@@ -15,7 +15,7 @@ setup_mysql() {
 
     # 安装依赖
     yum install -y libaio
-    log info "install $app_name"
+    log info "install ${app_name}"
     log info "初始化：建立install_dir、data_dir和用户群组"
     id -u mysql >/dev/null 2>&1
     [ $? -ne 0 ] && useradd -M -s /sbin/nologin mysql
@@ -76,12 +76,12 @@ setup_mysql() {
 
 install_mysql() {
     local app_name="mysql"
-    log info "setup $app_name"
-    setup_mysql $app_name
+    log info "setup ${app_name}"
+    setup_mysql ${app_name}
 }
 
 
-if [ "$IS_VAGRANT" == "true" ];then
+if [ "${IS_VAGRANT}" == "true" ];then
     install_mysql
 fi
 
