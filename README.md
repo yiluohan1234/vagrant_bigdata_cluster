@@ -306,3 +306,5 @@ bigstart kibana start(或stop)
 [Elasticsearch](http://hdp101:9200/_cat/nodes?v)
 
 [Kibana](http://hdp101:5601/)
+
+[Hbase](http://hdp101:16010/)
