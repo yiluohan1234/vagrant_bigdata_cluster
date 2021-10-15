@@ -18,6 +18,10 @@ setup_hive() {
 	
     log info "copying over ${app_name} configuration files"
     cp -f ${res_dir}/* ${conf_dir}
+
+    # 安装phoenix后hive启动失败
+    rm ${INSTALL_PATH}/hive/lib/icu4j-4.8.1.jar
+    
     wget_mysql_connector ${INSTALL_PATH}/hive/lib
 
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
