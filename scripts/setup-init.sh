@@ -19,6 +19,7 @@ yum install -y -q epel-release
 yum install -y -q lsof
 yum install -y -q nc
 yum install -y -q wget
+yum install -y *unixODBC*
 
 #---ssh---
 mv /home/vagrant/resources/sshd_config /etc/ssh/sshd_config
@@ -34,7 +35,10 @@ chown -R vagrant:vagrant $INIT_SHELL_BIN
 
 # 启动elasticsearch需要的设置
 # 更改最大文件句柄数和最大线程数限制
-echo -e "* soft nofile 65536\n* hard nofile 65536\n* soft nproc 2048\n* hard nproc 65536" >> /etc/security/limits.conf
+echo -e "* soft nofile 65536\n* hard nofile 65536\n* soft nproc 131072\n* hard nproc 131072" >> /etc/security/limits.conf
+
+
+echo -e "SELINUX=disabled" >> /etc/selinux/config
 
 # 虚拟内存扩容
 echo "vm.max_map_count=262144" >> /etc/sysctl.conf
