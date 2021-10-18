@@ -37,7 +37,7 @@ chown -R vagrant:vagrant $INIT_SHELL_BIN
 # 更改最大文件句柄数和最大线程数限制
 echo -e "* soft nofile 65536\n* hard nofile 65536\n* soft nproc 131072\n* hard nproc 131072" >> /etc/security/limits.conf
 
-
+# CentOS取消SELINUX
 echo -e "SELINUX=disabled" >> /etc/selinux/config
 
 # 虚拟内存扩容
