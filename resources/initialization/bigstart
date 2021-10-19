@@ -402,6 +402,50 @@ Maxwell(){
     esac
 }
 
+hiveserver2(){
+    USAGE="Usage: $0 (start|stop|status)"
+    PIDFILE=$INSTALL_PATH/hive/hive.pid
+    LOGFILE=hive-console_`date '+%Y-%m-%d'`.log
+
+    case $1 in
+        start)
+            echo "Staring hiveserver2..."
+            nohup ${INSTALL_PATH}/hive/bin/hive --service hiveserver2 >${INSTALL_PATH}/hive/logs/hiveServer2.log 2>&1 &
+            #nohup ${INSTALL_PATH}/hive/bin/hive --service metastore >${INSTALL_PATH}/hive/logs/metastore.log 2>&1 &
+            echo $! > $PIDFILE
+            ;;
+        stop)
+            if [ -f "$PIDFILE" ] ; then
+                echo "Stoping hiveserver2 ..."    
+                kill `cat $PIDFILE`
+                sleep 1
+                rm -rf $PIDFILE
+                echo "Stop hiveserver2 success"
+            else
+                echo "hiveserver2 is not running"
+                exit 0
+            fi
+            ;;
+        status)
+            if [ -f "$PIDFILE" ] ; then
+                pid=`cat $PIDFILE`
+                if [[ pid -gt 0 ]]
+                then
+                    echo "[$(date '+%Y-%m-%d %T')] hiveserver2 is running.( pid:$pid )"
+                else
+                    echo "[$(date '+%Y-%m-%d %T')] hiveserver2 is not running"
+                fi
+            else 
+                echo "hiveserver2 is not running"
+            fi
+            ;;
+        *)
+            echo $USAGE
+            exit 1
+            ;;
+    esac
+}
+
 args()
 {
     usage="Usage: $0 (dfs|yarn|zk|kafka|spark|flink|hbase|start|stop)"
@@ -450,6 +494,9 @@ args()
 		;;
 	  canal)
 		canal $2
+		;;
+	  hive)
+		hiveserver2 $2
 		;;
 	  *)
 		echo $usage
