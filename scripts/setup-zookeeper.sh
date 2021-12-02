@@ -3,7 +3,7 @@
 if [ "${IS_VAGRANT}" == "true" ];then
     source "/vagrant/scripts/common.sh"
 else
-    source "/home/vagrant/scripts/common.sh"
+    source "/home/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
 fi
 
 # sh setup-hosts.sh -i myid
@@ -36,18 +36,12 @@ setup_zookeeper() {
     sed -i 's@^zookeeper.root.logger=INFO, CONSOLE*@zookeeper.root.logger=INFO, CONSOLE, ROLLINGFILE@' ${log4j_path}
     sed -i 's@^zookeeper.log.dir=.*@zookeeper.log.dir='${log_path}'@' ${log4j_path}
 
-    # zkServer.sh
-    zkserver_path=${INSTALL_PATH}/zookeeper/bin/zkServer.sh
-    #sed -i 's@^_ZOO_DAEMON_OUT="$ZOO_LOG_DIR/zookeeper.out"*@_ZOO_DAEMON_OUT="$ZOO_LOG_DIR/zookeeper.log"@' ${zkserver_path}
 
     # zkEnv.sh
     zkenv_path=${INSTALL_PATH}/zookeeper/bin/zkEnv.sh
-    #sed -i 's@ZOO_LOG_DIR="."*@ZOO_LOG_DIR="$ZOOBINDIR/../logs"@' ${zkenv_path}
     sed -i 's@ZOO_LOG4J_PROP="INFO,CONSOLE"*@ZOO_LOG4J_PROP="INFO,CONSOLE,ROLLINGFILE"@' ${zkenv_path}
 
     if [ "${IS_VAGRANT}" == "true" ];then
-        #echo -e "\n" >> ${INSTALL_PATH}/zookeeper/bin/zkEnv.sh
-        #echo "export JAVA_HOME=/home/vagrant/apps/java" >> ${INSTALL_PATH}/zookeeper/bin/zkEnv.sh
         echo $MYID >>${INSTALL_PATH}/zookeeper/data/myid
     fi
     
@@ -62,6 +56,7 @@ download_zookeeper() {
     local app_version=$(eval echo \$${app_name_upper}_VERSION)
     local archive=$(eval echo \$${app_name_upper}_ARCHIVE)
     local download_url=$(eval echo \$${app_name_upper}_MIRROR_DOWNLOAD)
+    echo $download_url
 
     log info "install ${app_name}"
     if resourceExists ${archive}; then
@@ -69,7 +64,7 @@ download_zookeeper() {
     else
         installFromRemote ${archive} ${download_url}
     fi
-    mv ${INSTALL_PATH}/apache-${app_version} ${INSTALL_PATH}/${app_name}
+    mv ${INSTALL_PATH}/apache-${app_version}-bin ${INSTALL_PATH}/${app_name}
     sudo chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
     rm ${DOWNLOAD_PATH}/${archive}
 }
