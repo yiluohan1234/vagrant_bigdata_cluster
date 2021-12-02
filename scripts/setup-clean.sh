@@ -3,7 +3,7 @@
 if [ "${IS_VAGRANT}" == "true" ];then
     source "/vagrant/scripts/common.sh"
 else
-    source "/home/vagrant/scripts/common.sh"
+    source "/home/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
 fi
 # 统一缩进为4
 echo "set tabstop=4" > /home/vagrant/.vimrc
