@@ -17,15 +17,18 @@
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
+    <!-- 指定MapReduce程序运行在Yarn上 -->
     <property>
         <name>mapreduce.framework.name</name>
         <value>yarn</value>
     </property>
-    <!-- 日志查看IPC及WEB UI配置-->
+    <!-- 历史服务器端地址 -->
     <property>
         <name>mapreduce.jobhistory.address</name>
         <value>hdp101:10020</value>
     </property>
+
+    <!-- 历史服务器web端地址 -->
     <property>
         <name>mapreduce.jobhistory.webapp.address</name>
         <value>hdp101:19888</value>
