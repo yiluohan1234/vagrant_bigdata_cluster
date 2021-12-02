@@ -35,7 +35,7 @@
 
 ```
 Java: 1.8
-Hadoop: 2.7.6
+Hadoop: 3.1.3
 Hive: 2.3.4
 Hbase: 1.2.6
 Spark: 2.4.6
