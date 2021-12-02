@@ -14,8 +14,6 @@ setup_hadoop() {
 
     log info "creating ${app_name} directories"
     mkdir -p ${INSTALL_PATH}/hadoop/tmp
-    mkdir -p ${INSTALL_PATH}/hadoop/tmp/dfs/name
-    mkdir -p ${INSTALL_PATH}/hadoop/tmp/dfs/data
 	
     log info "copying over ${app_name} configuration files"
     cp -f ${res_dir}/* ${conf_dir}
@@ -102,7 +100,7 @@ install_hadoop() {
     setup_hadoop ${app_name}
     setupEnv_app ${app_name} sbin
     # 解决Unable to load native-hadoop library for your platform
-    echo 'export LD_LIBRARY_PATH=$HADOOP_HOME/lib/native/:$LD_LIBRARY_PATH' >> ${PROFILE}
+    #echo 'export LD_LIBRARY_PATH=$HADOOP_HOME/lib/native/:$LD_LIBRARY_PATH' >> ${PROFILE}
 
     if [ "${IS_VAGRANT}" != "true" ];then
         dispatch_app ${app_name}
