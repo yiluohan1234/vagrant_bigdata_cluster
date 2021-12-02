@@ -132,8 +132,9 @@ SQOOP_CONF_DIR=$INSTALL_PATH/sqoop/conf
 # 支持版本：3.7.0, 3.6.3-3.6.0, 3.5.9-3.5.5, 3.4.14-3.4.0, 3.3.6-3.3.3
 #         https://archive.apache.org/dist/zookeeper/zookeeper-3.4.10/zookeeper-3.4.10.tar.gz
 # https://mirrors.huaweicloud.com/apache/zookeeper/zookeeper-3.4.10/zookeeper-3.4.10.tar.gz
+# https://mirrors.huaweicloud.com/apache/zookeeper/zookeeper-3.5.7/apache-zookeeper-3.5.7.tar.gz
 ZOOKEEPER_VERSION_NUM=`get_app_version_num $ZOOKEEPER_VERSION "-" 2`
-ZOOKEEPER_ARCHIVE=${ZOOKEEPER_VERSION}.tar.gz
+ZOOKEEPER_ARCHIVE=apache-${ZOOKEEPER_VERSION}.tar.gz
 ZOOKEEPER_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/zookeeper/$ZOOKEEPER_VERSION/$ZOOKEEPER_ARCHIVE
 ZOOKEEPER_RES_DIR=$RESOURCE_PATH/zookeeper
 ZOOKEEPER_CONF_DIR=$INSTALL_PATH/zookeeper/conf

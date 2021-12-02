@@ -40,7 +40,7 @@ Hive: 2.3.4
 Hbase: 1.2.6
 Spark: 2.4.6
 Flink: 1.12.4
-Zookeeper: 3.4.10
+Zookeeper: 3.5.7
 Kafka: 0.11.0.3
 Flume: 1.6.0
 Scala: 2.11.12
@@ -293,9 +293,9 @@ bigstart kibana start(或stop)
 
 可以通过以下链接访问大数据组件的web页面。
 
-[HDFS](http://hdp101:50070)
+[HDFS](http://hdp101:9870)
 
-[ResourceManager](http://hdp101:8088)
+[ResourceManager](http://hdp102:8088)
 
 [JobHistory](http://hdp101:19888/jobhistory)
 
