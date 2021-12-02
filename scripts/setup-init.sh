@@ -20,6 +20,8 @@ yum install -y -q lsof
 yum install -y -q nc
 yum install -y -q wget
 yum install -y *unixODBC*
+yum install -y http://opensource.wandisco.com/centos/7/git/x86_64/wandisco-git-release-7-2.noarch.rpm
+yum install -y git
 
 #---ssh---
 mv /home/vagrant/resources/sshd_config /etc/ssh/sshd_config

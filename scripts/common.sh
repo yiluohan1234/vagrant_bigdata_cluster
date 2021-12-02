@@ -1,19 +1,29 @@
 #!/bin/bash
+
+# 是否用vagrant安装集群
+IS_VAGRANT="false"
+
 # 配置文件目录
-RESOURCE_PATH=/home/vagrant/resources
+if [ "${IS_VAGRANT}" == "true" ];then
+    RESOURCE_PATH=/home/vagrant/resources
+else
+    RESOURCE_PATH=/home/vagrant/vagrant_bigdata_cluster/resources
+fi
 
 # 安装目录
 INSTALL_PATH=/home/vagrant/.apps
 
 # 组件下载目录
-DOWNLOAD_PATH=/home/vagrant/downloads
+DOWNLOAD_PATH=/home/vagrant/vagrant_bigdata_cluster/downloads
+if [ "${IS_VAGRANT}" == "true" ];then
+    DOWNLOAD_PATH=/home/vagrant/downloads
+else
+    DOWNLOAD_PATH=/home/vagrant/vagrant_bigdata_cluster/downloads
+fi
 
 # 初始化集群目录
 INIT_PATH=$RESOURCE_PATH/initialization
 INIT_SHELL_BIN=$INSTALL_PATH/init_shell/bin
-
-# 是否用vagrant安装集群
-IS_VAGRANT="true"
 
 # 环境变量配置文件
 PROFILE=~/.bashrc
@@ -29,20 +39,20 @@ HOSTNAME=("hdp101" "hdp102" "hdp103")
 SSH_CONF=/home/vagrant/resources/ssh
 
 # app版本
-HADOOP_VERSION=hadoop-2.7.6
-HIVE_VERSION=hive-2.3.4
-HBASE_VERSION=hbase-1.2.6
-SPARK_VERSION=spark-2.4.6
+HADOOP_VERSION=hadoop-3.1.3
+HIVE_VERSION=hive-3.1.2
+HBASE_VERSION=hbase-2.0.5
+SPARK_VERSION=spark-3.0.0
 FLINK_VERSION=flink-1.12.4
-SQOOP_VERSION=sqoop-1.4.7
-ZOOKEEPER_VERSION=zookeeper-3.4.10
-KAFKA_VERSION=kafka_2.11-0.11.0.3
-FLUME_VERSION=flume-1.6.0
+SQOOP_VERSION=sqoop-1.4.6
+ZOOKEEPER_VERSION=zookeeper-3.5.7
+KAFKA_VERSION=kafka_2.11-2.4.1
+FLUME_VERSION=flume-1.9.0
 SCALA_VERSION=scala-2.11.12
 MAVEN_VERSION=apache-maven-3.2.5
 MYSQL_CONNECTOR_VERSION=mysql-connector-java-5.1.49
 MYSQL_VERSION=mysql-5.7.35
-PHOENIX_VERSION=apache-phoenix-4.14.0-HBase-1.2-bin
+PHOENIX_VERSION=apache-phoenix-5.0.0-HBase-1.2-bin
 NGINX_VERSION=nginx-1.18.0
 ELASTICSEARCH_VERSION=elasticsearch-6.6.0
 KIBANA_VERSION=kibana-6.6.0
@@ -134,7 +144,7 @@ SQOOP_CONF_DIR=$INSTALL_PATH/sqoop/conf
 # https://mirrors.huaweicloud.com/apache/zookeeper/zookeeper-3.4.10/zookeeper-3.4.10.tar.gz
 # https://mirrors.huaweicloud.com/apache/zookeeper/zookeeper-3.5.7/apache-zookeeper-3.5.7.tar.gz
 ZOOKEEPER_VERSION_NUM=`get_app_version_num $ZOOKEEPER_VERSION "-" 2`
-ZOOKEEPER_ARCHIVE=apache-${ZOOKEEPER_VERSION}.tar.gz
+ZOOKEEPER_ARCHIVE=apache-${ZOOKEEPER_VERSION}-bin.tar.gz
 ZOOKEEPER_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/zookeeper/$ZOOKEEPER_VERSION/$ZOOKEEPER_ARCHIVE
 ZOOKEEPER_RES_DIR=$RESOURCE_PATH/zookeeper
 ZOOKEEPER_CONF_DIR=$INSTALL_PATH/zookeeper/conf
