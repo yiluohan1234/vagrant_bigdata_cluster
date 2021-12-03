@@ -14,7 +14,6 @@ fi
 INSTALL_PATH=/home/vagrant/.apps
 
 # 组件下载目录
-DOWNLOAD_PATH=/home/vagrant/vagrant_bigdata_cluster/downloads
 if [ "${IS_VAGRANT}" == "true" ];then
     DOWNLOAD_PATH=/home/vagrant/downloads
 else
