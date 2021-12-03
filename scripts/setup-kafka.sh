@@ -87,4 +87,3 @@ install_kafka() {
 if [ "${IS_VAGRANT}" == "true" ];then
     install_kafka
 fi
-
