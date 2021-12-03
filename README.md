@@ -37,7 +37,7 @@
 Java: 1.8
 Hadoop: 3.1.3
 Hive: 2.3.4
-Hbase: 1.2.6
+Hbase: 2.0.5
 Spark: 2.4.6
 Flink: 1.12.4
 Zookeeper: 3.5.7
