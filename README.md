@@ -41,8 +41,8 @@ Hbase: 1.2.6
 Spark: 2.4.6
 Flink: 1.12.4
 Zookeeper: 3.5.7
-Kafka: 0.11.0.3
-Flume: 1.6.0
+Kafka: 2.4.1
+Flume: 1.9.0
 Scala: 2.11.12
 Maven: 3.2.5
 Sqoop: 1.4.7

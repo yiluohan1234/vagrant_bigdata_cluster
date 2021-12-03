@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #
 #/**
 # * Licensed to the Apache Software Foundation (ASF) under one
@@ -23,8 +24,8 @@
 # so try to keep things idempotent unless you want to take an even deeper look
 # into the startup scripts (bin/hbase, etc.)
 
-# The java implementation to use.  Java 1.7+ required.
-# export JAVA_HOME=/usr/java/jdk1.6.0/
+# The java implementation to use.  Java 1.8+ required.
+# export JAVA_HOME=/usr/java/jdk1.8.0/
 
 # Extra Java CLASSPATH elements.  Optional.
 # export HBASE_CLASSPATH=
@@ -39,12 +40,8 @@
 # Extra Java runtime options.
 # Below are what we set by default.  May only work with SUN JVM.
 # For more on why as well as other possible settings,
-# see http://wiki.apache.org/hadoop/PerformanceTuning
-export HBASE_OPTS="-XX:+UseConcMarkSweepGC"
-
-# Configure PermSize. Only needed in JDK7. You can safely remove it for JDK8+
-export HBASE_MASTER_OPTS="$HBASE_MASTER_OPTS -XX:PermSize=128m -XX:MaxPermSize=128m"
-export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS -XX:PermSize=128m -XX:MaxPermSize=128m"
+# see http://hbase.apache.org/book.html#performance
+export HBASE_OPTS="$HBASE_OPTS -XX:+UseConcMarkSweepGC"
 
 # Uncomment one of the below three options to enable java garbage collection logging for the server-side processes.
 
@@ -124,7 +121,7 @@ export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS -XX:PermSize=128m -XX:M
 # otherwise arrive faster than the master can service them.
 # export HBASE_SLAVE_SLEEP=0.1
 
-# Tell HBase whether it should manage it's own instance of Zookeeper or not.
+# Tell HBase whether it should manage it's own instance of ZooKeeper or not.
 # export HBASE_MANAGES_ZK=true
 
 # The default log rolling policy is RFA, where the log file is rolled as per the size defined for the 
@@ -135,6 +132,7 @@ export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS -XX:PermSize=128m -XX:M
 # HBASE_ROOT_LOGGER=INFO,DRFA
 # The reason for changing default to RFA is to avoid the boundary case of filling out disk space as 
 # DRFA doesn't put any cap on the log size. Please refer to HBase-5655 for more context.
+
 # 设置JAVA的环境变量
 export JAVA_HOME=/home/vagrant/apps/java
 # 设置是否使用hbase自带的zookeeper
