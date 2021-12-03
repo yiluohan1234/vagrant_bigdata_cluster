@@ -31,6 +31,8 @@ PROFILE=~/.bashrc
 # 1:https://archive.apache.org/dist
 # 2:https://mirrors.huaweicloud.com/apache
 DOWNLOAD_REPO=https://mirrors.huaweicloud.com/apache
+DOWNLOAD_REPO_APACHE=https://archive.apache.org/dist
+
 # hostname
 HOSTNAME=("hdp101" "hdp102" "hdp103")
 
@@ -132,8 +134,8 @@ FLINK_CONF_DIR=$INSTALL_PATH/flink/conf
 #         https://archive.apache.org/dist/sqoop/1.4.7/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
 # https://mirrors.huaweicloud.com/apache/sqoop/1.4.7/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
 SQOOP_VERSION_NUM=`get_app_version_num $SQOOP_VERSION "-" 2`
-SQOOP_ARCHIVE=${SQOOP_VERSION}.bin__hadoop-2.6.0.tar.gz
-SQOOP_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/sqoop/$SQOOP_VERSION_NUM/$SQOOP_ARCHIVE
+SQOOP_ARCHIVE=${SQOOP_VERSION}.bin__hadoop-2.0.4-alpha.tar.gz
+SQOOP_MIRROR_DOWNLOAD=$DOWNLOAD_REPO_APACHE/sqoop/$SQOOP_VERSION_NUM/$SQOOP_ARCHIVE
 SQOOP_RES_DIR=$RESOURCE_PATH/sqoop
 SQOOP_CONF_DIR=$INSTALL_PATH/sqoop/conf
 
