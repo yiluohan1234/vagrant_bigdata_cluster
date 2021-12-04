@@ -113,6 +113,39 @@ yarn(){
             ;;
     esac
 }
+
+hadoop(){
+    usage="Usage: $0 (start|stop)"
+ 
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            echo " =================== 启动 hadoop集群 ==================="
+            echo " --------------- 启动 hdfs ---------------"
+            ssh hdp101 "$INSTALL_PATH/hadoop/sbin/start-dfs.sh"
+            echo " --------------- 启动 yarn ---------------"
+            ssh hdp102 "$INSTALL_PATH/hadoop/sbin/start-yarn.sh"
+            echo " --------------- 启动 historyserver ---------------"
+            ssh hdp101 "$INSTALL_PATH/hadoop/bin/mapred --daemon start historyserver"
+            ;;
+        stop)
+            echo " =================== 关闭 hadoop集群 ==================="
+            echo " --------------- 关闭 historyserver ---------------"
+            ssh hdp101 "$INSTALL_PATH/hadoop/bin/mapred --daemon stop historyserver"
+            echo " --------------- 关闭 yarn ---------------"
+            ssh hdp102 "$INSTALL_PATH/hadoop/sbin/stop-yarn.sh"
+            echo " --------------- 关闭 hdfs ---------------"
+            ssh hdp101 "$INSTALL_PATH/hadoop/sbin/stop-dfs.sh"
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
 spark(){
     usage="Usage(spark): $0 (start|stop)"
  
@@ -461,6 +494,9 @@ args()
 		;;
 	  yarn)
 		yarn $2
+		;;
+	  hadoop)
+		hadoop $2
 		;;
 	  spark)
 		spark $2

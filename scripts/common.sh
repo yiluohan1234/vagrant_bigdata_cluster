@@ -12,17 +12,22 @@ fi
 
 # 安装目录
 INSTALL_PATH=/home/vagrant/.apps
+[ ! -d $INSTALL_PATH ] && mkdir -p $INSTALL_PATH
 
 # 组件下载目录
 if [ "${IS_VAGRANT}" == "true" ];then
     DOWNLOAD_PATH=/home/vagrant/downloads
+    [ ! -d $DOWNLOAD_PATH ] && mkdir -p $DOWNLOAD_PATH
 else
     DOWNLOAD_PATH=/home/vagrant/vagrant_bigdata_cluster/downloads
+    [ ! -d $DOWNLOAD_PATH ] && mkdir -p $DOWNLOAD_PATH
 fi
 
 # 初始化集群目录
 INIT_PATH=$RESOURCE_PATH/initialization
 INIT_SHELL_BIN=$INSTALL_PATH/init_shell/bin
+[ ! -d $INIT_SHELL_BIN ] && mkdir -p $INIT_SHELL_BIN
+
 
 # 环境变量配置文件
 PROFILE=~/.bashrc
