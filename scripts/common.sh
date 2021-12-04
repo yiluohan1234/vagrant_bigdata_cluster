@@ -119,7 +119,7 @@ HBASE_CONF_DIR=$INSTALL_PATH/hbase/conf
 #         https://archive.apache.org/dist/spark/spark-2.4.6/spark-2.4.6-bin-hadoop2.7.tgz
 # https://mirrors.huaweicloud.com/apache/spark/spark-2.4.6/spark-2.4.6-bin-hadoop2.7.tgz
 SPARK_VERSION_NUM=`get_app_version_num $SPARK_VERSION "-" 2`
-SPARK_ARCHIVE=$SPARK_VERSION-bin-hadoop2.7.tgz
+SPARK_ARCHIVE=$SPARK_VERSION-bin-hadoop3.2.tgz
 SPARK_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/spark/$SPARK_VERSION/$SPARK_ARCHIVE
 SPARK_RES_DIR=$RESOURCE_PATH/spark
 SPARK_CONF_DIR=$INSTALL_PATH/spark/conf
