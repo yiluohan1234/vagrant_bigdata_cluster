@@ -83,4 +83,4 @@ export SPARK_MASTER_PORT=7077
 export SPARK_WORKER_PORT=7078
 export SPARK_LOG_DIR=/home/vagrant/apps/spark/log
 export SPARK_PID_DIR=/home/vagrant/apps/spark/run
-export SPARK_HISTORY_OPTS="-Dspark.history.ui.port=18080 -Dspark.history.retainedApplications=3 -Dspark.history.fs.logDirectory=hdfs://hdp-node-01:9000/spark-log"
+export SPARK_HISTORY_OPTS="-Dspark.history.ui.port=18080 -Dspark.history.retainedApplications=3 -Dspark.history.fs.logDirectory=hdfs://hdp101:8020/spark-log"
