@@ -59,4 +59,3 @@ install_hbase() {
 if [ "${IS_VAGRANT}" == "true" ];then
     install_hbase
 fi
-install_hbase
