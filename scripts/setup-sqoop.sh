@@ -15,6 +15,8 @@ setup_sqoop() {
     log info "copying over ${app_name} configuration files"
     cp -f ${res_dir}/* ${conf_dir}
 
+    wget_mysql_connector ${INSTALL_PATH}/sqoop/lib
+
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
     fi

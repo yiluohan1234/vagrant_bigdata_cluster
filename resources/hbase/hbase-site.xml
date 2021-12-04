@@ -44,4 +44,8 @@
         <name>hbase.zookeeper.property.dataDir</name>
         <value>/home/vagrant/apps/zookeeper/data</value>
     </property>
+    <property>
+        <name>hbase.unsafe.stream.capability.enforce</name>
+        <value>false</value>
+    </property>
 </configuration>

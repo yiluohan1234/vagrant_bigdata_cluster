@@ -8,7 +8,6 @@ CUR=$(cd `dirname 0`;pwd)
 . $CUR/setup-hadoop.sh
 . $CUR/setup-hbase.sh
 . $CUR/setup-hive.sh
-. $CUR/setup-hosts.sh
 . $CUR/setup-java.sh
 . $CUR/setup-kafka.sh
 . $CUR/setup-kibana.sh
@@ -22,7 +21,6 @@ CUR=$(cd `dirname 0`;pwd)
 . $CUR/setup-spark.sh
 . $CUR/setup-sqoop.sh
 . $CUR/setup-zookeeper.sh
-. $CUR/setup-ssh.sh
 #. $CUR/common.sh
 
 
@@ -60,81 +58,78 @@ usage()
 # args for data_process.sh
 args()
 {
-	if [ $# -ne 0 ]; then
-		case $1 in
-			canal)
-				install_canal
-				;;
-			es)
-				install_es
-				;;
-			flink)
-				install_flink
-				;;
-			flume)
-				install_flume
-				;;
-			hadoop)
-				install_hadoop
-				;;
-			hbase)
-				install_hbase
-				;;
-			hive)
-				install_hive
-				;;
-			hosts)
-				install_hosts -s 1 -t 3
-				;;
-			jdk)
-				install_java
-				;;
-			kafka)
-				install_kafka
-				;;
-			kibana)
-				install_kibana
-				;;
-			mvn)
-				install_maven
-				;;
-            maxwell)
-                install_maxwell
-                ;;
-            mysql)
-                install_mysql
-                ;;
-            nginx)
-                install_nginx
-                ;;
-            phoenix)
-                install_phoenix
-                ;;
-            redis)
-                install_redis
-                ;;
-			scala)
-				install_scala
-				;;
-			spark)
-				install_spark
-				;;
-	    	sqoop)
-				install_sqoop
-				;;
-	    	zookeeper)
-				install_zookeeper
-				;;
-	    	ssh)
-				install_ssh
-				;;
-	    	-h|--help)
-				usage
-				;;
-	    	*)
-                echo "Invalid command:$1"
-				usage
-				;;
+    if [ $# -ne 0 ]; then
+	case $1 in
+		canal)
+		    install_canal
+		    ;;
+		es)
+		    install_es
+		    ;;
+		flink)
+		    install_flink
+		    ;;
+		flume)
+		    install_flume
+		    ;;
+		hadoop)
+		    install_hadoop
+		    ;;
+		hbase)
+		    install_hbase
+		    ;;
+		hive)
+		    install_hive
+		    ;;
+		jdk)
+		    install_java
+		    ;;
+		kafka)
+		    install_kafka
+		    ;;
+		kibana)
+		    install_kibana
+		    ;;
+		mvn)
+		    install_maven
+		    ;;
+		maxwell)
+		    install_maxwell
+		    ;;
+		mysql)
+		    install_mysql
+		    ;;
+		nginx)
+		    install_nginx
+		    ;;
+		phoenix)
+		    install_phoenix
+		    ;;
+		redis)
+		    install_redis
+		    ;;
+		scala)
+		    install_scala
+		    ;;
+		spark)
+		    install_spark
+		    ;;
+		sqoop)
+		    install_sqoop
+		    ;;
+		zookeeper)
+		    install_zookeeper
+		    ;;
+		ssh)
+		    install_ssh
+		    ;;
+		-h|--help)
+		    usage
+		    ;;
+		*)
+		    echo "Invalid command:$1"
+		    usage
+		    ;;
         esac
     else
         usage
