@@ -81,10 +81,10 @@ dfs(){
     fi
     case $1 in
         start)
-            sh $INSTALL_PATH/hadoop/sbin/start-dfs.sh
+            ssh hdp101 "$INSTALL_PATH/hadoop/sbin/start-dfs.sh"
             ;;
         stop)
-            sh $INSTALL_PATH/hadoop/sbin/stop-dfs.sh
+            ssh hdp101 "$INSTALL_PATH/hadoop/sbin/stop-dfs.sh"
             ;;
         format)
             sh $INSTALL_PATH/hadoop/bin/hdfs namenode -format
@@ -94,6 +94,39 @@ dfs(){
             ;;
     esac
 }
+hadoop(){
+    usage="Usage: $0 (start|stop|format)"
+ 
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            echo " --------------- 启动 hdfs ---------------"
+            ssh hdp101 "$INSTALL_PATH/hadoop/sbin/start-dfs.sh"
+            echo " --------------- 启动 yarn ---------------"
+            ssh hdp102 "$INSTALL_PATH/hadoop/sbin/start-yarn.sh"
+            echo " --------------- 启动 historyserver ---------------"
+            ssh hdp101 "$INSTALL_PATH/hadoop/bin/mapred --daemon start historyserver"
+            ;;
+        stop)
+            echo " --------------- 关闭 historyserver ---------------"
+            ssh hdp101 "$INSTALL_PATH/hadoop/bin/mapred --daemon stop historyserver"
+            echo " --------------- 关闭 yarn ---------------"
+            ssh hdp102 "$INSTALL_PATH/hadoop/sbin/stop-yarn.sh"
+            echo " --------------- 关闭 hdfs ---------------"
+            ssh hdp101 "$INSTALL_PATH/hadoop/sbin/stop-dfs.sh"
+            ;;
+        format)
+            ssh hdp101 "$INSTALL_PATH/hadoop/bin/hdfs namenode -format"
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
 yarn(){
     usage="Usage: $0 (start|stop)"
  
@@ -103,49 +136,16 @@ yarn(){
     fi
     case $1 in
         start)
-            sh $INSTALL_PATH/hadoop/sbin/start-yarn.sh
+            ssh hdp102  "$INSTALL_PATH/hadoop/sbin/start-yarn.sh"
             ;;
         stop)
-            sh $INSTALL_PATH/hadoop/sbin/stop-yarn.sh
-            ;;
-        *)
-            echo $usage
-            ;;
-    esac
-}
-
-hadoop(){
-    usage="Usage: $0 (start|stop)"
- 
-    if [ $# -lt 1 ]; then
-        echo $usage
-        exit 1
-    fi
-    case $1 in
-        start)
-            echo " =================== 启动 hadoop集群 ==================="
-            echo " --------------- 启动 hdfs ---------------"
-            ssh hdp101 "$INSTALL_PATH/hadoop/sbin/start-dfs.sh"
-            echo " --------------- 启动 yarn ---------------"
-            ssh hdp102 "$INSTALL_PATH/hadoop/sbin/start-yarn.sh"
-            echo " --------------- 启动 historyserver ---------------"
-            ssh hdp101 "$INSTALL_PATH/hadoop/bin/mapred --daemon start historyserver"
-            ;;
-        stop)
-            echo " =================== 关闭 hadoop集群 ==================="
-            echo " --------------- 关闭 historyserver ---------------"
-            ssh hdp101 "$INSTALL_PATH/hadoop/bin/mapred --daemon stop historyserver"
-            echo " --------------- 关闭 yarn ---------------"
             ssh hdp102 "$INSTALL_PATH/hadoop/sbin/stop-yarn.sh"
-            echo " --------------- 关闭 hdfs ---------------"
-            ssh hdp101 "$INSTALL_PATH/hadoop/sbin/stop-dfs.sh"
             ;;
         *)
             echo $usage
             ;;
     esac
 }
-
 spark(){
     usage="Usage(spark): $0 (start|stop)"
  
@@ -216,8 +216,6 @@ kibana(){
             echo $! > $PIDFILE
             ;;
         stop)
-            #ps -ef |grep kibana |grep -v grep |awk '{print $2}' |xargs kill
-            #kill -9 $(ps -ef |grep kibana| grep -v grep| awk '{print $2}')
             if [ -f "$PIDFILE" ] ; then
                 echo "Stoping kibana ..."    
                 kill `cat $PIDFILE`
@@ -351,12 +349,8 @@ rt_logger(){
                     $INSTALL_PATH/nginx/sbin/nginx
                 fi
             done
-            #echo "============start NGINX============"
-            #$INSTALL_PATH/nginx/sbin/nginx
             ;;
         stop)
-            #echo "============NGINX============"
-            #nginx -s stop
             for j in {"hdp101","hdp102","hdp103"};
             do
                 echo "-----$1 $j rt_logger-------"
@@ -434,7 +428,6 @@ Maxwell(){
             ;;
     esac
 }
-
 hiveserver2(){
     USAGE="Usage: $0 (start|stop|status)"
     PIDFILE=$INSTALL_PATH/hive/hive.pid
@@ -478,7 +471,6 @@ hiveserver2(){
             ;;
     esac
 }
-
 args()
 {
     usage="Usage: $0 (dfs|yarn|zk|kafka|spark|flink|hbase|start|stop)"
@@ -525,14 +517,14 @@ args()
 	  logger)
 		rt_logger $2
 		;;
+	  hive)
+		hiveserver2 $2
+		;;
 	  maxwell)
 		Maxwell $2
 		;;
 	  canal)
 		canal $2
-		;;
-	  hive)
-		hiveserver2 $2
 		;;
 	  *)
 		echo $usage

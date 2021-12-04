@@ -17,6 +17,7 @@ setup_hadoop() {
 	
     log info "copying over ${app_name} configuration files"
     cp -f ${res_dir}/* ${conf_dir}
+    mv ${conf_dir}/hadoop-lzo-0.4.21-SNAPSHOT.jar ${INSTALL_PATH}/share/hadoop/common
 
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
