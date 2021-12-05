@@ -66,6 +66,7 @@ get_app_version_num() {
     local field_num=$3
 
     app_num=`echo $app_version|cut -d $split -f $field_num`
+    #app_num=`echo $app_version|awk -F $split '{print $2}'`
     echo $app_num
 }
 
