@@ -1,7 +1,7 @@
 #!/bin/bash
 #set -x
 if [ "${IS_VAGRANT}" == "true" ];then
-    source "/vagrant/scripts/common.sh"
+    source "/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
 else
     source "/home/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
 fi
@@ -22,6 +22,6 @@ echo 'export PATH=${INIT_SHELL_BIN}:$PATH' >> ${PROFILE}
 source ${PROFILE}
 
 # 删除安装目录
-rm -rf /home/vagrant/resources
-rm -rf /home/vagrant/scripts
+rm -rf /home/vagrant/vagrant_bigdata_cluster/resources
+rm -rf /home/vagrant/vagrant_bigdata_cluster/scripts
 rm -rf /home/vagrant/downloads

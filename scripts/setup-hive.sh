@@ -1,7 +1,7 @@
 #!/bin/bash
 #set -x
 if [ "${IS_VAGRANT}" == "true" ];then 
-    source "/vagrant/scripts/common.sh"
+    source "/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
 else
     source "/home/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
 fi

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 是否用vagrant安装集群
-IS_VAGRANT="true"
+IS_VAGRANT="false"
 
 # 配置文件目录
 RESOURCE_PATH=/home/vagrant/vagrant_bigdata_cluster/resources
