@@ -24,7 +24,7 @@ yum install -y http://opensource.wandisco.com/centos/7/git/x86_64/wandisco-git-r
 yum install -y git
 
 #---ssh---
-mv /home/vagrant/resources/sshd_config /etc/ssh/sshd_config
+mv /home/vagrant/vagrant_bigdata_cluster/resources/sshd_config /etc/ssh/sshd_config
 systemctl restart sshd.service
 
 [ ! -d $INSTALL_PATH ] && mkdir -p $INSTALL_PATH
