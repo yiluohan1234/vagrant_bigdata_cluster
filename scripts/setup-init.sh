@@ -44,3 +44,19 @@ echo -e "SELINUX=disabled" >> /etc/selinux/config
 
 # 虚拟内存扩容
 echo "vm.max_map_count=262144" >> /etc/sysctl.conf
+
+# 统一缩进为4
+echo "set tabstop=4" > /home/vagrant/.vimrc
+echo "set softtabstop=4" > /home/vagrant/.vimrc
+echo "set shiftwidth=4" > /home/vagrant/.vimrc
+
+# 复制初始化程序到init_shell的bin目录
+log info "copy init shell to ${INIT_SHELL_BIN}"
+cp $INIT_PATH/* ${INIT_SHELL_BIN}
+chmod 777 ${INIT_SHELL_BIN}/jpsall
+chmod 777 ${INIT_SHELL_BIN}/bigstart
+chmod 777 ${INIT_SHELL_BIN}/setssh
+chmod 777 ${INIT_SHELL_BIN}/xsync
+echo "export INIT_SHELL_BIN=${INIT_SHELL_BIN}" >> ${PROFILE}
+echo 'export PATH=${INIT_SHELL_BIN}:$PATH' >> ${PROFILE}
+source ${PROFILE}
