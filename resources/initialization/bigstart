@@ -87,13 +87,37 @@ dfs(){
             ssh hdp101 "$INSTALL_PATH/hadoop/sbin/stop-dfs.sh"
             ;;
         format)
-            sh $INSTALL_PATH/hadoop/bin/hdfs namenode -format
+            ssh hdp101 "$INSTALL_PATH/hadoop/bin/hdfs namenode -format"
+            ;;
+        restart)
+   
             ;;
         *)
             echo $usage
             ;;
     esac
 }
+
+yarn(){
+    usage="Usage: $0 (start|stop)"
+ 
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            ssh hdp102 "$INSTALL_PATH/hadoop/sbin/start-yarn.sh"
+            ;;
+        stop)
+            ssh hdp102 "$INSTALL_PATH/hadoop/sbin/stop-yarn.sh"
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
 hadoop(){
     usage="Usage: $0 (start|stop|format)"
  
@@ -127,25 +151,6 @@ hadoop(){
     esac
 }
 
-yarn(){
-    usage="Usage: $0 (start|stop)"
- 
-    if [ $# -lt 1 ]; then
-        echo $usage
-        exit 1
-    fi
-    case $1 in
-        start)
-            ssh hdp102  "$INSTALL_PATH/hadoop/sbin/start-yarn.sh"
-            ;;
-        stop)
-            ssh hdp102 "$INSTALL_PATH/hadoop/sbin/stop-yarn.sh"
-            ;;
-        *)
-            echo $usage
-            ;;
-    esac
-}
 spark(){
     usage="Usage(spark): $0 (start|stop)"
  
