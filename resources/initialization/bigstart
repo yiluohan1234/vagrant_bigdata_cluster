@@ -142,6 +142,10 @@ hadoop(){
             echo " --------------- 关闭 hdfs ---------------"
             ssh hdp101 "$INSTALL_PATH/hadoop/sbin/stop-dfs.sh"
             ;;
+        restart)
+            hadoop stop
+	    hadoop start
+            ;;
         format)
             ssh hdp101 "$INSTALL_PATH/hadoop/bin/hdfs namenode -format"
             ;;
@@ -492,7 +496,7 @@ args()
 	  yarn)
 		yarn $2
 		;;
-	  hadoop)
+	  hdp)
 		hadoop $2
 		;;
 	  spark)
