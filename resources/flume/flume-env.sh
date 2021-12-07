@@ -24,7 +24,7 @@ export JAVA_HOME=/home/vagrant/apps/java
 
 # Give Flume more memory and pre-allocate, enable remote monitoring via JMX
 # export JAVA_OPTS="-Xms100m -Xmx2000m -Dcom.sun.management.jmxremote"
-export JAVA_OPTS="-Xms100m -Xmx200m -Dcom.sun.management.jmxremote"
+export JAVA_OPTS="-Xms100m -Xmx2000m -Dcom.sun.management.jmxremote"
 
 # Let Flume write raw event data and configuration information to its log files for debugging
 # purposes. Enabling these flags is not recommended in production,
