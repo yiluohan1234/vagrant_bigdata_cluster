@@ -116,7 +116,7 @@ Vagrant.configure("2") do |config|
             #     s.args = "-s #{nodeRange.first} -t #{numNodes} -c #{i}"
             #     s.privileged = false
             # end
-            # node.vm.provision "shell",  path: "scripts/setup-clean.sh", privileged: false
+            node.vm.provision "shell",  path: "scripts/setup-clean.sh", privileged: false
         end
     end
 end 

@@ -90,7 +90,8 @@ dfs(){
             ssh hdp101 "$INSTALL_PATH/hadoop/bin/hdfs namenode -format"
             ;;
         restart)
-   
+            dfs stop
+	    dfs start
             ;;
         *)
             echo $usage
@@ -111,6 +112,10 @@ yarn(){
             ;;
         stop)
             ssh hdp102 "$INSTALL_PATH/hadoop/sbin/stop-yarn.sh"
+            ;;
+        restart)
+            yarn stop
+	    yarn start
             ;;
         *)
             echo $usage
