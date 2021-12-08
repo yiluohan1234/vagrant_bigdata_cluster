@@ -24,6 +24,5 @@ echo 'export PATH=${INIT_SHELL_BIN}:$PATH' >> ${PROFILE}
 source ${PROFILE}
 
 # 删除安装目录
-# rm -rf /home/vagrant/vagrant_bigdata_cluster/resources
-# rm -rf /home/vagrant/vagrant_bigdata_cluster/scripts
-# rm -rf /home/vagrant/downloads
+rm -rf /home/vagrant/vagrant_bigdata_cluster
+rm -rf /home/vagrant/downloads
