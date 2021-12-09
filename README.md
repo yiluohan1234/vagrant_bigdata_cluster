@@ -142,6 +142,19 @@ yarn jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples*.jar pi 2
 
 #### 1）启动
 
+（1）上传并解压spark-3.0.0-bin-without-hadoop.tgz
+
+```
+tar -zxvf /opt/software/spark-3.0.0-bin-without-hadoop.tgz
+```
+
+（2）上传Spark纯净版jar包到HDFS
+
+```
+hadoop fs -mkdir /spark-jars
+hadoop fs -put spark-3.0.0-bin-without-hadoop/jars/* /spark-jars
+```
+
 在`hdp101`机器上执行以下命令。
 
 ```

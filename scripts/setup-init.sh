@@ -19,23 +19,28 @@ yum install -y -q epel-release
 yum install -y -q lsof
 yum install -y -q nc
 yum install -y -q wget
+yum install -y openssl-devel
+yum install -y lzop
+
 yum install -y *unixODBC*
 yum install -y http://opensource.wandisco.com/centos/7/git/x86_64/wandisco-git-release-7-2.noarch.rpm
 yum install -y git
-yum install -y openssl-devel
-yum install -y lzop
 
 #---ssh---
 mv /home/vagrant/vagrant_bigdata_cluster/resources/sshd_config /etc/ssh/sshd_config
 systemctl restart sshd.service
 
+app_log=/opt/module/applog/log/
+
 [ ! -d $INSTALL_PATH ] && mkdir -p $INSTALL_PATH
 [ ! -d $DOWNLOAD_PATH ] && mkdir -p $DOWNLOAD_PATH
 [ ! -d $INIT_SHELL_BIN ] && mkdir -p $INIT_SHELL_BIN
+[ ! -d $app_log ] && mkdir -p $app_log
 
 chown -R vagrant:vagrant $INSTALL_PATH
 chown -R vagrant:vagrant $DOWNLOAD_PATH
 chown -R vagrant:vagrant $INIT_SHELL_BIN
+chown -R vagrant:vagrant $app_log
 
 # 启动elasticsearch需要的设置
 # 更改最大文件句柄数和最大线程数限制

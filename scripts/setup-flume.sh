@@ -13,7 +13,8 @@ setup_flume() {
     local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
 
     log info "copying over $app_name configuration files"
-    cp -f ${res_dir}/flume-env.sh ${conf_dir}
+    cp -f ${res_dir}/* ${conf_dir}
+    mv ${conf_dir}/flume-interceptor-1.0-SNAPSHOT-jar-with-dependencies ${INSTALL_PATH}/flume/lib
     cp ${INSTALL_PATH}/flume/conf/flume-conf.properties.template ${INSTALL_PATH}/flume/conf/flume-conf.properties
 
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then

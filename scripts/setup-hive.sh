@@ -51,11 +51,28 @@ download_hive() {
     rm ${DOWNLOAD_PATH}/${archive}
 }
 
+download_hive_src() {
+    local app_name=$1
+    local app_name_upper=`get_string_upper ${app_name}`
+    local app_version=$(eval echo \$${app_name_upper}_VERSION)
+    local archive=$(eval echo \$${app_name_upper}_SRC_ARCHIVE)
+    local download_url=$(eval echo \$${app_name_upper}_SRC_MIRROR_DOWNLOAD)
+
+    log info "install ${app_name}"
+    if resourceExists ${archive}; then
+        installFromLocal ${archive}
+    else
+        installFromRemote ${archive} ${download_url}
+    fi
+    mv ${INSTALL_PATH}/"apache-${HIVE_VERSION}-src" ${INSTALL_PATH}/${app_name}-src
+    rm ${DOWNLOAD_PATH}/${archive}
+}
+
 install_hive() {
     local app_name="hive"
     log info "setup ${app_name}"
 
-    download_hive ${app_name}
+    download_hive_src ${app_name}
     setup_hive ${app_name}
     setupEnv_app ${app_name}
     if [ "$IS_VAGRANT" != "true" ];then

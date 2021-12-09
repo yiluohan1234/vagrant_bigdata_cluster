@@ -55,9 +55,9 @@ install_spark() {
     download_spark ${app_name}
     setup_spark ${app_name}
     setupEnv_app ${app_name}
-    if [ "${IS_VAGRANT}" != "true" ];then
-        dispatch_app ${app_name}
-    fi
+    # if [ "${IS_VAGRANT}" != "true" ];then
+    #     dispatch_app ${app_name}
+    # fi
     source ${PROFILE}
 }
 

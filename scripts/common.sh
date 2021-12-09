@@ -92,7 +92,9 @@ HADOOP_CONF_DIR=$HADOOP_PREFIX/etc/hadoop
 # https://mirrors.huaweicloud.com/apache/hive/hive-2.3.4/apache-hive-2.3.4-bin.tar.gz
 HIVE_VERSION_NUM=`get_app_version_num $HIVE_VERSION "-" 2`
 HIVE_ARCHIVE=apache-$HIVE_VERSION-bin.tar.gz
+HIVE_SRC_ARCHIVE=apache-$HIVE_VERSION-src.tar.gz
 HIVE_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/hive/$HIVE_VERSION/$HIVE_ARCHIVE
+HIVE_SRC_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/hive/$HIVE_VERSION/$HIVE_ARCHIVE
 HIVE_RES_DIR=$RESOURCE_PATH/hive
 HIVE_CONF_DIR=$INSTALL_PATH/hive/conf
 
