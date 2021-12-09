@@ -32,6 +32,10 @@ setup_#@() {
         #sed -i 's/^node.name: .*/node.name: '$hostname'/' $file_path
         sed -i 's@^network.host: .*@network.host: '${node_host}'@' ${file_path}
     fi
+    
+    if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
+        sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
+    fi
 }
 
 download_#@() {
@@ -73,11 +77,10 @@ install_#@() {
 
     download_#@ ${app_name}
     setup_#@ ${app_name}
-    #setupEnv_app $app_name
-    #dispatch_app $app_name
-    # if [ "${IS_VAGRANT}" != "true" ];then
-    #     dispatch_es ${app_name}
-    # fi
+    setupEnv_app $app_name
+    if [ "${IS_VAGRANT}" != "true" ];then
+        dispatch_#@ ${app_name}
+    fi
     source ${PROFILE}
 }
 

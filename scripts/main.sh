@@ -60,6 +60,9 @@ args()
 {
     if [ $# -ne 0 ]; then
 	case $1 in
+		azkaban)
+		    install_azkaban
+		    ;;
 		canal)
 		    install_canal
 		    ;;

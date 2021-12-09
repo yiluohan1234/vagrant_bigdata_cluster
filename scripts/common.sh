@@ -56,6 +56,7 @@ KIBANA_VERSION=kibana-6.6.0
 REDIS_VERSION=redis-5.0.12
 CANAL_VERSION=canal.deployer-1.1.5
 MAXWELL_VERSION=maxwell-1.25.0
+AZKABAN_VERSION=azkaban-3.84.4
 
 # 获取app的版本号
 # eg: get_app_version_num $HIVE_VERSION "-" 2
@@ -268,6 +269,12 @@ MAXWELL_ARCHIVE=${MAXWELL_VERSION}.tar.gz
 MAXWELL_MIRROR_DOWNLOAD=https://github.com/zendesk/maxwell/releases/download/v1.25.0/maxwell-1.25.0.tar.gz
 MAXWELL_RES_DIR=$RESOURCE_PATH/maxwell
 MAXWELL_CONF_DIR=$INSTALL_PATH/maxwell
+
+# azkaban
+AZKABAN_VERSION_NUM=`get_app_version_num $AZKABAN_VERSION "-" 2`
+AZKABAN_ARCHIVE=${AZKABAN_VERSION_NUM}.tar.gz
+AZKABAN_MIRROR_DOWNLOAD=https://github.com/azkaban/azkaban/archive/AZKABAN_ARCHIVE
+AZKABAN_RES_DIR=$RESOURCE_PATH/azkaban
 
 # log
 DATETIME=`date "+%F %T"`
