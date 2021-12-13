@@ -37,7 +37,7 @@ setup_azkaban() {
     cp -f $res_dir/web/azkaban.properties ${INSTALL_PATH}/azkaban/web-server/conf
     cp -f $res_dir/web/azkaban-users.xml ${INSTALL_PATH}/azkaban/web-server/conf
     echo "memCheck.enabled=false" >> ${INSTALL_PATH}/azkaban/exec-server/plugins/jobtypes/commonprivate.properties
-    rm -rf ${INSTALL_PATH}/${AZKABAN_VERSION}
+    #rm -rf ${INSTALL_PATH}/${AZKABAN_VERSION}
 }
 
 download_azkaban() {
