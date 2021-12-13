@@ -23,20 +23,20 @@ setup_azkaban() {
     mkdir -p ${INSTALL_PATH}/azkaban
 
     tar -zxvf ${INSTALL_PATH}/${AZKABAN_VERSION}/azkaban-web-server/build/distributions/azkaban-web-server-0.1.0-SNAPSHOT.tar.gz -C ${INSTALL_PATH}/azkaban
-    mv ${INSTALL_PATH}/azkaban/azkaban-web-server-0.1.0-SNAPSHOT ${INSTALL_PATH}/azkaban/azkaban-web-server
+    mv ${INSTALL_PATH}/azkaban/azkaban-web-server-0.1.0-SNAPSHOT ${INSTALL_PATH}/azkaban/web-server
 
     tar -zxvf ${INSTALL_PATH}/${AZKABAN_VERSION}/azkaban-exec-server/build/distributions/azkaban-exec-server-0.1.0-SNAPSHOT.tar.gz -C ${INSTALL_PATH}/azkaban
-    mv ${INSTALL_PATH}/azkaban/azkaban-exec-server-0.1.0-SNAPSHOT ${INSTALL_PATH}/azkaban/azkaban-exec-server
+    mv ${INSTALL_PATH}/azkaban/azkaban-exec-server-0.1.0-SNAPSHOT ${INSTALL_PATH}/azkaban/exec-server
 
     tar -zxvf ${INSTALL_PATH}/${AZKABAN_VERSION}/azkaban-db/build/distributions/azkaban-db-0.1.0-SNAPSHOT.tar.gz -C ${INSTALL_PATH}/azkaban
     mv ${INSTALL_PATH}/azkaban/azkaban-db-0.1.0-SNAPSHOT/ ${INSTALL_PATH}/azkaban/azkaban-db
 
     log info "copying over ${app_name} configuration files"
     # 将resources配置文件拷贝到插件的配置目录
-    cp -f $res_dir/exec/azkaban.properties ${INSTALL_PATH}/azkaban/azkaban-exec-server/conf/
-    cp -f $res_dir/web/azkaban.properties ${INSTALL_PATH}/azkaban/azkaban-web-server/conf
-    cp -f $res_dir/web/azkaban-users.xml ${INSTALL_PATH}/azkaban/azkaban-web-server/conf
-    echo "memCheck.enabled=false" >> ${INSTALL_PATH}/azkaban/azkaban-exec-server/plugins/jobtypes/commonprivate.properties
+    cp -f $res_dir/exec/azkaban.properties ${INSTALL_PATH}/azkaban/exec-server/conf/
+    cp -f $res_dir/web/azkaban.properties ${INSTALL_PATH}/azkaban/web-server/conf
+    cp -f $res_dir/web/azkaban-users.xml ${INSTALL_PATH}/azkaban/web-server/conf
+    echo "memCheck.enabled=false" >> ${INSTALL_PATH}/azkaban/exec-server/plugins/jobtypes/commonprivate.properties
 }
 
 download_azkaban() {
