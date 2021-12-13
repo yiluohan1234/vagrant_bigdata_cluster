@@ -21,6 +21,7 @@ CUR=$(cd `dirname 0`;pwd)
 . $CUR/setup-spark.sh
 . $CUR/setup-sqoop.sh
 . $CUR/setup-zookeeper.sh
+. $CUR/setup-azkaban.sh
 #. $CUR/common.sh
 
 
