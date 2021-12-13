@@ -47,7 +47,7 @@ chown -R vagrant:vagrant $app_log
 echo -e "* soft nofile 65536\n* hard nofile 65536\n* soft nproc 131072\n* hard nproc 131072" >> /etc/security/limits.conf
 
 # CentOS取消SELINUX
-echo -e "SELINUX=disabled" >> /etc/selinux/config
-
+#echo -e "SELINUX=disabled" >> /etc/selinux/config
+sed -i "s@^SELINUX=.*@SELINUX=disabled@g" /etc/selinux/config
 # 虚拟内存扩容
 echo "vm.max_map_count=262144" >> /etc/sysctl.conf

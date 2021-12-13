@@ -72,6 +72,9 @@ setup_mysql() {
     # 在数据库建立azkaban数据库和用户
     ${mysql_install_dir}/bin/mysql -uroot -p${dbrootpwd} -e "CREATE DATABASE azkaban;CREATE USER 'azkaban'@'%' IDENTIFIED BY '199037';GRANT SELECT,INSERT,UPDATE,DELETE ON azkaban.* to 'azkaban'@'%' WITH GRANT OPTION;flush privileges;"
     
+    # 在数据库建立azkaban数据库和用户
+    ${mysql_install_dir}/bin/mysql -uroot -p${dbrootpwd} -e "CREATE DATABASE zabbix;CREATE USER 'zabbix'@'%' IDENTIFIED BY '199037';GRANT SELECT,INSERT,UPDATE,DELETE ON zabbix.* to 'zabbix'@'%' WITH GRANT OPTION;flush privileges;"
+    
     service mysqld stop
 }
 

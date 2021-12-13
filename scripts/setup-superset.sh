@@ -35,7 +35,6 @@ setup_conda(){
     conda create --name superset python=3.7
     conda activate superset
 }
-:<<skip
 
 sudo yum install -y gcc gcc-c++ libffi-devel python-devel python-pip python-wheel python-setuptools openssl-devel cyrus-sasl-devel openldap-devel
 
@@ -43,13 +42,13 @@ pip install apache-superset -i https://pypi.douban.com/simple/
 pip install pillow -i https://pypi.douban.com/simple/
 pip install gunicorn -i https://pypi.douban.com/simple/
 
+# 初始化 Supetset 数据库
 superset db upgrade
 export FLASK_APP=superset
+# 创建管理员用户
 superset fab create-admin
-
+# Superset 初始化
 superset init
 
 gunicorn --workers 5 --timeout 120 --bind hdp101:8787  "superset.app:create_app()" --daemon
-skip
-#install_miniconda
-setup_conda
+

@@ -520,6 +520,50 @@ azkaban(){
             ;;
     esac
 }
+
+superset(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            echo "start superset..."
+            source ~/.bashrc
+            superset status >/dev/null 2>&1
+            if [[ $? -eq 0 ]]; then
+                conda activate superset ; gunicorn --workers 5 --timeout 120 --bind hdp101:8787 --daemon 'superset.app:create_app()'
+            else
+                echo "superset正在运行"
+            fi
+            ;;
+        stop)
+            echo "stop superset..."
+            superset status >/dev/null 2>&1
+            if [[ $? -eq 0 ]]; then
+                echo "superset未在运行"
+            else
+                ps -ef | awk '/gunicorn/ && !/awk/{print $2}' | xargs kill -9
+            fi
+            ;;
+        status)
+            result=`ps -ef | awk '/gunicorn/ && !/awk/{print $2}' | wc -l`
+            if [[ $result -eq 0 ]]; then
+                echo "superset未在运行"
+                return 0
+            else
+                echo "superset正在运行"
+                return 1
+            fi
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
 args()
 {
     usage="Usage: $0 (dfs|yarn|zk|kafka|spark|flink|hbase|start|stop)"
@@ -577,6 +621,9 @@ args()
 		;;
 	  azkaban)
 		azkaban $2
+		;;
+	  superset)
+		superset $2
 		;;
 	  *)
 		echo $usage
