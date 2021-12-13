@@ -11,7 +11,7 @@ INSTALL_PATH=/home/vagrant/.apps
 [ ! -d $INSTALL_PATH ] && mkdir -p $INSTALL_PATH
 
 # 组件下载目录
-DOWNLOAD_PATH=/home/vagrant/downloads
+DOWNLOAD_PATH=/home/vagrant/vagrant_bigdata_cluster/downloads
 [ ! -d $DOWNLOAD_PATH ] && mkdir -p $DOWNLOAD_PATH
 
 # 初始化集群目录

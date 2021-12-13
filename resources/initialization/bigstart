@@ -442,6 +442,7 @@ Maxwell(){
             ;;
     esac
 }
+
 hiveserver2(){
     USAGE="Usage: $0 (start|stop|status)"
     PIDFILE=$INSTALL_PATH/hive/hive.pid
@@ -482,6 +483,40 @@ hiveserver2(){
         *)
             echo $USAGE
             exit 1
+            ;;
+    esac
+}
+
+azkaban(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            for i in {"hdp101","hdp102","hdp103"};
+            do
+                echo "============ start $i azkaban-exec-server ============"
+                ssh $i "source /etc/profile;cd $INSTALL_PATH/azkaban/azkaban-exec-server/;bin/start-exec.sh"
+                sleep 10s
+                ssh $i "source /etc/profile;cd $INSTALL_PATH/azkaban/azkaban-exec-server/;curl -G \"$i:\$(<./executor.port)/executor?action=activate\" && echo"
+            done
+            echo "============ start hdp101 azkaban-web-server ============"
+            ssh hdp101 "source /etc/profile;cd $INSTALL_PATH/azkaban/azkaban-web-server/;bin/start-web.sh"
+            ;;
+        stop)
+            echo "============ stop hdp101 azkaban-web-server ============"
+            ssh hdp101 "source /etc/profile;cd $INSTALL_PATH/azkaban/azkaban-web-server/;bin/shutdown-web.sh"
+            for j in {"hdp101","hdp102","hdp103"};
+            do
+                echo "============ stop $j azkaban-exec-server ============"
+                ssh $j  "source /etc/profile;cd $INSTALL_PATH/azkaban/azkaban-exec-server/;bin/shutdown-exec.sh"
+            done
+            ;;
+        *)
+            echo $usage
             ;;
     esac
 }
@@ -539,6 +574,9 @@ args()
 		;;
 	  canal)
 		canal $2
+		;;
+	  azkaban)
+		azkaban $2
 		;;
 	  *)
 		echo $usage

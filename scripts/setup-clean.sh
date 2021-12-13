@@ -25,4 +25,3 @@ source ${PROFILE}
 
 # 删除安装目录
 rm -rf /home/vagrant/vagrant_bigdata_cluster
-rm -rf /home/vagrant/downloads
