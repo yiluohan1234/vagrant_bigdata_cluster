@@ -499,20 +499,20 @@ azkaban(){
             for i in {"hdp101","hdp102","hdp103"};
             do
                 echo "============ start $i azkaban-exec-server ============"
-                ssh $i "source /etc/profile;cd $INSTALL_PATH/azkaban/azkaban-exec-server/;bin/start-exec.sh"
+                ssh $i "source /etc/profile;cd $INSTALL_PATH/azkaban/exec-server/;bin/start-exec.sh"
                 sleep 10s
-                ssh $i "source /etc/profile;cd $INSTALL_PATH/azkaban/azkaban-exec-server/;curl -G \"$i:\$(<./executor.port)/executor?action=activate\" && echo"
+                ssh $i "source /etc/profile;cd $INSTALL_PATH/azkaban/exec-server/;curl -G \"$i:\$(<./executor.port)/executor?action=activate\" && echo"
             done
             echo "============ start hdp101 azkaban-web-server ============"
-            ssh hdp101 "source /etc/profile;cd $INSTALL_PATH/azkaban/azkaban-web-server/;bin/start-web.sh"
+            ssh hdp101 "source /etc/profile;cd $INSTALL_PATH/azkaban/web-server/;bin/start-web.sh"
             ;;
         stop)
             echo "============ stop hdp101 azkaban-web-server ============"
-            ssh hdp101 "source /etc/profile;cd $INSTALL_PATH/azkaban/azkaban-web-server/;bin/shutdown-web.sh"
+            ssh hdp101 "source /etc/profile;cd $INSTALL_PATH/azkaban/web-server/;bin/shutdown-web.sh"
             for j in {"hdp101","hdp102","hdp103"};
             do
                 echo "============ stop $j azkaban-exec-server ============"
-                ssh $j  "source /etc/profile;cd $INSTALL_PATH/azkaban/azkaban-exec-server/;bin/shutdown-exec.sh"
+                ssh $j  "source /etc/profile;cd $INSTALL_PATH/azkaban/exec-server/;bin/shutdown-exec.sh"
             done
             ;;
         *)

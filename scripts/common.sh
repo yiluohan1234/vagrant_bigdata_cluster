@@ -273,7 +273,7 @@ MAXWELL_CONF_DIR=$INSTALL_PATH/maxwell
 # azkaban
 AZKABAN_VERSION_NUM=`get_app_version_num $AZKABAN_VERSION "-" 2`
 AZKABAN_ARCHIVE=${AZKABAN_VERSION_NUM}.tar.gz
-AZKABAN_MIRROR_DOWNLOAD=https://github.com/azkaban/azkaban/archive/AZKABAN_ARCHIVE
+AZKABAN_MIRROR_DOWNLOAD=https://github.com/azkaban/azkaban/archive/$AZKABAN_ARCHIVE
 AZKABAN_RES_DIR=$RESOURCE_PATH/azkaban
 
 # log

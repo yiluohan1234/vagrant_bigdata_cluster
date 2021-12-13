@@ -37,6 +37,7 @@ setup_azkaban() {
     cp -f $res_dir/web/azkaban.properties ${INSTALL_PATH}/azkaban/web-server/conf
     cp -f $res_dir/web/azkaban-users.xml ${INSTALL_PATH}/azkaban/web-server/conf
     echo "memCheck.enabled=false" >> ${INSTALL_PATH}/azkaban/exec-server/plugins/jobtypes/commonprivate.properties
+    rm -rf ${INSTALL_PATH}/${AZKABAN_VERSION}
 }
 
 download_azkaban() {
@@ -52,7 +53,6 @@ download_azkaban() {
     else
         installFromRemote ${archive} ${download_url}
     fi
-    mv ${INSTALL_PATH}/"${app_version}" ${INSTALL_PATH}/
     sudo chown -R vagrant:vagrant ${INSTALL_PATH}/${app_version}
     rm ${DOWNLOAD_PATH}/${archive}
 }
@@ -66,9 +66,9 @@ install_azkaban() {
     download_azkaban ${app_name}
     setup_azkaban ${app_name}
     #setupEnv_app $app_name
-    if [ "${IS_VAGRANT}" != "true" ];then
-        dispatch_app ${app_name}
-    fi
+    # if [ "${IS_VAGRANT}" != "true" ];then
+    #     dispatch_app ${app_name}
+    # fi
     source ${PROFILE}
 }
 
