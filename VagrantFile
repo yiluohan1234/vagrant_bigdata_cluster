@@ -103,7 +103,7 @@ Vagrant.configure("2") do |config|
 
             # node.vm.provision "shell",  path: "scripts/setup-scala.sh", privileged: false
             # node.vm.provision "shell",  path: "scripts/setup-spark.sh", privileged: false
-            # node.vm.provision "shell",  path: "scripts/setup-kafka.sh", privileged: false
+            node.vm.provision "shell",  path: "scripts/setup-kafka.sh", privileged: false
             # node.vm.provision "shell",  path: "scripts/setup-hbase.sh", privileged: false
             # node.vm.provision "shell",  path: "scripts/setup-phoenix.sh", privileged: false
             node.vm.provision "shell",  path: "scripts/setup-flume.sh", privileged: false
