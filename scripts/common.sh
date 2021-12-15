@@ -62,10 +62,13 @@ AZKABAN_VERSION=azkaban-3.84.4
 # 获取app的版本号
 # eg: get_app_version_num $HIVE_VERSION "-" 2
 get_app_version_num() {
-
     local app_version=$1
     local split=$2
     local field_num=$3
+    if [ "x${field_num}" == "x" ];
+    then
+        field_num=2
+    fi
 
     app_num=`echo $app_version|cut -d $split -f $field_num`
     #app_num=`echo $app_version|awk -F $split '{print $2}'`
@@ -119,6 +122,14 @@ SPARK_ARCHIVE=$SPARK_VERSION-bin-hadoop3.2.tgz
 SPARK_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/spark/$SPARK_VERSION/$SPARK_ARCHIVE
 SPARK_RES_DIR=$RESOURCE_PATH/spark
 SPARK_CONF_DIR=$INSTALL_PATH/spark/conf
+
+# scala
+# 支持版本：2.10.X, 2.11.X, 2.12.X, 2.13.X
+SCALA_VERSION_NUM=`get_app_version_num $SCALA_VERSION "-" 2`
+SCALA_ARCHIVE=${SCALA_VERSION}.tgz
+# SCALA_MIRROR_DOWNLOAD=https://downloads.lightbend.com/scala/2.11.12/scala-2.11.12.tgz 
+# https://distfiles.macports.org/scala2.11/scala-2.11.12.tgz
+SCALA_MIRROR_DOWNLOAD=https://distfiles.macports.org/scala${SCALA_VERSION_NUM%.*}/$SCALA_ARCHIVE
 
 # flink
 # 支持版本：具体见下载地址
@@ -191,14 +202,6 @@ PHOENIX_ARCHIVE=${PHOENIX_VERSION}.tar.gz
 PHOENIX_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/phoenix/apache-phoenix-${PHOENIX_VERSION_NUM}-HBase-${HBASE_VERSION_NUM:0:3}/bin/$PHOENIX_ARCHIVE
 PHOENIX_RES_DIR=$RESOURCE_PATH/phoenix
 PHOENIX_CONF_DIR=$INSTALL_PATH/phoenix/conf
-
-# scala
-# 支持版本：2.10.X, 2.11.X, 2.12.X, 2.13.X
-SCALA_VERSION_NUM=`get_app_version_num $SCALA_VERSION "-" 2`
-SCALA_ARCHIVE=${SCALA_VERSION}.tgz
-# SCALA_MIRROR_DOWNLOAD=https://downloads.lightbend.com/scala/2.11.12/scala-2.11.12.tgz 
-# https://distfiles.macports.org/scala2.11/scala-2.11.12.tgz
-SCALA_MIRROR_DOWNLOAD=https://distfiles.macports.org/scala${SCALA_VERSION_NUM%.*}/$SCALA_ARCHIVE
 
 # mysql_connector
 # 支持版本：具体见下载地址
