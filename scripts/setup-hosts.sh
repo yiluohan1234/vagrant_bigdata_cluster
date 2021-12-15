@@ -35,8 +35,4 @@ install_hosts() {
 log info "setup centos hosts file"
 if [ "${IS_VAGRANT}" == "true" ];then
     install_hosts $@
-<<<<<<< HEAD
 fi
-=======
-fi
->>>>>>> v3.1.3
