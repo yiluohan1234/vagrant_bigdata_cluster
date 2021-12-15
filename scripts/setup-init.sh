@@ -23,6 +23,8 @@ yum install -y openssl-devel
 yum install -y lzop
 
 # git升级
+yum -y install https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.7-1.x86_64.rpm
+yum install -y git
 
 #---ssh---
 mv /home/vagrant/vagrant_bigdata_cluster/resources/sshd_config /etc/ssh/sshd_config
