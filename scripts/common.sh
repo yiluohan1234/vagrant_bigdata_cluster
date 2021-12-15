@@ -7,8 +7,9 @@ IS_VAGRANT="true"
 RESOURCE_PATH=/home/vagrant/vagrant_bigdata_cluster/resources
 
 # 安装目录
-INSTALL_PATH=/home/vagrant/.apps
+INSTALL_PATH=/opt/module
 [ ! -d $INSTALL_PATH ] && mkdir -p $INSTALL_PATH
+chown -R vagrant:vagrant $INSTALL_PATH
 
 # 组件下载目录
 DOWNLOAD_PATH=/home/vagrant/vagrant_bigdata_cluster/downloads
