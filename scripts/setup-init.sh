@@ -31,17 +31,17 @@ yum install -y git
 mv /home/vagrant/vagrant_bigdata_cluster/resources/sshd_config /etc/ssh/sshd_config
 systemctl restart sshd.service
 
-app_log=/opt/module/applog/log/
+APP_LOG=/opt/module/applog/log/
 
 [ ! -d $INSTALL_PATH ] && mkdir -p $INSTALL_PATH
 [ ! -d $DOWNLOAD_PATH ] && mkdir -p $DOWNLOAD_PATH
 [ ! -d $INIT_SHELL_BIN ] && mkdir -p $INIT_SHELL_BIN
-[ ! -d $app_log ] && mkdir -p $app_log
+[ ! -d $APP_LOG ] && mkdir -p $APP_LOG
 
 chown -R vagrant:vagrant $INSTALL_PATH
 chown -R vagrant:vagrant $DOWNLOAD_PATH
 chown -R vagrant:vagrant $INIT_SHELL_BIN
-chown -R vagrant:vagrant $app_log
+chown -R vagrant:vagrant $APP_LOG
 
 # 启动elasticsearch需要的设置
 # 更改最大文件句柄数和最大线程数限制
