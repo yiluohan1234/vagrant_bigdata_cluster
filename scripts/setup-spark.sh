@@ -1,11 +1,7 @@
 #!/bin/bash
 #set -x
 if [ "${IS_VAGRANT}" == "true" ];then
-<<<<<<< HEAD
-    source "/vagrant/scripts/common.sh"
-=======
     source "/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
->>>>>>> v3.1.3
 else
     source "/home/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
 fi
@@ -67,8 +63,4 @@ install_spark() {
 
 if [ "${IS_VAGRANT}" == "true" ];then
     install_spark
-<<<<<<< HEAD
 fi
-=======
-fi
->>>>>>> v3.1.3
