@@ -145,6 +145,7 @@ yarn jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples*.jar pi 2
 （1）上传并解压spark-3.0.0-bin-without-hadoop.tgz
 
 ```
+wget https://mirrors.huaweicloud.com/apache/spark/spark-3.0.0/spark-3.0.0-bin-without-hadoop.tgz
 tar -zxvf /opt/software/spark-3.0.0-bin-without-hadoop.tgz
 ```
 

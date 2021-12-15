@@ -22,8 +22,8 @@ setup_hive() {
     # 安装phoenix后hive启动失败
     #rm ${INSTALL_PATH}/hive/lib/icu4j-4.8.1.jar
     # java.lang.NoSuchMethodError: com.google.common.base.Preconditions.checkArgument
-    rm ${INSTALL_PATH}/hive/lib/guava-19.0.jar
-    cp ${INSTALL_PATH}/hadoop/share/hadoop/common/lib/guava-27.0-jre.jar ${INSTALL_PATH}/hive/lib
+    #rm ${INSTALL_PATH}/hive/lib/guava-19.0.jar
+    #cp ${INSTALL_PATH}/hadoop/share/hadoop/common/lib/guava-27.0-jre.jar ${INSTALL_PATH}/hive/lib
     # 解决log4j冲突
     mv ${INSTALL_PATH}/hive/lib/log4j-slf4j-impl-2.10.0.jar ${INSTALL_PATH}/hive/lib/log4j-slf4j-impl-2.10.0.jar_bak
     
@@ -72,7 +72,7 @@ install_hive() {
     local app_name="hive"
     log info "setup ${app_name}"
 
-    download_hive_src ${app_name}
+    download_hive ${app_name}
     setup_hive ${app_name}
     setupEnv_app ${app_name}
     if [ "$IS_VAGRANT" != "true" ];then
