@@ -1,9 +1,9 @@
 #!/bin/bash
 #set -x
 if [ "${IS_VAGRANT}" == "true" ];then
-    source "/vagrant/scripts/common.sh"
+    source "/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
 else
-    source "/home/vagrant/scripts/common.sh"
+    source "/home/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
 fi
 
 setup_hbase() {
@@ -38,6 +38,7 @@ download_hbase() {
     mv ${INSTALL_PATH}/"${app_version}" ${INSTALL_PATH}/${app_name}
     sudo chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
     rm ${DOWNLOAD_PATH}/${archive}
+    mv ${INSTALL_PATH}/hbase/lib/slf4j-log4j12-1.7.25.jar ${INSTALL_PATH}/hbase/lib/slf4j-log4j12-1.7.25.jar_bak
 }
 
 install_hbase() {

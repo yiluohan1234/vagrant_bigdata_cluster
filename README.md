@@ -35,14 +35,14 @@
 
 ```
 Java: 1.8
-Hadoop: 2.7.6
+Hadoop: 3.1.3
 Hive: 2.3.4
-Hbase: 1.2.6
+Hbase: 2.0.5
 Spark: 2.4.6
 Flink: 1.12.4
-Zookeeper: 3.4.10
-Kafka: 0.11.0.3
-Flume: 1.6.0
+Zookeeper: 3.5.7
+Kafka: 2.4.1
+Flume: 1.9.0
 Scala: 2.11.12
 Maven: 3.2.5
 Sqoop: 1.4.7
@@ -141,6 +141,20 @@ yarn jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples*.jar pi 2
 ### 3、启动Spark（Standalone ）与测试
 
 #### 1）启动
+
+（1）上传并解压spark-3.0.0-bin-without-hadoop.tgz
+
+```
+wget https://mirrors.huaweicloud.com/apache/spark/spark-3.0.0/spark-3.0.0-bin-without-hadoop.tgz
+tar -zxvf /opt/software/spark-3.0.0-bin-without-hadoop.tgz
+```
+
+（2）上传Spark纯净版jar包到HDFS
+
+```
+hadoop fs -mkdir /spark-jars
+hadoop fs -put spark-3.0.0-bin-without-hadoop/jars/* /spark-jars
+```
 
 在`hdp101`机器上执行以下命令。
 
@@ -252,6 +266,36 @@ OK
 4       zhaoliu
 Time taken: 3.301 seconds, Fetched: 4 row(s)
 ```
+bigstart es start(或stop)
+```
+
+jpsall查看一下进程：
+
+```
+[vagrant@hdp101 ~]$ jpsall 
+--------------------- hdp101节点 ---------------------
+3185 Kafka
+2899 QuorumPeerMain
+3365 Elasticsearch
+--------------------- hdp102节点 ---------------------
+25511 QuorumPeerMain
+25800 Kafka
+25964 Elasticsearch
+--------------------- hdp103节点 ---------------------
+26276 Kafka
+26440 Elasticsearch
+25993 QuorumPeerMain
+```
+
+### 7、启动Kibana
+
+在`hdp101`节点登录执行以下命令。
+
+```
+bigstart kibana start(或stop)
+```
+
+
 
 ### 6、启动Elasticsearch
 
@@ -293,9 +337,9 @@ bigstart kibana start(或stop)
 
 可以通过以下链接访问大数据组件的web页面。
 
-[HDFS](http://hdp101:50070)
+[HDFS](http://hdp101:9870)
 
-[ResourceManager](http://hdp101:8088)
+[ResourceManager](http://hdp102:8088)
 
 [JobHistory](http://hdp101:19888/jobhistory)
 

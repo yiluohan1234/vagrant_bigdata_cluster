@@ -1,8 +1,8 @@
 #!/bin/bash
 if [ "${IS_VAGRANT}" == "true" ];then
-    source "/vagrant/scripts/common.sh"
+    source "/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
 else
-    source "/home/vagrant/scripts/common.sh"
+    source "/home/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
 fi
 
 TOTAL_NODES=3
@@ -35,4 +35,8 @@ install_hosts() {
 log info "setup centos hosts file"
 if [ "${IS_VAGRANT}" == "true" ];then
     install_hosts $@
+<<<<<<< HEAD
 fi
+=======
+fi
+>>>>>>> v3.1.3

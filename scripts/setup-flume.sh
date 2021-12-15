@@ -1,9 +1,9 @@
 #!/bin/bash
 #set -x
 if [ "$IS_VAGRANT" == "true" ];then
-    source "/vagrant/scripts/common.sh"
+    source "/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
 else
-    source "/home/vagrant/scripts/common.sh"
+    source "/home/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
 fi
 
 setup_flume() {
@@ -13,7 +13,8 @@ setup_flume() {
     local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
 
     log info "copying over $app_name configuration files"
-    cp -f ${res_dir}/flume-env.sh ${conf_dir}
+    cp -f ${res_dir}/* ${conf_dir}
+    mv ${conf_dir}/flume-interceptor-1.0-SNAPSHOT-jar-with-dependencies.jar ${INSTALL_PATH}/flume/lib
     cp ${INSTALL_PATH}/flume/conf/flume-conf.properties.template ${INSTALL_PATH}/flume/conf/flume-conf.properties
 
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
@@ -37,7 +38,8 @@ download_flume() {
     mv ${INSTALL_PATH}/"apache-${FLUME_VERSION}-bin" ${INSTALL_PATH}/${app_name}
     sudo chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
     rm ${DOWNLOAD_PATH}/${archive}
-    
+    # 将lib文件夹下的guava-11.0.2.jar删除以兼容Hadoop-3.1.3
+    rm ${INSTALL_PATH}/${app_name}/lib/guava-11.0.2.jar
 }
 
 install_flume() {

@@ -1,19 +1,25 @@
 #!/bin/bash
+
+# 是否用vagrant安装集群
+IS_VAGRANT="true"
+
 # 配置文件目录
-RESOURCE_PATH=/home/vagrant/resources
+RESOURCE_PATH=/home/vagrant/vagrant_bigdata_cluster/resources
 
 # 安装目录
-INSTALL_PATH=/home/vagrant/.apps
+INSTALL_PATH=/opt/module
+[ ! -d $INSTALL_PATH ] && mkdir -p $INSTALL_PATH
+chown -R vagrant:vagrant $INSTALL_PATH
 
 # 组件下载目录
-DOWNLOAD_PATH=/home/vagrant/downloads
+DOWNLOAD_PATH=/home/vagrant/vagrant_bigdata_cluster/downloads
+[ ! -d $DOWNLOAD_PATH ] && mkdir -p $DOWNLOAD_PATH
 
 # 初始化集群目录
 INIT_PATH=$RESOURCE_PATH/initialization
 INIT_SHELL_BIN=$INSTALL_PATH/init_shell/bin
+[ ! -d $INIT_SHELL_BIN ] && mkdir -p $INIT_SHELL_BIN
 
-# 是否用vagrant安装集群
-IS_VAGRANT="true"
 
 # 环境变量配置文件
 PROFILE=~/.bashrc
@@ -22,6 +28,8 @@ PROFILE=~/.bashrc
 # 1:https://archive.apache.org/dist
 # 2:https://mirrors.huaweicloud.com/apache
 DOWNLOAD_REPO=https://mirrors.huaweicloud.com/apache
+DOWNLOAD_REPO_APACHE=https://archive.apache.org/dist
+
 # hostname
 HOSTNAME=("hdp101" "hdp102" "hdp103")
 
@@ -29,36 +37,41 @@ HOSTNAME=("hdp101" "hdp102" "hdp103")
 SSH_CONF=/home/vagrant/resources/ssh
 
 # app版本
-HADOOP_VERSION=hadoop-2.7.6
-HIVE_VERSION=hive-2.3.4
-HBASE_VERSION=hbase-1.2.6
-SPARK_VERSION=spark-2.4.6
+HADOOP_VERSION=hadoop-3.1.3
+HIVE_VERSION=hive-3.1.2
+HBASE_VERSION=hbase-2.0.5
+SPARK_VERSION=spark-3.0.0
 FLINK_VERSION=flink-1.12.4
-SQOOP_VERSION=sqoop-1.4.7
-ZOOKEEPER_VERSION=zookeeper-3.4.10
-KAFKA_VERSION=kafka_2.11-0.11.0.3
-FLUME_VERSION=flume-1.6.0
-SCALA_VERSION=scala-2.11.12
+SQOOP_VERSION=sqoop-1.4.6
+ZOOKEEPER_VERSION=zookeeper-3.5.7
+KAFKA_VERSION=kafka_2.11-2.4.1
+FLUME_VERSION=flume-1.9.0
+SCALA_VERSION=scala-2.12.10
 MAVEN_VERSION=apache-maven-3.2.5
 MYSQL_CONNECTOR_VERSION=mysql-connector-java-5.1.49
 MYSQL_VERSION=mysql-5.7.35
-PHOENIX_VERSION=apache-phoenix-4.14.0-HBase-1.2-bin
+PHOENIX_VERSION=apache-phoenix-5.0.0-HBase-2.0-bin
 NGINX_VERSION=nginx-1.18.0
 ELASTICSEARCH_VERSION=elasticsearch-6.6.0
 KIBANA_VERSION=kibana-6.6.0
 REDIS_VERSION=redis-5.0.12
 CANAL_VERSION=canal.deployer-1.1.5
 MAXWELL_VERSION=maxwell-1.25.0
+AZKABAN_VERSION=azkaban-3.84.4
 
 # 获取app的版本号
 # eg: get_app_version_num $HIVE_VERSION "-" 2
 get_app_version_num() {
-
     local app_version=$1
     local split=$2
     local field_num=$3
+    if [ "x${field_num}" == "x" ];
+    then
+        field_num=2
+    fi
 
     app_num=`echo $app_version|cut -d $split -f $field_num`
+    #app_num=`echo $app_version|awk -F $split '{print $2}'`
     echo $app_num
 }
 
@@ -84,7 +97,9 @@ HADOOP_CONF_DIR=$HADOOP_PREFIX/etc/hadoop
 # https://mirrors.huaweicloud.com/apache/hive/hive-2.3.4/apache-hive-2.3.4-bin.tar.gz
 HIVE_VERSION_NUM=`get_app_version_num $HIVE_VERSION "-" 2`
 HIVE_ARCHIVE=apache-$HIVE_VERSION-bin.tar.gz
+HIVE_SRC_ARCHIVE=apache-$HIVE_VERSION-src.tar.gz
 HIVE_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/hive/$HIVE_VERSION/$HIVE_ARCHIVE
+HIVE_SRC_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/hive/$HIVE_VERSION/$HIVE_ARCHIVE
 HIVE_RES_DIR=$RESOURCE_PATH/hive
 HIVE_CONF_DIR=$INSTALL_PATH/hive/conf
 
@@ -103,18 +118,26 @@ HBASE_CONF_DIR=$INSTALL_PATH/hbase/conf
 #         https://archive.apache.org/dist/spark/spark-2.4.6/spark-2.4.6-bin-hadoop2.7.tgz
 # https://mirrors.huaweicloud.com/apache/spark/spark-2.4.6/spark-2.4.6-bin-hadoop2.7.tgz
 SPARK_VERSION_NUM=`get_app_version_num $SPARK_VERSION "-" 2`
-SPARK_ARCHIVE=$SPARK_VERSION-bin-hadoop2.7.tgz
+SPARK_ARCHIVE=$SPARK_VERSION-bin-hadoop3.2.tgz
 SPARK_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/spark/$SPARK_VERSION/$SPARK_ARCHIVE
 SPARK_RES_DIR=$RESOURCE_PATH/spark
 SPARK_CONF_DIR=$INSTALL_PATH/spark/conf
+
+# scala
+# 支持版本：2.10.X, 2.11.X, 2.12.X, 2.13.X
+SCALA_VERSION_NUM=`get_app_version_num $SCALA_VERSION "-" 2`
+SCALA_ARCHIVE=${SCALA_VERSION}.tgz
+# SCALA_MIRROR_DOWNLOAD=https://downloads.lightbend.com/scala/2.11.12/scala-2.11.12.tgz 
+# https://distfiles.macports.org/scala2.11/scala-2.11.12.tgz
+SCALA_MIRROR_DOWNLOAD=https://distfiles.macports.org/scala${SCALA_VERSION_NUM%.*}/$SCALA_ARCHIVE
 
 # flink
 # 支持版本：具体见下载地址
 #         https://archive.apache.org/dist/flink/flink-1.12.4/flink-1.12.4-bin-scala_2.11.tgz
 # https://mirrors.huaweicloud.com/apache/flink/flink-1.12.4/flink-1.12.4-bin-scala_2.11.tgz
 FLINK_VERSION_NUM=`get_app_version_num $FLINK_VERSION "-" 2`
-FLINK_ARCHIVE=$FLINK_VERSION-bin-scala_2.11.tgz
-FLINK_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/flink/$FLINK_VERSION/$FLINK_VERSION-bin-scala_2.11.tgz
+FLINK_ARCHIVE=$FLINK_VERSION-bin-scala_${SCALA_VERSION_NUM%.*}.tgz
+FLINK_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/flink/$FLINK_VERSION/$FLINK_VERSION-bin-scala_${SCALA_VERSION_NUM%.*}.tgz
 FLINK_RES_DIR=$RESOURCE_PATH/flink
 FLINK_CONF_DIR=$INSTALL_PATH/flink/conf
 
@@ -123,8 +146,8 @@ FLINK_CONF_DIR=$INSTALL_PATH/flink/conf
 #         https://archive.apache.org/dist/sqoop/1.4.7/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
 # https://mirrors.huaweicloud.com/apache/sqoop/1.4.7/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
 SQOOP_VERSION_NUM=`get_app_version_num $SQOOP_VERSION "-" 2`
-SQOOP_ARCHIVE=${SQOOP_VERSION}.bin__hadoop-2.6.0.tar.gz
-SQOOP_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/sqoop/$SQOOP_VERSION_NUM/$SQOOP_ARCHIVE
+SQOOP_ARCHIVE=${SQOOP_VERSION}.bin__hadoop-2.0.4-alpha.tar.gz
+SQOOP_MIRROR_DOWNLOAD=$DOWNLOAD_REPO_APACHE/sqoop/$SQOOP_VERSION_NUM/$SQOOP_ARCHIVE
 SQOOP_RES_DIR=$RESOURCE_PATH/sqoop
 SQOOP_CONF_DIR=$INSTALL_PATH/sqoop/conf
 
@@ -132,8 +155,9 @@ SQOOP_CONF_DIR=$INSTALL_PATH/sqoop/conf
 # 支持版本：3.7.0, 3.6.3-3.6.0, 3.5.9-3.5.5, 3.4.14-3.4.0, 3.3.6-3.3.3
 #         https://archive.apache.org/dist/zookeeper/zookeeper-3.4.10/zookeeper-3.4.10.tar.gz
 # https://mirrors.huaweicloud.com/apache/zookeeper/zookeeper-3.4.10/zookeeper-3.4.10.tar.gz
+# https://mirrors.huaweicloud.com/apache/zookeeper/zookeeper-3.5.7/apache-zookeeper-3.5.7.tar.gz
 ZOOKEEPER_VERSION_NUM=`get_app_version_num $ZOOKEEPER_VERSION "-" 2`
-ZOOKEEPER_ARCHIVE=${ZOOKEEPER_VERSION}.tar.gz
+ZOOKEEPER_ARCHIVE=apache-${ZOOKEEPER_VERSION}-bin.tar.gz
 ZOOKEEPER_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/zookeeper/$ZOOKEEPER_VERSION/$ZOOKEEPER_ARCHIVE
 ZOOKEEPER_RES_DIR=$RESOURCE_PATH/zookeeper
 ZOOKEEPER_CONF_DIR=$INSTALL_PATH/zookeeper/conf
@@ -178,14 +202,6 @@ PHOENIX_ARCHIVE=${PHOENIX_VERSION}.tar.gz
 PHOENIX_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/phoenix/apache-phoenix-${PHOENIX_VERSION_NUM}-HBase-${HBASE_VERSION_NUM:0:3}/bin/$PHOENIX_ARCHIVE
 PHOENIX_RES_DIR=$RESOURCE_PATH/phoenix
 PHOENIX_CONF_DIR=$INSTALL_PATH/phoenix/conf
-
-# scala
-# 支持版本：2.10.X, 2.11.X, 2.12.X, 2.13.X
-SCALA_VERSION_NUM=`get_app_version_num $SCALA_VERSION "-" 2`
-SCALA_ARCHIVE=${SCALA_VERSION}.tgz
-# SCALA_MIRROR_DOWNLOAD=https://downloads.lightbend.com/scala/2.11.12/scala-2.11.12.tgz 
-# https://distfiles.macports.org/scala2.11/scala-2.11.12.tgz
-SCALA_MIRROR_DOWNLOAD=https://distfiles.macports.org/scala${SCALA_VERSION_NUM%.*}/$SCALA_ARCHIVE
 
 # mysql_connector
 # 支持版本：具体见下载地址
@@ -257,6 +273,12 @@ MAXWELL_ARCHIVE=${MAXWELL_VERSION}.tar.gz
 MAXWELL_MIRROR_DOWNLOAD=https://github.com/zendesk/maxwell/releases/download/v1.25.0/maxwell-1.25.0.tar.gz
 MAXWELL_RES_DIR=$RESOURCE_PATH/maxwell
 MAXWELL_CONF_DIR=$INSTALL_PATH/maxwell
+
+# azkaban
+AZKABAN_VERSION_NUM=`get_app_version_num $AZKABAN_VERSION "-" 2`
+AZKABAN_ARCHIVE=${AZKABAN_VERSION_NUM}.tar.gz
+AZKABAN_MIRROR_DOWNLOAD=https://github.com/azkaban/azkaban/archive/$AZKABAN_ARCHIVE
+AZKABAN_RES_DIR=$RESOURCE_PATH/azkaban
 
 # log
 DATETIME=`date "+%F %T"`

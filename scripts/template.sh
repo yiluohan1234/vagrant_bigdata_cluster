@@ -2,9 +2,9 @@
 #set -x
 
 if [ "$IS_VAGRANT" == "true" ];then
-    source "/vagrant/scripts/common.sh"
+    source "/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
 else
-    source "/home/vagrant/scripts/common.sh"
+    source "/home/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
 fi
 
 
@@ -31,6 +31,10 @@ setup_#@() {
         echo "------modify $i server.properties-------"
         #sed -i 's/^node.name: .*/node.name: '$hostname'/' $file_path
         sed -i 's@^network.host: .*@network.host: '${node_host}'@' ${file_path}
+    fi
+    
+    if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
+        sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
     fi
 }
 
@@ -73,11 +77,10 @@ install_#@() {
 
     download_#@ ${app_name}
     setup_#@ ${app_name}
-    #setupEnv_app $app_name
-    #dispatch_app $app_name
-    # if [ "${IS_VAGRANT}" != "true" ];then
-    #     dispatch_es ${app_name}
-    # fi
+    setupEnv_app $app_name
+    if [ "${IS_VAGRANT}" != "true" ];then
+        dispatch_#@ ${app_name}
+    fi
     source ${PROFILE}
 }
 

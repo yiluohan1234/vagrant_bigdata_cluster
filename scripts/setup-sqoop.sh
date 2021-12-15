@@ -1,9 +1,9 @@
 #!/bin/bash
 #set -x
 if [ "${IS_VAGRANT}" == "true" ];then
-    source "/vagrant/scripts/common.sh"
+    source "/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
 else
-    source "/home/vagrant/scripts/common.sh"
+    source "/home/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
 fi
 
 setup_sqoop() {
@@ -14,6 +14,8 @@ setup_sqoop() {
 
     log info "copying over ${app_name} configuration files"
     cp -f ${res_dir}/* ${conf_dir}
+
+    wget_mysql_connector ${INSTALL_PATH}/sqoop/lib
 
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
@@ -33,7 +35,11 @@ download_sqoop() {
     else
         installFromRemote ${archive} ${download_url}
     fi
+<<<<<<< HEAD
     mv ${INSTALL_PATH}/"${SQOOP_VERSION}.bin__hadoop-2.6.0" ${INSTALL_PATH}/${app_name}
+=======
+    mv ${INSTALL_PATH}/"${SQOOP_VERSION}.bin__hadoop-2.0.4-alpha" ${INSTALL_PATH}/${app_name}
+>>>>>>> v3.1.3
     sudo chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
     rm ${DOWNLOAD_PATH}/${archive}
 }

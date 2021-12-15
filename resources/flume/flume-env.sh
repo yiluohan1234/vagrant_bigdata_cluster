@@ -19,14 +19,20 @@
 
 # Enviroment variables can be set here.
 
-# export JAVA_HOME=/usr/lib/jvm/java-6-sun
+# export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+export JAVA_HOME=/home/vagrant/apps/java
 
 # Give Flume more memory and pre-allocate, enable remote monitoring via JMX
 # export JAVA_OPTS="-Xms100m -Xmx2000m -Dcom.sun.management.jmxremote"
+export JAVA_OPTS="-Xms100m -Xmx2000m -Dcom.sun.management.jmxremote"
+
+# Let Flume write raw event data and configuration information to its log files for debugging
+# purposes. Enabling these flags is not recommended in production,
+# as it may result in logging sensitive user information or encryption secrets.
+# export JAVA_OPTS="$JAVA_OPTS -Dorg.apache.flume.log.rawdata=true -Dorg.apache.flume.log.printconfig=true "
 
 # Note that the Flume conf directory is always included in the classpath.
 #FLUME_CLASSPATH=""
 
-export JAVA_HOME=/home/vagrant/apps/java
-export JAVA_OPTS="-Xms100m -Xmx200m -Dcom.sun.management.jmxremote"
-export HADOOP_HOME=/home/vagrant/apps/hadoop
+#export HADOOP_HOME=/home/vagrant/apps/hadoop
+

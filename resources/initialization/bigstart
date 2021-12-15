@@ -1,5 +1,5 @@
 #!/bin/bash
-INSTALL_PATH=/home/vagrant/.apps
+INSTALL_PATH=/home/vagrant/apps
 zk(){
     usage="Usage: $0 (start|stop|status)"
  
@@ -81,13 +81,17 @@ dfs(){
     fi
     case $1 in
         start)
-            sh $INSTALL_PATH/hadoop/sbin/start-dfs.sh
+            ssh hdp101 "$INSTALL_PATH/hadoop/sbin/start-dfs.sh"
             ;;
         stop)
-            sh $INSTALL_PATH/hadoop/sbin/stop-dfs.sh
+            ssh hdp101 "$INSTALL_PATH/hadoop/sbin/stop-dfs.sh"
             ;;
         format)
-            sh $INSTALL_PATH/hadoop/bin/hdfs namenode -format
+            ssh hdp101 "$INSTALL_PATH/hadoop/bin/hdfs namenode -format"
+            ;;
+        restart)
+            dfs stop
+	    dfs start
             ;;
         *)
             echo $usage
@@ -103,16 +107,58 @@ yarn(){
     fi
     case $1 in
         start)
-            sh $INSTALL_PATH/hadoop/sbin/start-yarn.sh
+            ssh hdp102 "$INSTALL_PATH/hadoop/sbin/start-yarn.sh"
             ;;
         stop)
-            sh $INSTALL_PATH/hadoop/sbin/stop-yarn.sh
+            ssh hdp102 "$INSTALL_PATH/hadoop/sbin/stop-yarn.sh"
+            ;;
+        restart)
+            yarn stop
+	    yarn start
             ;;
         *)
             echo $usage
             ;;
     esac
 }
+
+hadoop(){
+    usage="Usage: $0 (start|stop|format)"
+ 
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            echo " --------------- 启动 hdfs ---------------"
+            ssh hdp101 "$INSTALL_PATH/hadoop/sbin/start-dfs.sh"
+            echo " --------------- 启动 yarn ---------------"
+            ssh hdp102 "$INSTALL_PATH/hadoop/sbin/start-yarn.sh"
+            echo " --------------- 启动 historyserver ---------------"
+            ssh hdp101 "$INSTALL_PATH/hadoop/bin/mapred --daemon start historyserver"
+            ;;
+        stop)
+            echo " --------------- 关闭 historyserver ---------------"
+            ssh hdp101 "$INSTALL_PATH/hadoop/bin/mapred --daemon stop historyserver"
+            echo " --------------- 关闭 yarn ---------------"
+            ssh hdp102 "$INSTALL_PATH/hadoop/sbin/stop-yarn.sh"
+            echo " --------------- 关闭 hdfs ---------------"
+            ssh hdp101 "$INSTALL_PATH/hadoop/sbin/stop-dfs.sh"
+            ;;
+        restart)
+            hadoop stop
+	    hadoop start
+            ;;
+        format)
+            ssh hdp101 "$INSTALL_PATH/hadoop/bin/hdfs namenode -format"
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
 spark(){
     usage="Usage(spark): $0 (start|stop)"
  
@@ -183,8 +229,6 @@ kibana(){
             echo $! > $PIDFILE
             ;;
         stop)
-            #ps -ef |grep kibana |grep -v grep |awk '{print $2}' |xargs kill
-            #kill -9 $(ps -ef |grep kibana| grep -v grep| awk '{print $2}')
             if [ -f "$PIDFILE" ] ; then
                 echo "Stoping kibana ..."    
                 kill `cat $PIDFILE`
@@ -318,12 +362,8 @@ rt_logger(){
                     $INSTALL_PATH/nginx/sbin/nginx
                 fi
             done
-            #echo "============start NGINX============"
-            #$INSTALL_PATH/nginx/sbin/nginx
             ;;
         stop)
-            #echo "============NGINX============"
-            #nginx -s stop
             for j in {"hdp101","hdp102","hdp103"};
             do
                 echo "-----$1 $j rt_logger-------"
@@ -446,6 +486,83 @@ hiveserver2(){
     esac
 }
 
+azkaban(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            for i in {"hdp101","hdp102","hdp103"};
+            do
+                echo "============ start $i azkaban-exec-server ============"
+                ssh $i "source /etc/profile;cd $INSTALL_PATH/azkaban/exec-server/;bin/start-exec.sh"
+                sleep 10s
+                ssh $i "source /etc/profile;cd $INSTALL_PATH/azkaban/exec-server/;curl -G \"$i:\$(<./executor.port)/executor?action=activate\" && echo"
+            done
+            echo "============ start hdp101 azkaban-web-server ============"
+            ssh hdp101 "source /etc/profile;cd $INSTALL_PATH/azkaban/web-server/;bin/start-web.sh"
+            ;;
+        stop)
+            echo "============ stop hdp101 azkaban-web-server ============"
+            ssh hdp101 "source /etc/profile;cd $INSTALL_PATH/azkaban/web-server/;bin/shutdown-web.sh"
+            for j in {"hdp101","hdp102","hdp103"};
+            do
+                echo "============ stop $j azkaban-exec-server ============"
+                ssh $j  "source /etc/profile;cd $INSTALL_PATH/azkaban/exec-server/;bin/shutdown-exec.sh"
+            done
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+superset(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            echo "start superset..."
+            source ~/.bashrc
+            superset status >/dev/null 2>&1
+            if [[ $? -eq 0 ]]; then
+                conda activate superset ; gunicorn --workers 5 --timeout 120 --bind hdp101:8787 --daemon 'superset.app:create_app()'
+            else
+                echo "superset正在运行"
+            fi
+            ;;
+        stop)
+            echo "stop superset..."
+            superset status >/dev/null 2>&1
+            if [[ $? -eq 0 ]]; then
+                echo "superset未在运行"
+            else
+                ps -ef | awk '/gunicorn/ && !/awk/{print $2}' | xargs kill -9
+            fi
+            ;;
+        status)
+            result=`ps -ef | awk '/gunicorn/ && !/awk/{print $2}' | wc -l`
+            if [[ $result -eq 0 ]]; then
+                echo "superset未在运行"
+                return 0
+            else
+                echo "superset正在运行"
+                return 1
+            fi
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
 args()
 {
     usage="Usage: $0 (dfs|yarn|zk|kafka|spark|flink|hbase|start|stop)"
@@ -461,6 +578,9 @@ args()
 		;;
 	  yarn)
 		yarn $2
+		;;
+	  hdp)
+		hadoop $2
 		;;
 	  spark)
 		spark $2
@@ -489,14 +609,20 @@ args()
 	  logger)
 		rt_logger $2
 		;;
+	  hive)
+		hiveserver2 $2
+		;;
 	  maxwell)
 		Maxwell $2
 		;;
 	  canal)
 		canal $2
 		;;
-	  hive)
-		hiveserver2 $2
+	  azkaban)
+		azkaban $2
+		;;
+	  superset)
+		superset $2
 		;;
 	  *)
 		echo $usage
