@@ -46,7 +46,7 @@ SQOOP_VERSION=sqoop-1.4.6
 ZOOKEEPER_VERSION=zookeeper-3.5.7
 KAFKA_VERSION=kafka_2.11-2.4.1
 FLUME_VERSION=flume-1.9.0
-SCALA_VERSION=scala-2.11.12
+SCALA_VERSION=scala-2.12.10
 MAVEN_VERSION=apache-maven-3.2.5
 MYSQL_CONNECTOR_VERSION=mysql-connector-java-5.1.49
 MYSQL_VERSION=mysql-5.7.35
@@ -125,8 +125,8 @@ SPARK_CONF_DIR=$INSTALL_PATH/spark/conf
 #         https://archive.apache.org/dist/flink/flink-1.12.4/flink-1.12.4-bin-scala_2.11.tgz
 # https://mirrors.huaweicloud.com/apache/flink/flink-1.12.4/flink-1.12.4-bin-scala_2.11.tgz
 FLINK_VERSION_NUM=`get_app_version_num $FLINK_VERSION "-" 2`
-FLINK_ARCHIVE=$FLINK_VERSION-bin-scala_2.11.tgz
-FLINK_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/flink/$FLINK_VERSION/$FLINK_VERSION-bin-scala_2.11.tgz
+FLINK_ARCHIVE=$FLINK_VERSION-bin-scala_${SCALA_VERSION_NUM%.*}.tgz
+FLINK_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/flink/$FLINK_VERSION/$FLINK_VERSION-bin-scala_${SCALA_VERSION_NUM%.*}.tgz
 FLINK_RES_DIR=$RESOURCE_PATH/flink
 FLINK_CONF_DIR=$INSTALL_PATH/flink/conf
 

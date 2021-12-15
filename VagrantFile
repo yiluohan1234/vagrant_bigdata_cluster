@@ -57,12 +57,7 @@ Vagrant.configure("2") do |config|
                 s.args = "-i #{i}"
                 s.privileged = false
             end
-            node.vm.provision "shell",  path: "scripts/setup-sqoop.sh", privileged: false
             if i == nodeRange.first
-                # node.vm.provision "shell" do |s|
-                #     s.path = "scripts/setup-sqoop.sh"
-                #     s.privileged = false
-                # end
                 node.vm.provision "shell" do |s|
                     s.path = "scripts/setup-azkaban.sh"
                     s.privileged = false
@@ -100,14 +95,14 @@ Vagrant.configure("2") do |config|
                 #    s.privileged = false
                 # end
             end
-
-            # node.vm.provision "shell",  path: "scripts/setup-scala.sh", privileged: false
+            node.vm.provision "shell",  path: "scripts/setup-sqoop.sh", privileged: false
+            node.vm.provision "shell",  path: "scripts/setup-scala.sh", privileged: false
             # node.vm.provision "shell",  path: "scripts/setup-spark.sh", privileged: false
             node.vm.provision "shell",  path: "scripts/setup-kafka.sh", privileged: false
-            # node.vm.provision "shell",  path: "scripts/setup-hbase.sh", privileged: false
+            node.vm.provision "shell",  path: "scripts/setup-hbase.sh", privileged: false
             # node.vm.provision "shell",  path: "scripts/setup-phoenix.sh", privileged: false
             node.vm.provision "shell",  path: "scripts/setup-flume.sh", privileged: false
-            # node.vm.provision "shell",  path: "scripts/setup-flink.sh", privileged: false
+            node.vm.provision "shell",  path: "scripts/setup-flink.sh", privileged: false
             # node.vm.provision "shell",  path: "scripts/setup-es.sh", privileged: false
 
             if i == nodeRange.last
