@@ -13,6 +13,9 @@ echo "set shiftwidth=4" > /home/vagrant/.vimrc
 
 # 复制初始化程序到init_shell的bin目录
 log info "copy init shell to ${INIT_SHELL_BIN}"
+if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
+    sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${INIT_PATH}/`
+fi
 cp $INIT_PATH/* ${INIT_SHELL_BIN}
 chmod 777 ${INIT_SHELL_BIN}/jpsall
 chmod 777 ${INIT_SHELL_BIN}/bigstart

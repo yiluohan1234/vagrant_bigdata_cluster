@@ -22,9 +22,7 @@ yum install -y -q wget
 yum install -y openssl-devel
 yum install -y lzop
 
-yum install -y *unixODBC*
-yum install -y http://opensource.wandisco.com/centos/7/git/x86_64/wandisco-git-release-7-2.noarch.rpm
-yum install -y git
+# git升级
 
 #---ssh---
 mv /home/vagrant/vagrant_bigdata_cluster/resources/sshd_config /etc/ssh/sshd_config
