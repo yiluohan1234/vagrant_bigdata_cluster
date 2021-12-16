@@ -13,7 +13,8 @@ setup_sqoop() {
     local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
 
     log info "copying over ${app_name} configuration files"
-    cp -f ${res_dir}/* ${conf_dir}
+    cp -f ${res_dir}/sqoop-env.sh ${conf_dir}
+    cp -f ${res_dir}/configure-sqoop ${INSTALL_PATH}/sqoop/bin
 
     wget_mysql_connector ${INSTALL_PATH}/sqoop/lib
 
