@@ -34,6 +34,39 @@ setup_hive() {
     fi
 }
 
+setup_hive_src() {
+    local app_name=$1
+    local app_name_upper=`get_string_upper ${app_name}`
+    local res_dir=$(eval echo \$${app_name_upper}_RES_DIR)
+    local hive_src_dir=$INSTALL_PATH/apache-hive-3.1.2-src
+
+    log info "creating $app_name directories"
+    mkdir -p ${INSTALL_PATH}/hive/logs
+    mkdir -p ${INSTALL_PATH}/hive/tmpdir
+	
+    log info "copying over ${app_name} configuration files"
+    cp -f ${res_dir}/update_files/pom.xml $hive_src_dir
+    cp -f ${res_dir}/update_files/DruidScanQueryRecordReader.java $hive_src_dir/druid-handler/src/java/org/apache/hadoop/hive/druid/serde/DruidScanQueryRecordReader.java
+    cp -f ${res_dir}/update_files/llap-server/* $hive_src_dir/llap-server/src/java/org/apache/hadoop/hive/llap/daemon/impl/
+    cp -f ${res_dir}/update_files/ql/* $hive_src_dir/ql/src/java/org/apache/hadoop/hive/ql/exec/tez/
+    cp -f ${res_dir}/update_files/LlapTaskSchedulerService.java $hive_src_dir/llap-tez/src/java/org/apache/hadoop/hive/llap/tezplugins/LlapTaskSchedulerService.java
+    cp -f ${res_dir}/update_files/AsyncPbRpcProxy.java $hive_src_dir/llap-common/src/java/org/apache/hadoop/hive/llap/AsyncPbRpcProxy.java
+
+    cp -f ${res_dir}/update_files/TestStatsUtils.java $hive_src_dir/ql/src/test/org/apache/hadoop/hive/ql/stats/TestStatsUtils.java
+    cp -f ${res_dir}/update_files/ShuffleWriteMetrics.$hive_src_dir/java spark-client/src/main/java/org/apache/hive/spark/client/metrics/ShuffleWriteMetrics.java
+    cp -f ${res_dir}/update_files/SparkCounter.java $hive_src_dir/spark-client/src/main/java/org/apache/hive/spark/counter/SparkCounter.java
+
+    cp -f ${res_dir}/update_files/ColumnsStatsUtils.java $hive_src_dir/standalone-metastore/src/main/java/org/apache/hadoop/hive/metastore/columnstats/ColumnsStatsUtils.java
+    cp -f ${res_dir}/update_files/aggr/* $hive_src_dir/standalone-metastore/src/main/java/org/apache/hadoop/hive/metastore/columnstats/aggr/
+    cp -f ${res_dir}/update_files/cache/* $hive_src_dir/standalone-metastore/src/main/java/org/apache/hadoop/hive/metastore/columnstats/cache/
+    cp -f ${res_dir}/update_files/merge/* $hive_src_dir/standalone-metastore/src/main/java/org/apache/hadoop/hive/metastore/columnstats/merge/
+
+    cd $hive_src_dir
+    mvn clean package -Pdist -DskipTests -Dmaven.javadoc.skip=true
+    cp $hive_src_dir/packaging/target/apache-hive-3.1.2-bin.tar.gz /home/vagrant/vagrant_bigdata_cluster/downloads
+
+}
+
 download_hive() {
     local app_name=$1
     local app_name_upper=`get_string_upper ${app_name}`
@@ -72,8 +105,8 @@ install_hive() {
     local app_name="hive"
     log info "setup ${app_name}"
 
-    download_hive ${app_name}
-    setup_hive ${app_name}
+    download_hive_src ${app_name}
+    setup_hive_src ${app_name}
     setupEnv_app ${app_name}
     if [ "$IS_VAGRANT" != "true" ];then
         dispatch_app ${app_name}
