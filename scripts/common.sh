@@ -28,7 +28,7 @@ PROFILE=~/.bashrc
 # 1:https://archive.apache.org/dist
 # 2:https://mirrors.huaweicloud.com/apache
 DOWNLOAD_REPO=https://mirrors.huaweicloud.com/apache
-DOWNLOAD_REPO_APACHE=https://archive.apache.org/dist
+DOWNLOAD_REPO_APACHE=   
 
 # hostname
 HOSTNAME=("hdp101" "hdp102" "hdp103")
@@ -58,6 +58,7 @@ REDIS_VERSION=redis-5.0.12
 CANAL_VERSION=canal.deployer-1.1.5
 MAXWELL_VERSION=maxwell-1.25.0
 AZKABAN_VERSION=azkaban-3.84.4
+PRESTO_VERSION=presto-server-0.196
 
 # 获取app的版本号
 # eg: get_app_version_num $HIVE_VERSION "-" 2
@@ -280,6 +281,13 @@ AZKABAN_ARCHIVE=${AZKABAN_VERSION_NUM}.tar.gz
 AZKABAN_MIRROR_DOWNLOAD=https://github.com/azkaban/azkaban/archive/$AZKABAN_ARCHIVE
 AZKABAN_RES_DIR=$RESOURCE_PATH/azkaban
 
+# presto
+PRESTO_VERSION_NUM=`get_app_version_num $AZKABAN_VERSION "-" 3`
+PRESTO_ARCHIVE=${PRESTO_VERSION}.tar.gz
+PRESTO_MIRROR_DOWNLOAD=http://maven.aliyun.com/nexus/content/groups/public/com/facebook/presto/presto-server/0.196/presto-server-0.196.tar.gz
+PRESTO_RES_DIR=$RESOURCE_PATH/presto
+PRESTOL_CONF_DIR=$INSTALL_PATH/presto/etc
+#wget http://maven.aliyun.com/nexus/content/groups/public/com/facebook/presto/presto-cli/0.196/presto-cli-0.196-executable.jar
 # log
 DATETIME=`date "+%F %T"`
  
