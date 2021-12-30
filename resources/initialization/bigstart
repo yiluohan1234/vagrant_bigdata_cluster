@@ -454,7 +454,7 @@ Maxwell(){
 
 hiveserver2(){
     USAGE="Usage: $0 (start|stop|status)"
-    PIDFILE=$INSTALL_PATH/hive/hive.pid
+    PIDFILE=$INSTALL_PATH/hive/hiveserver2.pid
     LOGFILE=hive-console_`date '+%Y-%m-%d'`.log
 
     case $1 in
@@ -487,6 +487,50 @@ hiveserver2(){
                 fi
             else 
                 echo "hiveserver2 is not running"
+            fi
+            ;;
+        *)
+            echo $USAGE
+            exit 1
+            ;;
+    esac
+}
+
+hivemetastore(){
+    USAGE="Usage: $0 (start|stop|status)"
+    PIDFILE=$INSTALL_PATH/hive/hivemetastore.pid
+    LOGFILE=hive-console_`date '+%Y-%m-%d'`.log
+
+    case $1 in
+        start)
+            echo "Staring hivemetastore..."
+            #nohup ${INSTALL_PATH}/hive/bin/hive --service hiveserver2 >${INSTALL_PATH}/hive/logs/hiveServer2.log 2>&1 &
+            nohup ${INSTALL_PATH}/hive/bin/hive --service metastore >${INSTALL_PATH}/hive/logs/metastore.log 2>&1 &
+            echo $! > $PIDFILE
+            ;;
+        stop)
+            if [ -f "$PIDFILE" ] ; then
+                echo "Stoping hivemetastore ..."    
+                kill `cat $PIDFILE`
+                sleep 1
+                rm -rf $PIDFILE
+                echo "Stop hivemetastore success"
+            else
+                echo "hivemetastore is not running"
+                exit 0
+            fi
+            ;;
+        status)
+            if [ -f "$PIDFILE" ] ; then
+                pid=`cat $PIDFILE` 
+                if [[ pid -gt 0 ]]
+                then
+                    echo "[$(date '+%Y-%m-%d %T')] hivemetastore is running.( pid:$pid )"
+                else
+                    echo "[$(date '+%Y-%m-%d %T')] hivemetastore is not running"
+                fi
+            else 
+                echo "hivemetastore is not running"
             fi
             ;;
         *)
@@ -530,6 +574,39 @@ azkaban(){
     esac
 }
 
+presto(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            for i in {"hdp101","hdp102","hdp103"};
+            do
+                echo "============ start $i presto-server ============"
+                ssh $i "source /etc/profile;cd $INSTALL_PATH/presto;bin/launcher start"
+            done
+            echo "============ start hdp101 presto-web-server ============"
+            ssh hdp101 "source /etc/profile;nohup ${INSTALL_PATH}/yanagishima-18.0/bin/yanagishima-start.sh >${INSTALL_PATH}/yanagishima-18.0/y1.log 2>&1 &"
+            ;;
+        stop)
+            echo "============ stop hdp101 presto-web-server ============"
+            ssh hdp101 "source /etc/profile;cd $INSTALL_PATH/azkaban/web-server/;bin/yanagishima-shutdown.sh"
+            for j in {"hdp101","hdp102","hdp103"};
+            do
+                echo "============ stop $j presto-server ============"
+                ssh $j  "source /etc/profile;cd $INSTALL_PATH/yanagishima-18.0/;bin/launcher stop"
+            done
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+
 superset(){
     usage="Usage: $0 (start|stop)"
 
@@ -543,7 +620,7 @@ superset(){
             source ~/.bashrc
             superset status >/dev/null 2>&1
             if [[ $? -eq 0 ]]; then
-                conda activate superset ; gunicorn --workers 5 --timeout 120 --bind hdp101:8787 --daemon 'superset.app:create_app()'
+                conda activate superset; gunicorn --workers 5 --timeout 120 --bind hdp101:8787 --daemon 'superset.app:create_app()'
             else
                 echo "superset正在运行"
             fi
@@ -622,6 +699,9 @@ args()
 	  hiveserver)
 		hiveserver2 $2
 		;;
+	  hivemetastore)
+		hivemetastore $2
+		;;
 	  maxwell)
 		Maxwell $2
 		;;
@@ -634,6 +714,10 @@ args()
 	  superset)
 		superset $2
 		;;
+	  presto)
+		presto $2
+		;;
+
 	  *)
 		echo $usage
 		;;
