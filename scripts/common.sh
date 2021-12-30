@@ -286,7 +286,7 @@ PRESTO_VERSION_NUM=`get_app_version_num $AZKABAN_VERSION "-" 3`
 PRESTO_ARCHIVE=${PRESTO_VERSION}.tar.gz
 PRESTO_MIRROR_DOWNLOAD=http://maven.aliyun.com/nexus/content/groups/public/com/facebook/presto/presto-server/0.196/presto-server-0.196.tar.gz
 PRESTO_RES_DIR=$RESOURCE_PATH/presto
-PRESTOL_CONF_DIR=$INSTALL_PATH/presto/etc
+PRESTO_CONF_DIR=$INSTALL_PATH/presto/etc
 #wget http://maven.aliyun.com/nexus/content/groups/public/com/facebook/presto/presto-cli/0.196/presto-cli-0.196-executable.jar
 # log
 DATETIME=`date "+%F %T"`

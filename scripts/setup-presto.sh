@@ -99,4 +99,3 @@ install_presto() {
 if [ "${IS_VAGRANT}" == "true" ];then
     install_presto
 fi
-install_presto

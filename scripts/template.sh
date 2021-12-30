@@ -88,4 +88,3 @@ install_#@() {
 if [ "${IS_VAGRANT}" == "true" ];then
     install_#@
 fi
-install_#@
