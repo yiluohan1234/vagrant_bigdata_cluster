@@ -588,12 +588,8 @@ presto(){
                 echo "============ start $i presto-server ============"
                 ssh $i "source /etc/profile;cd $INSTALL_PATH/presto;bin/launcher start"
             done
-            echo "============ start hdp101 presto-web-server ============"
-            ssh hdp101 "source /etc/profile;nohup ${INSTALL_PATH}/yanagishima-18.0/bin/yanagishima-start.sh >${INSTALL_PATH}/yanagishima-18.0/y1.log 2>&1 &"
             ;;
         stop)
-            echo "============ stop hdp101 presto-web-server ============"
-            ssh hdp101 "source /etc/profile;cd $INSTALL_PATH/azkaban/web-server/;bin/yanagishima-shutdown.sh"
             for j in {"hdp101","hdp102","hdp103"};
             do
                 echo "============ stop $j presto-server ============"
