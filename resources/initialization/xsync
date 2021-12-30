@@ -21,10 +21,14 @@ echo "file path is $pdir"
 user=`whoami`
 #echo $user
 # 拷贝文件到从机(这里注意主机的host需要根据你的实际情况配置，要与你具体的主机名对应)
-for (( host=1;host<=3;host++ ))
+#for (( host=1;host<=3;host++ ))
+for host in hdp{101..103};
 do 
-    echo "================current host is hdp10$host================="
-    rsync -rvl $pdir/$filename $user@hdp10$host:$pdir
+    current_hostname=`cat /etc/hostname`
+    if [ "$current_hostname" != "$host" ];then
+        echo "================current host is $host================="
+        rsync -rvl $pdir/$filename $user@$host:$pdir
+    fi
 done
 
 echo "complate !"

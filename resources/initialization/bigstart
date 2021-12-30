@@ -1,5 +1,5 @@
 #!/bin/bash
-INSTALL_PATH=/home/vagrant/apps
+INSTALL_PATH=/opt/module
 zk(){
     usage="Usage: $0 (start|stop|status)"
  
@@ -206,6 +206,16 @@ hbase(){
     fi
     case $1 in
         start)
+            SIGNAL=${SIGNAL:-TERM}
+            PIDS=$(ps ax | grep java | grep -i QuorumPeerMain | grep -v grep | awk '{print $1}')
+
+            if [ -z "$PIDS" ]; then
+                echo "Success to start zookeeper."
+                zk start 
+                echo "-----$1 $i start-------"
+            else
+                echo "Zookeeper has been started"
+            fi
             $INSTALL_PATH/hbase/bin/start-hbase.sh
             ;;
         stop)
@@ -585,7 +595,7 @@ args()
 	  spark)
 		spark $2
 		;;
-	  zk)
+	  zookeeper)
 		zk $2
 		;;
 	  flink)
@@ -600,7 +610,7 @@ args()
 	  kibana)
 		kibana $2
 		;;
-	  es)
+	  elasticsearch)
 		elasticsearch $2
 		;;
 	  redis)
@@ -609,7 +619,7 @@ args()
 	  logger)
 		rt_logger $2
 		;;
-	  hive)
+	  hiveserver)
 		hiveserver2 $2
 		;;
 	  maxwell)
