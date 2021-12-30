@@ -87,7 +87,7 @@ install_presto() {
     log info "setup ${app_name}"
 
     download_presto ${app_name}
-    #setup_presto ${app_name}
+    setup_presto ${app_name}
     #setupEnv_app $app_name
     if [ "${IS_VAGRANT}" != "true" ];then
         dispatch_presto ${app_name}
