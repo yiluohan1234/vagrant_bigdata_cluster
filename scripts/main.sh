@@ -22,6 +22,7 @@ CUR=$(cd `dirname 0`;pwd)
 . $CUR/setup-sqoop.sh
 . $CUR/setup-zookeeper.sh
 . $CUR/setup-azkaban.sh
+. $CUR/setup-presto.sh
 #. $CUR/common.sh
 
 
@@ -126,6 +127,9 @@ args()
 		    ;;
 		ssh)
 		    install_ssh
+		    ;;
+		presto)
+		    install_presto
 		    ;;
 		-h|--help)
 		    usage
