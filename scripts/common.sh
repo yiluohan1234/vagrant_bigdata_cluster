@@ -59,6 +59,7 @@ CANAL_VERSION=canal.deployer-1.1.5
 MAXWELL_VERSION=maxwell-1.25.0
 AZKABAN_VERSION=azkaban-3.84.4
 PRESTO_VERSION=presto-server-0.196
+KYLIN_VERSION=apache-kylin-3.0.2
 
 # 获取app的版本号
 # eg: get_app_version_num $HIVE_VERSION "-" 2
@@ -288,6 +289,15 @@ PRESTO_MIRROR_DOWNLOAD=http://maven.aliyun.com/nexus/content/groups/public/com/f
 PRESTO_RES_DIR=$RESOURCE_PATH/presto
 PRESTO_CONF_DIR=$INSTALL_PATH/presto/etc
 #wget http://maven.aliyun.com/nexus/content/groups/public/com/facebook/presto/presto-cli/0.196/presto-cli-0.196-executable.jar
+
+# kylin
+# https://mirrors.huaweicloud.com/apache/kylin/apache-kylin-3.0.2/apache-kylin-3.0.2-bin-hadoop3.tar.gz
+KYLIN_VERSION_NUM=`get_app_version_num $AZKABAN_VERSION "-" 3`
+KYLIN_ARCHIVE=${KYLIN_VERSION}-bin-hadoop3.tar.gz
+KYLIN_MIRROR_DOWNLOAD=https://mirrors.huaweicloud.com/apache/kylin/$KYLIN_VERSION/$KYLIN_ARCHIVE
+KYLIN_RES_DIR=$RESOURCE_PATH/kylin
+KYLIN_CONF_DIR=$INSTALL_PATH/kylin/bin
+
 # log
 DATETIME=`date "+%F %T"`
  

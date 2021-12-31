@@ -593,7 +593,7 @@ presto(){
             for j in {"hdp101","hdp102","hdp103"};
             do
                 echo "============ stop $j presto-server ============"
-                ssh $j  "source /etc/profile;cd $INSTALL_PATH/yanagishima-18.0/;bin/launcher stop"
+                ssh $j  "source /etc/profile;cd $INSTALL_PATH/presto;bin/launcher stop"
             done
             ;;
         *)
@@ -602,6 +602,27 @@ presto(){
     esac
 }
 
+kylin(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            echo "============ start $i kylin ============"
+            ssh hdp101 "source /etc/profile;cd $INSTALL_PATH/kylin;bin/kylin.sh start"
+            ;;
+        stop)
+            echo "============ stop $j kylin ============"
+            ssh hdp101  "source /etc/profile;cd $INSTALL_PATH/kylin/;bin/kylin.sh stop"
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
 
 superset(){
     usage="Usage: $0 (start|stop)"
@@ -713,7 +734,9 @@ args()
 	  presto)
 		presto $2
 		;;
-
+	  kylin)
+		kylin $2
+		;;
 	  *)
 		echo $usage
 		;;

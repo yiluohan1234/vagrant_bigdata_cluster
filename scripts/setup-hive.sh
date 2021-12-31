@@ -105,9 +105,9 @@ install_hive() {
     local app_name="hive"
     log info "setup ${app_name}"
 
-    # download_hive_src ${app_name}
-    setup_hive_src ${app_name}
-    # setupEnv_app ${app_name}
+    download_hive ${app_name}
+    setup_hive ${app_name}
+    setupEnv_app ${app_name}
     # if [ "$IS_VAGRANT" != "true" ];then
     #     dispatch_app ${app_name}
     # fi
