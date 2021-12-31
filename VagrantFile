@@ -66,6 +66,10 @@ Vagrant.configure("2") do |config|
                     s.path = "scripts/setup-maven.sh"
                     s.privileged = false
                 end
+                node.vm.provision "shell" do |s|
+                    s.path = "scripts/setup-kylin.sh"
+                    s.privileged = false
+                end
                 # node.vm.provision "shell" do |s|
                 #     s.path = "scripts/setup-hive.sh"
                 #     s.privileged = false
