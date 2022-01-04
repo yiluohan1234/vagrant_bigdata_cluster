@@ -148,7 +148,7 @@ hadoop(){
             ;;
         restart)
             hadoop stop
-	    hadoop start
+            hadoop start
             ;;
         format)
             ssh hdp101 "$INSTALL_PATH/hadoop/bin/hdfs namenode -format"

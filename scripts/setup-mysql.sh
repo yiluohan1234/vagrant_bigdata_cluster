@@ -73,7 +73,7 @@ setup_mysql() {
     ${mysql_install_dir}/bin/mysql -uroot -p${dbrootpwd} -e "CREATE DATABASE azkaban;CREATE USER 'azkaban'@'%' IDENTIFIED BY '199037';GRANT SELECT,INSERT,UPDATE,DELETE ON azkaban.* to 'azkaban'@'%' WITH GRANT OPTION;flush privileges;"
     
     # 在数据库建立azkaban数据库和用户
-    ${mysql_install_dir}/bin/mysql -uroot -p${dbrootpwd} -e "CREATE DATABASE zabbix;CREATE USER 'zabbix'@'%' IDENTIFIED BY '199037';GRANT SELECT,INSERT,UPDATE,DELETE ON zabbix.* to 'zabbix'@'%' WITH GRANT OPTION;flush privileges;"
+    ${mysql_install_dir}/bin/mysql -uroot -p${dbrootpwd} -e "CREATE DATABASE zabbix character set utf8 collate utf8_bin;CREATE USER 'zabbix'@'%' IDENTIFIED BY '199037';GRANT SELECT,INSERT,UPDATE,DELETE ON zabbix.* to 'zabbix'@'%' WITH GRANT OPTION;flush privileges;"
     
     # 创建数仓基本的数据库：gmall 和 gmall_report
     ${mysql_install_dir}/bin/mysql -uroot -p${dbrootpwd} -e "CREATE DATABASE gmall CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';;CREATE DATABASE gmall_report CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';"

@@ -17,7 +17,7 @@ setup_hive() {
     mkdir -p ${INSTALL_PATH}/hive/tmpdir
 	
     log info "copying over ${app_name} configuration files"
-    cp -f ${res_dir}/* ${conf_dir}
+    cp -f ${res_dir}/hive* ${conf_dir}
 
     # 安装phoenix后hive启动失败
     #rm ${INSTALL_PATH}/hive/lib/icu4j-4.8.1.jar
@@ -26,6 +26,7 @@ setup_hive() {
     #cp ${INSTALL_PATH}/hadoop/share/hadoop/common/lib/guava-27.0-jre.jar ${INSTALL_PATH}/hive/lib
     # 解决log4j冲突
     mv ${INSTALL_PATH}/hive/lib/log4j-slf4j-impl-2.10.0.jar ${INSTALL_PATH}/hive/lib/log4j-slf4j-impl-2.10.0.jar_bak
+    mv ${conf_dir}/hivefunction-1.0-SNAPSHOT.jar ${INSTALL_PATH}/hive/lib/
     
     wget_mysql_connector ${INSTALL_PATH}/hive/lib
 
