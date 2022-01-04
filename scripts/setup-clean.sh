@@ -23,8 +23,9 @@ cp $INIT_PATH/xsync ${INIT_SHELL_BIN}
 cp $INIT_PATH/xcall ${INIT_SHELL_BIN}
 
 chmod 777 ${INIT_SHELL_BIN}/*
+chown vagrant:vagrant -R ${INIT_SHELL_BIN}
 
-cp ${RESOURCE_PATH}/INIT_PATH/complete_tool.sh /etc/profile.d
+cp ${RESOURCE_PATH}/$INIT_PATH/complete_tool.sh /etc/profile.d
 
 echo "# init shell bin" >> ${PROFILE}
 echo "export INIT_SHELL_BIN=${INIT_SHELL_BIN}" >> ${PROFILE}
@@ -33,3 +34,4 @@ source ${PROFILE}
 
 # 删除安装目录
 rm -rf /home/vagrant/vagrant_bigdata_cluster
+rm -rf ${INSTALL_PATH}/azkaban-3.84.4
