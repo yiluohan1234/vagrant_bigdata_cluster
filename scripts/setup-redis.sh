@@ -64,8 +64,8 @@ install_redis() {
 
     download_redis ${app_name}
     setup_redis ${app_name}
-    setupEnv_app ${app_name}
-    source ${PROFILE}
+    # setupEnv_app ${app_name}
+    # source ${PROFILE}
 }
 
 

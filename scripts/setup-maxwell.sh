@@ -45,8 +45,8 @@ install_maxwell() {
 
     download_maxwell ${app_name}
     setup_maxwell ${app_name}
-    setupEnv_app ${app_name}
-    source ${PROFILE}
+    # setupEnv_app ${app_name}
+    # source ${PROFILE}
 }
 
 if [ "$IS_VAGRANT" == "true" ];then

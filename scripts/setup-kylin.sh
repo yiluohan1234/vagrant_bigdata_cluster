@@ -47,8 +47,8 @@ install_kylin() {
 
     download_kylin ${app_name}
     setup_kylin ${app_name}
-    setupEnv_app $app_name
-    source ${PROFILE}
+    # setupEnv_app $app_name
+    # source ${PROFILE}
 }
 
 

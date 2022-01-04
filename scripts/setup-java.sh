@@ -41,11 +41,11 @@ install_java() {
     local app_name="java"
     log info "setup ${app_name}"
     download_java ${app_name}
-    setupEnv_java ${app_name}
+    # setupEnv_java ${app_name}
     if [ "${IS_VAGRANT}" != "true" ];then
         dispatch_app ${app_name}
     fi
-    source ${PROFILE}
+    # source ${PROFILE}
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then

@@ -59,8 +59,8 @@ install_nginx() {
 
     download_nginx ${app_name}
     setup_nginx ${app_name}
-    setupEnv_app ${app_name} sbin
-    source ${PROFILE}
+    # setupEnv_app ${app_name} sbin
+    # source ${PROFILE}
 }
 
 

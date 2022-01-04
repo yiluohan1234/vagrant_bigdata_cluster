@@ -43,8 +43,8 @@ install_canal() {
 
     download_canal ${app_name}
     setup_canal ${app_name}
-    setupEnv_app ${app_name}
-    source ${PROFILE}
+    # setupEnv_app ${app_name}
+    # source ${PROFILE}
 }
 
 

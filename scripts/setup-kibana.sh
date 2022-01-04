@@ -47,8 +47,8 @@ install_kibana() {
 
     download_kibana ${app_name}
     setup_kibana ${app_name}
-    setupEnv_app ${app_name}
-    source ${PROFILE}
+    # setupEnv_app ${app_name}
+    # source ${PROFILE}
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then

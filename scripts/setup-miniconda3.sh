@@ -23,7 +23,7 @@ install_miniconda() {
     echo -e '\n'
     exec bash
 
-    source ${PROFILE}
+    # source ${PROFILE}
 }
 
 

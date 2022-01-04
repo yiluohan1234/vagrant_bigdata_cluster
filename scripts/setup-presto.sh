@@ -92,7 +92,7 @@ install_presto() {
     if [ "${IS_VAGRANT}" != "true" ];then
         dispatch_presto ${app_name}
     fi
-    source ${PROFILE}
+    # source ${PROFILE}
 }
 
 

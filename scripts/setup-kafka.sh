@@ -77,11 +77,11 @@ install_kafka() {
 
     download_kafka ${app_name}
     setup_kafka ${app_name}
-    setupEnv_app ${app_name}
+    # setupEnv_app ${app_name}
     if [ "$IS_VAGRANT" != "true" ];then
         dispatch_kafka ${app_name}
     fi
-    source ${PROFILE}
+    # source ${PROFILE}
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then

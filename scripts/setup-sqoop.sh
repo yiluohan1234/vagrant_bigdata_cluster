@@ -47,8 +47,8 @@ install_sqoop() {
 
     download_sqoop ${app_name}
     setup_sqoop ${app_name}
-    setupEnv_app ${app_name}
-    source ${PROFILE}
+    # setupEnv_app ${app_name}
+    # source ${PROFILE}
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then

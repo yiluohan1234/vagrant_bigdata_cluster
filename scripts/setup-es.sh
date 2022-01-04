@@ -74,12 +74,12 @@ install_es() {
 
     download_es ${app_name}
     setup_es ${app_name}
-    setupEnv_app ${app_name}
+    # setupEnv_app ${app_name}
 
     if [ "${IS_VAGRANT}" != "true" ];then
         dispatch_es ${app_name}
     fi
-    source ${PROFILE}
+    # source ${PROFILE}
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then

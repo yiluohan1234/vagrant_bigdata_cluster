@@ -23,9 +23,12 @@ chmod 777 ${INIT_SHELL_BIN}/setssh
 chmod 777 ${INIT_SHELL_BIN}/xsync
 chmod 777 ${INIT_SHELL_BIN}/xcall
 chmod 777 ${INIT_SHELL_BIN}/complete_tool
-echo "export INIT_SHELL_BIN=${INIT_SHELL_BIN}" >> ${PROFILE}
-echo 'export PATH=${INIT_SHELL_BIN}:$PATH' >> ${PROFILE}
-source ${PROFILE}
+cp ${RESOURCE_PATH}/profile/* /etc/profile.d
+cp ${RESOURCE_PATH}/INIT_PATH/complete_tool /etc/profile.d
+
+# echo "export INIT_SHELL_BIN=${INIT_SHELL_BIN}" >> ${PROFILE}
+# echo 'export PATH=${INIT_SHELL_BIN}:$PATH' >> ${PROFILE}
+# source ${PROFILE}
 
 # 删除安装目录
 rm -rf /home/vagrant/vagrant_bigdata_cluster

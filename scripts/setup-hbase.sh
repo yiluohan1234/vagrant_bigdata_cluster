@@ -47,13 +47,13 @@ install_hbase() {
 
     download_hbase ${app_name}
     setup_hbase ${app_name}
-    setupEnv_app ${app_name}
+    # setupEnv_app ${app_name}
 
     if [ "${IS_VAGRANT}" != "true" ];then
         dispatch_app ${app_name}
     fi
     
-    source ${PROFILE}
+    # source ${PROFILE}
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then

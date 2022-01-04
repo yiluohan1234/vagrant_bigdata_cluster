@@ -44,8 +44,8 @@ install_maven() {
     log info "setup ${app_name}"
     download_maven ${app_name}
     setupEnv_app ${app_name}
-    setup_maven ${app_name}
-    source ${PROFILE}
+    # setup_maven ${app_name}
+    # source ${PROFILE}
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then
