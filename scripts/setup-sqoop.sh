@@ -37,7 +37,7 @@ download_sqoop() {
         installFromRemote ${archive} ${download_url}
     fi
     mv ${INSTALL_PATH}/"${SQOOP_VERSION}.bin__hadoop-2.6.0" ${INSTALL_PATH}/${app_name}
-    sudo chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
+    chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
     rm ${DOWNLOAD_PATH}/${archive}
 }
 
@@ -47,8 +47,8 @@ install_sqoop() {
 
     download_sqoop ${app_name}
     setup_sqoop ${app_name}
-    # setupEnv_app ${app_name}
-    # source ${PROFILE}
+    setupEnv_app ${app_name}
+    source ${PROFILE}
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then

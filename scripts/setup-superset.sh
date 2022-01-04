@@ -36,7 +36,7 @@ setup_conda(){
     conda activate superset
 }
 
-sudo yum install -y gcc gcc-c++ libffi-devel python-devel python-pip python-wheel python-setuptools openssl-devel cyrus-sasl-devel openldap-devel
+yum install -y gcc gcc-c++ libffi-devel python-devel python-pip python-wheel python-setuptools openssl-devel cyrus-sasl-devel openldap-devel
 
 pip install apache-superset -i https://pypi.douban.com/simple/
 pip install pillow -i https://pypi.douban.com/simple/

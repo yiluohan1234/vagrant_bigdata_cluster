@@ -30,7 +30,7 @@ usage()
 {
     case $1 in
         "")
-            echo "Usage: main.sh command [options]"
+	    echo "Usage: main.sh command [options]"
 	    echo "      main.sh canal"
 	    echo "      main.sh es"
 	    echo "      main.sh flink"
@@ -39,7 +39,7 @@ usage()
 	    echo "      main.sh hbase"
 	    echo "      main.sh hive"
 	    echo "      main.sh hosts"
-            echo "      main.sh jdk"
+	    echo "      main.sh jdk"
 	    echo "      main.sh kafka"
 	    echo "      main.sh kibana"
 	    echo "      main.sh mvn"
@@ -48,13 +48,13 @@ usage()
 	    echo "      main.sh nginx"
 	    echo "      main.sh phoenix"
 	    echo "      main.sh redis"
-            echo "      main.sh scala"
-            echo "      main.sh spark"
-            echo "      main.sh sqoop"
-            echo "      main.sh zookeeper"
-            echo "      main.sh ssh"
-            echo ""
-            ;;
+	    echo "      main.sh scala"
+	    echo "      main.sh spark"
+	    echo "      main.sh sqoop"
+	    echo "      main.sh zookeeper"
+	    echo "      main.sh ssh"
+	    echo ""
+	    ;;
     esac
 }
 # args for data_process.sh

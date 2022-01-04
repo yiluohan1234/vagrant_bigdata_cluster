@@ -31,6 +31,10 @@ yum install -y git
 mv /home/vagrant/vagrant_bigdata_cluster/resources/sshd_config /etc/ssh/sshd_config
 systemctl restart sshd.service
 
+# 创建环境变量文件
+touch ${PROFILE}
+
+# 创建生成日志目录
 APP_LOG=/opt/module/applog/log/
 
 [ ! -d $INSTALL_PATH ] && mkdir -p $INSTALL_PATH

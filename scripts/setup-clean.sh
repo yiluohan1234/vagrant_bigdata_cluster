@@ -16,19 +16,20 @@ log info "copy init shell to ${INIT_SHELL_BIN}"
 if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
     sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${INIT_PATH}/`
 fi
-cp $INIT_PATH/* ${INIT_SHELL_BIN}
-chmod 777 ${INIT_SHELL_BIN}/jpsall
-chmod 777 ${INIT_SHELL_BIN}/bigstart
-chmod 777 ${INIT_SHELL_BIN}/setssh
-chmod 777 ${INIT_SHELL_BIN}/xsync
-chmod 777 ${INIT_SHELL_BIN}/xcall
-chmod 777 ${INIT_SHELL_BIN}/complete_tool
-cp ${RESOURCE_PATH}/profile/* /etc/profile.d
-cp ${RESOURCE_PATH}/INIT_PATH/complete_tool /etc/profile.d
+cp $INIT_PATH/jpsall ${INIT_SHELL_BIN}
+cp $INIT_PATH/bigstart ${INIT_SHELL_BIN}
+cp $INIT_PATH/setssh ${INIT_SHELL_BIN}
+cp $INIT_PATH/xsync ${INIT_SHELL_BIN}
+cp $INIT_PATH/xcall ${INIT_SHELL_BIN}
 
-# echo "export INIT_SHELL_BIN=${INIT_SHELL_BIN}" >> ${PROFILE}
-# echo 'export PATH=${INIT_SHELL_BIN}:$PATH' >> ${PROFILE}
-# source ${PROFILE}
+chmod 777 ${INIT_SHELL_BIN}/*
+
+cp ${RESOURCE_PATH}/INIT_PATH/complete_tool.sh /etc/profile.d
+
+echo "# init shell bin" >> ${PROFILE}
+echo "export INIT_SHELL_BIN=${INIT_SHELL_BIN}" >> ${PROFILE}
+echo 'export PATH=${INIT_SHELL_BIN}:$PATH' >> ${PROFILE}
+source ${PROFILE}
 
 # 删除安装目录
 rm -rf /home/vagrant/vagrant_bigdata_cluster

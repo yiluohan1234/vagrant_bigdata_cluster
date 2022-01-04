@@ -18,7 +18,7 @@ setup_zabbix() {
         hostname=`cat /etc/hostname`
 
         if [ "$hostname" != "hdp103" ];then
-            sudo yum install -y zabbix-server-mysql zabbix-web-mysql-scl zabbix-apache-conf-scl
+            yum install -y zabbix-server-mysql zabbix-web-mysql-scl zabbix-apache-conf-scl
         fi
     fi
     zabbix_server_path=`ls /usr/share/doc/|grep zabbix-server`
@@ -62,12 +62,12 @@ install_zabbix() {
     log info "setup ${app_name}"
 
     download_zabbix ${app_name}
-    setup_zabbix ${app_name}
-    setupEnv_app $app_name
+    #setup_zabbix ${app_name}
+    #setupEnv_app $app_name
     if [ "${IS_VAGRANT}" != "true" ];then
         dispatch_zabbix ${app_name}
     fi
-    source ${PROFILE}
+    #source ${PROFILE}
 }
 
 

@@ -33,7 +33,7 @@ download_canal() {
         curl -o ${FILE} -O -L ${REMOTE_MIRROR_DOWNLOAD}
         tar -xzf ${FILE} -C ${INSTALL_PATH}/${app_name}
     fi
-    sudo chown -R vagrant:vagrant $INSTALL_PATH/${app_name}
+    chown -R vagrant:vagrant $INSTALL_PATH/${app_name}
     rm ${DOWNLOAD_PATH}/${CANAL_ARCHIVE}
 }
 
@@ -43,8 +43,8 @@ install_canal() {
 
     download_canal ${app_name}
     setup_canal ${app_name}
-    # setupEnv_app ${app_name}
-    # source ${PROFILE}
+    setupEnv_app ${app_name}
+    source ${PROFILE}
 }
 
 

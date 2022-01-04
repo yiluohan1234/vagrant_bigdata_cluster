@@ -13,7 +13,7 @@ setup_nginx() {
     local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
 
     log info "install dependency packages"
-    sudo yum install -y make zlib zlib-devel gcc-c++ libtool  openssl openssl-devel
+    yum install -y make zlib zlib-devel gcc-c++ libtool  openssl openssl-devel
     cd ${INSTALL_PATH}/${NGINX_VERSION}
 
     log info "configure ${INSTALL_PATH}/nginx"
@@ -26,9 +26,10 @@ setup_nginx() {
     rm -rf ${INSTALL_PATH}/${NGINX_VERSION}
 
     # 让当前用户的某个应用程序可以使用1024以下端口
-    sudo setcap cap_net_bind_service=+eip ${INSTALL_PATH}/nginx/sbin/nginx
+    setcap cap_net_bind_service=+eip ${INSTALL_PATH}/nginx/sbin/nginx
 
     cp ${res_dir}/* ${conf_dir}
+    chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
 
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@$INSTALL_PATH@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
@@ -59,8 +60,8 @@ install_nginx() {
 
     download_nginx ${app_name}
     setup_nginx ${app_name}
-    # setupEnv_app ${app_name} sbin
-    # source ${PROFILE}
+    setupEnv_app ${app_name} sbin
+    source ${PROFILE}
 }
 
 

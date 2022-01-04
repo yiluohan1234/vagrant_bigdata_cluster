@@ -44,7 +44,7 @@ download_spark() {
         installFromRemote ${archive} ${download_url}
     fi
     mv ${INSTALL_PATH}/"${SPARK_VERSION}-bin-hadoop3.2" ${INSTALL_PATH}/${app_name}
-    sudo chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
+    chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
     rm ${DOWNLOAD_PATH}/${archive}
 }
 
@@ -54,11 +54,11 @@ install_spark() {
 
     download_spark ${app_name}
     setup_spark ${app_name}
-    # setupEnv_app ${app_name}
+    setupEnv_app ${app_name}
     # if [ "${IS_VAGRANT}" != "true" ];then
     #     dispatch_app ${app_name}
     # fi
-    # source ${PROFILE}
+    source ${PROFILE}
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then

@@ -17,12 +17,12 @@ DOWNLOAD_PATH=/home/vagrant/vagrant_bigdata_cluster/downloads
 
 # 初始化集群目录
 INIT_PATH=$RESOURCE_PATH/initialization
-INIT_SHELL_BIN=$INSTALL_PATH/init_shell/bin
+INIT_SHELL_BIN=$INSTALL_PATH/bin
 [ ! -d $INIT_SHELL_BIN ] && mkdir -p $INIT_SHELL_BIN
 
 
 # 环境变量配置文件
-PROFILE=~/.bashrc
+PROFILE=/etc/profile.d/hdp_env.sh
 
 # 下载组建的镜像地址
 # 1:https://archive.apache.org/dist

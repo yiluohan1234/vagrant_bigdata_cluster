@@ -39,6 +39,7 @@ setup_redis() {
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${REDIS_CONF_DIR}/`
     fi
+    chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
     rm ${DOWNLOAD_PATH}/${REDIS_ARCHIVE}
     rm -rf ${INSTALL_PATH}/${REDIS_VERSION}
 }
@@ -64,8 +65,8 @@ install_redis() {
 
     download_redis ${app_name}
     setup_redis ${app_name}
-    # setupEnv_app ${app_name}
-    # source ${PROFILE}
+    setupEnv_app ${app_name}
+    source ${PROFILE}
 }
 
 

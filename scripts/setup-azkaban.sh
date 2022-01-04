@@ -53,7 +53,7 @@ download_azkaban() {
     else
         installFromRemote ${archive} ${download_url}
     fi
-    sudo chown -R vagrant:vagrant ${INSTALL_PATH}/${app_version}
+    chown -R vagrant:vagrant ${INSTALL_PATH}/${app_version}
     rm ${DOWNLOAD_PATH}/${archive}
 }
 
@@ -65,7 +65,7 @@ install_azkaban() {
 
     download_azkaban ${app_name}
     setup_azkaban ${app_name}
-    #setupEnv_app $app_name
+    setupEnv_app $app_name
     # if [ "${IS_VAGRANT}" != "true" ];then
     #     dispatch_app ${app_name}
     # fi

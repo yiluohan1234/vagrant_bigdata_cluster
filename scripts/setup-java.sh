@@ -21,7 +21,7 @@ download_java() {
         installFromRemote ${archive} ${download_url}
     fi
     mv ${INSTALL_PATH}/jdk1.8.0_201 ${INSTALL_PATH}/${app_name}
-    sudo chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
+    chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
     rm ${DOWNLOAD_PATH}/${archive}
 }
 
@@ -41,11 +41,11 @@ install_java() {
     local app_name="java"
     log info "setup ${app_name}"
     download_java ${app_name}
-    # setupEnv_java ${app_name}
+    setupEnv_java ${app_name}
     if [ "${IS_VAGRANT}" != "true" ];then
         dispatch_app ${app_name}
     fi
-    # source ${PROFILE}
+    source ${PROFILE}
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then

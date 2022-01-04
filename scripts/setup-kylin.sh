@@ -37,7 +37,7 @@ download_kylin() {
         installFromRemote ${archive} ${download_url}
     fi
     mv ${INSTALL_PATH}/"${app_version}-bin-hadoop3" ${INSTALL_PATH}/${app_name}
-    sudo chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
+    chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
     rm ${DOWNLOAD_PATH}/${archive}
 }
 
@@ -47,8 +47,8 @@ install_kylin() {
 
     download_kylin ${app_name}
     setup_kylin ${app_name}
-    # setupEnv_app $app_name
-    # source ${PROFILE}
+    setupEnv_app $app_name
+    source ${PROFILE}
 }
 
 

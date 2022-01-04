@@ -39,7 +39,7 @@ download_hadoop() {
         installFromRemote ${archive} ${download_url}
     fi
     mv ${INSTALL_PATH}/"${app_version}" ${INSTALL_PATH}/${app_name}
-    sudo chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
+    chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
     rm ${DOWNLOAD_PATH}/${archive}
 }
 
@@ -49,7 +49,7 @@ install_hadoop() {
 
     download_hadoop ${app_name}
     setup_hadoop ${app_name}
-    # setupEnv_app ${app_name} sbin
+    setupEnv_app ${app_name} sbin
     # 解决Unable to load native-hadoop library for your platform
     #echo 'export LD_LIBRARY_PATH=$HADOOP_HOME/lib/native/:$LD_LIBRARY_PATH' >> ${PROFILE}
 
@@ -57,7 +57,7 @@ install_hadoop() {
         dispatch_app ${app_name}
     fi
 
-    # source ${PROFILE}
+    source ${PROFILE}
     #format_hdfs
     #start_daemons
 }

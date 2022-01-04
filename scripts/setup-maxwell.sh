@@ -35,7 +35,7 @@ download_maxwell() {
         installFromRemote ${archive} ${download_url}
     fi
     mv ${INSTALL_PATH}/"${app_version}" ${INSTALL_PATH}/${app_name}
-    sudo chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
+    chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
     rm ${DOWNLOAD_PATH}/${archive}
 }
 
@@ -45,8 +45,8 @@ install_maxwell() {
 
     download_maxwell ${app_name}
     setup_maxwell ${app_name}
-    # setupEnv_app ${app_name}
-    # source ${PROFILE}
+    setupEnv_app ${app_name}
+    source ${PROFILE}
 }
 
 if [ "$IS_VAGRANT" == "true" ];then

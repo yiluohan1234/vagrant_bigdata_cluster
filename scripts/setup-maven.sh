@@ -34,7 +34,7 @@ download_maven() {
         installFromRemote ${archive} ${download_url}
     fi
     mv ${INSTALL_PATH}/"${app_version}" ${INSTALL_PATH}/${app_name}
-    sudo chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
+    chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
     rm ${DOWNLOAD_PATH}/${archive}
 }
 
@@ -44,8 +44,8 @@ install_maven() {
     log info "setup ${app_name}"
     download_maven ${app_name}
     setupEnv_app ${app_name}
-    # setup_maven ${app_name}
-    # source ${PROFILE}
+    setup_maven ${app_name}
+    source ${PROFILE}
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then
