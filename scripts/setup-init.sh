@@ -27,6 +27,10 @@ yum remove -y git*
 yum install -y https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.7-1.x86_64.rpm
 yum install -y git
 
+# 中文包
+yum -y groupinstall "fonts"
+yum -y install glibc-common
+localectl set-locale LANG=zh_CN.UTF-8
 #---ssh---
 mv /home/vagrant/vagrant_bigdata_cluster/resources/sshd_config /etc/ssh/sshd_config
 systemctl restart sshd.service

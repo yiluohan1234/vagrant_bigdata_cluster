@@ -9,21 +9,36 @@ fi
 
 
 setup_zabbix() {
-    zabbix_server_path=`ls /usr/share/doc/|grep zabbix-server`
-    zcat /usr/share/doc/$zabbix_server_path/create.sql.gz | mysql -uroot -p199037 zabbix
+    # agent配置
+    sed -i 's/^Server=127.0.0.1/Server=hdp103/' /etc/zabbix/zabbix_agentd.conf
+    sed -i 's/^ServerActive=127.0.0.1/#ServerActive=127.0.0.1/' /etc/zabbix/zabbix_agentd.conf
+    sed -i 's/Hostname=Zabbix server/#Hostname=Zabbix server/' /etc/zabbix/zabbix_agentd.conf
 
-    
+    hostname=`cat /etc/hostname`
     # 配置环境中不同节点配置不同的情况
     if [ "${IS_VAGRANT}" == "true" ];then
-        hostname=`cat /etc/hostname`
-
-        if [ "$hostname" != "hdp103" ];then
-            yum install -y zabbix-server-mysql zabbix-web-mysql-scl zabbix-apache-conf-scl
+        if [ "$hostname" = "hdp103" ];then
+            # 导入Zabbix建表语句
+            zabbix_server_path=`ls /usr/share/doc/|grep zabbix-server`
+            zcat /usr/share/doc/$zabbix_server_path/create.sql.gz | mysql -uroot -p199037 zabbix
+            # server配置
+            sed -i 's/^# DBHost=.*/DBHost=hdp103/g' /etc/zabbix/zabbix_server.conf
+            sed -i 's/^DBUser=zabbix/DBUser=root/g' /etc/zabbix/zabbix_server.conf
+            sed -i 's/^# DBPassword=/DBPassword=199037/g' /etc/zabbix/zabbix_server.conf
+            # 配置时区
+            echo "php_value[date.timezone] = Asia/Shanghai" >> /etc/opt/rh/rh-php72/php-fpm.d/zabbix.conf
+            
         fi
     fi
-    zabbix_server_path=`ls /usr/share/doc/|grep zabbix-server`
-    zcat /usr/share/doc/$zabbix_server_path/create.sql.gz | mysql -uroot -p199037 zabbix
-    
+    # 启动Zabbix
+    if [ "$hostname" != "hdp103" ];then
+        systemctl start zabbix-agent
+        systemctl enable zabbix-agent
+    else
+        systemctl start zabbix-server zabbix-agent httpd rh-php72-php-fpm
+        systemctl enable zabbix-server zabbix-agent httpd rh-php72-php-fpm
+    fi
+
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
     fi
@@ -37,24 +52,9 @@ download_zabbix() {
     yum install -y zabbix-agent
     
     hostname=`cat /etc/hostname`
-    if [ "$hostname" != "hdp103" ];then
+    if [ "$hostname" = "hdp103" ];then
         yum install -y zabbix-server-mysql zabbix-web-mysql-scl zabbix-apache-conf-scl
     fi
-}
-
-dispatch_zabbix() {
-    local app_name=$1
-    dispatch_app ${app_name}
-    for i in {"hdp102","hdp103"};
-    do
-        node_name=$i
-        node_host=`cat /etc/hosts |grep $i|awk '{print $1}'`
-        file_path=${INSTALL_PATH}/${app_name}/config/elasticsearch.yml
-
-        echo "------modify $i server.properties-------"
-        #ssh $i "sed -i 's/^node.name: .*/node.name: '$node_name'/' $file_path"
-        ssh $i "sed -i 's@^network.host: .*@network.host: '${node_host}'@' ${file_path}"
-    done
 }
 
 install_zabbix() {
@@ -63,11 +63,9 @@ install_zabbix() {
 
     download_zabbix ${app_name}
     #setup_zabbix ${app_name}
-    #setupEnv_app $app_name
     if [ "${IS_VAGRANT}" != "true" ];then
         dispatch_zabbix ${app_name}
     fi
-    #source ${PROFILE}
 }
 
 

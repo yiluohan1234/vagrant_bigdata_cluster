@@ -26,6 +26,7 @@ chmod 777 ${INIT_SHELL_BIN}/*
 chown vagrant:vagrant -R ${INIT_SHELL_BIN}
 
 cp ${RESOURCE_PATH}/$INIT_PATH/complete_tool.sh /etc/profile.d
+source /etc/profile.d/complete_tool.sh
 
 echo "# init shell bin" >> ${PROFILE}
 echo "export INIT_SHELL_BIN=${INIT_SHELL_BIN}" >> ${PROFILE}
