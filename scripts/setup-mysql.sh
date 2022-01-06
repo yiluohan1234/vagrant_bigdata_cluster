@@ -81,7 +81,6 @@ setup_mysql() {
     # 创建数仓基本的数据库：gmall 和 gmall_report
     ${mysql_install_dir}/bin/mysql -uroot -p${dbrootpwd} -e "CREATE DATABASE gmall CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';;CREATE DATABASE gmall_report CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';"
     
-    #service mysqld stop
 }
 
 

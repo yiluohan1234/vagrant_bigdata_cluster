@@ -5,7 +5,7 @@ _service_tool()
    local cmd=${COMP_WORDS[COMP_CWORD-1]}    
    case $cmd in
        'bigstart')
-       COMPREPLY=( $(compgen -W 'kylin presto dfs yarn hdp spark zookeeper flink hbase kafka kibana elasticsearch redis logger hiveserver hivemetastore maxwell canal azkaban superset' -- $cur ) )
+       COMPREPLY=( $(compgen -W 'kylin presto dfs yarn hdp spark zookeeper flink hbase kafka kibana elasticsearch redis logger hive maxwell canal azkaban superset' -- $cur ) )
        ;;
 
        'kylin')
@@ -65,13 +65,8 @@ _service_tool()
        COMPREPLY=( $(compgen -W 'start stop' -- $cur ) )
        ;;
 
-       'hiveserver')
-       COMPREPLY=( $(compgen -W 'start stop status' -- $cur ) )
-       ;;
-       'hivemetastore')
-       COMPREPLY=( $(compgen -W 'start stop status' -- $cur ) )
-       ;;
-
+       'hive')
+       COMPREPLY=( $(compgen -W 'start stop status restart' -- $cur ) )
 
        'maxwell')
        COMPREPLY=( $(compgen -W 'start stop status' -- $cur ) )
@@ -88,15 +83,6 @@ _service_tool()
        'superset')
        COMPREPLY=( $(compgen -W 'start stop status' -- $cur ) )
        ;;
-
-
-
-
-
-
-
-
-
 
        esac
     return 0

@@ -62,7 +62,7 @@ install_zabbix() {
     log info "setup ${app_name}"
 
     download_zabbix ${app_name}
-    #setup_zabbix ${app_name}
+    setup_zabbix ${app_name}
     if [ "${IS_VAGRANT}" != "true" ];then
         dispatch_zabbix ${app_name}
     fi

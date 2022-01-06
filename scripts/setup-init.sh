@@ -31,6 +31,9 @@ yum install -y git
 yum -y groupinstall "fonts"
 yum -y install glibc-common
 localectl set-locale LANG=zh_CN.UTF-8
+
+# 设置系统时区为上海
+timedatectl set-timezone Asia/Shanghai 
 #---ssh---
 mv /home/vagrant/vagrant_bigdata_cluster/resources/sshd_config /etc/ssh/sshd_config
 systemctl restart sshd.service
