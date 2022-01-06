@@ -20,6 +20,9 @@ EOF
 admin
 admin
 EOF
+}
+setup_Kerberos_hadoop() {
+
     echo "admin" |kinit admin/admin 
 
     # 创建hadoop组
@@ -177,10 +180,6 @@ EOF
 
     usermod -a -G hadoop vagrant
     kadmin -p admin/admin -wadmin -q"addprinc -pw vagrant vagrant"
-
-    if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
-        sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
-    fi
 }
 
 download_Kerberos() {
