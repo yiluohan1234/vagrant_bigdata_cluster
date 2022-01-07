@@ -175,10 +175,10 @@ spark(){
     fi
     case $1 in
         start)
-            sh $INSTALL_PATH/spark/sbin/start-all.sh
+            ssh hdp101 "$INSTALL_PATH/spark/sbin/start-all.sh"
             ;;
         stop)
-            sh $INSTALL_PATH/spark/sbin/stop-all.sh
+            ssh hdp101 "$INSTALL_PATH/spark/sbin/stop-all.sh"
             ;;
         *)
             echo $usage
@@ -194,10 +194,10 @@ flink(){
     fi
     case $1 in
         start)
-            $INSTALL_PATH/flink/bin/start-cluster.sh
+            ssh hdp101 "$INSTALL_PATH/flink/bin/start-cluster.sh"
             ;;
         stop)
-            $INSTALL_PATH/flink/bin/stop-cluster.sh
+            ssh hdp101 "$INSTALL_PATH/flink/bin/stop-cluster.sh"
             ;;
         *)
             echo $usage
@@ -223,10 +223,10 @@ hbase(){
             else
                 echo "Zookeeper has been started"
             fi
-            $INSTALL_PATH/hbase/bin/start-hbase.sh
+            ssh hdp101 "$INSTALL_PATH/hbase/bin/start-hbase.sh"
             ;;
         stop)
-            $INSTALL_PATH/hbase/bin/stop-hbase.sh
+            ssh hdp101 "$INSTALL_PATH/hbase/bin/stop-hbase.sh"
             ;;
         *)
             echo $usage
