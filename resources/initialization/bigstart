@@ -309,6 +309,38 @@ elasticsearch(){
     esac
 }
 
+solr(){
+    usage="Usage: $0 (start|stop|restart)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            for i in {"hdp101","hdp102","hdp103"};
+            do
+                echo "-----$1 $i solr-------"
+                ssh $i "source /etc/profile;$INSTALL_PATH/solr/bin/solr start"
+            done
+            ;;
+        stop)
+            for j in {"hdp101","hdp102","hdp103"};
+            do
+                echo "-----$1 $i solr-------"
+                ssh $i "source /etc/profile;$INSTALL_PATH/solr/bin/solr stop"
+            done
+            ;;
+        restart)
+            solr stop
+            solr start
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
 redis(){
     #redis服务器监听的端口
     REDISPORT=6379
@@ -579,6 +611,52 @@ kylin(){
     esac
 }
 
+atlas(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            echo "============ start $i atlas ============"
+            ssh hdp101 "source /etc/profile;$INSTALL_PATH/atlas/bin/atlas_start.py"
+            ;;
+        stop)
+            echo "============ stop $j atlas ============"
+            ssh hdp101  "source /etc/profile;$INSTALL_PATH/atlas/bin/atlas_stop.py"
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+ranger(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            echo "============ start $i atlas ============"
+            ssh hdp101 "source /etc/profile;ranger-admin start"
+            ssh hdp101 "source /etc/profile;ranger-usersync start"
+            ;;
+        stop)
+            echo "============ stop $j atlas ============"
+            ssh hdp101  "source /etc/profile;ranger-admin stop"
+            ssh hdp101  "source /etc/profile;ranger-usersync stop"
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
 superset(){
     usage="Usage: $0 (start|stop)"
 
@@ -688,6 +766,15 @@ args()
 		;;
 	  kylin)
 		kylin $2
+		;;
+	  solr)
+		solr $2
+		;;
+	  atlas)
+		atlas $2
+		;;
+	  ranger)
+		ranger $2
 		;;
 	  *)
 		echo $usage

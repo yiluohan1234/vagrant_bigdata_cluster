@@ -62,3 +62,5 @@ echo -e "* soft nofile 65536\n* hard nofile 65536\n* soft nproc 131072\n* hard n
 sed -i "s@^SELINUX=.*@SELINUX=disabled@g" /etc/selinux/config
 # 虚拟内存扩容
 echo "vm.max_map_count=262144" >> /etc/sysctl.conf
+# 修改进程数限制
+sed -i 's@^*          soft    nproc     4096@*          soft    nproc     65536@g' /etc/security/limits.d/20-nproc.conf

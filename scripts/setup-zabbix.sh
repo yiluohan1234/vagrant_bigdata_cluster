@@ -30,6 +30,7 @@ setup_zabbix() {
             
         fi
     fi
+:<<skip
     # 启动Zabbix
     if [ "$hostname" != "hdp103" ];then
         systemctl start zabbix-agent
@@ -38,10 +39,7 @@ setup_zabbix() {
         systemctl start zabbix-server zabbix-agent httpd rh-php72-php-fpm
         systemctl enable zabbix-server zabbix-agent httpd rh-php72-php-fpm
     fi
-
-    if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
-        sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
-    fi
+skip
 }
 
 download_zabbix() {

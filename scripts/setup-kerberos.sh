@@ -9,25 +9,36 @@ fi
 
 
 setup_Kerberos() {
-    # 管理员主体认证:kinit admin/admin(hdp101)
-    kdb5_util create -s << EOF
+    # 修改/etc/krb5.conf文件
+    sed -i '10 a dns_lookup_kdc = false' /etc/krb5.conf
+    sed -i 's/^dns_lookup_kdc =.*/ dns_lookup_kdc = false/g' /etc/krb5.conf
+    sed -i 's/^# default_realm =.*/ default_realm = EXAMPLE.COM/g' /etc/krb5.conf
+    sed -i 's/^ default_ccache_name.*/ #default_ccache_name = KEYRING:persistent:%{uid}/g' /etc/krb5.conf
+    sed -i 's/^# EXAMPLE.COM.*/ EXAMPLE.COM = {/g' /etc/krb5.conf
+    sed -i 's/^#  admin_server =.*/  admin_server = hdp101/g' /etc/krb5.conf
+    sed -i 's/^#  kdc =.*/  kdc = hdp101/g' /etc/krb5.conf
+    sed -i 's/^# }.*/ }/g' /etc/krb5.conf
+    if [ "$hostname" = "hdp101" ];then
+        # 管理员主体认证:kinit admin/admin(hdp101)
+        kdb5_util create -s << EOF
 admin
 admin
 EOF
-    systemctl start krb5kdc
-    systemctl enable krb5kdc
-    kadmin.local -q "addprinc admin/admin" <<EOF
+        # 启动KDC和Kadmin
+        systemctl start krb5kdc
+        systemctl enable krb5kdc
+        systemctl start kadmin
+        systemctl enable kadmin
+        kadmin.local -q "addprinc admin/admin" <<EOF
 admin
 admin
 EOF
+    fi
 }
 setup_Kerberos_hadoop() {
 
-    echo "admin" |kinit admin/admin 
-
-    # 创建hadoop组
+    # 创建hadoop组、创建各用户并设置密码
     groupadd hadoop
-    # 创建各用户并设置密码
     useradd hdfs -g hadoop
     echo hdfs | passwd --stdin  hdfs
     useradd yarn -g hadoop
@@ -37,8 +48,6 @@ setup_Kerberos_hadoop() {
 
     # 创建keytab文件目录
     mkdir /etc/security/keytab/
-    chown -R root:hadoop /etc/security/keytab/
-    chmod 770 /etc/security/keytab/
  
     hostname=`cat /etc/hostname`
     if [ "$hostname" = "hdp101" ];then
@@ -74,9 +83,6 @@ setup_Kerberos_hadoop() {
         kadmin -padmin/admin -wadmin -q"addprinc -randkey HTTP/hdp103"
         kadmin -padmin/admin -wadmin -q"xst -k /etc/security/keytab/spnego.service.keytab HTTP/hdp103"
     fi
-    # 修改所有节点keytab文件的所有者和访问权限
-    chown -R root:hadoop /etc/security/keytab/
-    chmod 660 /etc/security/keytab/*
     # 修改Hadoop配置文件
 
     # 配置HDFS使用HTTPS安全传输协议
@@ -92,12 +98,17 @@ setup_Kerberos_hadoop() {
 y
 
 EOF
-    chown -R root:hadoop /etc/security/keytab/keystore
-    chmod 660 /etc/security/keytab/keystore
+    # 修改所有节点keytab文件的所有者和访问权限
+    chown -R root:hadoop /etc/security/keytab/
+    chmod 660 /etc/security/keytab/*
     xsync /etc/security/keytab/keystore
     
     # 修改hadoop配置文件ssl-server.xml.example
     mv $HADOOP_HOME/etc/hadoop/ssl-server.xml.example $HADOOP_HOME/etc/hadoop/ssl-server.xml
+
+    # 修改$HADOOP_HOME/etc/hadoop/container-executor.cfg
+    # 修改$HADOOP_HOME/etc/hadoop/yarn-site.xml文件
+
     # 配置Yarn使用LinuxContainerExecutor
     chown root:hadoop ${HADOOP_HOME}/bin/container-executor
     chmod 6050 ${HADOOP_HOME}/bin/container-executor
@@ -107,22 +118,24 @@ EOF
     chown root:hadoop ${HADOOP_HOME}
     chown root:hadoop /opt/module
     chmod 400 ${HADOOP_HOME}/etc/hadoop/container-executor.cfg
-    # 修改$HADOOP_HOME/etc/hadoop/container-executor.cfg
-    # 修改$HADOOP_HOME/etc/hadoop/yarn-site.xml文件
-
+    
     # 修改本地路径权限
+    if [ "$hostname" = "hdp101" ];then
+        # name.dir:hdp101
+        chown -R hdfs:hadoop ${HADOOP_HOME}/tmp/dfs/name/
+        chmod 700 ${HADOOP_HOME}/tmp/dfs/name/
+    fi
+    if [ "$hostname" = "hdp103" ];then
+        # namenode.checkpoint:hdp103
+        chown -R hdfs:hadoop ${HADOOP_HOME}/tmp/dfs/namesecondary/
+        chmod 700 ${HADOOP_HOME}/tmp/dfs/namesecondary/
+    fi
     # logs.dir
     chown hdfs:hadoop ${HADOOP_HOME}/logs
     chmod 775 ${HADOOP_HOME}/logs
-    # name.dir:hdp101
-    chown -R hdfs:hadoop ${HADOOP_HOME}/tmp/dfs/name/
-    chmod 700 ${HADOOP_HOME}/tmp/dfs/name/
     # data.dir
     chown -R hdfs:hadoop ${HADOOP_HOME}/tmp/dfs/data/
     chmod 700 ${HADOOP_HOME}/tmp/dfs/data/
-    # namenode.checkpoint:hdp103
-    chown -R hdfs:hadoop ${HADOOP_HOME}/tmp/dfs/namesecondary/
-    chmod 700 ${HADOOP_HOME}/tmp/dfs/namesecondary/
     # yarn local-dirs
     chown -R yarn:hadoop ${HADOOP_HOME}/tmp/nm-local-dir/
     chmod -R 775 ${HADOOP_HOME}/tmp/nm-local-dir/
@@ -181,7 +194,20 @@ EOF
     usermod -a -G hadoop vagrant
     kadmin -p admin/admin -wadmin -q"addprinc -pw vagrant vagrant"
 }
+setup_Kerberos_hive(){
+    useradd hive -g hadoop
+    echo hive | passwd --stdin hive
+    if [ "$hostname" = "hdp101" ];then
+        kadmin -padmin/admin -wadmin -q"addprinc -randkey hive/hdp101"
+        kadmin -padmin/admin -wadmin -q"xst -k /etc/security/keytab/hive.service.keytab hive/hdp101"
+        chown -R root:hadoop /etc/security/keytab/
+        chmod 660 /etc/security/keytab/hive.service.keytab
 
+        cp ${HADOOP_HOME}/etc/hadoop/core-site.xml ${HIVE_HOME}/conf
+        cp ${HADOOP_HOME}/etc/hadoop/hdfs-site.xml ${HIVE_HOME}/conf
+    fi
+
+}
 download_Kerberos() {
     local app_name=$1
     yum install -y krb5-workstation krb5-libs
