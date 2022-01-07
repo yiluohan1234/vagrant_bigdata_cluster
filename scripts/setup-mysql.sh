@@ -84,13 +84,11 @@ setup_mysql() {
     
 }
 
-
 install_mysql() {
     local app_name="mysql"
     log info "setup ${app_name}"
     setup_mysql ${app_name}
 }
-
 
 if [ "${IS_VAGRANT}" == "true" ];then
     install_mysql
