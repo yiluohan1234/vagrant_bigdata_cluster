@@ -54,7 +54,7 @@ download_zabbix() {
     fi
 }
 dispatch_zabbix(){
-    for ip in {"hdp102","hdp103"};
+    for ip in {"hdp101","hdp102","hdp103"};
     do
         ssh $ip "$(typeset -f); download_zabbix"
         ssh $ip "$(typeset -f); setup_zabbix"
