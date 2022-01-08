@@ -10,36 +10,35 @@ fi
 
 setup_zabbix() {
     # agent配置
-    sed -i 's/^Server=127.0.0.1/Server=hdp103/' /etc/zabbix/zabbix_agentd.conf
+    sed -i 's/^Server=127.0.0.1/Server='$MYSQL_HOST'/' /etc/zabbix/zabbix_agentd.conf
     sed -i 's/^ServerActive=127.0.0.1/#ServerActive=127.0.0.1/' /etc/zabbix/zabbix_agentd.conf
     sed -i 's/Hostname=Zabbix server/#Hostname=Zabbix server/' /etc/zabbix/zabbix_agentd.conf
 
     hostname=`cat /etc/hostname`
     # 配置环境中不同节点配置不同的情况
     if [ "${IS_VAGRANT}" == "true" ];then
-        if [ "$hostname" = "hdp103" ];then
+        if [ "$hostname" = "$MYSQL_HOST" ];then
             # 导入Zabbix建表语句
             zabbix_server_path=`ls /usr/share/doc/|grep zabbix-server`
             zcat /usr/share/doc/$zabbix_server_path/create.sql.gz | mysql -uroot -p199037 zabbix
             # server配置
-            sed -i 's/^# DBHost=.*/DBHost=hdp103/g' /etc/zabbix/zabbix_server.conf
-            sed -i 's/^DBUser=zabbix/DBUser=root/g' /etc/zabbix/zabbix_server.conf
-            sed -i 's/^# DBPassword=/DBPassword=199037/g' /etc/zabbix/zabbix_server.conf
+            sed -i 's/^# DBHost=.*/DBHost='${MYSQL_HOST}'/g' /etc/zabbix/zabbix_server.conf
+            sed -i 's/^DBUser=zabbix/DBUser=zabbix/g' /etc/zabbix/zabbix_server.conf
+            sed -i 's/^# DBPassword=/DBPassword=zabbix/g' /etc/zabbix/zabbix_server.conf
             # 配置时区
             echo "php_value[date.timezone] = Asia/Shanghai" >> /etc/opt/rh/rh-php72/php-fpm.d/zabbix.conf
             
         fi
     fi
-:<<skip
+
     # 启动Zabbix
-    if [ "$hostname" != "hdp103" ];then
+    if [ "$hostname" != "$MYSQL_HOST" ];then
         systemctl start zabbix-agent
         systemctl enable zabbix-agent
     else
         systemctl start zabbix-server zabbix-agent httpd rh-php72-php-fpm
         systemctl enable zabbix-server zabbix-agent httpd rh-php72-php-fpm
     fi
-skip
 }
 
 download_zabbix() {
@@ -47,22 +46,29 @@ download_zabbix() {
     yum install -y centos-release-scl
     sed -i 's/http:\/\/repo.zabbix.com/https:\/\/mirrors.aliyun.com\/zabbix/g' /etc/yum.repos.d/zabbix.repo
     sed -i '11s/enabled=0/enabled=1/' /etc/yum.repos.d/zabbix.repo
-    yum install -y zabbix-agent
+    yum install -y -q zabbix-agent
     
     hostname=`cat /etc/hostname`
-    if [ "$hostname" = "hdp103" ];then
-        yum install -y zabbix-server-mysql zabbix-web-mysql-scl zabbix-apache-conf-scl
+    if [ "$hostname" = "$$MYSQL_HOST" ];then
+        yum install -y -q zabbix-server-mysql zabbix-web-mysql-scl zabbix-apache-conf-scl
     fi
 }
-
+dispatch_zabbix(){
+    for ip in {"hdp101","hdp102","hdp103"};
+    do
+        ssh $ip "$(typeset -f); download_zabbix"
+        ssh $ip "$(typeset -f); setup_zabbix"
+    done
+}
 install_zabbix() {
     local app_name="zabbix"
     log info "setup ${app_name}"
 
-    download_zabbix ${app_name}
-    setup_zabbix ${app_name}
     if [ "${IS_VAGRANT}" != "true" ];then
         dispatch_zabbix ${app_name}
+    else
+        download_zabbix ${app_name}
+        setup_zabbix ${app_name}
     fi
 }
 
