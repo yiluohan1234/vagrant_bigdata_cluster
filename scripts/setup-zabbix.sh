@@ -46,11 +46,11 @@ download_zabbix() {
     yum install -y centos-release-scl
     sed -i 's/http:\/\/repo.zabbix.com/https:\/\/mirrors.aliyun.com\/zabbix/g' /etc/yum.repos.d/zabbix.repo
     sed -i '11s/enabled=0/enabled=1/' /etc/yum.repos.d/zabbix.repo
-    yum install -y zabbix-agent
+    yum install -y -q zabbix-agent
     
     hostname=`cat /etc/hostname`
-    if [ "$hostname" = "$$MYSQL_HOST" ];then
-        yum install -y zabbix-server-mysql zabbix-web-mysql-scl zabbix-apache-conf-scl
+    if [ "$hostname" = "$MYSQL_HOST" ];then
+        yum install -y -q zabbix-server-mysql zabbix-web-mysql-scl zabbix-apache-conf-scl
     fi
 }
 dispatch_zabbix(){
@@ -64,10 +64,11 @@ install_zabbix() {
     local app_name="zabbix"
     log info "setup ${app_name}"
 
-    download_zabbix ${app_name}
-    setup_zabbix ${app_name}
     if [ "${IS_VAGRANT}" != "true" ];then
         dispatch_zabbix ${app_name}
+    else
+        download_zabbix ${app_name}
+        setup_zabbix ${app_name}
     fi
 }
 
