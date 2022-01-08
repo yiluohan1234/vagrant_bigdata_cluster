@@ -33,6 +33,9 @@ DOWNLOAD_REPO_APACHE=
 # hostname
 HOSTNAME=("hdp101" "hdp102" "hdp103")
 
+# default user
+DEFAULT_USER=vagrant
+DEFAULT_GROUP=hadoop
 # ssh
 SSH_CONF=/home/vagrant/resources/ssh
 
@@ -213,12 +216,18 @@ MYSQL_CONNECTOR_VERSION_NUM=`get_app_version_num $MYSQL_CONNECTOR_VERSION "-" 4`
 MYSQL_CONNECTOR_ARCHIVE=${MYSQL_CONNECTOR_VERSION}.tar.gz
 MYSQL_CONNECTOR_MIRROR_DOWNLOAD=https://repo.huaweicloud.com/mysql/Downloads/Connector-J/$MYSQL_CONNECTOR_ARCHIVE
 
+# MYSQL
 # https://mirrors.huaweicloud.com/mysql/Downloads/MySQL-5.7/mysql-5.7.35-linux-glibc2.12-x86_64.tar.gz
 MYSQL_VERSION_NUM=`get_app_version_num $ES_VERSION "-" 2`
 MYSQL_ARCHIVE=$MYSQL_VERSION-linux-glibc2.12-x86_64.tar.gz
 MYSQL_MIRROR_DOWNLOAD=https://mirrors.huaweicloud.com/mysql/Downloads/MySQL-5.7/$MYSQL_ARCHIVE
 MYSQL_RES_DIR=$RESOURCE_PATH/mysql
 MYSQL_CONF_DIR=$INSTALL_PATH/mysql
+
+MYSQL_HOST=hdp103
+MYSQL_USER=root
+MYSQL_PASSWORD=199037
+
 # nginx
 # 支持版本：具体见下载地址
 # https://nginx.org/download/nginx-1.18.0.tar.gz
