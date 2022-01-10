@@ -41,15 +41,16 @@ download_flink() {
 install_flink() {
     local app_name="flink"
     log info "setup ${app_name}"
+    if [ ! -d ${INSTALL_PATH}/${app_name} ];then
+        download_flink ${app_name}
+        setup_flink ${app_name}
+        setupEnv_app ${app_name}
 
-    download_flink ${app_name}
-    setup_flink ${app_name}
-    setupEnv_app ${app_name}
-
-    if [ "${IS_VAGRANT}" != "true" ];then
-        dispatch_app ${app_name}
+        if [ "${IS_VAGRANT}" != "true" ];then
+            dispatch_app ${app_name}
+        fi
+        source ${PROFILE}
     fi
-    source ${PROFILE}
 }
 
 
