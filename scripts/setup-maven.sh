@@ -42,10 +42,12 @@ download_maven() {
 install_maven() {
     local app_name="maven"
     log info "setup ${app_name}"
-    download_maven ${app_name}
-    setupEnv_app ${app_name}
-    setup_maven ${app_name}
-    source ${PROFILE}
+    if [ ! -d ${INSTALL_PATH}/${app_name} ];then
+        download_maven ${app_name}
+        setupEnv_app ${app_name}
+        setup_maven ${app_name}
+        source ${PROFILE}
+    fi
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then
