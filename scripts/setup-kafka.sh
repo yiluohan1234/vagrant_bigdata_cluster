@@ -72,16 +72,17 @@ dispatch_kafka() {
 }
 
 install_kafka() {
-    log info "setup kafka"
-    app_name="kafka"
-
-    download_kafka ${app_name}
-    setup_kafka ${app_name}
-    setupEnv_app ${app_name}
-    if [ "$IS_VAGRANT" != "true" ];then
-        dispatch_kafka ${app_name}
+    local app_name="kafka"
+    log info "setup $app_name"
+    if [ ! -d ${INSTALL_PATH}/${app_name} ];then
+        download_kafka ${app_name}
+        setup_kafka ${app_name}
+        setupEnv_app ${app_name}
+        if [ "$IS_VAGRANT" != "true" ];then
+            dispatch_kafka ${app_name}
+        fi
+        source ${PROFILE}
     fi
-    source ${PROFILE}
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then
