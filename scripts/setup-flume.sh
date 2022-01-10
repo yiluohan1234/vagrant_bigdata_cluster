@@ -17,6 +17,11 @@ setup_flume() {
     mv ${conf_dir}/flume-interceptor-1.0-SNAPSHOT-jar-with-dependencies.jar ${INSTALL_PATH}/flume/lib
     cp ${INSTALL_PATH}/flume/conf/flume-conf.properties.template ${INSTALL_PATH}/flume/conf/flume-conf.properties
 
+    if [ "${IS_KERBEROS}" != "true" ];then
+        sed -i '39,40d' ${conf_dir}/kafka-flume-hdfs.conf
+    fi
+
+
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
     fi
@@ -43,17 +48,18 @@ download_flume() {
 }
 
 install_flume() {
+    local app_name="flume"
     log info "setup ${app_name}"
-    app_name="flume"
+    if [ ! -d ${INSTALL_PATH}/${app_name} ];then
+        download_flume ${app_name}
+        setup_flume ${app_name}
+        setupEnv_app ${app_name}
 
-    download_flume ${app_name}
-    setup_flume ${app_name}
-    setupEnv_app ${app_name}
-
-    if [ "${IS_VAGRANT}" != "true" ];then
-        dispatch_app ${app_name}
+        if [ "${IS_VAGRANT}" != "true" ];then
+            dispatch_app ${app_name}
+        fi
+        source ${PROFILE}
     fi
-    source ${PROFILE}
 }
 if [ "${IS_VAGRANT}" == "true" ];then
     install_flume
