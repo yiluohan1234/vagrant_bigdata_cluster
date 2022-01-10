@@ -62,14 +62,15 @@ download_azkaban() {
 install_azkaban() {
     local app_name="azkaban"
     log info "setup ${app_name}"
-
-    download_azkaban ${app_name}
-    setup_azkaban ${app_name}
-    setupEnv_app $app_name
-    # if [ "${IS_VAGRANT}" != "true" ];then
-    #     dispatch_app ${app_name}
-    # fi
-    source ${PROFILE}
+    if [ ! -d ${INSTALL_PATH}/${app_name} ];then
+        download_azkaban ${app_name}
+        setup_azkaban ${app_name}
+        setupEnv_app $app_name
+        # if [ "${IS_VAGRANT}" != "true" ];then
+        #     dispatch_app ${app_name}
+        # fi
+        source ${PROFILE}
+    fi
 }
 
 
