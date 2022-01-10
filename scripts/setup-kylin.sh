@@ -45,7 +45,6 @@ install_kylin() {
     local app_name="kylin"
     log info "setup ${app_name}"
     if [ ! -d ${INSTALL_PATH}/${app_name} ];then
-        
         download_kylin ${app_name}
         setup_kylin ${app_name}
         setupEnv_app $app_name
