@@ -7,6 +7,7 @@ else
 fi
 #---basic install---
 # -q（不显示安装的过程）
+log info "install basic software"
 yum install -y -q sshpass
 yum install -y -q lrzsz
 yum install -y -q expect
@@ -19,17 +20,17 @@ yum install -y -q epel-release
 yum install -y -q lsof
 yum install -y -q nc
 yum install -y -q wget
-yum install -y openssl-devel
-yum install -y lzop
+yum install -y -q openssl-devel
+yum install -y -q lzop
 
 # git升级
-yum remove -y git*
+yum remove -y  -q git*
 yum install -y https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.7-1.x86_64.rpm
-yum install -y git
+yum install -y -q git
 
 # 中文包
-yum -y groupinstall "fonts"
-yum -y install glibc-common
+yum -y -q groupinstall "fonts"
+yum install -y -q glibc-common
 localectl set-locale LANG=zh_CN.UTF-8
 
 # 设置系统时区为上海
@@ -64,3 +65,13 @@ sed -i "s@^SELINUX=.*@SELINUX=disabled@g" /etc/selinux/config
 echo "vm.max_map_count=262144" >> /etc/sysctl.conf
 # 修改进程数限制
 sed -i 's@^*          soft    nproc     4096@*          soft    nproc     65536@g' /etc/security/limits.d/20-nproc.conf
+
+
+# 创建hadoop组、创建各用户并设置密码
+groupadd hadoop
+useradd hdfs -g hadoop
+echo hdfs | passwd --stdin  hdfs
+useradd yarn -g hadoop
+echo yarn | passwd --stdin yarn
+useradd mapred -g hadoop
+echo mapred | passwd --stdin mapred

@@ -2,6 +2,8 @@
 
 # 是否用vagrant安装集群
 IS_VAGRANT="true"
+# 是否用kerberos
+IS_KERBEROS="false"
 
 # 配置文件目录
 RESOURCE_PATH=/home/vagrant/vagrant_bigdata_cluster/resources
@@ -38,6 +40,16 @@ DEFAULT_USER=vagrant
 DEFAULT_GROUP=hadoop
 # ssh
 SSH_CONF=/home/vagrant/resources/ssh
+
+# mysql
+MYSQL_HOST=hdp103
+MYSQL_USER=root
+MYSQL_PASSWORD=199037
+
+RANGER_DBUSER=ranger
+RANGER_DBPASSWORD=ranger
+AZKABAN_DBUSER=zabbix
+AZKABAN_DBPASSWORD=zabbix
 
 # app版本
 HADOOP_VERSION=hadoop-3.1.3
@@ -223,10 +235,6 @@ MYSQL_ARCHIVE=$MYSQL_VERSION-linux-glibc2.12-x86_64.tar.gz
 MYSQL_MIRROR_DOWNLOAD=https://mirrors.huaweicloud.com/mysql/Downloads/MySQL-5.7/$MYSQL_ARCHIVE
 MYSQL_RES_DIR=$RESOURCE_PATH/mysql
 MYSQL_CONF_DIR=$INSTALL_PATH/mysql
-
-MYSQL_HOST=hdp103
-MYSQL_USER=root
-MYSQL_PASSWORD=199037
 
 # nginx
 # 支持版本：具体见下载地址

@@ -52,4 +52,33 @@
         <name>hbase.unsafe.stream.capability.enforce</name>
         <value>false</value>
     </property>
+    <property>
+        <name>hbase.security.authentication</name>
+        <value>kerberos</value>
+    </property>
+
+    <property> 
+        <name>hbase.master.kerberos.principal</name> 
+        <value>hbase/_HOST@EXAMPLE.COM</value> 
+    </property> 
+
+    <property> 
+        <name>hbase.master.keytab.file</name> 
+        <value>/etc/security/keytab/hbase.service.keytab</value> 
+    </property>
+
+    <property>
+        <name>hbase.regionserver.kerberos.principal</name> 
+        <value>hbase/_HOST@EXAMPLE.COM</value> 
+    </property> 
+
+    <property> 
+        <name>hbase.regionserver.keytab.file</name> 
+        <value>/etc/security/keytab/hbase.service.keytab</value> 
+    </property>
+
+    <property> 
+        <name>hbase.coprocessor.region.classes</name>
+        <value>org.apache.hadoop.hbase.security.token.TokenProvider</value>
+    </property>
 </configuration>

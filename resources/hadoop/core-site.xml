@@ -63,4 +63,38 @@
         <name>io.compression.codec.lzo.class</name>
         <value>com.hadoop.compression.lzo.LzoCodec</value>
     </property>
+    <!-- Kerberos主体到系统用户的映射机制 -->
+    <property>
+      <name>hadoop.security.auth_to_local.mechanism</name>
+      <value>MIT</value>
+    </property>
+
+    <!-- Kerberos主体到系统用户的具体映射规则 -->
+    <property>
+      <name>hadoop.security.auth_to_local</name>
+      <value>
+	RULE:[2:$1/$2@$0]([ndj]n\/.*@EXAMPLE\.COM)s/.*/hdfs/
+	RULE:[2:$1/$2@$0]([rn]m\/.*@EXAMPLE\.COM)s/.*/yarn/
+	RULE:[2:$1/$2@$0](jhs\/.*@EXAMPLE\.COM)s/.*/mapred/
+	DEFAULT
+      </value>
+    </property>
+
+    <!-- 启用Hadoop集群Kerberos安全认证 -->
+    <property>
+      <name>hadoop.security.authentication</name>
+      <value>kerberos</value>
+    </property>
+
+    <!-- 启用Hadoop集群授权管理 -->
+    <property>
+      <name>hadoop.security.authorization</name>
+      <value>true</value>
+    </property>
+
+    <!-- Hadoop集群间RPC通讯设为仅认证模式 -->
+    <property>
+      <name>hadoop.rpc.protection</name>
+      <value>authentication</value>
+    </property>
 </configuration>

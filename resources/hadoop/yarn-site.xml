@@ -70,4 +70,44 @@
         <name>yarn.log-aggregation.retain-seconds</name>
         <value>604800</value>
     </property>
+    <!-- Resource Manager 服务的Kerberos主体 -->
+    <property>
+      <name>yarn.resourcemanager.principal</name>
+      <value>rm/_HOST@EXAMPLE.COM</value>
+    </property>
+
+    <!-- Resource Manager 服务的Kerberos密钥文件 -->
+    <property>
+      <name>yarn.resourcemanager.keytab</name>
+      <value>/etc/security/keytab/rm.service.keytab</value>
+    </property>
+
+    <!-- Node Manager 服务的Kerberos主体 -->
+    <property>
+      <name>yarn.nodemanager.principal</name>
+      <value>nm/_HOST@EXAMPLE.COM</value>
+    </property>
+
+    <!-- Node Manager 服务的Kerberos密钥文件 -->
+    <property>
+      <name>yarn.nodemanager.keytab</name>
+      <value>/etc/security/keytab/nm.service.keytab</value>
+    </property>
+    <!-- 配置Node Manager使用LinuxContainerExecutor管理Container -->
+    <property>
+      <name>yarn.nodemanager.container-executor.class</name>
+      <value>org.apache.hadoop.yarn.server.nodemanager.LinuxContainerExecutor</value>
+    </property>
+
+    <!-- 配置Node Manager的启动用户的所属组 -->
+    <property>
+      <name>yarn.nodemanager.linux-container-executor.group</name>
+      <value>hadoop</value>
+    </property>
+
+    <!-- LinuxContainerExecutor脚本路径 -->
+    <property>
+      <name>yarn.nodemanager.linux-container-executor.path</name>
+      <value>/opt/module/hadoop/bin/container-executor</value>
+    </property>
 </configuration>

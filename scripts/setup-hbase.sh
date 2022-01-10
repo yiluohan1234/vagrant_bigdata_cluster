@@ -17,6 +17,10 @@ setup_hbase() {
     cp ${INSTALL_PATH}/hadoop/etc/hadoop/core-site.xml ${INSTALL_PATH}/hbase/conf/
     cp ${INSTALL_PATH}/hadoop/etc/hadoop/hdfs-site.xml ${INSTALL_PATH}/hbase/conf/
 
+    if [ "${IS_KERBEROS}" != "true" ];then
+        sed -i '55,83d' ${conf_dir}/hbase-site.xml
+    fi
+
     if [ $INSTALL_PATH != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
     fi
@@ -43,17 +47,19 @@ download_hbase() {
 
 install_hbase() {
     local app_name="hbase"
-    log info "setup ${app_name}"
+    if [ ! -d ${INSTALL_PATH}/${app_name} ];then
+        log info "setup ${app_name}"
 
-    download_hbase ${app_name}
-    setup_hbase ${app_name}
-    setupEnv_app ${app_name}
+        download_hbase ${app_name}
+        setup_hbase ${app_name}
+        setupEnv_app ${app_name}
 
-    if [ "${IS_VAGRANT}" != "true" ];then
-        dispatch_app ${app_name}
+        if [ "${IS_VAGRANT}" != "true" ];then
+            dispatch_app ${app_name}
+        fi
+        
+        source ${PROFILE}
     fi
-    
-    source ${PROFILE}
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then

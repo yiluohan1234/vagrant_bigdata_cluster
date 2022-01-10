@@ -74,4 +74,42 @@
 	<name>hive.execution.engine</name>
 	<value>spark</value>
     </property>
+    <!-- HiveServer2启用Kerberos认证 -->
+    <property>
+        <name>hive.server2.authentication</name>
+        <value>kerberos</value>
+    </property>
+
+    <!-- HiveServer2服务的Kerberos主体 -->
+    <property>
+        <name>hive.server2.authentication.kerberos.principal</name>
+        <value>hive/hdp101@EXAMPLE.COM</value>
+    </property>
+
+    <!-- HiveServer2服务的Kerberos密钥文件 -->
+    <property>
+        <name>hive.server2.authentication.kerberos.keytab</name>
+        <value>/etc/security/keytab/hive.service.keytab</value>
+    </property>
+
+    <!-- Metastore启动认证 -->
+    <property>
+        <name>hive.metastore.sasl.enabled</name>
+        <value>true</value>
+    </property>
+    <!-- Metastore Kerberos密钥文件 -->
+    <property>
+        <name>hive.metastore.kerberos.keytab.file</name>
+        <value>/etc/security/keytab/hive.service.keytab</value>
+    </property>
+    <!-- Metastore Kerberos主体 -->
+    <property>
+        <name>hive.metastore.kerberos.principal</name>
+        <value>hive/hdp101@EXAMPLE.COM</value>
+    </property>
+    <property>
+       <name>hive.exec.post.hooks</name>
+       <value>org.apache.atlas.hive.hook.HiveHook</value>
+    </property>
 </configuration>
+

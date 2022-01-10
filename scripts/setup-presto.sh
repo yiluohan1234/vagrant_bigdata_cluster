@@ -84,9 +84,11 @@ dispatch_presto() {
 
 install_presto() {
     local app_name="presto"
-    log info "setup ${app_name}"
+    if [ ! -d ${INSTALL_PATH}/${app_name} ];then
+        log info "setup ${app_name}"
 
-    download_presto ${app_name}
+        download_presto ${app_name}
+    fi
     setup_presto ${app_name}
     setupEnv_app $app_name
     if [ "${IS_VAGRANT}" != "true" ];then

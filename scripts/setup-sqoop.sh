@@ -43,12 +43,13 @@ download_sqoop() {
 
 install_sqoop() {
     local app_name="sqoop"
-    log info "setup ${app_name}"
-
-    download_sqoop ${app_name}
-    setup_sqoop ${app_name}
-    setupEnv_app ${app_name}
-    source ${PROFILE}
+    if [ ! -d ${INSTALL_PATH}/${app_name} ];then
+        log info "setup ${app_name}"
+        download_sqoop ${app_name}
+        setup_sqoop ${app_name}
+        setupEnv_app ${app_name}
+        source ${PROFILE}
+    fi
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then

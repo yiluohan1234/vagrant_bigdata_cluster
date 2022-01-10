@@ -20,11 +20,11 @@ setup_zabbix() {
         if [ "$hostname" = "$MYSQL_HOST" ];then
             # 导入Zabbix建表语句
             zabbix_server_path=`ls /usr/share/doc/|grep zabbix-server`
-            zcat /usr/share/doc/$zabbix_server_path/create.sql.gz | mysql -uroot -p199037 zabbix
+            zcat /usr/share/doc/$zabbix_server_path/create.sql.gz | mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} zabbix
             # server配置
             sed -i 's/^# DBHost=.*/DBHost='${MYSQL_HOST}'/g' /etc/zabbix/zabbix_server.conf
-            sed -i 's/^DBUser=zabbix/DBUser=zabbix/g' /etc/zabbix/zabbix_server.conf
-            sed -i 's/^# DBPassword=/DBPassword=zabbix/g' /etc/zabbix/zabbix_server.conf
+            sed -i 's/^DBUser=zabbix/DBUser='${MYSQL_USER}'/g' /etc/zabbix/zabbix_server.conf
+            sed -i 's/^# DBPassword=/DBPassword='${MYSQL_PASSWORD}'/g' /etc/zabbix/zabbix_server.conf
             # 配置时区
             echo "php_value[date.timezone] = Asia/Shanghai" >> /etc/opt/rh/rh-php72/php-fpm.d/zabbix.conf
             

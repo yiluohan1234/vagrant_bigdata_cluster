@@ -33,4 +33,15 @@
         <name>mapreduce.jobhistory.webapp.address</name>
         <value>hdp101:19888</value>
     </property>
+    <!-- 历史服务器的Kerberos主体 -->
+    <property>
+      <name>mapreduce.jobhistory.keytab</name>
+      <value>/etc/security/keytab/jhs.service.keytab</value>
+    </property>
+
+    <!-- 历史服务器的Kerberos密钥文件 -->
+    <property>
+      <name>mapreduce.jobhistory.principal</name>
+      <value>jhs/_HOST@EXAMPLE.COM</value>
+    </property>
 </configuration>
