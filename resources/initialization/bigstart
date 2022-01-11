@@ -142,12 +142,12 @@ hadoop(){
             ssh hdp101 "$INSTALL_PATH/hadoop/sbin/start-dfs.sh"
             echo " --------------- 启动 yarn ---------------"
             ssh hdp102 "$INSTALL_PATH/hadoop/sbin/start-yarn.sh"
-            echo " --------------- 启动 historyserver ---------------"
-            ssh hdp101 "$INSTALL_PATH/hadoop/bin/mapred --daemon start historyserver"
+            #echo " --------------- 启动 historyserver ---------------"
+            #ssh hdp101 "$INSTALL_PATH/hadoop/bin/mapred --daemon start historyserver"
             ;;
         stop)
-            echo " --------------- 关闭 historyserver ---------------"
-            ssh hdp101 "$INSTALL_PATH/hadoop/bin/mapred --daemon stop historyserver"
+            #echo " --------------- 关闭 historyserver ---------------"
+            #ssh hdp101 "$INSTALL_PATH/hadoop/bin/mapred --daemon stop historyserver"
             echo " --------------- 关闭 yarn ---------------"
             ssh hdp102 "$INSTALL_PATH/hadoop/sbin/stop-yarn.sh"
             echo " --------------- 关闭 hdfs ---------------"

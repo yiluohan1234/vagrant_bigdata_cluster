@@ -33,6 +33,14 @@ echo "export INIT_SHELL_BIN=${INIT_SHELL_BIN}" >> ${PROFILE}
 echo 'export PATH=${INIT_SHELL_BIN}:$PATH' >> ${PROFILE}
 source ${PROFILE}
 
+# 生成免密登录
+log info "生成免密登录"
+setssh
+su - hdfs -s /bin/bash setssh
+su - yarn -s /bin/bash setssh
+su - mapred -s /bin/bash setssh
+su - hive -s /bin/bash setssh
+su - vagrant -s /bin/bash setssh
 # 删除安装目录
 rm -rf /home/vagrant/vagrant_bigdata_cluster
 rm -rf ${INSTALL_PATH}/azkaban-3.84.4

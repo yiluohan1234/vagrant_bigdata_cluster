@@ -69,9 +69,9 @@ sed -i 's@^*          soft    nproc     4096@*          soft    nproc     65536@
 
 # 创建hadoop组、创建各用户并设置密码
 groupadd hadoop
-useradd hdfs -g hadoop
-echo hdfs | passwd --stdin  hdfs
-useradd yarn -g hadoop
-echo yarn | passwd --stdin yarn
-useradd mapred -g hadoop
-echo mapred | passwd --stdin mapred
+for user in {"hdfs","yarn","mapred","hive"};
+do
+    useradd $user -g hadoop -d /home/$user
+    echo $user | passwd --stdin $user
+done
+usermod -a -G hadoop vagrant

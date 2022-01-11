@@ -19,6 +19,10 @@ setup_hive() {
     log info "copying over ${app_name} configuration files"
     cp -f ${res_dir}/hive* ${conf_dir}
 
+    if [ "${IS_KERBEROS}" != "true" ];then
+        sed -i '77,113d' ${conf_dir}/hbase-site.xml
+    fi
+
     # 安装phoenix后hive启动失败
     #rm ${INSTALL_PATH}/hive/lib/icu4j-4.8.1.jar
     # java.lang.NoSuchMethodError: com.google.common.base.Preconditions.checkArgument
