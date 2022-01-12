@@ -64,7 +64,8 @@ download_zookeeper() {
         installFromRemote ${archive} ${download_url}
     fi
     mv ${INSTALL_PATH}/apache-${app_version}-bin ${INSTALL_PATH}/${app_name}
-    chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
+    chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_name}
+    chmod -R 660 ${INSTALL_PATH}/${app_name}
     rm ${DOWNLOAD_PATH}/${archive}
 }
 

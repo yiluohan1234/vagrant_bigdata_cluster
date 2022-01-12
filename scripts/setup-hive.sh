@@ -86,7 +86,8 @@ download_hive() {
         installFromRemote ${archive} ${download_url}
     fi
     mv ${INSTALL_PATH}/"apache-${HIVE_VERSION}-bin" ${INSTALL_PATH}/${app_name}
-    chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
+    chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_name}
+    chmod -R 660 ${INSTALL_PATH}/${app_name}
     rm ${DOWNLOAD_PATH}/${archive}
 }
 

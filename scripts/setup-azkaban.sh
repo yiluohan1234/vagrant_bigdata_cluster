@@ -53,7 +53,8 @@ download_azkaban() {
     else
         installFromRemote ${archive} ${download_url}
     fi
-    #chown -R vagrant:vagrant ${INSTALL_PATH}/${app_version}
+    chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_version}
+    chmod -R 660 ${INSTALL_PATH}/${app_version}
     rm ${DOWNLOAD_PATH}/${archive}
 }
 
