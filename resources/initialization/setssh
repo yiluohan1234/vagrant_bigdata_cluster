@@ -1,6 +1,11 @@
 #!/bin/bash
-# 服务器的密码
-passwd="vagrant"
+user_name=$(id -un)
+if [ "$user_name" = "root" -o "$user_name" = "vagrant" ];then
+    # 服务器的密码
+    passwd="vagrant"
+else
+    passwd=$user_name
+fi
 install_ssh() {
     if [ ! -f ~/.ssh/id_rsa ];then
         expect -c "

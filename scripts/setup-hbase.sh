@@ -40,7 +40,7 @@ download_hbase() {
         installFromRemote ${archive} ${download_url}
     fi
     mv ${INSTALL_PATH}/"${app_version}" ${INSTALL_PATH}/${app_name}
-    chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
+    #chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
     rm ${DOWNLOAD_PATH}/${archive}
     mv ${INSTALL_PATH}/hbase/lib/slf4j-log4j12-1.7.25.jar ${INSTALL_PATH}/hbase/lib/slf4j-log4j12-1.7.25.jar_bak
 }

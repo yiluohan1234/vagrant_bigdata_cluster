@@ -37,7 +37,7 @@ download_kibana() {
         installFromRemote ${archive} ${download_url}
     fi
     mv ${INSTALL_PATH}/${KIBANA_VERSION}-linux-x86_64 ${INSTALL_PATH}/${app_name}
-    chown -R vagrant:vagrant $INSTALL_PATH/${app_name}
+    #chown -R vagrant:vagrant $INSTALL_PATH/${app_name}
     rm ${DOWNLOAD_PATH}/${archive}
 }
 

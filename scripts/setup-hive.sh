@@ -104,7 +104,7 @@ download_hive_src() {
         installFromRemote ${archive} ${download_url}
     fi
     mv ${INSTALL_PATH}/"apache-${HIVE_VERSION}-src" ${INSTALL_PATH}/${app_name}-src
-    chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}-src
+    #chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}-src
     rm ${DOWNLOAD_PATH}/${archive}
 }
 

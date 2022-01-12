@@ -7,15 +7,15 @@ setup_Kerberos_hadoop_basic_config() {
     local conf_dir=${INSTALL_PATH}/hadoop/etc/hadoop
     
     # 重新复制配置文件
-    curl -o ${conf_dir}/core-site.xml -O -L ${GITEE_RESOURCE_URL_PATH}/hadoop/core-site.xml
-    curl -o ${conf_dir}/hdfs-site.xml -O -L ${GITEE_RESOURCE_URL_PATH}/hadoop/hdfs-site.xml
-    curl -o ${conf_dir}/mapred-site.xml -O -L ${GITEE_RESOURCE_URL_PATH}/hadoop/mapred-site.xml
-    curl -o ${conf_dir}/yarn-site.xml -O -L ${GITEE_RESOURCE_URL_PATH}/hadoop/yarn-site.xml
-    curl -o ${conf_dir}/ssl-server.xml -O -L ${GITEE_RESOURCE_URL_PATH}/hadoop/ssl-server.xml
+    curl -o ${conf_dir}/core-site.xml -LJO ${GITEE_RESOURCE_URL_PATH}/hadoop/core-site.xml
+    curl -o ${conf_dir}/hdfs-site.xml -LJO ${GITEE_RESOURCE_URL_PATH}/hadoop/hdfs-site.xml
+    curl -o ${conf_dir}/mapred-site.xml -LJO ${GITEE_RESOURCE_URL_PATH}/hadoop/mapred-site.xml
+    curl -o ${conf_dir}/yarn-site.xml -LJO ${GITEE_RESOURCE_URL_PATH}/hadoop/yarn-site.xml
+    curl -o ${conf_dir}/ssl-server.xml -LJO ${GITEE_RESOURCE_URL_PATH}/hadoop/ssl-server.xml
     sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
     if [ "${IS_KERBEROS}" == "true" ];then
         sed -i '31,49s/vagrant/hive/g' ${conf_dir}/core-site.xml
-        sed -i '30,34s/vagrant/hive/g' ${conf_dir}/core-site.xml
+        sed -i '30,34d' ${conf_dir}/core-site.xml
     else
         sed -i '66,99d' ${conf_dir}/core-site.xml
         sed -i '35,111d' ${conf_dir}/hdfs-site.xml
@@ -23,7 +23,7 @@ setup_Kerberos_hadoop_basic_config() {
         sed -i '73,112d' ${conf_dir}/yarn-site.xml
         rm -rf ${conf_dir}/ssl-server.xml
     fi
-    
+:<<skip   
     # 创建hadoop组、创建各用户并设置密码
     # groupadd hadoop
     # useradd hdfs -g hadoop
@@ -92,8 +92,8 @@ EOF
     # xsync /etc/security/keytab/keystore
 
     # 修改$HADOOP_HOME/etc/hadoop/container-executor.cfg
-    sed -i 's@^banned.users=.*@banned.users=hdfs,yarn,mapred/@' ${INSTALL_PATH}/hadoop/etc/hadoop/container-executor.cfg
-    sed -i 's@^yarn.nodemanager.linux-container-executor.group=.*@yarn.nodemanager.linux-container-executor.group=hadoop/@' ${INSTALL_PATH}/hadoop/etc/hadoop/container-executor.cfg
+    sed -i 's@^banned.users=.*@banned.users=hdfs,yarn,mapred@' ${INSTALL_PATH}/hadoop/etc/hadoop/container-executor.cfg
+    sed -i 's@^yarn.nodemanager.linux-container-executor.group=.*@yarn.nodemanager.linux-container-executor.group=hadoop@' ${INSTALL_PATH}/hadoop/etc/hadoop/container-executor.cfg
 
     # 修改$HADOOP_HOME/etc/hadoop/yarn-site.xml文件
 
@@ -147,7 +147,9 @@ EOF
     sed -i '17a\YARN_RESOURCEMANAGER_USER=yarn' ${INSTALL_PATH}/hadoop/sbin/stop-yarn.sh
 
     # $HADOOP_HOME/bin/mapred
+    echo "$hostname"
     sed -i '17a\MAPRED_HISTORYSERVER_USER=mapred' ${INSTALL_PATH}/hadoop/bin/mapred
+skip  
 }
 setup_Kerberos_hadoop(){
     for i in {"hdp101","hdp102","hdp103"};
