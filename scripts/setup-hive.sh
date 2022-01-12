@@ -20,7 +20,7 @@ setup_hive() {
     cp -f ${res_dir}/hive* ${conf_dir}
 
     if [ "${IS_KERBEROS}" != "true" ];then
-        sed -i '77,113d' ${conf_dir}/hbase-site.xml
+        sed -i '77,113d' ${conf_dir}/hive-site.xml
     fi
 
     # 安装phoenix后hive启动失败

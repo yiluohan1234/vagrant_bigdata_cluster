@@ -72,6 +72,7 @@ groupadd hadoop
 for user in {"hdfs","yarn","mapred","hive"};
 do
     useradd $user -g hadoop -d /home/$user
-    echo $user | passwd --stdin $user
+    # 各个用户的默认密码是vagrant
+    echo "vagrant" | passwd --stdin $user
 done
 usermod -a -G hadoop vagrant

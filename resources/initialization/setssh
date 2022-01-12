@@ -6,10 +6,10 @@ install_ssh() {
         expect -c "
             spawn ssh-keygen
             expect {
-                "Enter file in which to save the*" { send "\r"; exp_continue}
-                "Overwrite*" { send "n\r" ; exp_continue}
-                "Enter passphrase*" { send "\r"; exp_continue}
-                "Enter same passphrase again:" { send "\r" ; exp_continue}
+                \"Enter file in which to save the*\" { send \"\r\"; exp_continue}
+                \"Overwrite*\" { send \"n\r\" ; exp_continue}
+                \"Enter passphrase*\" { send \"\r\"; exp_continue}
+                \"Enter same passphrase again:\" { send \"\r\" ; exp_continue}
             }";
     fi
     hostList=$(cat /etc/hosts|grep -vE localhost | awk '{print $2}')
