@@ -1,6 +1,6 @@
 #!/bin/bash
 #set -x
-source "/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
+source "/vagrant/scripts/common.sh"
 
 setup_hadoop() {
     local app_name=$1

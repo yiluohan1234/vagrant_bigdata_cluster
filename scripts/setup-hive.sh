@@ -64,7 +64,7 @@ setup_hive_src() {
 
     cd $hive_src_dir
     mvn clean package -Pdist -DskipTests -Dmaven.javadoc.skip=true
-    cp $hive_src_dir/packaging/target/apache-hive-3.1.2-bin.tar.gz /home/vagrant/vagrant_bigdata_cluster/downloads
+    cp $hive_src_dir/packaging/target/apache-hive-3.1.2-bin.tar.gz /vagrant/downloads
 
 }
 
