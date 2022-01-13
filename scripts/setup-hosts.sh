@@ -1,9 +1,5 @@
 #!/bin/bash
-if [ "${IS_VAGRANT}" == "true" ];then
-    source "/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
-else
-    source "/home/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
-fi
+source "/vagrant/scripts/common.sh"
 
 TOTAL_NODES=3
 # sh 

@@ -1,10 +1,6 @@
 #!/bin/bash
 #set -x
-if [ "${IS_VAGRANT}" == "true" ];then
-    source "/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
-else
-    source "/home/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
-fi
+source "/vagrant/vagrant_bigdata_cluster/scripts/common.sh"
 
 setup_hadoop() {
     local app_name=$1

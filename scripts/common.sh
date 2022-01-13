@@ -5,23 +5,22 @@ IS_VAGRANT="true"
 # 是否用kerberos
 IS_KERBEROS="false"
 
+# default user
+DEFAULT_USER=vagrant
+DEFAULT_GROUP=hadoop
+
 # 配置文件目录
-RESOURCE_PATH=/home/vagrant/vagrant_bigdata_cluster/resources
+RESOURCE_PATH=/vagrant/resources
 
 # 安装目录
 INSTALL_PATH=/opt/module
-[ ! -d $INSTALL_PATH ] && mkdir -p $INSTALL_PATH
-chown -R vagrant:vagrant $INSTALL_PATH
 
 # 组件下载目录
-DOWNLOAD_PATH=/home/vagrant/vagrant_bigdata_cluster/downloads
-[ ! -d $DOWNLOAD_PATH ] && mkdir -p $DOWNLOAD_PATH
+DOWNLOAD_PATH=/vagrant/downloads
 
 # 初始化集群目录
 INIT_PATH=$RESOURCE_PATH/initialization
 INIT_SHELL_BIN=$INSTALL_PATH/bin
-[ ! -d $INIT_SHELL_BIN ] && mkdir -p $INIT_SHELL_BIN
-
 
 # 环境变量配置文件
 PROFILE=/etc/profile.d/hdp_env.sh
@@ -35,9 +34,6 @@ DOWNLOAD_REPO_APACHE=https://archive.apache.org/dist
 # hostname
 HOSTNAME=("hdp101" "hdp102" "hdp103")
 
-# default user
-DEFAULT_USER=vagrant
-DEFAULT_GROUP=hadoop
 # ssh
 SSH_CONF=/home/vagrant/resources/ssh
 
@@ -409,8 +405,8 @@ get_string_upper() {
 installFromLocal() {
     LOCAL_ARCHIVE=$1
     log info "install $LOCAL_ARCHIVE from local file"
-    FILE=$DOWNLOAD_PATH/$LOCAL_ARCHIVE
-    tar -xzf $FILE -C $INSTALL_PATH
+    FILE=${DOWNLOAD_PATH}/${LOCAL_ARCHIVE}
+    tar -xzf ${FILE} -C ${INSTALL_PATH}
 }
 
 # 从网上下载组件到DOWNLOAD_PATH，并解压到INSTALL_PATH
@@ -418,12 +414,12 @@ installFromLocal() {
 installFromRemote() {
     LOCAL_ARCHIVE=$1
     REMOTE_MIRROR_DOWNLOAD=$2
-    FILE=$DOWNLOAD_PATH/$LOCAL_ARCHIVE
+    FILE=${DOWNLOAD_PATH}/${LOCAL_ARCHIVE}
+    [ ! -d ${DOWNLOAD_PATH} ] && mkdir -p ${DOWNLOAD_PATH}
  
     log info "install $LOCAL_ARCHIVE from remote file"
-    curl -o $FILE -O -L $REMOTE_MIRROR_DOWNLOAD
-    tar -xzf $FILE -C $INSTALL_PATH
-    #chown -R vagrant:vagrant $INSTALL_PATH
+    curl -o ${FILE} -O -L ${REMOTE_MIRROR_DOWNLOAD}
+    tar -xzf ${FILE} -C ${INSTALL_PATH}
 }
 
 # 分发app目录
