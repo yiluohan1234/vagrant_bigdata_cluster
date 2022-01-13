@@ -30,7 +30,7 @@ PROFILE=/etc/profile.d/hdp_env.sh
 # 1:https://archive.apache.org/dist
 # 2:https://mirrors.huaweicloud.com/apache
 DOWNLOAD_REPO=https://mirrors.huaweicloud.com/apache
-DOWNLOAD_REPO_APACHE=   
+DOWNLOAD_REPO_APACHE=https://archive.apache.org/dist
 
 # hostname
 HOSTNAME=("hdp101" "hdp102" "hdp103")

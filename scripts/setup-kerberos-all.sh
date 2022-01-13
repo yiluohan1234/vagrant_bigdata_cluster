@@ -23,7 +23,7 @@ setup_Kerberos_hadoop_basic_config() {
         sed -i '73,112d' ${conf_dir}/yarn-site.xml
         rm -rf ${conf_dir}/ssl-server.xml
     fi
-:<<skip   
+  
     # 创建hadoop组、创建各用户并设置密码
     # groupadd hadoop
     # useradd hdfs -g hadoop
@@ -148,8 +148,7 @@ EOF
 
     # $HADOOP_HOME/bin/mapred
     echo "$hostname"
-    sed -i '17a\MAPRED_HISTORYSERVER_USER=mapred' ${INSTALL_PATH}/hadoop/bin/mapred
-skip  
+    sed -i '17a\MAPRED_HISTORYSERVER_USER=mapred' ${INSTALL_PATH}/hadoop/bin/mapred 
 }
 setup_Kerberos_hadoop(){
     for i in {"hdp101","hdp102","hdp103"};
