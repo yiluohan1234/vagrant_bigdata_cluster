@@ -34,14 +34,28 @@ echo "vm.max_map_count=262144" >> /etc/sysctl.conf
 # 安装基本的软件：-q（不显示安装的过程）
 # 高质量软件包管理
 log info "安装 sshpass lrzsz expect unzip zip vim-enhanced lzop"
-yum install -y -q sshpass lrzsz expect unzip zip vim-enhanced lzop dos2unix
+yum install -y -q sshpass
+yum install -y -q lrzsz 
+yum install -y -q expect 
+yum install -y -q unzip 
+yum install -y -q zip 
+yum install -y -q vim-enhanced 
+yum install -y -q lzop 
+yum install -y -q dos2unix
 log info "安装 nmap-ncat net-tools nc wget lsof"
-yum install -y -q nmap-ncat net-tools nc wget lsof telnet tcpdump ntp
+yum install -y -q nmap-ncat 
+yum install -y -q net-tools 
+yum install -y -q nc 
+yum install -y -q wget 
+yum install -y -q lsof 
+yum install -y -q telnet 
+yum install -y -q tcpdump 
+yum install -y -q ntp
 # 已安装(查看openssl version -a)
 # yum install -y -q openssl-devel
 # git升级
 log info "安装 git" 
-yum remove -y  -q git
+#yum remove -y  -q git
 rpm -ivh https://opensource.wandisco.com/git/wandisco-git-release-7-2.noarch.rpm
 yum install -y -q git
 

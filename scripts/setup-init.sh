@@ -33,8 +33,9 @@ cp $INIT_PATH/bigstart ${INIT_SHELL_BIN}
 cp $INIT_PATH/setssh ${INIT_SHELL_BIN}
 cp $INIT_PATH/xsync ${INIT_SHELL_BIN}
 cp $INIT_PATH/xcall ${INIT_SHELL_BIN}
+cp $INIT_PATH/GitHub520 ${INIT_SHELL_BIN}
 
-chmod 770 ${INIT_SHELL_BIN}/*
+chmod 777 ${INIT_SHELL_BIN}/*
 chown $DEFAULT_USER:$DEFAULT_GROUP -R ${INIT_SHELL_BIN}
 cp $INIT_PATH/complete_tool.sh /etc/profile.d
 source /etc/profile.d/complete_tool.sh

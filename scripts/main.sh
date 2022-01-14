@@ -23,6 +23,7 @@ CUR=$(cd `dirname 0`;pwd)
 . $CUR/setup-zookeeper.sh
 . $CUR/setup-azkaban.sh
 . $CUR/setup-presto.sh
+. $CUR/setup-kylin.sh
 #. $CUR/common.sh
 
 
@@ -130,6 +131,9 @@ args()
 		    ;;
 		presto)
 		    install_presto
+		    ;;
+		kylin)
+		    install_kylin
 		    ;;
 		-h|--help)
 		    usage
