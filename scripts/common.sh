@@ -7,7 +7,7 @@ IS_KERBEROS="false"
 
 # default user
 DEFAULT_USER=vagrant
-DEFAULT_GROUP=vagrant
+DEFAULT_GROUP=hadoop
 
 # 配置文件目录
 RESOURCE_PATH=/vagrant/resources
