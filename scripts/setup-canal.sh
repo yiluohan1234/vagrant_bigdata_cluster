@@ -28,7 +28,6 @@ download_canal() {
         tar -xzf ${FILE} -C ${INSTALL_PATH}/${app_name}
     fi
     chown -R $DEFAULT_USER:$DEFAULT_GROUP $INSTALL_PATH/${app_name}
-    chmod -R 660 $INSTALL_PATH/${app_name}
     rm ${DOWNLOAD_PATH}/${CANAL_ARCHIVE}
 }
 

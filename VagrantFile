@@ -61,12 +61,12 @@ Vagrant.configure("2") do |config|
         node.vm.provision "shell" do |s|
           s.path = "scripts/setup-maven.sh"
         end
-        # node.vm.provision "shell" do |s|
-        #     s.path = "scripts/setup-azkaban.sh"
-        # end
-        # node.vm.provision "shell" do |s|
-        #     s.path = "scripts/setup-kylin.sh"
-        # end
+        node.vm.provision "shell" do |s|
+          s.path = "scripts/setup-azkaban.sh"
+        end
+        node.vm.provision "shell" do |s|
+          s.path = "scripts/setup-kylin.sh"
+        end
         # node.vm.provision "shell" do |s|
         #     s.path = "scripts/setup-hive.sh"
         #     s.privileged = false
@@ -99,7 +99,7 @@ Vagrant.configure("2") do |config|
       node.vm.provision "shell",  path: "scripts/setup-hbase.sh"
       node.vm.provision "shell",  path: "scripts/setup-flume.sh"
       # node.vm.provision "shell",  path: "scripts/setup-flink.sh"
-      # node.vm.provision "shell",  path: "scripts/setup-presto.sh"
+      node.vm.provision "shell",  path: "scripts/setup-presto.sh"
       node.vm.provision "shell",  path: "scripts/setup-zabbix.sh"
       # node.vm.provision "shell",  path: "scripts/setup-phoenix.sh"
       # node.vm.provision "shell",  path: "scripts/setup-es.sh"

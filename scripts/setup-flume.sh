@@ -38,7 +38,6 @@ download_flume() {
     fi
     mv ${INSTALL_PATH}/"apache-${FLUME_VERSION}-bin" ${INSTALL_PATH}/${app_name}
     chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_name}
-    chmod -R 660 ${INSTALL_PATH}/${app_name}
     rm ${DOWNLOAD_PATH}/${archive}
     # 将lib文件夹下的guava-11.0.2.jar删除以兼容Hadoop-3.1.3
     rm ${INSTALL_PATH}/${app_name}/lib/guava-11.0.2.jar

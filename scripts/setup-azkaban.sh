@@ -48,7 +48,6 @@ download_azkaban() {
         installFromRemote ${archive} ${download_url}
     fi
     chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_version}
-    chmod -R 660 ${INSTALL_PATH}/${app_version}
     rm ${DOWNLOAD_PATH}/${archive}
 }
 

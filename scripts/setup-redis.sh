@@ -35,7 +35,6 @@ setup_redis() {
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${REDIS_CONF_DIR}/`
     fi
     chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_name}
-    chmod -R 660 ${INSTALL_PATH}/${app_name}
     rm ${DOWNLOAD_PATH}/${REDIS_ARCHIVE}
     rm -rf ${INSTALL_PATH}/${REDIS_VERSION}
 }

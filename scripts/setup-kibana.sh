@@ -32,7 +32,6 @@ download_kibana() {
     fi
     mv ${INSTALL_PATH}/${KIBANA_VERSION}-linux-x86_64 ${INSTALL_PATH}/${app_name}
     chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_name}
-    chmod -R 660 ${INSTALL_PATH}/${app_name}
     rm ${DOWNLOAD_PATH}/${archive}
 }
 
