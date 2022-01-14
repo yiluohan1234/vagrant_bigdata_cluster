@@ -17,7 +17,7 @@ install_ssh() {
                 \"Enter same passphrase again:\" { send \"\r\" ; exp_continue}
             }";
     fi
-    hostList=$(cat /etc/hosts|grep -vE localhost | awk '{print $2}')
+    hostList=$(cat /etc/hosts|grep -vE localhost |grep hdp| awk '{print $2}')
     for ip in $hostList;do
         expect -c "
             set timeout 5;
