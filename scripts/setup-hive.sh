@@ -33,6 +33,8 @@ setup_hive() {
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
     fi
+    chmod -R 755 $INSTALL_PATH
+    chown -R $DEFAULT_USER:$DEFAULT_GROUP $INSTALL_PATH
 }
 
 setup_hive_src() {
