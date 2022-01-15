@@ -675,6 +675,10 @@ superset(){
                 echo "superset正在运行"
             fi
             ;;
+        restart)
+            superset stop
+            superset start
+            ;;
         stop)
             echo "stop superset..."
             superset status >/dev/null 2>&1
