@@ -46,4 +46,4 @@ superset fab create-admin
 superset init
 
 gunicorn --workers 5 --timeout 120 --bind hdp101:8787  "superset.app:create_app()" --daemon
-
+conda install mysqlclient
