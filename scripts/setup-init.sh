@@ -35,8 +35,6 @@ cp $INIT_PATH/xsync ${INIT_SHELL_BIN}
 cp $INIT_PATH/xcall ${INIT_SHELL_BIN}
 cp $INIT_PATH/GitHub520 ${INIT_SHELL_BIN}
 
-chmod 755 ${INIT_SHELL_BIN}/*
-chown $DEFAULT_USER:$DEFAULT_GROUP -R ${INIT_SHELL_BIN}
 cp $INIT_PATH/complete_tool.sh /etc/profile.d
 source /etc/profile.d/complete_tool.sh
 
@@ -44,6 +42,10 @@ echo "# init shell bin" >> ${PROFILE}
 echo "export INIT_SHELL_BIN=${INIT_SHELL_BIN}" >> ${PROFILE}
 echo 'export PATH=${INIT_SHELL_BIN}:$PATH' >> ${PROFILE}
 source ${PROFILE}
+
+# 设置安装目录权限
+chmod -R 755 $INSTALL_PATH
+chown -R $DEFAULT_USER:$DEFAULT_GROUP $INSTALL_PATH
 
 # 生成免密登录
 log info "生成免密登录"
