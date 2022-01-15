@@ -94,7 +94,7 @@ _service_tool()
        ;;
 
        'superset')
-       COMPREPLY=( $(compgen -W 'start stop status' -- $cur ) )
+       COMPREPLY=( $(compgen -W 'start stop status restart' -- $cur ) )
        ;;
 
        esac
