@@ -28,7 +28,7 @@ install_hosts() {
     # https://github.com/521xueweihan/GitHub520
     sed -i "/# GitHub520 Host Start/Q" /etc/hosts && curl https://raw.hellogithub.com/hosts >> /etc/hosts
     # 设置定时更新任务
-    echo "* */1 * * * root /opt/module/bin/GitHub520" >> /etc/crontab
+    echo "*/60 * * * * root /opt/module/bin/GitHub520" >> /etc/crontab
 }
 
 
