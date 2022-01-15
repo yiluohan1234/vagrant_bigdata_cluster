@@ -2,16 +2,8 @@
 source "/vagrant/scripts/common.sh"
 
 log info "Centos 基本配置" 
-# 设置源
-log info "设置源"
-mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
-curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
 log info "安装 epel-release" 
 yum install -y -q epel-release
-curl -o /etc/yum.repos.d/epel-7.repo http://mirrors.aliyun.com/repo/epel-7.repo
-yum clean all	
-rpm --rebuilddb
-yum makecache
 
 # 设置系统时区
 log info "设置时区" 
@@ -65,6 +57,3 @@ yum install -y -q git
 log info "安装 中文包" 
 yum install -y -q glibc-common
 localectl set-locale LANG=zh_CN.UTF-8
-
-log info "设置 nameserver"
-echo "nameserver 8.8.8.8"> /etc/resolv.conf
