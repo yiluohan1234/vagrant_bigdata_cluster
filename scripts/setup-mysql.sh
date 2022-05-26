@@ -6,6 +6,7 @@ setup_mysql() {
     local app_name=$1
     local mysql_install_dir=/usr/local/mysql
     local mysql_data_dir=/data/mysql
+    local dbrootpwd=${MYSQL_PASSWORD}
 
     # 安装依赖
     yum install -y libaio
@@ -48,10 +49,10 @@ setup_mysql() {
     ${mysql_install_dir}/bin/mysqld --initialize-insecure --user=mysql --basedir=${mysql_install_dir} --datadir=${mysql_data_dir}
     service mysqld start
     
-    ${mysql_install_dir}/bin/mysql -e "grant all privileges on *.* to root@'127.0.0.1' identified by \"${MYSQL_PASSWORD}\" with grant option;"
-    ${mysql_install_dir}/bin/mysql -e "grant all privileges on *.* to root@'localhost' identified by \"${MYSQL_PASSWORD}\" with grant option;"
+    ${mysql_install_dir}/bin/mysql -e "grant all privileges on *.* to root@'127.0.0.1' identified by \"${dbrootpwd}\" with grant option;"
+    ${mysql_install_dir}/bin/mysql -e "grant all privileges on *.* to root@'localhost' identified by \"${dbrootpwd}\" with grant option;"
 
-    local DB_BIN="${mysql_install_dir}/bin/mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD}"
+    local DB_BIN="${mysql_install_dir}/bin/mysql -u${MYSQL_USER} -p${dbrootpwd}"
     # hive的元数据库
     ${DB_BIN} -e "create user 'hive'@'%' IDENTIFIED BY 'hive'; \
     GRANT ALL PRIVILEGES ON *.* TO 'hive'@'%' WITH GRANT OPTION; \
