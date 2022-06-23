@@ -84,7 +84,7 @@ install_hadoop() {
         echo 'export YARN_NODEMANAGER_USER="root"' >> $PROFILE
     fi
     # 解决Unable to load native-hadoop library for your platform
-    #echo 'export LD_LIBRARY_PATH=$HADOOP_HOME/lib/native/:$LD_LIBRARY_PATH' >> ${PROFILE}
+    echo 'export LD_LIBRARY_PATH=$HADOOP_HOME/lib/native/:$LD_LIBRARY_PATH' >> ${PROFILE}
 
     if [ "${IS_VAGRANT}" != "true" ];then
         dispatch_app ${app_name}

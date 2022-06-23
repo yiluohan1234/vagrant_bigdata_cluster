@@ -7,15 +7,15 @@ setup_phoenix() {
 
     log info "copying server.jar to hbase"
     cp ${INSTALL_PATH}/phoenix/phoenix-${PHOENIX_VERSION_NUM}-HBase-${HBASE_VERSION_NUM:0:3}-server.jar ${INSTALL_PATH}/hbase/lib
-    cp ${INSTALL_PATH}/phoenix/phoenix-${PHOENIX_VERSION_NUM}-HBase-${HBASE_VERSION_NUM:0:3}-client.jar ${INSTALL_PATH}/hbase/lib
-    cp ${INSTALL_PATH}/phoenix/phoenix-core-${PHOENIX_VERSION_NUM}-HBase-${HBASE_VERSION_NUM:0:3}.jar ${INSTALL_PATH}/hbase/lib
+    # cp ${INSTALL_PATH}/phoenix/phoenix-${PHOENIX_VERSION_NUM}-HBase-${HBASE_VERSION_NUM:0:3}-client.jar ${INSTALL_PATH}/hbase/lib
+    # cp ${INSTALL_PATH}/phoenix/phoenix-core-${PHOENIX_VERSION_NUM}-HBase-${HBASE_VERSION_NUM:0:3}.jar ${INSTALL_PATH}/hbase/lib
     cp -f ${HBASE_RES_DIR}/hbase-site.xml ${INSTALL_PATH}/phoenix/bin
     if [ "${IS_VAGRANT}" != "true" ];then
         for i in {"hdp102","hdp103"};
         do
             scp ${INSTALL_PATH}/phoenix/phoenix-${PHOENIX_VERSION_NUM}-HBase-${HBASE_VERSION_NUM:0:3}-server.jar vagrant@$i:${INSTALL_PATH}/hbase/lib
-            scp ${INSTALL_PATH}/phoenix/phoenix-${PHOENIX_VERSION_NUM}-HBase-${HBASE_VERSION_NUM:0:3}-client.jar vagrant@$i:${INSTALL_PATH}/hbase/lib
-            scp ${INSTALL_PATH}/phoenix/phoenix-core-${PHOENIX_VERSION_NUM}-HBase-${HBASE_VERSION_NUM:0:3}.jar vagrant@$i:${INSTALL_PATH}/hbase/lib
+            # scp ${INSTALL_PATH}/phoenix/phoenix-${PHOENIX_VERSION_NUM}-HBase-${HBASE_VERSION_NUM:0:3}-client.jar vagrant@$i:${INSTALL_PATH}/hbase/lib
+            # scp ${INSTALL_PATH}/phoenix/phoenix-core-${PHOENIX_VERSION_NUM}-HBase-${HBASE_VERSION_NUM:0:3}.jar vagrant@$i:${INSTALL_PATH}/hbase/lib
         done
     fi
 }
