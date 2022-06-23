@@ -38,13 +38,13 @@ Java: 1.8
 Hadoop: 3.1.3
 Hive: 2.3.4
 Hbase: 2.0.5
-Spark: 2.4.6
+Spark: 3.0.0
 Flink: 1.12.4
 Zookeeper: 3.5.7
-Kafka: 2.4.1
+Kafka: 3.0.0
 Flume: 1.9.0
-Scala: 2.11.12
-Maven: 3.2.5
+Scala: 2.12.10
+Maven: 3.6.1
 Sqoop: 1.4.7
 MySQl Connector: 5.1.49
 MySQL: 5.7.35
@@ -52,6 +52,10 @@ Nginx: 1.18.0
 Redis: 5.0.12
 Elasticsearch: 6.6.0
 Kibana: 6.6.0
+Canal: 1.25.0
+Maxwell: 3.84.4
+Presto: 0.196
+Kylin: 3.0.2
 ```
 
 ## 二、基本硬件准备
@@ -120,7 +124,7 @@ setssh
 hdfs namenode -format
 start-dfs.sh
 start-yarn.sh
-mr-jobhistory-daemon.sh start historyserver 
+mr-jobhistory-daemon.sh start historyserver (mapred --damon)
 ```
 
 或者
@@ -146,7 +150,7 @@ yarn jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples*.jar pi 2
 
 ```
 wget https://mirrors.huaweicloud.com/apache/spark/spark-3.0.0/spark-3.0.0-bin-without-hadoop.tgz
-tar -zxvf /opt/software/spark-3.0.0-bin-without-hadoop.tgz
+tar -zxvf spark-3.0.0-bin-without-hadoop.tgz
 ```
 
 （2）上传Spark纯净版jar包到HDFS
@@ -228,6 +232,17 @@ mysql -uroot -p199037 -e "create user 'hive'@'%' IDENTIFIED BY 'hive';GRANT ALL 
 ```
 schematool -initSchema -dbType mysql
 ```
+报错：Exception in thread "main" java.lang.NoSuchMethodError: com.google.common.base.Preconditions.checkArgument(ZLjava/lang/String;Ljava/lang/Object;)V
+
+hadoop和hive的两个guava.jar版本不一致
+
+两个位置分别位于下面两个目录：
+
+- /usr/local/hive/lib/
+- /usr/local/hadoop/share/hadoop/common/lib/
+
+解决办法：
+删除低版本的那个，将高版本的复制到低版本目录下
 
 #### 2）Hive服务启动与测试
 
