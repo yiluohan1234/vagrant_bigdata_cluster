@@ -9,7 +9,7 @@ check_process(){
 }
 zk(){
     usage="Usage: $0 (start|stop|status)"
- 
+
     if [ $# -lt 1 ]; then
         echo $usage
         exit 1
@@ -44,7 +44,7 @@ zk(){
 #一键启动集群
 kafka(){
     usage="Usage: $0 (start|stop)"
- 
+
     if [ $# -lt 1 ]; then
         echo $usage
         exit 1
@@ -56,7 +56,7 @@ kafka(){
 
             if [ -z "$PIDS" ]; then
                 echo "Success to start zookeeper."
-                zk start 
+                zk start
                 echo "-----$1 $i start-------"
             else
                 echo "Zookeeper has been started"
@@ -81,7 +81,7 @@ kafka(){
 }
 dfs(){
     usage="Usage: $0 (start|stop)"
- 
+
     if [ $# -lt 1 ]; then
         echo $usage
         exit 1
@@ -107,7 +107,7 @@ dfs(){
 }
 yarn(){
     usage="Usage: $0 (start|stop)"
- 
+
     if [ $# -lt 1 ]; then
         echo $usage
         exit 1
@@ -131,7 +131,7 @@ yarn(){
 
 hadoop(){
     usage="Usage: $0 (start|stop|format)"
- 
+
     if [ $# -lt 1 ]; then
         echo $usage
         exit 1
@@ -168,7 +168,7 @@ hadoop(){
 
 spark(){
     usage="Usage(spark): $0 (start|stop)"
- 
+
     if [ $# -lt 1 ]; then
         echo $usage
         exit 1
@@ -187,7 +187,7 @@ spark(){
 }
 flink(){
     usage="Usage(flink): $0 (start|stop)"
- 
+
     if [ $# -lt 1 ]; then
         echo $usage
         exit 1
@@ -206,7 +206,7 @@ flink(){
 }
 hbase(){
     usage="Usage(hbase): $0 (start|stop)"
- 
+
     if [ $# -lt 1 ]; then
         echo $usage
         exit 1
@@ -218,7 +218,7 @@ hbase(){
 
             if [ -z "$PIDS" ]; then
                 echo "Success to start zookeeper."
-                zk start 
+                zk start
                 echo "-----$1 $i start-------"
             else
                 echo "Zookeeper has been started"
@@ -247,7 +247,7 @@ kibana(){
             ;;
         stop)
             if [ -f "$PIDFILE" ] ; then
-                echo "Stoping kibana ..."    
+                echo "Stoping kibana ..."
                 kill `cat $PIDFILE`
                 sleep 1
                 rm -rf $PIDFILE
@@ -266,7 +266,7 @@ kibana(){
                 else
                     echo "[$(date '+%Y-%m-%d %T')] kibana is not running"
                 fi
-            else 
+            else
                 echo "Kibana is not running"
             fi
             ;;
@@ -344,19 +344,19 @@ solr(){
 redis(){
     #redis服务器监听的端口
     REDISPORT=6379
-    
+
     #服务端所处位置
     EXEC=${INSTALL_PATH}/redis/bin/redis-server
-    
+
     #客户端位置
     CLIEXEC=${INSTALL_PATH}/redis/bin/redis-cli
-    
+
     #redis的PID文件位置，需要修改
     PIDFILE=${INSTALL_PATH}/redis/run/redis_${REDISPORT}.pid
-    
+
     #redis的配置文件位置，需将${REDISPORT}修改为文件名
     CONF="${INSTALL_PATH}/redis/conf/redis.conf"
-    
+
     case "$1" in
         start)
             if [ -f $PIDFILE ]
@@ -393,8 +393,9 @@ redis(){
     esac
 }
 
-rt_logger(){
+spark_logger(){
     usage="Usage: $0 (start|stop|restart)"
+    local spark_logger_dir=/opt/module/rt_gmall
 
     if [ $# -lt 1 ]; then
         echo $usage
@@ -405,7 +406,7 @@ rt_logger(){
             for i in {"hdp101","hdp102","hdp103"};
             do
                 echo "-----$1 $i rt_logger-------"
-                ssh $i "nohup $INSTALL_PATH/java/bin/java -Xms32m -Xmx64m -jar /home/vagrant/rt_gmall/rt_logger/gmall2021-logger-0.0.1-SNAPSHOT.jar > /dev/null 2>&1 &"
+                ssh $i "nohup $INSTALL_PATH/java/bin/java -Xms32m -Xmx64m -jar ${spark_logger_dir}/rt_logger/gmall2021-logger-0.0.1-SNAPSHOT.jar > /dev/null 2>&1 &"
                 if [ $i == "hdp101" ];then
                     echo "============start NGINX============"
                     $INSTALL_PATH/nginx/sbin/nginx
@@ -429,9 +430,50 @@ rt_logger(){
     esac
 }
 
+flink_logger(){
+    usage="Usage: $0 (start|stop|restart)"
+    local flink_logger_dir=/opt/module/rt_gmall
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            for i in {"hdp101","hdp102","hdp103"};
+            do
+                echo "-----$1 $i rt_logger-------"
+                ssh $i "nohup $INSTALL_PATH/java/bin/java -Xms32m -Xmx64m -jar ${flink_logger_dir}/flink_logger/gmall-logger.jar > /dev/null 2>&1 &"
+                if [ $i == "hdp101" ];then
+                    echo "============start NGINX============"
+                    $INSTALL_PATH/nginx/sbin/nginx
+                fi
+            done
+            #echo "============start NGINX============"
+            #$INSTALL_PATH/nginx/sbin/nginx
+            ;;
+        stop)
+            #echo "============NGINX============"
+            #nginx -s stop
+            for j in {"hdp101","hdp102","hdp103"};
+            do
+                echo "-----$1 $j rt_logger-------"
+                ssh $j  "kill -9 \$(ps -ef|grep gmall-logger.jar| grep -v grep| awk '{print \$2}')"
+                if [ $j == "hdp101" ];then
+                    echo "============NGINX============"
+                    $INSTALL_PATH/nginx/sbin/nginx -s stop
+                fi
+            done
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
 canal(){
     usage="Usage: $0 (start|stop)"
- 
+
     if [ $# -lt 1 ]; then
         echo $usage
         exit 1
@@ -461,7 +503,7 @@ Maxwell(){
             ;;
         stop)
             if [ -f "$PIDFILE" ] ; then
-                echo "Stoping Maxwell ..."    
+                echo "Stoping Maxwell ..."
                 kill `cat $PIDFILE`
                 sleep 1
                 rm -rf $PIDFILE
@@ -480,7 +522,7 @@ Maxwell(){
                 else
                     echo "[$(date '+%Y-%m-%d %T')] Maxwell is not running"
                 fi
-            else 
+            else
                 echo "Maxwell is not running"
             fi
             ;;
@@ -707,7 +749,7 @@ superset(){
 args()
 {
     usage="Usage: $0 (dfs|yarn|zk|kafka|spark|flink|hbase|start|stop)"
- 
+
     if [ $# -lt 2 ]; then
         echo $usage
         exit 1
@@ -748,7 +790,7 @@ args()
 		redis $2
 		;;
 	  logger)
-		rt_logger $2
+		flink_logger $2
 		;;
 	  hive)
 		hive $2
