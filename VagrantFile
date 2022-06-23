@@ -21,8 +21,8 @@ Vagrant.configure("2") do |config|
       #node.ssh.username = "vagrant"
       # 设置虚拟机的登录密码
       #node.ssh.password = "vagrant"
-      # 是否通过公私钥来登录虚拟机，默认为true,如果为True,可能会出现一直Warning: Authentication failure. Retrying...  
-      node.ssh.insert_key = false  
+      # 是否通过公私钥来登录虚拟机，默认为true,如果为True,可能会出现一直Warning: Authentication failure. Retrying...
+      node.ssh.insert_key = false
       # 设置虚拟机的IP
       node.vm.network "private_network", ip: "192.168.10.#{100+i}"
 
@@ -30,7 +30,7 @@ Vagrant.configure("2") do |config|
       node.vm.provider "virtualbox" do |v|
         # 设置虚拟机的名称
         v.name = "hdp#{i}"
-        # 设置虚拟机的内存大小  
+        # 设置虚拟机的内存大小
         v.memory = 2048
         # 设置虚拟机的CPU个数
         v.cpus = 1
@@ -49,7 +49,7 @@ Vagrant.configure("2") do |config|
           s.path = "scripts/setup-mysql.sh"
         end
       end
-    
+
       node.vm.provision "shell",  path: "scripts/setup-java.sh"
       node.vm.provision "shell",  path: "scripts/setup-kerberos.sh"
       node.vm.provision "shell",  path: "scripts/setup-hadoop.sh"
@@ -71,50 +71,39 @@ Vagrant.configure("2") do |config|
         #     s.path = "scripts/setup-hive.sh"
         #     s.privileged = false
         # end
-        # node.vm.provision "shell" do |s|
-        #    s.path = "scripts/setup-nginx.sh"
-        #    s.privileged = false
-        # end
-        # node.vm.provision "shell" do |s|
-        #    s.path = "scripts/setup-kibana.sh"
-        #    s.privileged = false
-        # end
-        # node.vm.provision "shell" do |s|
-        #    s.path = "scripts/setup-redis.sh"
-        #    s.privileged = false
-        # end
-        # node.vm.provision "shell" do |s|
-        #    s.path = "scripts/setup-canal.sh"
-        #    s.privileged = false
-        # end
-        # node.vm.provision "shell" do |s|
-        #    s.path = "scripts/setup-maxwell.sh"
-        #    s.privileged = false
-        # end
+        node.vm.provision "shell" do |s|
+           s.path = "scripts/setup-nginx.sh"
+           s.privileged = false
+        end
+        node.vm.provision "shell" do |s|
+           s.path = "scripts/setup-kibana.sh"
+           s.privileged = false
+        end
+        node.vm.provision "shell" do |s|
+           s.path = "scripts/setup-redis.sh"
+           s.privileged = false
+        end
+        node.vm.provision "shell" do |s|
+           s.path = "scripts/setup-canal.sh"
+           s.privileged = false
+        end
+        node.vm.provision "shell" do |s|
+           s.path = "scripts/setup-maxwell.sh"
+           s.privileged = false
+        end
       end
       node.vm.provision "shell",  path: "scripts/setup-sqoop.sh"
-      # node.vm.provision "shell",  path: "scripts/setup-scala.sh"
+      node.vm.provision "shell",  path: "scripts/setup-scala.sh"
       node.vm.provision "shell",  path: "scripts/setup-spark.sh"
       node.vm.provision "shell",  path: "scripts/setup-kafka.sh"
       node.vm.provision "shell",  path: "scripts/setup-hbase.sh"
       node.vm.provision "shell",  path: "scripts/setup-flume.sh"
-      # node.vm.provision "shell",  path: "scripts/setup-flink.sh"
+      node.vm.provision "shell",  path: "scripts/setup-flink.sh"
       node.vm.provision "shell",  path: "scripts/setup-presto.sh"
       node.vm.provision "shell",  path: "scripts/setup-zabbix.sh"
-      # node.vm.provision "shell",  path: "scripts/setup-phoenix.sh"
-      # node.vm.provision "shell",  path: "scripts/setup-es.sh"
-
-      # config.vm.provision "shell", path: "init.sh"
-      # node.vm.provision "shell" do |s|
-      #     s.path = "scripts/setup-ssh-create.sh"
-      #     s.privileged = false
-      # end
-      # node.vm.provision "shell" do |s|
-      #     s.path = "scripts/setup-ssh-copy.sh"
-      #     s.args = "-s #{nodeRange.first} -t #{numNodes} -c #{i}"
-      #     s.privileged = false
-      # end
+      node.vm.provision "shell",  path: "scripts/setup-phoenix.sh"
+      node.vm.provision "shell",  path: "scripts/setup-es.sh"
       node.vm.provision "shell",  path: "scripts/setup-clean.sh"
     end
   end
-end 
+end

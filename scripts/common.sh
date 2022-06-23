@@ -49,7 +49,8 @@ AZKABAN_DBPASSWORD=199037
 
 # app版本
 HADOOP_VERSION=hadoop-3.1.3
-HIVE_VERSION=hive-3.1.2
+# HIVE_VERSION=hive-3.1.2
+HIVE_VERSION=hive-3.1.3
 HBASE_VERSION=hbase-2.0.5
 SPARK_VERSION=spark-3.0.0
 FLINK_VERSION=flink-1.12.4
@@ -141,7 +142,7 @@ SPARK_CONF_DIR=$INSTALL_PATH/spark/conf
 # 支持版本：2.10.X, 2.11.X, 2.12.X, 2.13.X
 SCALA_VERSION_NUM=`get_app_version_num $SCALA_VERSION "-" 2`
 SCALA_ARCHIVE=${SCALA_VERSION}.tgz
-# SCALA_MIRROR_DOWNLOAD=https://downloads.lightbend.com/scala/2.11.12/scala-2.11.12.tgz 
+# SCALA_MIRROR_DOWNLOAD=https://downloads.lightbend.com/scala/2.11.12/scala-2.11.12.tgz
 # https://distfiles.macports.org/scala2.11/scala-2.11.12.tgz
 SCALA_MIRROR_DOWNLOAD=https://distfiles.macports.org/scala${SCALA_VERSION_NUM%.*}/$SCALA_ARCHIVE
 
@@ -314,34 +315,34 @@ KYLIN_CONF_DIR=$INSTALL_PATH/kylin/bin
 
 # log
 DATETIME=`date "+%F %T"`
- 
+
 success() {
     printf "\r$DATETIME [ \033[00;32mINFO\033[0m ]%s\n" "$1"
 }
- 
+
 warn() {
     printf "\r$DATETIME [\033[0;33mWARNING\033[0m]%s\n" "$1"
 }
- 
+
 fail() {
     printf "\r$DATETIME [ \033[0;31mERROR\033[0m ]%s\n" "$1"
 }
- 
+
 usage() {
     echo "Usage: ${0##*/} {info|warn|err} MSG"
 }
- 
+
 # log
 # eg: log info/warn/err "This is a test.."
 log() {
     if [ $# -lt 2 ]; then
         log err "Not enough arguments [$#] to log."
     fi
- 
+
     __LOG_PRIO="$1"
     shift
     __LOG_MSG="$*"
- 
+
     case "${__LOG_PRIO}" in
         crit) __LOG_PRIO="CRIT";;
         err) __LOG_PRIO="ERROR";;
@@ -349,7 +350,7 @@ log() {
         info) __LOG_PRIO="INFO";;
         debug) __LOG_PRIO="DEBUG";;
     esac
- 
+
     if [ "${__LOG_PRIO}" = "INFO" ]; then
         success " $__LOG_MSG"
     elif [ "${__LOG_PRIO}" = "WARNING" ]; then
@@ -363,7 +364,7 @@ log() {
 
 # 判断DOWN_PATH下文件是否存在
 # eg: resourceExists hadoop2.7.2.tar.gz
-resourceExists() 
+resourceExists()
 {
     FILE=${DOWNLOAD_PATH}/$1
     if [ -e $FILE ]
@@ -417,7 +418,7 @@ installFromRemote() {
     REMOTE_MIRROR_DOWNLOAD=$2
     FILE=${DOWNLOAD_PATH}/${LOCAL_ARCHIVE}
     [ ! -d ${DOWNLOAD_PATH} ] && mkdir -p ${DOWNLOAD_PATH}
- 
+
     log info "install $LOCAL_ARCHIVE from remote file"
     curl -o ${FILE} -O -L ${REMOTE_MIRROR_DOWNLOAD}
     tar -xzf ${FILE} -C ${INSTALL_PATH}
@@ -446,7 +447,7 @@ setupEnv_app() {
     echo "creating $app_name environment variables"
     local app_path=${INSTALL_PATH}/$app_name
     local app_name_uppercase=$(echo $app_name | tr '[a-z]' '[A-Z]')
-    #LOWERCASE=$(echo $app_name | tr '[A-Z]' '[a-z]') 
+    #LOWERCASE=$(echo $app_name | tr '[A-Z]' '[a-z]')
     echo "# $app_name environment" >> $PROFILE
     echo "export ${app_name_uppercase}_HOME=$app_path" >> $PROFILE
     if [ ! -n "$type_name" ];then

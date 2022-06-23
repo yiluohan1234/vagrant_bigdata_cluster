@@ -57,28 +57,37 @@
         <value>kerberos</value>
     </property>
 
-    <property> 
-        <name>hbase.master.kerberos.principal</name> 
-        <value>hbase/_HOST@EXAMPLE.COM</value> 
-    </property> 
-
-    <property> 
-        <name>hbase.master.keytab.file</name> 
-        <value>/etc/security/keytab/hbase.service.keytab</value> 
+    <property>
+        <name>hbase.master.kerberos.principal</name>
+        <value>hbase/_HOST@EXAMPLE.COM</value>
     </property>
 
     <property>
-        <name>hbase.regionserver.kerberos.principal</name> 
-        <value>hbase/_HOST@EXAMPLE.COM</value> 
-    </property> 
-
-    <property> 
-        <name>hbase.regionserver.keytab.file</name> 
-        <value>/etc/security/keytab/hbase.service.keytab</value> 
+        <name>hbase.master.keytab.file</name>
+        <value>/etc/security/keytab/hbase.service.keytab</value>
     </property>
 
-    <property> 
+    <property>
+        <name>hbase.regionserver.kerberos.principal</name>
+        <value>hbase/_HOST@EXAMPLE.COM</value>
+    </property>
+
+    <property>
+        <name>hbase.regionserver.keytab.file</name>
+        <value>/etc/security/keytab/hbase.service.keytab</value>
+    </property>
+
+    <property>
         <name>hbase.coprocessor.region.classes</name>
         <value>org.apache.hadoop.hbase.security.token.TokenProvider</value>
+    </property>
+    <property>
+        <name>phoenix.schema.isNamespaceMappingEnabled</name>
+        <value>true</value>
+    </property>
+
+    <property>
+        <name>phoenix.schema.mapSystemTablesToNamespace</name>
+        <value>true</value>
     </property>
 </configuration>
