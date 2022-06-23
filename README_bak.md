@@ -19,7 +19,7 @@
 | Zookeeper | QuorumPeerMain                                     | QuorumPeerMain             | QuorumPeerMain    |
 | Kafka     | kafka                                              | Kafka                      | Kafka             |
 | Flume     | flume                                              | flume                      | flume             |
-| Scala     | scala2.11.12                                       | scala2.11.12               | scala2.11.12      |
+| Scala     | scala                                              | scala                      | scala             |
 | Maven     | mvn                                                | NA                         | NA                |
 | Sqoop     | sqoop                                              | NA                         | NA                |
 | MySQL     | NA                                                 | NA                         | MySQL Server      |
