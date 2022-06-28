@@ -10,12 +10,12 @@
 | :-: | ---  | -------------------------- | ----------------- |
 | OS   | centos7.6  | centos7.6             | centos7.6         |
 | JDK  | jdk1.8                                             | jdk1.8                     | jdk1.8            |
-| HDFS      | NameNode<br>JobHistoryServer<br>ApplicationHistoryServer | DataNode<br>SecondaryNameNode | DataNode          |
-| YARN      | ResourceManager                                    | NodeManager                | NodeManager       |
+| HDFS      | NameNode<br>DataNode<br/>JobHistoryServer | DataNode | DataNode<br/>SecondaryNameNode |
+| YARN      | NodeManager    | ResourceManager<br/>NodeManager | NodeManager       |
 | Hive | Hive | NA | NA |
-| HBase     | HMaster                                            | HRegionServer              | HRegionServer     |
-| Spark     | master<br>HistoryServer                               | worker                     | worker            |
-| Flink     | StandaloneSession<br>ClusterEntrypoint                 | TaskManagerRunner          | TaskManagerRunner |
+| HBase     | HMaster<br>HRegionServer                           | HRegionServer              | HRegionServer     |
+| Spark     | masterHistoryServer                                | worker                     | worker            |
+| Flink     | StandaloneSession<br>ClusterEntrypoint             | TaskManagerRunner          | TaskManagerRunner |
 | Zookeeper | QuorumPeerMain                                     | QuorumPeerMain             | QuorumPeerMain    |
 | Kafka     | kafka                                              | Kafka                      | Kafka             |
 | Flume     | flume                                              | flume                      | flume             |
