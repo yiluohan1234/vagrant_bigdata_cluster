@@ -37,7 +37,7 @@ download_hbase() {
     fi
     mv ${INSTALL_PATH}/"${app_version}" ${INSTALL_PATH}/${app_name}
     rm ${DOWNLOAD_PATH}/${archive}
-    mv ${INSTALL_PATH}/hbase/lib/slf4j-log4j12-1.7.25.jar ${INSTALL_PATH}/hbase/lib/slf4j-log4j12-1.7.25.jar_bak
+    # mv ${INSTALL_PATH}/hbase/lib/slf4j-log4j12-1.7.25.jar ${INSTALL_PATH}/hbase/lib/slf4j-log4j12-1.7.25.jar_bak
 }
 
 install_hbase() {

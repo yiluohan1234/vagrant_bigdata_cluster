@@ -50,8 +50,8 @@ AZKABAN_DBPASSWORD=199037
 # app版本
 HADOOP_VERSION=hadoop-3.1.3
 # HIVE_VERSION=hive-3.1.2
-HIVE_VERSION=hive-3.1.3
-HBASE_VERSION=hbase-2.0.6
+HIVE_VERSION=hive-2.3.4
+HBASE_VERSION=hbase-2.4.12
 SPARK_VERSION=spark-3.0.0
 FLINK_VERSION=flink-1.12.4
 SQOOP_VERSION=sqoop-1.4.7
@@ -97,7 +97,7 @@ JAVA_MIRROR_DOWNLOAD=https://repo.huaweicloud.com/java/jdk/8u201-b09/$JAVA_ARCHI
 # hadoop
 # 支持版本：3.3.1, 3.3.0, 3.2.2-3.2.0, 3.1.4-3.1.0, 3.0.3-3.0.0, 2.9.2-2.9.0, 2.8.5-2.8.0, 2.7.7-2.7.0等
 #         https://archive.apache.org/dist/hadoop/core/hadoop-2.7.6/hadoop-2.7.6.tar.gz
-# https://mirrors.huaweicloud.com/apache/hadoop/core/hadoop-2.7.6/hadoop-2.7.6.tar.gz
+# https://mirrors.huaweicloud.com/apache/hadoop/core/hadoop-3.1.3/hadoop-3.1.3.tar.gz
 # https://archive.apache.org/dist => https://mirrors.huaweicloud.com/apache
 HADOOP_VERSION_NUM=`get_app_version_num $HADOOP_VERSION "-" 2`
 HADOOP_ARCHIVE=$HADOOP_VERSION.tar.gz
@@ -121,7 +121,7 @@ HIVE_CONF_DIR=$INSTALL_PATH/hive/conf
 # hbase
 # 支持版本：2.4.5-2.4.0, 2.3.6-2.3.0, 2.2.7-2.2.0, 2.1.10-2.1.0, 2.0.6-2.0.0等
 #         https://archive.apache.org/dist/hbase/1.2.6/hbase-1.2.6-bin.tar.gz
-# https://mirrors.huaweicloud.com/apache/hbase/1.2.6/hbase-1.2.6-bin.tar.gz
+# https://mirrors.huaweicloud.com/apache/hbase/2.4.12/hbase-2.4.12-bin.tar.gz
 HBASE_VERSION_NUM=`get_app_version_num $HBASE_VERSION "-" 2`
 HBASE_ARCHIVE=${HBASE_VERSION}-bin.tar.gz
 HBASE_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/hbase/$HBASE_VERSION_NUM/$HBASE_ARCHIVE
@@ -131,7 +131,7 @@ HBASE_CONF_DIR=$INSTALL_PATH/hbase/conf
 # spark
 # 支持版本：具体见下载地址
 #         https://archive.apache.org/dist/spark/spark-2.4.6/spark-2.4.6-bin-hadoop2.7.tgz
-# https://mirrors.huaweicloud.com/apache/spark/spark-2.4.6/spark-2.4.6-bin-hadoop2.7.tgz
+# https://mirrors.huaweicloud.com/apache/spark/spark-3.0.0/spark-3.0.0-bin-hadoop3.2.tgz
 SPARK_VERSION_NUM=`get_app_version_num $SPARK_VERSION "-" 2`
 SPARK_ARCHIVE=$SPARK_VERSION-bin-hadoop3.2.tgz
 SPARK_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/spark/$SPARK_VERSION/$SPARK_ARCHIVE
@@ -143,7 +143,7 @@ SPARK_CONF_DIR=$INSTALL_PATH/spark/conf
 SCALA_VERSION_NUM=`get_app_version_num $SCALA_VERSION "-" 2`
 SCALA_ARCHIVE=${SCALA_VERSION}.tgz
 # SCALA_MIRROR_DOWNLOAD=https://downloads.lightbend.com/scala/2.11.12/scala-2.11.12.tgz
-# https://distfiles.macports.org/scala2.11/scala-2.11.12.tgz
+# https://distfiles.macports.org/scala2.11/scala-2.12.10.tgz
 SCALA_MIRROR_DOWNLOAD=https://distfiles.macports.org/scala${SCALA_VERSION_NUM%.*}/$SCALA_ARCHIVE
 
 # flink
@@ -213,8 +213,9 @@ MAVEN_CONF_DIR=$INSTALL_PATH/maven/conf
 #        https://archive.apache.org/dist/phoenix/apache-phoenix-4.14.0-HBase-1.2/bin/apache-phoenix-4.14.0-HBase-1.2-bin.tar.gz
 # https://mirrors.huaweicloud.com/apache/phoenix/apache-phoenix-4.14.0-HBase-1.2/bin/apache-phoenix-4.14.0-HBase-1.2-bin.tar.gz
 PHOENIX_VERSION_NUM=`get_app_version_num $PHOENIX_VERSION "-" 3`
+H_VERSION_NUM=`get_app_version_num $PHOENIX_VERSION "-" 5`
 PHOENIX_ARCHIVE=${PHOENIX_VERSION}.tar.gz
-PHOENIX_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/phoenix/apache-phoenix-${PHOENIX_VERSION_NUM}-HBase-${HBASE_VERSION_NUM:0:3}/bin/$PHOENIX_ARCHIVE
+PHOENIX_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/phoenix/apache-phoenix-${PHOENIX_VERSION_NUM}-HBase-${H_VERSION_NUM}/bin/$PHOENIX_ARCHIVE
 PHOENIX_RES_DIR=$RESOURCE_PATH/phoenix
 PHOENIX_CONF_DIR=$INSTALL_PATH/phoenix/conf
 
