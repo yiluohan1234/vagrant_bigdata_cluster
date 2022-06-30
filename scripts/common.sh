@@ -53,7 +53,7 @@ HADOOP_VERSION=hadoop-3.1.3
 HIVE_VERSION=hive-2.3.4
 HBASE_VERSION=hbase-2.0.6
 SPARK_VERSION=spark-3.0.0
-FLINK_VERSION=flink-1.12.4
+FLINK_VERSION=flink-1.13.4
 SQOOP_VERSION=sqoop-1.4.7
 ZOOKEEPER_VERSION=zookeeper-3.5.7
 # KAFKA_VERSION=kafka_2.11-2.4.1
@@ -69,7 +69,7 @@ ELASTICSEARCH_VERSION=elasticsearch-6.6.0
 KIBANA_VERSION=kibana-6.6.0
 REDIS_VERSION=redis-5.0.12
 CANAL_VERSION=canal.deployer-1.1.5
-MAXWELL_VERSION=maxwell-1.25.0
+MAXWELL_VERSION=maxwell-1.29.2
 AZKABAN_VERSION=azkaban-3.84.4
 PRESTO_VERSION=presto-server-0.196
 KYLIN_VERSION=apache-kylin-3.0.2
@@ -279,7 +279,7 @@ REDIS_CONF_DIR=$INSTALL_PATH/redis/conf
 # https://github.com/alibaba/canal/releases/download/canal-1.1.5/canal.deployer-1.1.5.tar.gz
 CANAL_VERSION_NUM=`get_app_version_num $CANAL_VERSION "-" 2`
 CANAL_ARCHIVE=${CANAL_VERSION}.tar.gz
-CANAL_MIRROR_DOWNLOAD=https://github.com/alibaba/canal/releases/download/canal-1.1.5/canal.deployer-1.1.5.tar.gz
+CANAL_MIRROR_DOWNLOAD=https://github.com/alibaba/canal/releases/download/canal-${CANAL_VERSION_NUM}/${CANAL_ARCHIVE}
 CANAL_RES_DIR=$RESOURCE_PATH/canal
 CANAL_CONF_DIR=$INSTALL_PATH/canal/conf
 
@@ -288,7 +288,7 @@ CANAL_CONF_DIR=$INSTALL_PATH/canal/conf
 # https://github.com/zendesk/maxwell/releases/download/v1.25.0/maxwell-1.25.0.tar.gz
 MAXWELL_VERSION_NUM=`get_app_version_num $MAXWELL_VERSION "-" 2`
 MAXWELL_ARCHIVE=${MAXWELL_VERSION}.tar.gz
-MAXWELL_MIRROR_DOWNLOAD=https://github.com/zendesk/maxwell/releases/download/v1.25.0/maxwell-1.25.0.tar.gz
+MAXWELL_MIRROR_DOWNLOAD=https://github.com/zendesk/maxwell/releases/download/v${MAXWELL_VERSION_NUM}/$MAXWELL_ARCHIVE
 MAXWELL_RES_DIR=$RESOURCE_PATH/maxwell
 MAXWELL_CONF_DIR=$INSTALL_PATH/maxwell
 
@@ -436,7 +436,7 @@ dispatch_app(){
         if [ $cur_hostname != $i ];then
             log info "--------dispatch to $i--------"
             scp -r -q ${INSTALL_PATH}/$app_name vagrant@$i:${INSTALL_PATH}/
-            scp -q $PROFILE vagrant@$i:$PROFILE
+            scp -q $PROFILE $DEFAULT_USER@$i:$PROFILE
         fi
     done
 }
