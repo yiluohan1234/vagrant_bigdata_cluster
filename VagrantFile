@@ -80,12 +80,12 @@ Vagrant.configure("2") do |config|
         node.vm.provision "shell" do |s|
            s.path = "scripts/setup-redis.sh"
         end
-        node.vm.provision "shell" do |s|
-           s.path = "scripts/setup-canal.sh"
-        end
-        node.vm.provision "shell" do |s|
-           s.path = "scripts/setup-maxwell.sh"
-        end
+        # node.vm.provision "shell" do |s|
+        #    s.path = "scripts/setup-canal.sh"
+        # end
+        # node.vm.provision "shell" do |s|
+        #    s.path = "scripts/setup-maxwell.sh"
+        # end
       end
       node.vm.provision "shell",  path: "scripts/setup-sqoop.sh"
       node.vm.provision "shell",  path: "scripts/setup-scala.sh"
