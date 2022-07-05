@@ -435,7 +435,7 @@ dispatch_app(){
         cur_hostname=`cat /etc/hostname`
         if [ $cur_hostname != $i ];then
             log info "--------dispatch to $i--------"
-            scp -r -q ${INSTALL_PATH}/$app_name vagrant@$i:${INSTALL_PATH}/
+            scp -r -q ${INSTALL_PATH}/$app_name $DEFAULT_USER@$i:${INSTALL_PATH}/
             scp -q $PROFILE $DEFAULT_USER@$i:$PROFILE
         fi
     done
