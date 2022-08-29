@@ -333,8 +333,10 @@ usage() {
     echo "Usage: ${0##*/} {info|warn|err} MSG"
 }
 
-# log
-# eg: log info/warn/err "This is a test.."
+## @description log
+## @param info/warn/err
+## @param info
+## @eg log info/warn/err "This is a test.."
 log() {
     if [ $# -lt 2 ]; then
         log err "Not enough arguments [$#] to log."
@@ -363,8 +365,9 @@ log() {
     fi
 }
 
-# 判断DOWN_PATH下文件是否存在
-# eg: resourceExists hadoop2.7.2.tar.gz
+## @description 判断DOWN_PATH下文件是否存在
+## @param 压缩文件名字
+## @eg  resourceExists hadoop2.7.2.tar.gz
 resourceExists()
 {
     FILE=${DOWNLOAD_PATH}/$1
@@ -376,7 +379,7 @@ resourceExists()
     fi
 }
 
-# 判断某一目录文件是否存在
+## @description 判断某一目录文件是否存在
 # eg: fileExists /home/vagrant/text.txt
 fileExists()
 {
@@ -389,22 +392,24 @@ fileExists()
     fi
 }
 
-# 判断软件是否安装
-# eg: command_exists expect
+## @description 判断软件是否安装
+## @eg command_exists expect
 command_exists() {
     command -v "$@" > /dev/null 2>&1
 }
 
-# 将字符串变为大写
-# eg: get_string_upper es
+## @description 将字符串变为大写
+## @param app_name
+## @eg get_string_upper es
 get_string_upper() {
     local app_name=$1
     app_name_upper=$(echo $app_name | tr '[a-z]' '[A-Z]')
     echo $app_name_upper
 }
 
-# 从本地DOWLOAD_PATH解压组件到INSTALL_PATH
-# eg: installFromLocal $HADOOP_ARCHIVE
+## @description 从本地DOWLOAD_PATH解压组件到INSTALL_PATH
+## @param local_archieve文件名称
+## @eg installFromLocal $HADOOP_ARCHIVE
 installFromLocal() {
     LOCAL_ARCHIVE=$1
     log info "install $LOCAL_ARCHIVE from local file"
@@ -412,8 +417,9 @@ installFromLocal() {
     tar -xzf ${FILE} -C ${INSTALL_PATH}
 }
 
-# 从网上下载组件到DOWNLOAD_PATH，并解压到INSTALL_PATH
-# eg: installFromRemote $HADOOP_ARCHIVE $HADOOP_MIRROR_DOWNLOAD
+## @description 从网上下载组件到DOWNLOAD_PATH，并解压到INSTALL_PATH
+## @param local_archieve文件名称
+## @eg installFromRemote $HADOOP_ARCHIVE $HADOOP_MIRROR_DOWNLOAD
 installFromRemote() {
     LOCAL_ARCHIVE=$1
     REMOTE_MIRROR_DOWNLOAD=$2
@@ -425,8 +431,9 @@ installFromRemote() {
     tar -xzf ${FILE} -C ${INSTALL_PATH}
 }
 
-# 分发app目录
-# eg:dispatch_app kafka
+## @description 分发app目录
+## @param app_name
+## @eg dispatch_app kafka
 dispatch_app(){
     local app_name=$1
     log info "dispatch $app_name"
@@ -440,8 +447,11 @@ dispatch_app(){
         fi
     done
 }
-# 设置app_name的环境变量
-# eg:setupEnv_app kafka
+
+## @description 设置app_name的环境变量
+## @param app_name
+## @param type
+## @eg setupEnv_app kafka
 setupEnv_app() {
     local app_name=$1
     local type_name=$2
@@ -459,8 +469,9 @@ setupEnv_app() {
     echo -e "\n" >> $PROFILE
 }
 
-# 下载mysql connector的jar到某一目录
-# eg: wget_mysql_connector /home/vagrant/apps/hive/lib
+## @description 下载mysql connector的jar到某一目录
+## @param directory
+## @eg wget_mysql_connector /home/vagrant/apps/hive/lib
 wget_mysql_connector(){
     local CP_PATH=$1
     if resourceExists $MYSQL_CONNECTOR_ARCHIVE; then
@@ -472,8 +483,9 @@ wget_mysql_connector(){
     rm -rf $INSTALL_PATH/mysql-connector-java-5.1.49
 }
 
-# 显示apps的版本号
-# eg: display_apps_num
+## @description 显示apps的版本号
+## @param None
+## @eg display_apps_num
 display_apps_num() {
     echo "Hadoop: $HADOOP_VERSION_NUM"
     echo "Hive: $HIVE_VERSION_NUM"
