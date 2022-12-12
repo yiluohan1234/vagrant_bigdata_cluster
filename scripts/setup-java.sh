@@ -15,15 +15,17 @@ download_java() {
     else
         installFromRemote ${archive} ${download_url}
     fi
-    mv ${INSTALL_PATH}/jdk1.8.0_201 ${INSTALL_PATH}/${app_name}
+    mkdir ${INSTALL_PATH}/${app_name}
+    mv ${INSTALL_PATH}/jdk1.8.0_221 ${INSTALL_PATH}/${app_name}
     chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_name}
-    rm ${DOWNLOAD_PATH}/${archive}
+    #rm ${DOWNLOAD_PATH}/${archive}
 }
 
 setupEnv_java() {
     local app_name=$1
     log info "creating ${app_name} environment variables"
-    app_path=${INSTALL_PATH}/java
+    # app_path=${INSTALL_PATH}/java
+    app_path=${INSTALL_PATH}/java/jdk1.8.0_221
     echo "# jdk environment" >> ${PROFILE}
     echo "export JAVA_HOME=${app_path}" >> ${PROFILE}
     echo 'export JRE_HOME=${JAVA_HOME}/jre' >> ${PROFILE}
@@ -38,11 +40,14 @@ install_java() {
     if [ ! -d ${INSTALL_PATH}/${app_name} ];then
         download_java ${app_name}
         setupEnv_java ${app_name}
-        if [ "${IS_VAGRANT}" != "true" ];then
+    fi
+
+    # 主机长度
+    host_name_list_len=${#HOSTNAME_LIST[@]}
+    if [ "${IS_VAGRANT}" != "true" ] && [ ${host_name_list_len} -gt 1 ];then
             dispatch_app ${app_name}
         fi
         source ${PROFILE}
-    fi
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then

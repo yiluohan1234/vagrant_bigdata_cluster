@@ -43,9 +43,22 @@ download_hadoop() {
     else
         installFromRemote ${archive} ${download_url}
     fi
-    mv ${INSTALL_PATH}/"${app_version}" ${INSTALL_PATH}/${app_name}
+    mkdir ${INSTALL_PATH}/${app_name}
+    mv ${INSTALL_PATH}/${app_version} ${INSTALL_PATH}/${app_name}
     chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_name}
-    rm ${DOWNLOAD_PATH}/${archive}
+    # rm ${DOWNLOAD_PATH}/${archive}
+}
+setupEnv_hadoop() {
+    local app_name=$1
+    local app_name_upper=`get_string_upper ${app_name}`
+    local app_version=$(eval echo \$${app_name_upper}_VERSION)
+    log info "creating ${app_name} environment variables"
+    # app_path=${INSTALL_PATH}/java
+    app_path=${INSTALL_PATH}/${app_name}/${app_version}
+    echo "# $app_name environment" >> ${PROFILE}
+    echo "export HADOOP_HOME=${app_path}" >> ${PROFILE}
+    echo 'export PATH=${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin:$PATH' >> ${PROFILE}
+    echo -e "\n" >> ${PROFILE}
 }
 
 install_hadoop() {
@@ -53,20 +66,13 @@ install_hadoop() {
     log info "setup ${app_name}"
     if [ ! -d ${INSTALL_PATH}/${app_name} ];then
         download_hadoop ${app_name}
-        setupEnv_app ${app_name} sbin
+        setupEnv_hadoop ${app_name}
+        setup_hadoop ${app_name}
     fi
-    setup_hadoop ${app_name}
-    
-    
-    echo 'export HDFS_NAMENODE_USER="root"' >> $PROFILE
-    echo 'export HDFS_DATANODE_USER="root"' >> $PROFILE
-    echo 'export HDFS_SECONDARYNAMENODE_USER="root"' >> $PROFILE
-    echo 'export YARN_RESOURCEMANAGER_USER="root"' >> $PROFILE
-    echo 'export YARN_NODEMANAGER_USER="root"' >> $PROFILE
-    # 解决Unable to load native-hadoop library for your platform
-    echo 'export LD_LIBRARY_PATH=$HADOOP_HOME/lib/native/:$LD_LIBRARY_PATH' >> ${PROFILE}
 
-    if [ "${IS_VAGRANT}" != "true" ];then
+    # 主机长度
+    host_name_list_len=${#HOSTNAME_LIST[@]}
+    if [ "${IS_VAGRANT}" != "true" ] && [ ${host_name_list_len} -gt 1 ];then
         dispatch_app ${app_name}
     fi
 
