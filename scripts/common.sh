@@ -32,6 +32,7 @@ DOWNLOAD_REPO=https://mirrors.huaweicloud.com/apache
 # DOWNLOAD_REPO_APACHE=https://archive.apache.org/dist
 
 # hostname
+IP_LIST=("172.18.39.77" "172.18.39.78" "172.18.39.79")
 HOSTNAME_LIST=("master" "slave1" "slave2")
 PASSWD_LIST=("CuSlShBA!sN" "VQZ2e8SA!wG" "grmDssKA@xM")
 # ssh

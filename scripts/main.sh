@@ -25,6 +25,7 @@ CUR=$(cd `dirname 0`;pwd)
 . $CUR/setup-presto.sh
 . $CUR/setup-kylin.sh
 . $CUR/setup-init.sh
+. $CUR/setup-hosts.sh
 #. $CUR/common.sh
 
 
@@ -34,6 +35,7 @@ usage()
         "")
 	    echo "Usage: main.sh command [options]"
 		echo "      main.sh init"
+		echo "      main.sh host"
 	    echo "      main.sh canal"
 	    echo "      main.sh es"
 	    echo "      main.sh flink"
