@@ -71,7 +71,7 @@ args()
 		    install_init
 		    ;;
 		host)
-		    install_host
+		    install_hosts
 		    ;;
 		azkaban)
 		    install_azkaban
