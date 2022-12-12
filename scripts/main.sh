@@ -34,8 +34,8 @@ usage()
     case $1 in
         "")
 	    echo "Usage: main.sh command [options]"
-		echo "      main.sh init"
-		echo "      main.sh host"
+	    echo "      main.sh init"
+	    echo "      main.sh host"
 	    echo "      main.sh canal"
 	    echo "      main.sh es"
 	    echo "      main.sh flink"
