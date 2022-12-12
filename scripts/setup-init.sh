@@ -12,11 +12,16 @@ install_init(){
     chown -R $DEFAULT_USER:$DEFAULT_GROUP $INIT_SHELL_BIN
     chown -R $DEFAULT_USER:$DEFAULT_GROUP $APP_LOG
 
+    host_list="for host in"
+    for i in ${HOSTNAME_LIST[@]}; do host_list="$host_list ""$i"; done
+    host_list="$host_list"";"
     # 复制初始化程序到init_shell的bin目录
     log info "copy init shell to ${INIT_SHELL_BIN}"
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${INIT_PATH}/`
+        sed -i "s@for host in hdp{101..103};@${host_list}@g"  ${INIT_PATH}/xsync`
     fi
+
     cp $INIT_PATH/jpsall ${INIT_SHELL_BIN}
     cp $INIT_PATH/bigstart ${INIT_SHELL_BIN}
     cp $INIT_PATH/setssh ${INIT_SHELL_BIN}
