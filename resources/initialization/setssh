@@ -1,11 +1,6 @@
 #!/bin/bash
-user_name=$(id -un)
-if [ "$user_name" = "root" -o "$user_name" = "vagrant" ];then
-    # 服务器的密码
-    passwd="vagrant"
-else
-    passwd=$user_name
-fi
+source "/vagrant/scripts/common.sh"
+
 install_ssh() {
     if [ ! -f ~/.ssh/id_rsa ];then
         expect -c "
@@ -17,17 +12,18 @@ install_ssh() {
                 \"Enter same passphrase again:\" { send \"\r\" ; exp_continue}
             }";
     fi
-    hostList=$(cat /etc/hosts|grep -vE localhost |grep hdp| awk '{print $2}')
-    for ip in $hostList;do
+    i=0
+    for ip in ${HOSTNAME_LIST[@]};do
         expect -c "
             set timeout 5;
             spawn ssh-copy-id -i ${ip};
             expect {
-                \"*assword\" { send \"${passwd}\r\";exp_continue}
+                \"*assword\" { send \"${PASSWD_LIST[$i]}\r\";exp_continue}
                 \"yes/no\" { send \"yes\r\"; exp_continue }
                 eof {exit 0;}
             }";
         echo "========主机IP为：${ip}免登录执行完成========"
+        i=$(( i+1 ))
     done
 }
 install_ssh

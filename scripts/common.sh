@@ -33,7 +33,7 @@ DOWNLOAD_REPO=https://mirrors.huaweicloud.com/apache
 
 # hostname
 HOSTNAME_LIST=("master" "slave1" "slave2")
-
+PASSWD_LIST=("CuSlShBA!sN" "VQZ2e8SA!wG" "grmDssKA@xM")
 # ssh
 SSH_CONF=/home/vagrant/resources/ssh
 
