@@ -4,7 +4,7 @@ source "/vagrant/scripts/common.sh"
 
 install_init(){
     yum install -y -q expect 
-    
+
     # 创建生成日志目录
     [ ! -d $INSTALL_PATH ] && mkdir -p $INSTALL_PATH
     [ ! -d $DOWNLOAD_PATH ] && mkdir -p $DOWNLOAD_PATH
@@ -45,4 +45,6 @@ install_init(){
     echo "set softtabstop=4" >> $PROFILE
     echo "set shiftwidth=4" >> $PROFILE
 }
-
+if [ "${IS_VAGRANT}" == "true" ];then
+    install_init
+fi
