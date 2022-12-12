@@ -10,7 +10,6 @@ install_init(){
     chown -R $DEFAULT_USER:$DEFAULT_GROUP $INSTALL_PATH
     chown -R $DEFAULT_USER:$DEFAULT_GROUP $DOWNLOAD_PATH
     chown -R $DEFAULT_USER:$DEFAULT_GROUP $INIT_SHELL_BIN
-    chown -R $DEFAULT_USER:$DEFAULT_GROUP $APP_LOG
 
     host_list="for host in"
     for i in ${HOSTNAME_LIST[@]}; do host_list="$host_list ""$i"; done
@@ -19,7 +18,7 @@ install_init(){
     log info "copy init shell to ${INIT_SHELL_BIN}"
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${INIT_PATH}/`
-        sed -i "s@for host in hdp{101..103};@${host_list}@g"  ${INIT_PATH}/xsync`
+        sed -i "s@for host in hdp{101..103};@${host_list}@g"  ${INIT_PATH}/xsync
     fi
 
     cp $INIT_PATH/jpsall ${INIT_SHELL_BIN}

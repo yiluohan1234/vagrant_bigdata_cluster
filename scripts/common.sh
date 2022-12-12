@@ -13,7 +13,7 @@ DEFAULT_GROUP=root
 RESOURCE_PATH=/vagrant/resources
 
 # 安装目录
-INSTALL_PATH=/usr/
+INSTALL_PATH=/usr
 
 # 组件下载目录
 DOWNLOAD_PATH=/usr/package277
