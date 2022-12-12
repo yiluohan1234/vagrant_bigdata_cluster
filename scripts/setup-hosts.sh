@@ -7,10 +7,13 @@ install_hosts() {
     i=0
     for name in ${HOSTNAME_LIST[@]}
     do 
-        entry="IST[$i]} $name"
+        entry="${IP_LIST[$i]} $name"
         log info "-------------adding ${entry}-------------"
         echo "${entry}" >> /etc/hosts
         i=$(( i+1 ))
     done
 }
-install_ssh
+
+if [ "${IS_VAGRANT}" == "true" ];then
+    install_hosts
+fi

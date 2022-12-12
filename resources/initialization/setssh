@@ -27,3 +27,6 @@ install_ssh() {
     done
 }
 install_ssh
+if [ "${IS_VAGRANT}" == "true" ];then
+    install_ssh
+fi

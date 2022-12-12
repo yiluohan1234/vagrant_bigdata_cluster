@@ -67,9 +67,12 @@ args()
 {
     if [ $# -ne 0 ]; then
 	case $1 in
-	    init)
+		init)
 		    install_init
-			;;
+		    ;;
+		host)
+		    install_host
+		    ;;
 		azkaban)
 		    install_azkaban
 		    ;;
