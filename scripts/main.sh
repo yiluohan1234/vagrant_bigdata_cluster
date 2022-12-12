@@ -24,6 +24,7 @@ CUR=$(cd `dirname 0`;pwd)
 . $CUR/setup-azkaban.sh
 . $CUR/setup-presto.sh
 . $CUR/setup-kylin.sh
+. $CUR/setup-init.sh
 #. $CUR/common.sh
 
 
@@ -32,6 +33,7 @@ usage()
     case $1 in
         "")
 	    echo "Usage: main.sh command [options]"
+		echo "      main.sh init"
 	    echo "      main.sh canal"
 	    echo "      main.sh es"
 	    echo "      main.sh flink"
@@ -63,6 +65,9 @@ args()
 {
     if [ $# -ne 0 ]; then
 	case $1 in
+	    init)
+		    install_init
+			;;
 		azkaban)
 		    install_azkaban
 		    ;;

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 是否用vagrant安装集群
-IS_VAGRANT="true"
+IS_VAGRANT="false"
 # 是否用kerberos
 IS_KERBEROS="false"
 
@@ -13,26 +13,26 @@ DEFAULT_GROUP=root
 RESOURCE_PATH=/vagrant/resources
 
 # 安装目录
-INSTALL_PATH=/opt/module
+INSTALL_PATH=/usr/
 
 # 组件下载目录
-DOWNLOAD_PATH=/vagrant/downloads
+DOWNLOAD_PATH=/usr/package277
 
 # 初始化集群目录
 INIT_PATH=$RESOURCE_PATH/initialization
-INIT_SHELL_BIN=$INSTALL_PATH/bin
+INIT_SHELL_BIN=$INSTALL_PATH/init_bin
 
 # 环境变量配置文件
-PROFILE=/etc/profile.d/hdp_env.sh
+PROFILE=/etc/profile
 
 # 下载组建的镜像地址
 # 1:https://archive.apache.org/dist
 # 2:https://mirrors.huaweicloud.com/apache
 DOWNLOAD_REPO=https://mirrors.huaweicloud.com/apache
-DOWNLOAD_REPO_APACHE=https://archive.apache.org/dist
+# DOWNLOAD_REPO_APACHE=https://archive.apache.org/dist
 
 # hostname
-HOSTNAME=("hdp101" "hdp102" "hdp103")
+HOSTNAME_LIST=("master" "slave1" "slave2")
 
 # ssh
 SSH_CONF=/home/vagrant/resources/ssh
@@ -48,18 +48,19 @@ AZKABAN_DBUSER=azkaban
 AZKABAN_DBPASSWORD=199037
 
 # app版本
-HADOOP_VERSION=hadoop-3.1.3
+HADOOP_VERSION=hadoop-2.7.7
 # HIVE_VERSION=hive-3.1.2
 HIVE_VERSION=hive-2.3.4
-HBASE_VERSION=hbase-2.0.6
-SPARK_VERSION=spark-3.0.0
-FLINK_VERSION=flink-1.13.4
+HBASE_VERSION=hbase-1.6.0
+SPARK_VERSION=spark-2.4.3
 SQOOP_VERSION=sqoop-1.4.7
-ZOOKEEPER_VERSION=zookeeper-3.5.7
-# KAFKA_VERSION=kafka_2.11-2.4.1
-KAFKA_VERSION=kafka_2.12-3.0.0
-FLUME_VERSION=flume-1.9.0
+ZOOKEEPER_VERSION=zookeeper-3.6.3
+# KAFKA_VERSION=kafka_2.10-2.4.1
+KAFKA_VERSION=kafka_2.10-0.10.2.2.tgz
 SCALA_VERSION=scala-2.12.10
+
+FLUME_VERSION=flume-1.9.0
+FLINK_VERSION=flink-1.13.4
 MAVEN_VERSION=apache-maven-3.6.1
 MYSQL_CONNECTOR_VERSION=mysql-connector-java-5.1.49
 MYSQL_VERSION=mysql-5.7.35
@@ -91,7 +92,7 @@ get_app_version_num() {
 }
 
 # java
-JAVA_ARCHIVE=jdk-8u201-linux-x64.tar.gz
+JAVA_ARCHIVE=jdk-8u221-linux-x64.tar.gz
 JAVA_MIRROR_DOWNLOAD=https://repo.huaweicloud.com/java/jdk/8u201-b09/$JAVA_ARCHIVE
 
 # hadoop

@@ -17,84 +17,12 @@
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
-    <!-- 指定NameNode的地址 -->
-    <property>
-        <name>fs.defaultFS</name>
-	<value>hdfs://hdp101:8020</value>
-    </property>
-    <!-- 指定hadoop数据的存储目录 -->
-    <property>
-        <name>hadoop.tmp.dir</name>
-        <value>/home/vagrant/apps/hadoop/tmp</value>
-    </property>
-    <!-- 配置HDFS网页登录使用的静态用户为vagrant. -->
-    <property>
-        <name>hadoop.http.staticuser.user</name>
-        <value>vagrant</value>
-    </property>
-    <!-- 配置该vagrant（superUser）允许通过代理访问的主机节点 -->
-    <property>
-        <name>hadoop.proxyuser.vagrant.hosts</name>
-        <value>*</value>
-    </property>
-    <!-- 配置该vagrant（superUser）允许通过代理用户所属组 -->
-    <property>
-        <name>hadoop.proxyuser.vagrant.groups</name>
-        <value>*</value>
-    </property>
-    <!-- 配置该vagrant （superUser）允许通过代理的用户 -->
-    <property>
-        <name>hadeop.proxyuser.vagrant.users</name>
-        <value>*</value>
-    </property>
-    <property>
-        <name>io.compression.codecs</name>
-        <value>
-            org.apache.hadoop.io.compress.GzipCodec,
-            org.apache.hadoop.io.compress.DefaultCodec,
-            org.apache.hadoop.io.compress.BZip2Codec,
-            org.apache.hadoop.io.compress.SnappyCodec,
-            com.hadoop.compression.lzo.LzoCodec,
-            com.hadoop.compression.lzo.LzopCodec
-        </value>
-    </property>
-
-    <property>
-        <name>io.compression.codec.lzo.class</name>
-        <value>com.hadoop.compression.lzo.LzoCodec</value>
-    </property>
-    <!-- Kerberos主体到系统用户的映射机制 -->
-    <property>
-      <name>hadoop.security.auth_to_local.mechanism</name>
-      <value>MIT</value>
-    </property>
-
-    <!-- Kerberos主体到系统用户的具体映射规则 -->
-    <property>
-      <name>hadoop.security.auth_to_local</name>
-      <value>
-	RULE:[2:$1/$2@$0]([ndj]n\/.*@EXAMPLE\.COM)s/.*/hdfs/
-	RULE:[2:$1/$2@$0]([rn]m\/.*@EXAMPLE\.COM)s/.*/yarn/
-	RULE:[2:$1/$2@$0](jhs\/.*@EXAMPLE\.COM)s/.*/mapred/
-	DEFAULT
-      </value>
-    </property>
-
-    <!-- 启用Hadoop集群Kerberos安全认证 -->
-    <property>
-      <name>hadoop.security.authentication</name>
-      <value>kerberos</value>
-    </property>
-
-    <!-- 启用Hadoop集群授权管理 -->
-    <property>
-      <name>hadoop.security.authorization</name>
-      <value>true</value>
-    </property>
-
-    <!-- Hadoop集群间RPC通讯设为仅认证模式 -->
-    <property>
-      <name>hadoop.rpc.protection</name>
-      <value>authentication</value>
-    </property>
+<property>
+  <name>fs.default.name</name>
+   <value>hdfs://master:9000</value>
+</property>
+<property>
+  <name>hadoop.tmp.dir</name>
+   <value>/root/hadoopData/tmp</value>
+</property>
 </configuration>
