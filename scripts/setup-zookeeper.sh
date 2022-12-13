@@ -19,10 +19,9 @@ setup_zookeeper() {
     local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
     
     log info "creating $app_name directories"
-    zookeeper_dir_name=`get_app_version_num $ZOOKEEPER_VERSION "-" 1`
-    mkdir -p ${INSTALL_PATH}/zookeeper/${ZOOKEEPER_DIR_NAME}/zkdata 
-    mkdir -p ${INSTALL_PATH}/zookeeper/${ZOOKEEPER_DIR_NAME}/zkdatalog
-    touch ${INSTALL_PATH}/zookeeper/${ZOOKEEPER_DIR_NAME}/zkdata/myid
+    mkdir -p ${INSTALL_PATH}/${app_name}/${ZOOKEEPER_DIR_NAME}/zkdata 
+    mkdir -p ${INSTALL_PATH}/${app_name}/${ZOOKEEPER_DIR_NAME}/zkdatalog
+    touch ${INSTALL_PATH}/${app_name}/${ZOOKEEPER_DIR_NAME}/zkdata/myid
 
     log info "copying over ${app_name} configuration files"
     cp -f ${res_dir}/* ${conf_dir}
@@ -68,8 +67,8 @@ dispatch_zookeeper() {
     for name in ${HOSTNAME_LIST[@]};do
         current_hostname=`cat /etc/hostname`
         if [ "$current_hostname" != "$name" ];then
-            ssh $name "mkdir -p ${INSTALL_PATH}/zookeeper/${ZOOKEEPER_DIR_NAME}/zkdata"
-            ssh $name "mkdir -p ${INSTALL_PATH}/zookeeper/${ZOOKEEPER_DIR_NAME}/zkdatalog"
+            ssh $name "mkdir -p ${INSTALL_PATH}/${app_name}/${ZOOKEEPER_DIR_NAME}/zkdata"
+            ssh $name "mkdir -p ${INSTALL_PATH}/${app_name}/${ZOOKEEPER_DIR_NAME}/zkdatalog"
             ssh $name "echo $i >> ${INSTALL_PATH}/${app_name}/${ZOOKEEPER_DIR_NAME}/zkdata/myid"
         fi
         i=$(( i+1 ))
