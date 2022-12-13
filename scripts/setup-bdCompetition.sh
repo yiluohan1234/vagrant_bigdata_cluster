@@ -61,7 +61,7 @@ curl -o /usr/package277/apache-hive-2.3.4-bin.tar.gz -O -L https://mirrors.huawe
 log info "download sqoop"
 curl -o /usr/package277/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz -O -L https://mirrors.huaweicloud.com/apache/sqoop/1.4.7/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
 log info "download kafka"
-curl -o /usr/package277/kafka_2.11-0.10.2.2.tgz -O -L https://mirrors.huaweicloud.com/apache/kafka/0.10.2.2/kafka_2.11-0.10.2.2.tgz
+curl -o /usr/package277/kafka_2.10-0.10.2.2.tgz -O -L https://mirrors.huaweicloud.com/apache/kafka/0.10.2.2/kafka_2.10-0.10.2.2.tgz
 log info "download hbase"
 curl -o /usr/package277/hbase-1.6.0-bin.tar.gz -O -L https://mirrors.huaweicloud.com/apache/hbase/1.6.0/hbase-1.6.0-bin.tar.gz
 log info "download zookeeper"
