@@ -17,9 +17,6 @@ setup_hadoop() {
     sed -i 's@^export JAVA_HOME=.*@export JAVA_HOME=/usr/java/jdk1.8.0_221@' ${conf_dir}/hadoop-env.sh
     echo "export JAVA_HOME=/usr/java/jdk1.8.0_221" >> ${conf_dir}p/yarn-env.sh
     
-    if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
-        sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
-    fi
 }
 
 download_hadoop() {
