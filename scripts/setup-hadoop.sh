@@ -12,8 +12,8 @@ setup_hadoop() {
     cp -f ${res_dir}/* ${conf_dir}
 
     sed -i 's@^export JAVA_HOME=.*@export JAVA_HOME=/usr/java/jdk1.8.0_221@' ${conf_dir}/hadoop-env.sh
-    echo "export JAVA_HOME=/usr/java/jdk1.8.0_221" >> ${conf_dir}p/yarn-env.sh
-    
+    echo "export JAVA_HOME=/usr/java/jdk1.8.0_221" >> ${conf_dir}/yarn-env.sh
+    echo "master" >>  ${conf_dir}/master
 }
 
 download_hadoop() {
