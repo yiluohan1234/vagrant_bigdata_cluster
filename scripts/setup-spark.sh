@@ -14,9 +14,6 @@ setup_spark() {
     cp -f ${res_dir}/spark-env.sh ${conf_dir}
     cp ${DOWNLOAD_PATH}/mysql-connector-java*.jar ${INSTALL_PATH}/spark/$SPARK_VERSION/jars
 
-    if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
-        sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
-    fi
     # yarn-site.xml
     #cp -f ${HADOOP_RES_DIR}/yarn-site.xml ${SPARK_CONF_DIR}
     

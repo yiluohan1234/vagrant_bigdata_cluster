@@ -59,32 +59,53 @@ download_zookeeper() {
     else
         installFromRemote ${archive} ${download_url}
     fi
-    mv ${INSTALL_PATH}/apache-${app_version}-bin ${INSTALL_PATH}/${app_name}
+    mkdir ${INSTALL_PATH}/${app_name}
+    mv ${INSTALL_PATH}/apache-${app_version} ${INSTALL_PATH}/${app_name}
     chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_name}
-    rm ${DOWNLOAD_PATH}/${archive}
+    # rm ${DOWNLOAD_PATH}/${archive}
+}
+
+setupEnv_spark() {
+    local app_name=$1
+    log info "creating ${app_name} environment variables"
+    # app_path=${INSTALL_PATH}/java
+    app_path=${INSTALL_PATH}/${app_name}/apache-${ZOOKEEPER_VERSION}
+    echo "# $app_name environment" >> ${PROFILE}
+    echo "export ZOOKEEPER_HOME=${app_path}" >> ${PROFILE}
+    echo 'export PATH=${ZOOKEEPER_HOME}/bin:$PATH' >> ${PROFILE}
+    echo -e "\n" >> ${PROFILE}
 }
 
 dispatch_zookeeper() {
     local app_name=$1
     log info "dispatch ${app_name}" 
     dispatch_app ${app_name}
-    echo "1" >>${INSTALL_PATH}/zookeeper/data/myid
-    ssh hdp102 "echo '2' >> ${INSTALL_PATH}/zookeeper/data/myid"
-    ssh hdp103 "echo '3' >> ${INSTALL_PATH}/zookeeper/data/myid"
+    echo "1" >>${INSTALL_PATH}/apache-${ZOOKEEPER_VERSION}/data/myid
+    i=1
+    for name in ${HOSTNAME_LIST[@]};do
+        current_hostname=`cat /etc/hostname`
+        if [ "$current_hostname" != "$host" ];then
+            ssh name "echo $i >> ${INSTALL_PATH}/apache-${ZOOKEEPER_VERSION}/data/myid"
+        fi
+        i=$(( i+1 ))
+    done
 }
 
 install_zookeeper() {
     local app_name="zookeeper"
+    log info "setup ${app_name}"
     if [ ! -d ${INSTALL_PATH}/${app_name} ];then
-        log info "setup ${app_name}"
         download_zookeeper ${app_name}
         setup_zookeeper ${app_name}
         setupEnv_app ${app_name}
-        if [ "${IS_VAGRANT}" != "true" ];then
-            dispatch_zookeeper ${app_name}
-        fi
-        source ${PROFILE}
     fi
+
+    # 主机长度
+    host_name_list_len=${#HOSTNAME_LIST[@]}
+    if [ "${IS_VAGRANT}" != "true" ] && [ ${host_name_list_len} -gt 1 ];then
+        dispatch_zookeeper ${app_name}
+    fi
+    source ${PROFILE}
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then
