@@ -1,6 +1,6 @@
 #!/bin/bash
-for i in hdp{101..103};
+for host in hdp{101..103};
 do 
 	echo "--------------------- $i节点 ---------------------"
-	ssh $i "/home/vagrant/apps/java/bin/jps" | grep -v Jps
+	ssh $host "/home/vagrant/apps/java/bin/jps" | grep -v Jps
 done
