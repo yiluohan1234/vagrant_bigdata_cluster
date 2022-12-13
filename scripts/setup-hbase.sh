@@ -10,8 +10,8 @@ setup_hbase() {
 
     log info "copying over ${app_name} configuration files"
     cp -f ${res_dir}/* ${conf_dir}
-    cp ${INSTALL_PATH}/hadoop/etc/hadoop/core-site.xml ${INSTALL_PATH}/hbase/conf/
-    cp ${INSTALL_PATH}/hadoop/etc/hadoop/hdfs-site.xml ${INSTALL_PATH}/hbase/conf/
+    cp ${INSTALL_PATH}/hadoop/${HADOOP_VERSION}/etc/hadoop/core-site.xml ${INSTALL_PATH}/${app_name}/conf/
+    cp ${INSTALL_PATH}/hadoop/${HADOOP_VERSION}/etc/hadoop/hdfs-site.xml ${INSTALL_PATH}/${app_name}/conf/
 
 }
 
@@ -55,7 +55,9 @@ install_hbase() {
     fi
 
 
-    if [ "${IS_VAGRANT}" != "true" ];then
+    # 主机长度
+    host_name_list_len=${#HOSTNAME_LIST[@]}
+    if [ "${IS_VAGRANT}" != "true" ] && [ ${host_name_list_len} -gt 1 ];then
         dispatch_app ${app_name}
     fi
     
