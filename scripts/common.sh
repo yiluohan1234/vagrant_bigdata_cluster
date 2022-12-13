@@ -440,7 +440,7 @@ installFromRemote() {
 dispatch_app(){
     local app_name=$1
     log info "dispatch $app_name"
-    for i in "${HOSTNAME[@]}"
+    for i in "${HOSTNAME_LIST[@]}"
     do
         cur_hostname=`cat /etc/hostname`
         if [ $cur_hostname != $i ];then

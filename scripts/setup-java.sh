@@ -45,9 +45,9 @@ install_java() {
     # 主机长度
     host_name_list_len=${#HOSTNAME_LIST[@]}
     if [ "${IS_VAGRANT}" != "true" ] && [ ${host_name_list_len} -gt 1 ];then
-            dispatch_app ${app_name}
-        fi
-        source ${PROFILE}
+        dispatch_app ${app_name}
+    fi
+    source ${PROFILE}
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then
