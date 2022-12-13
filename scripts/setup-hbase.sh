@@ -10,8 +10,8 @@ setup_hbase() {
 
     log info "copying over ${app_name} configuration files"
     cp -f ${res_dir}/* ${conf_dir}
-    cp ${INSTALL_PATH}/hadoop/${HADOOP_VERSION}/etc/hadoop/core-site.xml ${INSTALL_PATH}/${app_name}/conf/
-    cp ${INSTALL_PATH}/hadoop/${HADOOP_VERSION}/etc/hadoop/hdfs-site.xml ${INSTALL_PATH}/${app_name}/conf/
+    cp ${INSTALL_PATH}/hadoop/${HADOOP_VERSION}/etc/hadoop/core-site.xml ${INSTALL_PATH}/${app_name}/${HBASE_VERSION}/conf/
+    cp ${INSTALL_PATH}/hadoop/${HADOOP_VERSION}/etc/hadoop/hdfs-site.xml ${INSTALL_PATH}/${app_name}/${HBASE_VERSION}/conf/
 
 }
 
