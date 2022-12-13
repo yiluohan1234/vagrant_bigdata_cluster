@@ -23,7 +23,7 @@ install_init(){
         sed -i "s@for host in hdp{101..103};@${host_list}@g"  ${INIT_PATH}/xsync
         sed -i "s@for host in hdp{101..103};@${host_list}@g"  ${INIT_PATH}/xcall
         sed -i "s@for host in hdp{101..103};@${host_list}@g"  ${INIT_PATH}/jpsall
-        sed -i "s@/home/vagrant/apps/java@${JAVA_HOME}@g"  ${INIT_PATH}/jpsall
+        sed -i "s@/home/vagrant/apps/java/bin/jps@${JAVA_HOME}/bin/jps@g"  ${INIT_PATH}/jpsall
     fi
 
     cp $INIT_PATH/jpsall ${INIT_SHELL_BIN}
