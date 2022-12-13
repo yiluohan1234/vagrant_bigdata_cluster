@@ -134,6 +134,6 @@ export HBASE_OPTS="$HBASE_OPTS -XX:+UseConcMarkSweepGC"
 # DRFA doesn't put any cap on the log size. Please refer to HBase-5655 for more context.
 
 # 设置JAVA的环境变量
-export JAVA_HOME=/home/vagrant/apps/java
+export JAVA_HOME=/usr/java/jdk1.8.0_221
 # 设置是否使用hbase自带的zookeeper
 export HBASE_MANAGES_ZK=false

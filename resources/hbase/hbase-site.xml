@@ -40,6 +40,6 @@
     </property> 
     <property> 
         <name>hbase.zookeeper.property.dataDir</name> 
-        <value>/usr/zookeeper/zookeeper-3.4.10</value> 
+        <value>/usr/zookeeper/apache-zookeeper-3.6.3-bin</value> 
     </property> 
 </configuration>
