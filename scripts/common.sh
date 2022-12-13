@@ -2,8 +2,6 @@
 
 # 是否用vagrant安装集群
 IS_VAGRANT="false"
-# 是否用kerberos
-IS_KERBEROS="false"
 
 # default user
 DEFAULT_USER=root
@@ -35,18 +33,11 @@ DOWNLOAD_REPO=https://mirrors.huaweicloud.com/apache
 IP_LIST=("172.18.39.77" "172.18.39.78" "172.18.39.79")
 HOSTNAME_LIST=("master" "slave1" "slave2")
 PASSWD_LIST=("CuSlShBA!sN" "VQZ2e8SA!wG" "grmDssKA@xM")
-# ssh
-SSH_CONF=/home/vagrant/resources/ssh
 
 # mysql
 MYSQL_HOST=hdp103
 MYSQL_USER=root
 MYSQL_PASSWORD=199037
-
-RANGER_DBUSER=ranger
-RANGER_DBPASSWORD=ranger
-AZKABAN_DBUSER=azkaban
-AZKABAN_DBPASSWORD=199037
 
 # app版本
 HADOOP_VERSION=hadoop-2.7.7
@@ -203,19 +194,6 @@ resourceExists()
     fi
 }
 
-## @description 判断某一目录文件是否存在
-# eg: fileExists /home/vagrant/text.txt
-fileExists()
-{
-    FILE=$1
-    if [ -e $FILE ]
-    then
-        return 0
-    else
-        return 1
-    fi
-}
-
 ## @description 判断软件是否安装
 ## @eg command_exists expect
 command_exists() {
@@ -316,14 +294,9 @@ display_apps_num() {
     echo "Hive: $HIVE_VERSION_NUM"
     echo "Hbase: $HBASE_VERSION_NUM"
     echo "Spark: $SPARK_VERSION_NUM"
-    echo "Flink: $FLINK_VERSION_NUM"
     echo "Zookeeper: $ZOOKEEPER_VERSION_NUM"
     echo "Kafka: $KAFKA_VERSION_NUM"
-    echo "Flume: $FLUME_VERSION_NUM"
     echo "Scala: $SCALA_VERSION_NUM"
-    echo "Maven: $MAVEN_VERSION_NUM"
     echo "Sqoop: $SQOOP_VERSION_NUM"
-    echo "MySQl Connector: $MYSQL_CONNECTOR_VERSION_NUM"
     echo "MySQL: $MYSQL_VERSION_NUM"
-    echo "Phoenix: $PHOENIX_VERSION_NUM"
 }
