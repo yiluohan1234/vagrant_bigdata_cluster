@@ -50,11 +50,9 @@ download_hadoop() {
 }
 setupEnv_hadoop() {
     local app_name=$1
-    local app_name_upper=`get_string_upper ${app_name}`
-    local app_version=$(eval echo \$${app_name_upper}_VERSION)
     log info "creating ${app_name} environment variables"
     # app_path=${INSTALL_PATH}/java
-    app_path=${INSTALL_PATH}/${app_name}/${app_version}
+    app_path=${INSTALL_PATH}/${app_name}/${HADOOP_VERSION}
     echo "# $app_name environment" >> ${PROFILE}
     echo "export HADOOP_HOME=${app_path}" >> ${PROFILE}
     echo 'export PATH=${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin:$PATH' >> ${PROFILE}

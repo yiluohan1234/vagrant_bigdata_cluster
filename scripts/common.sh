@@ -102,6 +102,7 @@ JAVA_MIRROR_DOWNLOAD=https://repo.huaweicloud.com/java/jdk/8u201-b09/$JAVA_ARCHI
 # https://mirrors.huaweicloud.com/apache/hadoop/core/hadoop-3.1.3/hadoop-3.1.3.tar.gz
 # https://archive.apache.org/dist => https://mirrors.huaweicloud.com/apache
 HADOOP_VERSION_NUM=`get_app_version_num $HADOOP_VERSION "-" 2`
+HADOOP_VERSION_NUM_TWO=`echo ${HADOOP_VERSION:7:3}`
 HADOOP_ARCHIVE=$HADOOP_VERSION.tar.gz
 HADOOP_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/hadoop/core/$HADOOP_VERSION/$HADOOP_ARCHIVE
 HADOOP_RES_DIR=$RESOURCE_PATH/hadoop

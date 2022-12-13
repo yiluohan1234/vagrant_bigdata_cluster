@@ -37,38 +37,6 @@ setup_hive() {
     chown -R $DEFAULT_USER:$DEFAULT_GROUP $INSTALL_PATH
 }
 
-setup_hive_src() {
-    local app_name=$1
-    local app_name_upper=`get_string_upper ${app_name}`
-    local res_dir=$(eval echo \$${app_name_upper}_RES_DIR)
-    local hive_src_dir=$INSTALL_PATH/hive-src
-
-    log info "creating $app_name directories"
-    mkdir -p ${INSTALL_PATH}/hive/logs
-    mkdir -p ${INSTALL_PATH}/hive/tmpdir
-	
-    log info "copying over ${app_name} configuration files"
-    cp -f ${res_dir}/update_files/pom.xml $hive_src_dir
-    cp -f ${res_dir}/update_files/DruidScanQueryRecordReader.java $hive_src_dir/druid-handler/src/java/org/apache/hadoop/hive/druid/serde/
-    cp -f ${res_dir}/update_files/llap-server/* $hive_src_dir/llap-server/src/java/org/apache/hadoop/hive/llap/daemon/impl/
-    cp -f ${res_dir}/update_files/ql/* $hive_src_dir/ql/src/java/org/apache/hadoop/hive/ql/exec/tez/
-    cp -f ${res_dir}/update_files/LlapTaskSchedulerService.java $hive_src_dir/llap-tez/src/java/org/apache/hadoop/hive/llap/tezplugins/
-    cp -f ${res_dir}/update_files/AsyncPbRpcProxy.java $hive_src_dir/llap-common/src/java/org/apache/hadoop/hive/llap/
-
-    cp -f ${res_dir}/update_files/TestStatsUtils.java $hive_src_dir/ql/src/test/org/apache/hadoop/hive/ql/stats/
-    cp -f ${res_dir}/update_files/ShuffleWriteMetrics.java $hive_src_dir/spark-client/src/main/java/org/apache/hive/spark/client/metrics/
-    cp -f ${res_dir}/update_files/SparkCounter.java $hive_src_dir/spark-client/src/main/java/org/apache/hive/spark/counter/
-
-    cp -f ${res_dir}/update_files/ColumnsStatsUtils.java $hive_src_dir/standalone-metastore/src/main/java/org/apache/hadoop/hive/metastore/columnstats/
-    cp -f ${res_dir}/update_files/aggr/* $hive_src_dir/standalone-metastore/src/main/java/org/apache/hadoop/hive/metastore/columnstats/aggr/
-    cp -f ${res_dir}/update_files/cache/* $hive_src_dir/standalone-metastore/src/main/java/org/apache/hadoop/hive/metastore/columnstats/cache/
-    cp -f ${res_dir}/update_files/merge/* $hive_src_dir/standalone-metastore/src/main/java/org/apache/hadoop/hive/metastore/columnstats/merge/
-
-    cd $hive_src_dir
-    mvn clean package -Pdist -DskipTests -Dmaven.javadoc.skip=true
-    cp $hive_src_dir/packaging/target/apache-hive-3.1.2-bin.tar.gz /vagrant/downloads
-
-}
 
 download_hive() {
     local app_name=$1
@@ -83,39 +51,37 @@ download_hive() {
     else
         installFromRemote ${archive} ${download_url}
     fi
+    mkdir ${INSTALL_PATH}/${app_name}
     mv ${INSTALL_PATH}/"apache-${HIVE_VERSION}-bin" ${INSTALL_PATH}/${app_name}
     chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_name}
-    rm ${DOWNLOAD_PATH}/${archive}
+    # rm ${DOWNLOAD_PATH}/${archive}
 }
 
-download_hive_src() {
+setupEnv_hive() {
     local app_name=$1
-    local app_name_upper=`get_string_upper ${app_name}`
-    local app_version=$(eval echo \$${app_name_upper}_VERSION)
-    local archive=$(eval echo \$${app_name_upper}_SRC_ARCHIVE)
-    local download_url=$(eval echo \$${app_name_upper}_SRC_MIRROR_DOWNLOAD)
-
-    log info "install ${app_name}"
-    if resourceExists ${archive}; then
-        installFromLocal ${archive}
-    else
-        installFromRemote ${archive} ${download_url}
-    fi
-    mv ${INSTALL_PATH}/"apache-${HIVE_VERSION}-src" ${INSTALL_PATH}/${app_name}-src
-    #chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}-src
-    rm ${DOWNLOAD_PATH}/${archive}
+    log info "creating ${app_name} environment variables"
+    # app_path=${INSTALL_PATH}/java
+    app_path=${INSTALL_PATH}/${app_name}/apache-${HIVE_VERSION}-bin
+    echo "# $app_name environment" >> ${PROFILE}
+    echo "export HIVE_HOME=${app_path}" >> ${PROFILE}
+    echo 'export PATH=${HIVE_HOME}/bin:$PATH' >> ${PROFILE}
+    echo -e "\n" >> ${PROFILE}
 }
 
 install_hive() {
     local app_name="hive"
     log info "setup ${app_name}"
+    if [ ! -d ${INSTALL_PATH}/${app_name} ];then
+        download_hive ${app_name}
+        setup_hive ${app_name}
+        setupEnv_hive ${app_name}
+    fi
 
-    download_hive ${app_name}
-    setup_hive ${app_name}
-    setupEnv_app ${app_name}
-    # if [ "$IS_VAGRANT" != "true" ];then
-    #     dispatch_app ${app_name}
-    # fi
+    # 主机长度
+    host_name_list_len=${#HOSTNAME_LIST[@]}
+    if [ "${IS_VAGRANT}" != "true" ] && [ ${host_name_list_len} -gt 1 ];then
+        dispatch_app ${app_name}
+    fi
     source ${PROFILE}
 }
 if [ "${IS_VAGRANT}" == "true" ];then
