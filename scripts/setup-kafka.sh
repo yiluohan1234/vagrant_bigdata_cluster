@@ -68,14 +68,14 @@ dispatch_kafka() {
     dispatch_app ${app_name}
     i=1
     for host in ${HOSTNAME_LIST[@]};do
-        ip=`cat /etc/hosts |grep $host|awk '{print $1}'`
-        ip_end=${ip##*.} 
-        value="PLAINTEXT://$ip:9092"
-        file_path=${INSTALL_PATH}/${app_name}/${KAFKA_VERSION}/config/server.properties
+        value="PLAINTEXT://$host:9092"
+        file_path=${INSTALL_PATH}/${app_name}/${KAFKA_VERSION}/config
         echo "------modify $i server.properties-------"
-        ssh $host "sed -i 's/^broker.id=.*/broker.id='${ip_end}'/' ${file_path}"
-        ssh $host "sed -i 's@^listeners=.*@listeners='${value}'@' ${file_path}"
-        ssh $host "sed -i 's@^advertised.listeners=.*@advertised.listeners='${value}'@' ${file_path}"
+        ssh $host "sed -i 's/^broker.id=.*/broker.id='${i}'/' ${file_path}/server.properties"
+        ssh $host "sed -i 's@^listeners=.*@listeners='${value}'@' ${file_path}/server.properties"
+        ssh $host "sed -i 's@^advertised.listeners=.*@advertised.listeners='${value}'@' ${file_path}/server.properties"
+        ssh $host "sed -i 's@^log.dirs=.*@log.dirs='${KAFKA_LOG_DIR}'@' ${file_path}/server.properties"
+        i=$(( i+1 ))
     done
 }
 
