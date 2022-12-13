@@ -13,101 +13,16 @@
   limitations under the License. See accompanying LICENSE file.
 -->
 <configuration>
-    <!-- 指定MR走shuffle -->
-    <property>
-        <name>yarn.nodemanager.aux-services</name>
-        <value>mapreduce_shuffle</value>
-    </property>
-    
-    <!-- 指定ResourceManager的地址-->
-    <property>
-        <name>yarn.resourcemanager.hostname</name>
-        <value>hdp102</value>
-    </property>
-    
-    <!-- 环境变量的继承 -->
-    <!-- v3.1.3的bug需要添加HADOOP_MAPRED_HOME -->
-    <property>
-        <name>yarn.nodemanager.env-whitelist</name>
-        <value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_MAPRED_HOME</value>
-    </property>
-    
-    <!-- yarn容器允许分配的最大最小内存 -->
-    <property>
-        <name>yarn.scheduler.minimum-allocation-mb</name>
-        <value>512</value>
-    </property>
-    <property>
-        <name>yarn.scheduler.maximum-allocation-mb</name>
-        <value>4096</value>
-    </property>
-    
-    <!-- yarn容器允许管理的物理内存大小 -->
-    <property>
-        <name>yarn.nodemanager.resource.memory-mb</name>
-        <value>4096</value>
-    </property>
-    
-    <!-- 关闭yarn对虚拟内存的限制检查 -->
-    <property>
-        <name>yarn.nodemanager.vmem-check-enabled</name>
-        <value>false</value>
-    </property>
-    <!-- 开启日志聚集功能 -->
-    <property>
-        <name>yarn.log-aggregation-enable</name>
-        <value>true</value>
-    </property>
-
-    <!-- 设置日志聚集服务器地址 -->
-    <property>  
-        <name>yarn.log.server.url</name>  
-        <value>http://hdp101:19888/jobhistory/logs</value>
-    </property>
-
-    <!-- 设置日志保留时间为7天 -->
-    <property>
-        <name>yarn.log-aggregation.retain-seconds</name>
-        <value>604800</value>
-    </property>
-    <!-- Resource Manager 服务的Kerberos主体 -->
-    <property>
-      <name>yarn.resourcemanager.principal</name>
-      <value>rm/_HOST@EXAMPLE.COM</value>
-    </property>
-
-    <!-- Resource Manager 服务的Kerberos密钥文件 -->
-    <property>
-      <name>yarn.resourcemanager.keytab</name>
-      <value>/etc/security/keytab/rm.service.keytab</value>
-    </property>
-
-    <!-- Node Manager 服务的Kerberos主体 -->
-    <property>
-      <name>yarn.nodemanager.principal</name>
-      <value>nm/_HOST@EXAMPLE.COM</value>
-    </property>
-
-    <!-- Node Manager 服务的Kerberos密钥文件 -->
-    <property>
-      <name>yarn.nodemanager.keytab</name>
-      <value>/etc/security/keytab/nm.service.keytab</value>
-    </property>
-    <!-- 配置Node Manager使用LinuxContainerExecutor管理Container -->
-    <property>
-      <name>yarn.nodemanager.container-executor.class</name>
-      <value>org.apache.hadoop.yarn.server.nodemanager.LinuxContainerExecutor</value>
-    </property>
-
-    <!-- 配置Node Manager的启动用户的所属组 -->
-    <property>
-      <name>yarn.nodemanager.linux-container-executor.group</name>
-      <value>hadoop</value>
-    </property>
-
-    <!-- LinuxContainerExecutor脚本路径 -->
-    <property>
-      <name>yarn.nodemanager.linux-container-executor.path</name>
-      <value>/opt/module/hadoop/bin/container-executor</value>
-    </property>
+  <property>
+    <name>yarn.resourcemanager.admin.address</name>
+    <value>master:18141</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.auxservices.mapreduce.shuffle.class</name>
+    <value>org.apache.hadoop.mapred.shuffleHandler</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.aux-services</name>
+    <value>
+  </property>
 </configuration>

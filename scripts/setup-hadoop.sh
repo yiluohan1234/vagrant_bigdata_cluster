@@ -13,18 +13,7 @@ setup_hadoop() {
 	
     log info "copying over ${app_name} configuration files"
     cp -f ${res_dir}/* ${conf_dir}
-    mv ${conf_dir}/hadoop-lzo-0.4.20.jar ${INSTALL_PATH}/hadoop/share/hadoop/common
-    #echo 'export CLASSPATH=$CLASSPATH:${INSTALL_PATH}/hadoop/share/hadoop/common' >> $PROFILE
-    if [ "${IS_KERBEROS}" == "true" ];then
-        sed -i '31,49s/vagrant/hive/g' ${conf_dir}/core-site.xml
-        sed -i '30,34s/vagrant/hive/g' ${conf_dir}/core-site.xml
-    else
-        sed -i '66,99d' ${conf_dir}/core-site.xml
-        sed -i '35,111d' ${conf_dir}/hdfs-site.xml
-        sed -i '36,46d' ${conf_dir}/mapred-site.xml
-        sed -i '73,112d' ${conf_dir}/yarn-site.xml
-        rm -rf ${conf_dir}/ssl-server.xml
-    fi
+    
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
     fi
