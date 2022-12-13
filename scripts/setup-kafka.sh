@@ -73,7 +73,6 @@ dispatch_kafka() {
         host_list=""
         for name in ${HOSTNAME_LIST[@]}; do host_list="$host_list,""$name:2181"; done
         host_list=${host_list:1}"/kafka"
-        echo "------modify $i server.properties-------"
         ssh $host "sed -i 's/^broker.id=.*/broker.id='${i}'/' ${file_path}/server.properties"
         ssh $host "sed -i 's@^listeners=.*@listeners='${value}'@' ${file_path}/server.properties"
         ssh $host "sed -i 's@^advertised.listeners=.*@advertised.listeners='${value}'@' ${file_path}/server.properties"
