@@ -68,7 +68,7 @@
 # - MKL_NUM_THREADS=1        Disable multi-threading of Intel MKL
 # - OPENBLAS_NUM_THREADS=1   Disable multi-threading of OpenBLAS
 export SPARK_MASTER_IP=master
-export SCALA_HOME=/usr/scala/scala-2.10.6
+export SCALA_HOME=/usr/scala/scala-2.11.11
 export SPARK_WORKER_MEMORY=8g
 export JAVA_HOME=/usr/java/jdk1.8.0_221
 export HADOOP_HOME=/usr/hadoop/hadoop-2.7.7

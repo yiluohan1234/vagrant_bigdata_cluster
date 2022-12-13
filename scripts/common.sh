@@ -129,17 +129,17 @@ HBASE_VERSION_NUM=`get_app_version_num $HBASE_VERSION "-" 2`
 HBASE_ARCHIVE=${HBASE_VERSION}-bin.tar.gz
 HBASE_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/hbase/$HBASE_VERSION_NUM/$HBASE_ARCHIVE
 HBASE_RES_DIR=$RESOURCE_PATH/hbase
-HBASE_CONF_DIR=$INSTALL_PATH/hbase/conf
+HBASE_CONF_DIR=$INSTALL_PATH/hbase/$HBASE_VERSION/conf
 
 # spark
 # 支持版本：具体见下载地址
 #         https://archive.apache.org/dist/spark/spark-2.4.6/spark-2.4.6-bin-hadoop2.7.tgz
 # https://mirrors.huaweicloud.com/apache/spark/spark-3.0.0/spark-3.0.0-bin-hadoop3.2.tgz
 SPARK_VERSION_NUM=`get_app_version_num $SPARK_VERSION "-" 2`
-SPARK_ARCHIVE=$SPARK_VERSION-bin-hadoop3.2.tgz
+SPARK_ARCHIVE=$SPARK_VERSION-bin-hadoop${HADOOP_VERSION_NUM_TWO}.tgz
 SPARK_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/spark/$SPARK_VERSION/$SPARK_ARCHIVE
 SPARK_RES_DIR=$RESOURCE_PATH/spark
-SPARK_CONF_DIR=$INSTALL_PATH/spark/conf
+SPARK_CONF_DIR=$INSTALL_PATH/spark/$HADOOP_VERSION/conf
 
 # scala
 # 支持版本：2.10.X, 2.11.X, 2.12.X, 2.13.X
@@ -178,7 +178,7 @@ ZOOKEEPER_VERSION_NUM=`get_app_version_num $ZOOKEEPER_VERSION "-" 2`
 ZOOKEEPER_ARCHIVE=apache-${ZOOKEEPER_VERSION}-bin.tar.gz
 ZOOKEEPER_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/zookeeper/$ZOOKEEPER_VERSION/$ZOOKEEPER_ARCHIVE
 ZOOKEEPER_RES_DIR=$RESOURCE_PATH/zookeeper
-ZOOKEEPER_CONF_DIR=$INSTALL_PATH/zookeeper/conf
+ZOOKEEPER_CONF_DIR=$INSTALL_PATH/zookeeper/apache-${ZOOKEEPER_VERSION}-bin/conf
 
 # kafka
 # 支持版本：具体查看下载地址

@@ -4,6 +4,9 @@ source "/vagrant/scripts/common.sh"
 log info "Centos 基本配置" 
 log info "安装 epel-release" 
 yum install -y -q epel-release
+#yum remove -y  -q git
+rpm -ivh https://opensource.wandisco.com/git/wandisco-git-release-7-2.noarch.rpm
+yum install -y -q git
 
 # 设置系统时区
 log info "设置时区" 
@@ -64,7 +67,7 @@ curl -o /usr/package277/hbase-1.6.0-bin.tar.gz -O -L https://mirrors.huaweicloud
 log info "download zookeeper"
 curl -o /usr/package277/apache-zookeeper-3.6.3.tar.gz -O -L https://mirrors.huaweicloud.com/apache/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3.tar.gz
 log info "download scala"
-curl -o /usr/package277/scala-2.10.6.tgz -O -L https://distfiles.macports.org/scala2.11/scala-2.11.11.tgz
+curl -o /usr/package277/scala-2.11.11.tgz -O -L https://downloads.lightbend.com/scala/2.11.11/scala-2.11.11.tgz
 log info "download mysql-connector-java-5.1.47"
 curl -o /usr/package277/mysql-connector-java-5.1.47.jar https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.47/mysql-connector-java-5.1.47.jar
 
