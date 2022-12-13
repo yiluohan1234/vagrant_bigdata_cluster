@@ -67,20 +67,10 @@
 # You might get better performance to enable these options if using native BLAS (see SPARK-21305).
 # - MKL_NUM_THREADS=1        Disable multi-threading of Intel MKL
 # - OPENBLAS_NUM_THREADS=1   Disable multi-threading of OpenBLAS
-export JAVA_HOME=/home/vagrant/apps/java
-export SCALA_HOME=/home/vagrant/apps/scala
-export HADOOP_HOME=/home/vagrant/apps/hadoop
+export SPARK_MASTER_IP=master
+export SCALA_HOME=/usr/scala/scala-2.10.6
+export SPARK_WORKER_MEMORY=8g
+export JAVA_HOME=/usr/java/jdk1.8.0_221
+export HADOOP_HOME=/usr/hadoop/hadoop-2.7.7
 export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
-export YARN_CONF_DIR=$HADOOP_HOME/etc/hadoop
-export SPARK_LAUNCH_WITH_SCALA=0
-export SPARK_WORKER_MEMORY=1g
-export SPARK_DRIVER_MEMORY=1g
-export SPARK_MASTER_IP=192.168.10.101
-export SPARK_LIBRARY_PATH=/home/vagrant/apps/spark/lib
-export SPARK_MASTER_WEBUI_PORT=8080
-export SPARK_WORKER_DIR=/home/vagrant/apps/spark/work
-export SPARK_MASTER_PORT=7077
-export SPARK_WORKER_PORT=7078
-export SPARK_LOG_DIR=/home/vagrant/apps/spark/log
-export SPARK_PID_DIR=/home/vagrant/apps/spark/run
-export SPARK_HISTORY_OPTS="-Dspark.history.ui.port=18080 -Dspark.history.retainedApplications=3 -Dspark.history.fs.logDirectory=hdfs://hdp101:8020/spark-log"
+

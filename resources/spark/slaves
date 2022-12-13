@@ -16,6 +16,5 @@
 #
 
 # A Spark Worker will be started on each of the machines listed below.
-hdp101
-hdp102
-hdp103
+slave1
+slave2
