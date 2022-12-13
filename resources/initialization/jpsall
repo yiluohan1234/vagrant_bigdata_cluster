@@ -2,5 +2,5 @@
 for host in hdp{101..103};
 do 
 	echo "--------------------- $i节点 ---------------------"
-	ssh $host "/home/vagrant/apps/java/bin/jps" | grep -v Jps
+	ssh $host "${JAVA_HOME}/bin/jps" | grep -v Jps
 done
