@@ -1,6 +1,6 @@
 #!/bin/bash
 for host in hdp{101..103};
 do 
-	echo "--------------------- $i节点 ---------------------"
+	echo "--------------------- $host节点 ---------------------"
 	ssh $host "${JAVA_HOME}/bin/jps" | grep -v Jps
 done
