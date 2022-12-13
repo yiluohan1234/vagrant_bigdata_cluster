@@ -61,12 +61,14 @@ dispatch_zookeeper() {
     local app_name=$1
     log info "dispatch ${app_name}" 
     dispatch_app ${app_name}
-    echo "1" >>${INSTALL_PATH}/${app_name}/apache-${ZOOKEEPER_VERSION}/data/myid
+    echo "1" >>${INSTALL_PATH}/${app_name}/apache-${ZOOKEEPER_VERSION}/zkdata/myid
     i=1
     for name in ${HOSTNAME_LIST[@]};do
         current_hostname=`cat /etc/hostname`
-        if [ "$current_hostname" != "$host" ];then
-            ssh $name "echo $i >> ${INSTALL_PATH}/${app_name}/apache-${ZOOKEEPER_VERSION}/data/myid"
+        if [ "$current_hostname" != "$name" ];then
+            ssh $name "mkdir -p ${INSTALL_PATH}/zookeeper/apache-${ZOOKEEPER_VERSION}/zkdata"
+            ssh $name "mkdir -p ${INSTALL_PATH}/zookeeper/apache-${ZOOKEEPER_VERSION}/zkdatalog"
+            ssh $name "echo $i >> ${INSTALL_PATH}/${app_name}/apache-${ZOOKEEPER_VERSION}/zkdata/myid"
         fi
         i=$(( i+1 ))
     done
