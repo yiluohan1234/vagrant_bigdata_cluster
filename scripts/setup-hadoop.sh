@@ -8,9 +8,6 @@ setup_hadoop() {
     local res_dir=$(eval echo \$${app_name_upper}_RES_DIR)
     local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
 
-    log info "creating ${app_name} directories"
-    mkdir -p ${INSTALL_PATH}/hadoop/tmp
-	
     log info "copying over ${app_name} configuration files"
     cp -f ${res_dir}/* ${conf_dir}
 
