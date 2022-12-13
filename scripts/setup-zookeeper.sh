@@ -61,7 +61,7 @@ dispatch_zookeeper() {
     local app_name=$1
     log info "dispatch ${app_name}" 
     dispatch_app ${app_name}
-    echo "1" >>${INSTALL_PATH}/${app_name}/apache-${ZOOKEEPER_VERSION}-bin/zkdata/myid
+    echo "1" >>${INSTALL_PATH}/${app_name}/zookeeper/apache-${ZOOKEEPER_VERSION}-bin/zkdata/myid
     i=1
     for name in ${HOSTNAME_LIST[@]};do
         current_hostname=`cat /etc/hostname`
