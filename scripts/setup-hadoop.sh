@@ -13,6 +13,9 @@ setup_hadoop() {
 	
     log info "copying over ${app_name} configuration files"
     cp -f ${res_dir}/* ${conf_dir}
+
+    sed -i 's@^export JAVA_HOME=.*@export JAVA_HOME=/usr/java/jdk1.8.0_221@' ${conf_dir}/hadoop-env.sh
+    echo "export JAVA_HOME=/usr/java/jdk1.8.0_221" >> ${conf_dir}p/yarn-env.sh
     
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
