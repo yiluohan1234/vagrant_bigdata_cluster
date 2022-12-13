@@ -34,8 +34,8 @@
 #Set the path for where zookeper config dir is
 #export ZOOCFGDIR=
 
-export HADOOP_COMMON_HOME=/home/vagrant/apps/hadoop
-export HADOOP_MAPRED_HOME=/home/vagrant/apps/hadoop
-export HBASE_HOME=/home/vagrant/apps/hbase
-export HIVE_HOME=/home/vagrant/apps/hive
-export ZOOCFGDIR=/home/vagrant/apps/zookeeper/conf
+export HADOOP_COMMON_HOME=/usr/hadoop/hadoop-2.7.7
+export HADOOP_MAPRED_HOME=/usr/hadoop/hadoop-2.7.7
+export HBASE_HOME=/usr/hbase/hbase-1.6.0
+export HIVE_HOME=/usr/hive/apache-hive-2.3.4-bin
+export ZOOCFGDIR=/usr/zookeeper/apache-zookeeper-3.6.3-bin
