@@ -447,6 +447,7 @@ dispatch_app(){
             log info "--------dispatch to $i--------"
             scp -r -q ${INSTALL_PATH}/$app_name $DEFAULT_USER@$i:${INSTALL_PATH}/
             scp -q $PROFILE $DEFAULT_USER@$i:$PROFILE
+            ssh $DEFAULT_USER@$i "source $PROFILE"
         fi
     done
 }
