@@ -22,6 +22,7 @@ setup_zookeeper() {
     zookeeper_dir_name=`get_app_version_num $ZOOKEEPER_VERSION "-" 1`
     mkdir -p ${INSTALL_PATH}/zookeeper/${ZOOKEEPER_DIR_NAME}/zkdata 
     mkdir -p ${INSTALL_PATH}/zookeeper/${ZOOKEEPER_DIR_NAME}/zkdatalog
+    touch ${INSTALL_PATH}/zookeeper/${ZOOKEEPER_DIR_NAME}/zkdata/myid
 
     log info "copying over ${app_name} configuration files"
     cp -f ${res_dir}/* ${conf_dir}
