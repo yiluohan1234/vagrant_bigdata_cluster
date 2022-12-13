@@ -68,7 +68,7 @@ get_app_version_num() {
 # java
 JAVA_ARCHIVE=jdk-8u221-linux-x64.tar.gz
 JAVA_MIRROR_DOWNLOAD=https://repo.huaweicloud.com/java/jdk/8u201-b09/$JAVA_ARCHIVE
-JAVA_HOME=${INSTALL_PATH}/java/jdk1.8.0_221
+JAVA_PATH=${INSTALL_PATH}/java/jdk1.8.0_221
 
 # hadoop
 HADOOP_VERSION_NUM=`get_app_version_num $HADOOP_VERSION "-" 2`
