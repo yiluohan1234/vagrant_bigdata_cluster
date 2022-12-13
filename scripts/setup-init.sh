@@ -18,12 +18,13 @@ install_init(){
     host_list="$host_list"";"
     # 复制初始化程序到init_shell的bin目录
     log info "copy init shell to ${INIT_SHELL_BIN}"
+    jdk_path=${INSTALL_PATH}/java/jdk1.8.0_221
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${INIT_PATH}/`
         sed -i "s@for host in hdp{101..103};@${host_list}@g"  ${INIT_PATH}/xsync
         sed -i "s@for host in hdp{101..103};@${host_list}@g"  ${INIT_PATH}/xcall
         sed -i "s@for host in hdp{101..103};@${host_list}@g"  ${INIT_PATH}/jpsall
-        sed -i "s@/home/vagrant/apps/java/bin/jps@${JAVA_PATH}/bin/jps@g"  ${INIT_PATH}/jpsall
+        sed -i "s@/home/vagrant/apps/java/bin/jps@${jdk_path}/bin/jps@g"  ${INIT_PATH}/jpsall
     fi
 
     cp -f $INIT_PATH/jpsall ${INIT_SHELL_BIN}
