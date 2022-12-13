@@ -13,13 +13,6 @@ setup_hbase() {
     cp ${INSTALL_PATH}/hadoop/etc/hadoop/core-site.xml ${INSTALL_PATH}/hbase/conf/
     cp ${INSTALL_PATH}/hadoop/etc/hadoop/hdfs-site.xml ${INSTALL_PATH}/hbase/conf/
 
-    if [ "${IS_KERBEROS}" != "true" ];then
-        sed -i '55,83d' ${conf_dir}/hbase-site.xml
-    fi
-
-    if [ $INSTALL_PATH != /home/vagrant/apps ];then
-        sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
-    fi
 }
 
 download_hbase() {

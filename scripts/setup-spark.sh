@@ -11,9 +11,8 @@ setup_spark() {
     log info "copying over ${app_name} configuration files"
     # basic
     cp -f ${res_dir}/slaves ${conf_dir}
-    cp -f ${res_dir}/spark-defaults.conf ${conf_dir}
     cp -f ${res_dir}/spark-env.sh ${conf_dir}
-    wget_mysql_connector ${INSTALL_PATH}/spark/jars
+    wget_mysql_connector ${INSTALL_PATH}/spark/$SPARK_VERSION/jars
 
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
