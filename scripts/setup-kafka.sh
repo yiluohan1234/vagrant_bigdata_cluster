@@ -71,14 +71,14 @@ dispatch_kafka() {
         value="PLAINTEXT://$host:9092"
         file_path=${INSTALL_PATH}/${app_name}/${KAFKA_VERSION}/config
         host_list=""
-        for i in ${HOSTNAME_LIST[@]}; do host_list="$host_list,""$i:2181"; done
+        for name in ${HOSTNAME_LIST[@]}; do host_list="$host_list,""$name:2181"; done
         host_list=${host_list:1}"/kafka"
         echo "------modify $i server.properties-------"
         ssh $host "sed -i 's/^broker.id=.*/broker.id='${i}'/' ${file_path}/server.properties"
         ssh $host "sed -i 's@^listeners=.*@listeners='${value}'@' ${file_path}/server.properties"
         ssh $host "sed -i 's@^advertised.listeners=.*@advertised.listeners='${value}'@' ${file_path}/server.properties"
         ssh $host "sed -i 's@^log.dirs=.*@log.dirs='${KAFKA_LOG_DIR}'@' ${file_path}/server.properties"
-        ssh $host "sed -i 's@^zookeeper.connect=.*@zookeeper.connect='${KAFKA_LOG_DIR}'@' ${file_path}/server.properties"
+        ssh $host "sed -i 's@^zookeeper.connect=.*@zookeeper.connect='${host_list}'@' ${file_path}/server.properties"
         i=$(( i+1 ))
     done
 }

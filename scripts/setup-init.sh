@@ -21,6 +21,9 @@ install_init(){
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${INIT_PATH}/`
         sed -i "s@for host in hdp{101..103};@${host_list}@g"  ${INIT_PATH}/xsync
+        sed -i "s@for host in hdp{101..103};@${host_list}@g"  ${INIT_PATH}/xcall
+        sed -i "s@for host in hdp{101..103};@${host_list}@g"  ${INIT_PATH}/jpsall
+        sed -i "s@/home/vagrant/apps/java@${JAVA_HOME}@g"  ${INIT_PATH}/jpsall
     fi
 
     cp $INIT_PATH/jpsall ${INIT_SHELL_BIN}
