@@ -14,9 +14,21 @@ download_scala() {
     else
         installFromRemote ${archive} ${download_url}
     fi
+    mkdir ${INSTALL_PATH}/${app_name}
     mv ${INSTALL_PATH}/"${app_version}" ${INSTALL_PATH}/${app_name}
     chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_name}
-    rm ${DOWNLOAD_PATH}/${archive}
+    # rm ${DOWNLOAD_PATH}/${archive}
+}
+
+setupEnv_scala() {
+    local app_name=$1
+    log info "creating ${app_name} environment variables"
+    # app_path=${INSTALL_PATH}/java
+    app_path=${INSTALL_PATH}/${app_name}/${SCALA_VERSION}
+    echo "# $app_name environment" >> ${PROFILE}
+    echo "export SCALA_HOME=${app_path}" >> ${PROFILE}
+    echo 'export PATH=${SCALA_HOME}/bin:$PATH' >> ${PROFILE}
+    echo -e "\n" >> ${PROFILE}
 }
 
 install_scala() {
@@ -24,12 +36,15 @@ install_scala() {
     if [ ! -d ${INSTALL_PATH}/${app_name} ];then
         log info "setup ${app_name}"
         download_scala ${app_name}
-        setupEnv_app ${app_name}
-        if [ "${IS_VAGRANT}" != "true" ];then
-            dispatch_app ${app_name}
-        fi
-        source ${PROFILE}
+        setupEnv_scala ${app_name}
     fi
+
+    # 主机长度
+    host_name_list_len=${#HOSTNAME_LIST[@]}
+    if [ "${IS_VAGRANT}" != "true" ] && [ ${host_name_list_len} -gt 1 ];then
+        dispatch_app ${app_name}
+    fi
+    source ${PROFILE}
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then
