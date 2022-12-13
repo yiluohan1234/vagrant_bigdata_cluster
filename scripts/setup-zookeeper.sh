@@ -19,31 +19,12 @@ setup_zookeeper() {
     local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
     
     log info "creating $app_name directories"
-    mkdir -p ${INSTALL_PATH}/zookeeper/data 
-    mkdir -p ${INSTALL_PATH}/zookeeper/logs
-    touch ${INSTALL_PATH}/zookeeper/data/myid
+    mkdir -p ${INSTALL_PATH}/zookeeper/apache-${ZOOKEEPER_VERSION}/zkdata 
+    mkdir -p ${INSTALL_PATH}/zookeeper/apache-${ZOOKEEPER_VERSION}/zkdatalog
 
     log info "copying over ${app_name} configuration files"
     cp -f ${res_dir}/* ${conf_dir}
 
-    # log4j.properties
-    log4j_path=${conf_dir}/log4j.properties
-    log_path=${INSTALL_PATH}/zookeeper/logs
-    sed -i 's@^zookeeper.root.logger=INFO, CONSOLE*@zookeeper.root.logger=INFO, CONSOLE, ROLLINGFILE@' ${log4j_path}
-    sed -i 's@^zookeeper.log.dir=.*@zookeeper.log.dir='${log_path}'@' ${log4j_path}
-
-
-    # zkEnv.sh
-    zkenv_path=${INSTALL_PATH}/zookeeper/bin/zkEnv.sh
-    sed -i 's@ZOO_LOG4J_PROP="INFO,CONSOLE"*@ZOO_LOG4J_PROP="INFO,CONSOLE,ROLLINGFILE"@' ${zkenv_path}
-
-    if [ "${IS_VAGRANT}" == "true" ];then
-        echo $MYID >>${INSTALL_PATH}/zookeeper/data/myid
-    fi
-    
-    if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
-        sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${ZOOKEEPER_CONF_DIR}/`
-    fi
 }
 
 download_zookeeper() {
@@ -85,7 +66,7 @@ dispatch_zookeeper() {
     for name in ${HOSTNAME_LIST[@]};do
         current_hostname=`cat /etc/hostname`
         if [ "$current_hostname" != "$host" ];then
-            ssh name "echo $i >> ${INSTALL_PATH}/apache-${ZOOKEEPER_VERSION}/data/myid"
+            ssh $name "echo $i >> ${INSTALL_PATH}/apache-${ZOOKEEPER_VERSION}/data/myid"
         fi
         i=$(( i+1 ))
     done
