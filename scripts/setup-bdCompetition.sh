@@ -65,7 +65,7 @@ curl -o /usr/package277/kafka_2.11-0.10.2.2.tgz -O -L https://mirrors.huaweiclou
 log info "download hbase"
 curl -o /usr/package277/hbase-1.6.0-bin.tar.gz -O -L https://mirrors.huaweicloud.com/apache/hbase/1.6.0/hbase-1.6.0-bin.tar.gz
 log info "download zookeeper"
-curl -o /usr/package277/apache-zookeeper-3.6.3.tar.gz -O -L https://mirrors.huaweicloud.com/apache/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3.tar.gz
+curl -o /usr/package277/apache-zookeeper-3.6.3-bin.tar.gz -O -L https://mirrors.huaweicloud.com/apache/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3-bin.tar.gz
 log info "download scala"
 curl -o /usr/package277/scala-2.11.11.tgz -O -L https://downloads.lightbend.com/scala/2.11.11/scala-2.11.11.tgz
 log info "download mysql-connector-java-5.1.47"

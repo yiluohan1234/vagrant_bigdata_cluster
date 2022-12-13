@@ -41,16 +41,16 @@ download_zookeeper() {
         installFromRemote ${archive} ${download_url}
     fi
     mkdir ${INSTALL_PATH}/${app_name}
-    mv ${INSTALL_PATH}/apache-${app_version} ${INSTALL_PATH}/${app_name}
+    mv ${INSTALL_PATH}/apache-${app_version}-bin ${INSTALL_PATH}/${app_name}
     chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_name}
     # rm ${DOWNLOAD_PATH}/${archive}
 }
 
-setupEnv_spark() {
+setupEnv_zookeeper() {
     local app_name=$1
     log info "creating ${app_name} environment variables"
     # app_path=${INSTALL_PATH}/java
-    app_path=${INSTALL_PATH}/${app_name}/apache-${ZOOKEEPER_VERSION}
+    app_path=${INSTALL_PATH}/${app_name}/apache-${ZOOKEEPER_VERSION}-bin
     echo "# $app_name environment" >> ${PROFILE}
     echo "export ZOOKEEPER_HOME=${app_path}" >> ${PROFILE}
     echo 'export PATH=${ZOOKEEPER_HOME}/bin:$PATH' >> ${PROFILE}
@@ -61,14 +61,14 @@ dispatch_zookeeper() {
     local app_name=$1
     log info "dispatch ${app_name}" 
     dispatch_app ${app_name}
-    echo "1" >>${INSTALL_PATH}/${app_name}/apache-${ZOOKEEPER_VERSION}/zkdata/myid
+    echo "1" >>${INSTALL_PATH}/${app_name}/apache-${ZOOKEEPER_VERSION}-bin/zkdata/myid
     i=1
     for name in ${HOSTNAME_LIST[@]};do
         current_hostname=`cat /etc/hostname`
         if [ "$current_hostname" != "$name" ];then
-            ssh $name "mkdir -p ${INSTALL_PATH}/zookeeper/apache-${ZOOKEEPER_VERSION}/zkdata"
-            ssh $name "mkdir -p ${INSTALL_PATH}/zookeeper/apache-${ZOOKEEPER_VERSION}/zkdatalog"
-            ssh $name "echo $i >> ${INSTALL_PATH}/${app_name}/apache-${ZOOKEEPER_VERSION}/zkdata/myid"
+            ssh $name "mkdir -p ${INSTALL_PATH}/zookeeper/apache-${ZOOKEEPER_VERSION}-bin/zkdata"
+            ssh $name "mkdir -p ${INSTALL_PATH}/zookeeper/apache-${ZOOKEEPER_VERSION}-bin/zkdatalog"
+            ssh $name "echo $i >> ${INSTALL_PATH}/${app_name}/apache-${ZOOKEEPER_VERSION}-bin/zkdata/myid"
         fi
         i=$(( i+1 ))
     done
@@ -80,7 +80,7 @@ install_zookeeper() {
     if [ ! -d ${INSTALL_PATH}/${app_name} ];then
         download_zookeeper ${app_name}
         setup_zookeeper ${app_name}
-        setupEnv_app ${app_name}
+        setupEnv_zookeeper ${app_name}
     fi
 
     # 主机长度
