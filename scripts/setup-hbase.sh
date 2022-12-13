@@ -35,26 +35,38 @@ download_hbase() {
     else
         installFromRemote ${archive} ${download_url}
     fi
+    mkdir ${INSTALL_PATH}/${app_name}
     mv ${INSTALL_PATH}/"${app_version}" ${INSTALL_PATH}/${app_name}
-    rm ${DOWNLOAD_PATH}/${archive}
-    mv ${INSTALL_PATH}/hbase/lib/slf4j-log4j12-1.7.25.jar ${INSTALL_PATH}/hbase/lib/slf4j-log4j12-1.7.25.jar_bak
+    # rm ${DOWNLOAD_PATH}/${archive}
+    # mv ${INSTALL_PATH}/hbase/lib/slf4j-log4j12-1.7.25.jar ${INSTALL_PATH}/hbase/lib/slf4j-log4j12-1.7.25.jar_bak
+}
+
+setupEnv_hbase() {
+    local app_name=$1
+    log info "creating ${app_name} environment variables"
+    # app_path=${INSTALL_PATH}/java
+    app_path=${INSTALL_PATH}/${app_name}/${HBASE_VERSION}
+    echo "# $app_name environment" >> ${PROFILE}
+    echo "export HBASE_HOME=${app_path}" >> ${PROFILE}
+    echo 'export PATH=${HBASE_HOME}/bin:$PATH' >> ${PROFILE}
+    echo -e "\n" >> ${PROFILE}
 }
 
 install_hbase() {
     local app_name="hbase"
+    log info "setup ${app_name}"
     if [ ! -d ${INSTALL_PATH}/${app_name} ];then
-        log info "setup ${app_name}"
-
         download_hbase ${app_name}
         setup_hbase ${app_name}
-        setupEnv_app ${app_name}
-
-        if [ "${IS_VAGRANT}" != "true" ];then
-            dispatch_app ${app_name}
-        fi
-        
-        source ${PROFILE}
+        setupEnv_hbase ${app_name}
     fi
+
+
+    if [ "${IS_VAGRANT}" != "true" ];then
+        dispatch_app ${app_name}
+    fi
+    
+    source ${PROFILE}
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then
