@@ -176,6 +176,7 @@ SQOOP_CONF_DIR=$INSTALL_PATH/sqoop/conf
 # https://mirrors.huaweicloud.com/apache/zookeeper/zookeeper-3.5.7/apache-zookeeper-3.5.7.tar.gz
 ZOOKEEPER_VERSION_NUM=`get_app_version_num $ZOOKEEPER_VERSION "-" 2`
 ZOOKEEPER_ARCHIVE=apache-${ZOOKEEPER_VERSION}-bin.tar.gz
+ZOOKEEPER_DIR_NAME=apache-${ZOOKEEPER_VERSION}-bin
 ZOOKEEPER_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/zookeeper/$ZOOKEEPER_VERSION/$ZOOKEEPER_ARCHIVE
 ZOOKEEPER_RES_DIR=$RESOURCE_PATH/zookeeper
 ZOOKEEPER_CONF_DIR=$INSTALL_PATH/zookeeper/apache-${ZOOKEEPER_VERSION}-bin/conf
