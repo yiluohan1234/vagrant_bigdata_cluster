@@ -6,6 +6,8 @@ bin=`cd "$bin"; pwd`
 DEFAULT_SCRIPTS_DIR="$bin"/
 VBC_SCRIPTS_DIR=${VBC_SCRIPTS_DIR:-$DEFAULT_SCRIPTS_DIR}
 
+. $VBC_SCRIPTS_DIR/setup-init.sh
+. $VBC_SCRIPTS_DIR/setup-hosts.sh
 . $VBC_SCRIPTS_DIR/setup-canal.sh
 . $VBC_SCRIPTS_DIR/setup-es.sh
 . $VBC_SCRIPTS_DIR/setup-flink.sh
