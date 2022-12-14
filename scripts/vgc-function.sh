@@ -1,5 +1,31 @@
 #!/bin/bash
 
+## @description  Check if an array has a given value
+## @audience     public
+## @stability    stable
+## @replaceable  yes
+## @param        element
+## @param        array
+## @returns      0 = yes
+## @returns      1 = no
+function hadoop_array_contains
+{
+  declare element=$1
+  shift
+  declare val
+
+  if [[ "$#" -eq 0 ]]; then
+    return 1
+  fi
+
+  for val in "${@}"; do
+    if [[ "${val}" == "${element}" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
 # 获取app的版本号
 # eg: get_app_version_num $HIVE_VERSION "-" 2
 get_app_version_num() {
@@ -12,59 +38,8 @@ get_app_version_num() {
     fi
 
     app_num=`echo $app_version|cut -d $split -f $field_num`
-    #app_num=`echo $app_version|awk -F $split '{print $2}'`
+
     echo $app_num
-}
-
-# log
-DATETIME=`date "+%F %T"`
-
-success() {
-    printf "\r$DATETIME [ \033[00;32mINFO\033[0m ]%s\n" "$1"
-}
-
-warn() {
-    printf "\r$DATETIME [\033[0;33mWARNING\033[0m]%s\n" "$1"
-}
-
-fail() {
-    printf "\r$DATETIME [ \033[0;31mERROR\033[0m ]%s\n" "$1"
-}
-
-usage() {
-    echo "Usage: ${0##*/} {info|warn|err} MSG"
-}
-
-## @description log
-## @param info/warn/err
-## @param info
-## @eg log info/warn/err "This is a test.."
-log() {
-    if [ $# -lt 2 ]; then
-        log err "Not enough arguments [$#] to log."
-    fi
-
-    __LOG_PRIO="$1"
-    shift
-    __LOG_MSG="$*"
-
-    case "${__LOG_PRIO}" in
-        crit) __LOG_PRIO="CRIT";;
-        err) __LOG_PRIO="ERROR";;
-        warn) __LOG_PRIO="WARNING";;
-        info) __LOG_PRIO="INFO";;
-        debug) __LOG_PRIO="DEBUG";;
-    esac
-
-    if [ "${__LOG_PRIO}" = "INFO" ]; then
-        success " $__LOG_MSG"
-    elif [ "${__LOG_PRIO}" = "WARNING" ]; then
-        warn " $__LOG_MSG"
-    elif [ "${__LOG_PRIO}" = "ERROR" ]; then
-        fail " $__LOG_MSG"
-    else
-       usage
-    fi
 }
 
 ## @description 判断DOWN_PATH下文件是否存在
@@ -183,6 +158,57 @@ wget_mysql_connector(){
     fi
     cp $INSTALL_PATH/$MYSQL_CONNECTOR_VERSION/${MYSQL_CONNECTOR_VERSION}.jar $CP_PATH
     rm -rf $INSTALL_PATH/mysql-connector-java-5.1.49
+}
+
+# log
+DATETIME=`date "+%F %T"`
+
+success() {
+    printf "\r$DATETIME [ \033[00;32mINFO\033[0m ]%s\n" "$1"
+}
+
+warn() {
+    printf "\r$DATETIME [\033[0;33mWARNING\033[0m]%s\n" "$1"
+}
+
+fail() {
+    printf "\r$DATETIME [ \033[0;31mERROR\033[0m ]%s\n" "$1"
+}
+
+usage() {
+    echo "Usage: ${0##*/} {info|warn|err} MSG"
+}
+
+## @description log
+## @param info/warn/err
+## @param info
+## @eg log info/warn/err "This is a test.."
+log() {
+    if [ $# -lt 2 ]; then
+        log err "Not enough arguments [$#] to log."
+    fi
+
+    __LOG_PRIO="$1"
+    shift
+    __LOG_MSG="$*"
+
+    case "${__LOG_PRIO}" in
+        crit) __LOG_PRIO="CRIT";;
+        err) __LOG_PRIO="ERROR";;
+        warn) __LOG_PRIO="WARNING";;
+        info) __LOG_PRIO="INFO";;
+        debug) __LOG_PRIO="DEBUG";;
+    esac
+
+    if [ "${__LOG_PRIO}" = "INFO" ]; then
+        success " $__LOG_MSG"
+    elif [ "${__LOG_PRIO}" = "WARNING" ]; then
+        warn " $__LOG_MSG"
+    elif [ "${__LOG_PRIO}" = "ERROR" ]; then
+        fail " $__LOG_MSG"
+    else
+       usage
+    fi
 }
 
 ## @description 显示apps的版本号
