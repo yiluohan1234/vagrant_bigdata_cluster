@@ -5,8 +5,8 @@ bin=`cd "$bin"; pwd`
 
 DEFAULT_SCRIPTS_DIR="$bin"/
 VGC_SCRIPTS_DIR=${VGC_SCRIPTS_DIR:-$DEFAULT_SCRIPTS_DIR}
-. $VGC_SCRIPTS_DIR/vgc-config.sh
-. $VGC_SCRIPTS_DIR/vgc-function.sh
+. $VGC_SCRIPTS_DIR/vbc-config.sh
+. $VGC_SCRIPTS_DIR/vbc-function.sh
 
 # mysql
 MYSQL_HOST=hdp103
