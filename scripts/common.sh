@@ -104,8 +104,8 @@ SPARK_CONF_DIR=$INSTALL_PATH/spark/$SPARK_VERSION-bin-hadoop${HADOOP_VERSION_NUM
 # scala
 SCALA_VERSION_NUM=`get_app_version_num $SCALA_VERSION "-" 2`
 SCALA_ARCHIVE=${SCALA_VERSION}.tgz
-SCALA_MIRROR_DOWNLOAD=https://distfiles.macports.org/scala${SCALA_VERSION_NUM%.*}/$SCALA_ARCHIVE
-
+# SCALA_MIRROR_DOWNLOAD=https://distfiles.macports.org/scala${SCALA_VERSION_NUM%.*}/$SCALA_ARCHIVE
+SCALA_MIRROR_DOWNLOAD=https://downloads.lightbend.com/scala/${SCALA_VERSION_NUM}/$SCALA_ARCHIVE
 # sqoop
 SQOOP_VERSION_NUM=`get_app_version_num $SQOOP_VERSION "-" 2`
 SQOOP_ARCHIVE=${SQOOP_VERSION}.bin__hadoop-2.6.0.tar.gz
