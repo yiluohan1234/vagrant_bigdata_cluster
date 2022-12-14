@@ -5,7 +5,7 @@ bin=`cd "$bin"; pwd`
 
 DEFAULT_SCRIPTS_DIR="$bin"/
 VGC_SCRIPTS_DIR=${VGC_SCRIPTS_DIR:-$DEFAULT_SCRIPTS_DIR}
-. $VGC_SCRIPTS_DIR/vgc-config.sh
+. $VGC_SCRIPTS_DIR/vbc-config.sh
 
 install_ssh() {
     if [ ! -f ~/.ssh/id_rsa ];then
@@ -29,7 +29,7 @@ install_ssh() {
                 \"yes/no\" { send \"yes\r\"; exp_continue }
                 eof {exit 0;}
             }";
-        echo "========The host IP is: ${ip}, and the password free login is completed ========"
+        echo "========The hostname is: ${HOSTNAME_LIST[$i]}, and the password free login is completed ========"
     done
 }
 
