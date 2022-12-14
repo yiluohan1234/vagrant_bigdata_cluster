@@ -6,6 +6,8 @@ bin=`cd "$bin"; pwd`
 DEFAULT_SCRIPTS_DIR="$bin"/
 VBC_SCRIPTS_DIR=${VBC_SCRIPTS_DIR:-$DEFAULT_SCRIPTS_DIR}
 
+. $VBC_SCRIPTS_DIR/setup-init.sh
+. $VBC_SCRIPTS_DIR/setup-hosts.sh
 . $VBC_SCRIPTS_DIR/setup-canal.sh
 . $VBC_SCRIPTS_DIR/setup-es.sh
 . $VBC_SCRIPTS_DIR/setup-flink.sh
@@ -29,13 +31,15 @@ VBC_SCRIPTS_DIR=${VBC_SCRIPTS_DIR:-$DEFAULT_SCRIPTS_DIR}
 . $VBC_SCRIPTS_DIR/setup-azkaban.sh
 . $VBC_SCRIPTS_DIR/setup-presto.sh
 . $VBC_SCRIPTS_DIR/setup-kylin.sh
-
+. $VBC_SCRIPTS_DIR/setup-ssh.sh
 
 usage()
 {
     case $1 in
         "")
 	    echo "Usage: main.sh command [options]"
+	    echo "      main.sh init"
+	    echo "      main.sh host"
 	    echo "      main.sh canal"
 	    echo "      main.sh es"
 	    echo "      main.sh flink"
@@ -67,6 +71,12 @@ args()
 {
     if [ $# -ne 0 ]; then
 	case $1 in
+		init)
+		    install_init
+		    ;;
+		host)
+		    install_hosts
+		    ;;
 		azkaban)
 		    install_azkaban
 		    ;;
