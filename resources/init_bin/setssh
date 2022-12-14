@@ -1,11 +1,12 @@
 #!/bin/bash
-user_name=$(id -un)
-if [ "$user_name" = "root" -o "$user_name" = "vagrant" ];then
-    # 服务器的密码
-    passwd="vagrant"
-else
-    passwd=$user_name
-fi
+#set -x
+bin=`dirname "${BASH_SOURCE-$0}"`
+bin=`cd "$bin"; pwd`
+
+DEFAULT_SCRIPTS_DIR="$bin"/
+VGC_SCRIPTS_DIR=${VGC_SCRIPTS_DIR:-$DEFAULT_SCRIPTS_DIR}
+. $VGC_SCRIPTS_DIR/vbc-config.sh
+
 install_ssh() {
     if [ ! -f ~/.ssh/id_rsa ];then
         expect -c "
@@ -17,17 +18,21 @@ install_ssh() {
                 \"Enter same passphrase again:\" { send \"\r\" ; exp_continue}
             }";
     fi
-    hostList=$(cat /etc/hosts|grep -vE localhost |grep hdp| awk '{print $2}')
-    for ip in $hostList;do
+    
+    length=${#HOSTNAME_LIST[@]}
+    for ((i=0; i<$length; i++));do
         expect -c "
             set timeout 5;
-            spawn ssh-copy-id -i ${ip};
+            spawn ssh-copy-id -i ${HOSTNAME_LIST[$i]};
             expect {
-                \"*assword\" { send \"${passwd}\r\";exp_continue}
+                \"*assword\" { send \"${PASSWD_LIST[$i]}\r\";exp_continue}
                 \"yes/no\" { send \"yes\r\"; exp_continue }
                 eof {exit 0;}
             }";
-        echo "========主机IP为：${ip}免登录执行完成========"
+        echo "========The hostname is: ${HOSTNAME_LIST[$i]}, and the password free login is completed ========"
     done
 }
-install_ssh
+
+if [ "${IS_VAGRANT}" == "true" ];then
+    install_ssh
+fi

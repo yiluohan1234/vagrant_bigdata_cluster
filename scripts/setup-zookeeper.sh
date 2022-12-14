@@ -68,9 +68,16 @@ dispatch_zookeeper() {
     local app_name=$1
     log info "dispatch ${app_name}" 
     dispatch_app ${app_name}
-    echo "1" >>${INSTALL_PATH}/zookeeper/data/myid
-    ssh hdp102 "echo '2' >> ${INSTALL_PATH}/zookeeper/data/myid"
-    ssh hdp103 "echo '3' >> ${INSTALL_PATH}/zookeeper/data/myid"
+    echo "1" >> ${INSTALL_PATH}/${app_name}/data/myid
+    length=${#HOSTNAME_LIST[@]}
+    for ((i=0; i<$length; i++));do
+        current_hostname=`cat /etc/hostname`
+        if [ "$current_hostname" != "${HOSTNAME_LIST[$i]}" ];then
+            ssh ${HOSTNAME_LIST[$i]} "mkdir -p ${INSTALL_PATH}/${app_name}/${ZOOKEEPER_DIR_NAME}/zkdata"
+            ssh ${HOSTNAME_LIST[$i]} "mkdir -p ${INSTALL_PATH}/${app_name}/${ZOOKEEPER_DIR_NAME}/zkdatalog"
+            ssh ${HOSTNAME_LIST[$i]} "echo $i >> ${INSTALL_PATH}/${app_name}/${ZOOKEEPER_DIR_NAME}/zkdata/myid"
+        fi
+    done
 }
 
 install_zookeeper() {
@@ -80,11 +87,13 @@ install_zookeeper() {
         download_zookeeper ${app_name}
         setup_zookeeper ${app_name}
         setupEnv_app ${app_name}
-        if [ "${IS_VAGRANT}" != "true" ];then
-            dispatch_zookeeper ${app_name}
-        fi
-        source ${PROFILE}
+        
     fi
+
+    if [ "${IS_VAGRANT}" != "true" ];then
+        dispatch_zookeeper ${app_name}
+    fi
+    source ${PROFILE}
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then
