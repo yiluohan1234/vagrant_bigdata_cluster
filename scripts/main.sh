@@ -4,31 +4,31 @@ bin=`dirname "${BASH_SOURCE-$0}"`
 bin=`cd "$bin"; pwd`
 
 DEFAULT_SCRIPTS_DIR="$bin"/
-VGC_SCRIPTS_DIR=${VGC_SCRIPTS_DIR:-$DEFAULT_SCRIPTS_DIR}
+VBC_SCRIPTS_DIR=${VBC_SCRIPTS_DIR:-$DEFAULT_SCRIPTS_DIR}
 
-. $VGC_SCRIPTS_DIR/setup-canal.sh
-. $VGC_SCRIPTS_DIR/setup-es.sh
-. $VGC_SCRIPTS_DIR/setup-flink.sh
-. $VGC_SCRIPTS_DIR/setup-flume.sh
-. $VGC_SCRIPTS_DIR/setup-hadoop.sh
-. $VGC_SCRIPTS_DIR/setup-hbase.sh
-. $VGC_SCRIPTS_DIR/setup-hive.sh
-. $VGC_SCRIPTS_DIR/setup-java.sh
-. $VGC_SCRIPTS_DIR/setup-kafka.sh
-. $VGC_SCRIPTS_DIR/setup-kibana.sh
-. $VGC_SCRIPTS_DIR/setup-maven.sh
-. $VGC_SCRIPTS_DIR/setup-maxwell.sh
-. $VGC_SCRIPTS_DIR/setup-mysql.sh
-. $VGC_SCRIPTS_DIR/setup-nginx.sh
-. $VGC_SCRIPTS_DIR/setup-phoenix.sh
-. $VGC_SCRIPTS_DIR/setup-redis.sh
-. $VGC_SCRIPTS_DIR/setup-scala.sh
-. $VGC_SCRIPTS_DIR/setup-spark.sh
-. $VGC_SCRIPTS_DIR/setup-sqoop.sh
-. $VGC_SCRIPTS_DIR/setup-zookeeper.sh
-. $VGC_SCRIPTS_DIR/setup-azkaban.sh
-. $VGC_SCRIPTS_DIR/setup-presto.sh
-. $VGC_SCRIPTS_DIR/setup-kylin.sh
+. $VBC_SCRIPTS_DIR/setup-canal.sh
+. $VBC_SCRIPTS_DIR/setup-es.sh
+. $VBC_SCRIPTS_DIR/setup-flink.sh
+. $VBC_SCRIPTS_DIR/setup-flume.sh
+. $VBC_SCRIPTS_DIR/setup-hadoop.sh
+. $VBC_SCRIPTS_DIR/setup-hbase.sh
+. $VBC_SCRIPTS_DIR/setup-hive.sh
+. $VBC_SCRIPTS_DIR/setup-java.sh
+. $VBC_SCRIPTS_DIR/setup-kafka.sh
+. $VBC_SCRIPTS_DIR/setup-kibana.sh
+. $VBC_SCRIPTS_DIR/setup-maven.sh
+. $VBC_SCRIPTS_DIR/setup-maxwell.sh
+. $VBC_SCRIPTS_DIR/setup-mysql.sh
+. $VBC_SCRIPTS_DIR/setup-nginx.sh
+. $VBC_SCRIPTS_DIR/setup-phoenix.sh
+. $VBC_SCRIPTS_DIR/setup-redis.sh
+. $VBC_SCRIPTS_DIR/setup-scala.sh
+. $VBC_SCRIPTS_DIR/setup-spark.sh
+. $VBC_SCRIPTS_DIR/setup-sqoop.sh
+. $VBC_SCRIPTS_DIR/setup-zookeeper.sh
+. $VBC_SCRIPTS_DIR/setup-azkaban.sh
+. $VBC_SCRIPTS_DIR/setup-presto.sh
+. $VBC_SCRIPTS_DIR/setup-kylin.sh
 
 
 usage()
