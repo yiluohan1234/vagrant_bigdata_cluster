@@ -1,0 +1,6 @@
+#!/bin/bash
+for i in hdp101 hdp102 hdp103
+do 
+	echo "--------------------- $i节点 ---------------------"
+	ssh $i "/home/vagrant/apps/java/bin/jps" | grep -v Jps
+done

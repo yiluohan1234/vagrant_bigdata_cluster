@@ -1,0 +1,831 @@
+#!/bin/bash
+INSTALL_PATH=/home/vagrant/apps
+
+check_process(){
+    pid=$(ps -ef 2>/dev/null | grep -v grep | grep -i $1 | awk '{print $2}')
+    ppid=$(netstat -nltp 2>/dev/null | grep $2 | awk '{print $7}' | cut -d '/' -f 1)
+    echo $pid
+    [[ "$pid" =~ "$ppid" ]] && [ "$ppid" ] && return 0 || return 1
+}
+zk(){
+    usage="Usage: $0 (start|stop|status)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            for i in {"hdp101","hdp102","hdp103"};
+            do
+                echo "-----$1 $i zookeeper-------"
+                ssh $i "source /etc/profile;$INSTALL_PATH/zookeeper/bin/zkServer.sh start"
+            done
+            ;;
+        stop)
+            for i in {"hdp101","hdp102","hdp103"};
+            do
+                echo "------$1 $i zookeeper-------"
+                ssh $i "source /etc/profile;$INSTALL_PATH/zookeeper/bin/zkServer.sh stop"
+            done
+            ;;
+        status)
+            for i in {"hdp101","hdp102","hdp103"};
+            do
+                echo "------$i status-------"
+                ssh $i "source /etc/profile;$INSTALL_PATH/zookeeper/bin/zkServer.sh status"
+            done
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+#一键启动集群
+kafka(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            SIGNAL=${SIGNAL:-TERM}
+            PIDS=$(ps ax | grep java | grep -i QuorumPeerMain | grep -v grep | awk '{print $1}')
+
+            if [ -z "$PIDS" ]; then
+                echo "Success to start zookeeper."
+                zk start
+                echo "-----$1 $i start-------"
+            else
+                echo "Zookeeper has been started"
+            fi
+            for i in {"hdp101","hdp102","hdp103"};
+            do
+                echo "-----$1 $i kafka-------"
+                ssh $i "source /etc/profile;$INSTALL_PATH/kafka/bin/kafka-server-start.sh -daemon $INSTALL_PATH/kafka/config/server.properties"
+            done
+            ;;
+        stop)
+            for j in {"hdp101","hdp102","hdp103"};
+            do
+                echo "-----$1 $j kafka-------"
+                ssh $j  "kill -9 \$(ps ax |grep -i 'Kafka'| grep java| grep -v grep| awk '{print \$1}')"
+            done
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+dfs(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            ssh hdp101 "$INSTALL_PATH/hadoop/sbin/start-dfs.sh"
+            ;;
+        stop)
+            ssh hdp101 "$INSTALL_PATH/hadoop/sbin/stop-dfs.sh"
+            ;;
+        format)
+            ssh hdp101 "$INSTALL_PATH/hadoop/bin/hdfs namenode -format"
+            ;;
+        restart)
+            dfs stop
+	    dfs start
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+yarn(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            ssh hdp102 "$INSTALL_PATH/hadoop/sbin/start-yarn.sh"
+            ;;
+        stop)
+            ssh hdp102 "$INSTALL_PATH/hadoop/sbin/stop-yarn.sh"
+            ;;
+        restart)
+            yarn stop
+	    yarn start
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+hadoop(){
+    usage="Usage: $0 (start|stop|format)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            echo " --------------- 启动 hdfs ---------------"
+            ssh hdp101 "$INSTALL_PATH/hadoop/sbin/start-dfs.sh"
+            echo " --------------- 启动 yarn ---------------"
+            ssh hdp102 "$INSTALL_PATH/hadoop/sbin/start-yarn.sh"
+            #echo " --------------- 启动 historyserver ---------------"
+            #ssh hdp101 "$INSTALL_PATH/hadoop/bin/mapred --daemon start historyserver"
+            ;;
+        stop)
+            #echo " --------------- 关闭 historyserver ---------------"
+            #ssh hdp101 "$INSTALL_PATH/hadoop/bin/mapred --daemon stop historyserver"
+            echo " --------------- 关闭 yarn ---------------"
+            ssh hdp102 "$INSTALL_PATH/hadoop/sbin/stop-yarn.sh"
+            echo " --------------- 关闭 hdfs ---------------"
+            ssh hdp101 "$INSTALL_PATH/hadoop/sbin/stop-dfs.sh"
+            ;;
+        restart)
+            hadoop stop
+            hadoop start
+            ;;
+        format)
+            ssh hdp101 "$INSTALL_PATH/hadoop/bin/hdfs namenode -format"
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+spark(){
+    usage="Usage(spark): $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            ssh hdp101 "$INSTALL_PATH/spark/sbin/start-all.sh"
+            ;;
+        stop)
+            ssh hdp101 "$INSTALL_PATH/spark/sbin/stop-all.sh"
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+flink(){
+    usage="Usage(flink): $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            ssh hdp101 "$INSTALL_PATH/flink/bin/start-cluster.sh"
+            ;;
+        stop)
+            ssh hdp101 "$INSTALL_PATH/flink/bin/stop-cluster.sh"
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+hbase(){
+    usage="Usage(hbase): $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            SIGNAL=${SIGNAL:-TERM}
+            PIDS=$(ps ax | grep java | grep -i QuorumPeerMain | grep -v grep | awk '{print $1}')
+
+            if [ -z "$PIDS" ]; then
+                echo "Success to start zookeeper."
+                zk start
+                echo "-----$1 $i start-------"
+            else
+                echo "Zookeeper has been started"
+            fi
+            ssh hdp101 "$INSTALL_PATH/hbase/bin/start-hbase.sh"
+            ;;
+        stop)
+            ssh hdp101 "$INSTALL_PATH/hbase/bin/stop-hbase.sh"
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+kibana(){
+    USAGE="Usage: $0 (start|stop|status)"
+    PIDFILE=$INSTALL_PATH/kibana/kibana.pid
+    LOGFILE=kibana-console_`date '+%Y-%m-%d'`.log
+
+    case $1 in
+        start)
+            echo "Staring kibana..."
+            nohup ${INSTALL_PATH}/kibana/bin/kibana > ${INSTALL_PATH}/kibana/logs/$LOGFILE 2>&1 &
+            echo $! > $PIDFILE
+            ;;
+        stop)
+            if [ -f "$PIDFILE" ] ; then
+                echo "Stoping kibana ..."
+                kill `cat $PIDFILE`
+                sleep 1
+                rm -rf $PIDFILE
+                echo "Stop kibana success"
+            else
+                echo "kibana is not running"
+                exit 0
+            fi
+            ;;
+        status)
+            if [ -f "$PIDFILE" ] ; then
+                pid=`cat $PIDFILE`
+                if [[ pid -gt 0 ]]
+                then
+                    echo "[$(date '+%Y-%m-%d %T')] kibana is running.( pid:$pid )"
+                else
+                    echo "[$(date '+%Y-%m-%d %T')] kibana is not running"
+                fi
+            else
+                echo "Kibana is not running"
+            fi
+            ;;
+        *)
+            echo $USAGE
+            exit 1
+            ;;
+    esac
+}
+
+elasticsearch(){
+    usage="Usage: $0 (start|stop|restart)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            for i in {"hdp101","hdp102","hdp103"};
+            do
+                echo "-----$1 $i elasticsearch-------"
+                ssh $i "source /etc/profile;$INSTALL_PATH/elasticsearch/bin/elasticsearch -d -p pid"
+            done
+            ;;
+        stop)
+            for j in {"hdp101","hdp102","hdp103"};
+            do
+                echo "-----$1 $j elasticsearch-------"
+                ssh $j  "kill -9 \$(ps ax |grep -i 'elasticsearch'| grep java| grep -v grep| awk '{print \$1}')"
+            done
+            ;;
+        restart)
+            elasticsearch stop
+            elasticsearch start
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+solr(){
+    usage="Usage: $0 (start|stop|restart)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            for i in {"hdp101","hdp102","hdp103"};
+            do
+                echo "-----$1 $i solr-------"
+                ssh $i "source /etc/profile;$INSTALL_PATH/solr/bin/solr start"
+            done
+            ;;
+        stop)
+            for j in {"hdp101","hdp102","hdp103"};
+            do
+                echo "-----$1 $i solr-------"
+                ssh $i "source /etc/profile;$INSTALL_PATH/solr/bin/solr stop"
+            done
+            ;;
+        restart)
+            solr stop
+            solr start
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+redis(){
+    #redis服务器监听的端口
+    REDISPORT=6379
+
+    #服务端所处位置
+    EXEC=${INSTALL_PATH}/redis/bin/redis-server
+
+    #客户端位置
+    CLIEXEC=${INSTALL_PATH}/redis/bin/redis-cli
+
+    #redis的PID文件位置，需要修改
+    PIDFILE=${INSTALL_PATH}/redis/run/redis_${REDISPORT}.pid
+
+    #redis的配置文件位置，需将${REDISPORT}修改为文件名
+    CONF="${INSTALL_PATH}/redis/conf/redis.conf"
+
+    case "$1" in
+        start)
+            if [ -f $PIDFILE ]
+            then
+                echo "$PIDFILE exists, process is already running or crashed"
+            else
+                echo "Starting Redis server..."
+                $EXEC $CONF
+            fi
+            ;;
+        stop)
+            if [ ! -f $PIDFILE ]
+            then
+                echo "$PIDFILE does not exist, process is not running"
+            else
+                PID=$(cat $PIDFILE)
+                echo "Stopping ..."
+                $CLIEXEC -p $REDISPORT shutdown
+                while [ -x /proc/${PID} ]
+                do
+                    echo "Waiting for Redis to shutdown ..."
+                    sleep 1
+                done
+                echo "Redis stopped"
+            fi
+            ;;
+        restart|force-reload)
+            ${0} stop
+            ${0} start
+            ;;
+        *)
+            echo "Usage: /etc/init.d/redis {start|stop|restart|force-reload}"
+            ;;
+    esac
+}
+
+spark_logger(){
+    usage="Usage: $0 (start|stop|restart)"
+    local spark_logger_dir=/opt/module/rt_gmall
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            for i in {"hdp101","hdp102","hdp103"};
+            do
+                echo "-----$1 $i rt_logger-------"
+                ssh $i "nohup $INSTALL_PATH/java/bin/java -Xms32m -Xmx64m -jar ${spark_logger_dir}/rt_logger/gmall2021-logger-0.0.1-SNAPSHOT.jar > /dev/null 2>&1 &"
+                if [ $i == "hdp101" ];then
+                    echo "============start NGINX============"
+                    $INSTALL_PATH/nginx/sbin/nginx
+                fi
+            done
+            ;;
+        stop)
+            for j in {"hdp101","hdp102","hdp103"};
+            do
+                echo "-----$1 $j rt_logger-------"
+                ssh $j  "kill -9 \$(ps -ef|grep gmall2021-logger-0.0.1-SNAPSHOT.jar| grep -v grep| awk '{print \$2}')"
+                if [ $j == "hdp101" ];then
+                    echo "============NGINX============"
+                    $INSTALL_PATH/nginx/sbin/nginx -s stop
+                fi
+            done
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+flink_logger(){
+    usage="Usage: $0 (start|stop|restart)"
+    local flink_logger_dir=/opt/module/rt_gmall
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            for i in {"hdp101","hdp102","hdp103"};
+            do
+                echo "-----$1 $i rt_logger-------"
+                ssh $i "nohup $INSTALL_PATH/java/bin/java -Xms32m -Xmx64m -jar ${flink_logger_dir}/flink_logger/gmall-logger.jar > /dev/null 2>&1 &"
+                if [ $i == "hdp101" ];then
+                    echo "============start NGINX============"
+                    $INSTALL_PATH/nginx/sbin/nginx
+                fi
+            done
+            #echo "============start NGINX============"
+            #$INSTALL_PATH/nginx/sbin/nginx
+            ;;
+        stop)
+            #echo "============NGINX============"
+            #nginx -s stop
+            for j in {"hdp101","hdp102","hdp103"};
+            do
+                echo "-----$1 $j rt_logger-------"
+                ssh $j  "kill -9 \$(ps -ef|grep gmall-logger.jar| grep -v grep| awk '{print \$2}')"
+                if [ $j == "hdp101" ];then
+                    echo "============NGINX============"
+                    $INSTALL_PATH/nginx/sbin/nginx -s stop
+                fi
+            done
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+canal(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            sh $INSTALL_PATH/canal/bin/startup.sh
+            ;;
+        stop)
+            sh $INSTALL_PATH/canal/bin/stop.sh
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+Maxwell(){
+    USAGE="Usage: $0 (start|stop|status)"
+    PIDFILE=$INSTALL_PATH/maxwell/maxwell.pid
+
+    case $1 in
+        start)
+            echo "Staring Maxwell ..."
+            nohup ${INSTALL_PATH}/maxwell/bin/maxwell --config ${INSTALL_PATH}/maxwell/config.properties > /dev/null 2>&1 &
+            echo $! > $PIDFILE
+            ;;
+        stop)
+            if [ -f "$PIDFILE" ] ; then
+                echo "Stoping Maxwell ..."
+                kill `cat $PIDFILE`
+                sleep 1
+                rm -rf $PIDFILE
+                echo "Stop Maxwell success"
+            else
+                echo "Maxwell is not running"
+                exit 0
+            fi
+            ;;
+        status)
+            if [ -f "$PIDFILE" ] ; then
+                pid=`cat $PIDFILE`
+                if [[ pid -gt 0 ]]
+                then
+                    echo "[$(date '+%Y-%m-%d %T')] Maxwell is running.( pid:$pid )"
+                else
+                    echo "[$(date '+%Y-%m-%d %T')] Maxwell is not running"
+                fi
+            else
+                echo "Maxwell is not running"
+            fi
+            ;;
+        *)
+            echo $USAGE
+            exit 1
+            ;;
+    esac
+}
+
+hive(){
+    USAGE="Usage: $0 (start|stop|status)"
+    HIVE_LOG_DIR=$INSTALL_PATH/hive/logs
+
+    case $1 in
+        start)
+            metapid=$(check_process HiveMetastore 9083)
+            cmd="nohup hive --service metastore >$HIVE_LOG_DIR/metastore.log 2>&1 &"
+            cmd=$cmd" sleep 4; hdfs dfsadmin -safemode wait >/dev/null 2>&1"
+            [ -z "$metapid" ] && eval $cmd || echo "Metastroe服务已启动"
+            server2pid=$(check_process HiveServer2 10000)
+            cmd="nohup hive --service hiveserver2 >$HIVE_LOG_DIR/hiveServer2.log 2>&1 &"
+            [ -z "$server2pid" ] && eval $cmd || echo "HiveServer2服务已启动"
+            ;;
+        stop)
+            metapid=$(check_process HiveMetastore 9083)
+            [ "$metapid" ] && kill $metapid || echo "Metastore服务未启动"
+            server2pid=$(check_process HiveServer2 10000)
+            [ "$server2pid" ] && kill $server2pid || echo "HiveServer2服务未启动"
+            ;;
+        status)
+            check_process HiveMetastore 9083 >/dev/null && echo "Metastore服务运行正常" || echo "Metastore服务运行异常"
+            check_process HiveServer2 10000 >/dev/null && echo "HiveServer2服务运行正常" || echo "HiveServer2服务运行异常"
+            ;;
+        "restart")
+            hive stop
+            sleep 2
+            hive start
+            ;;
+        *)
+            echo $USAGE
+            exit 1
+            ;;
+    esac
+}
+
+azkaban(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            for i in {"hdp101","hdp102","hdp103"};
+            do
+                echo "============ start $i azkaban-exec-server ============"
+                ssh $i "source /etc/profile;cd $INSTALL_PATH/azkaban/exec-server/;bin/start-exec.sh"
+                sleep 10s
+                ssh $i "source /etc/profile;cd $INSTALL_PATH/azkaban/exec-server/;curl -G \"$i:\$(<./executor.port)/executor?action=activate\" && echo"
+            done
+            echo "============ start hdp101 azkaban-web-server ============"
+            ssh hdp101 "source /etc/profile;cd $INSTALL_PATH/azkaban/web-server/;bin/start-web.sh"
+            ;;
+        stop)
+            echo "============ stop hdp101 azkaban-web-server ============"
+            ssh hdp101 "source /etc/profile;cd $INSTALL_PATH/azkaban/web-server/;bin/shutdown-web.sh"
+            for j in {"hdp101","hdp102","hdp103"};
+            do
+                echo "============ stop $j azkaban-exec-server ============"
+                ssh $j  "source /etc/profile;cd $INSTALL_PATH/azkaban/exec-server/;bin/shutdown-exec.sh"
+            done
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+presto(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            for i in {"hdp101","hdp102","hdp103"};
+            do
+                echo "============ start $i presto-server ============"
+                ssh $i "source /etc/profile;cd $INSTALL_PATH/presto;bin/launcher start"
+            done
+            ;;
+        stop)
+            for j in {"hdp101","hdp102","hdp103"};
+            do
+                echo "============ stop $j presto-server ============"
+                ssh $j  "source /etc/profile;cd $INSTALL_PATH/presto;bin/launcher stop"
+            done
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+kylin(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            echo "============ start $i kylin ============"
+            ssh hdp101 "source /etc/profile;cd $INSTALL_PATH/kylin;bin/kylin.sh start"
+            ;;
+        stop)
+            echo "============ stop $j kylin ============"
+            ssh hdp101  "source /etc/profile;cd $INSTALL_PATH/kylin/;bin/kylin.sh stop"
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+atlas(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            echo "============ start $i atlas ============"
+            ssh hdp101 "source /etc/profile;$INSTALL_PATH/atlas/bin/atlas_start.py"
+            ;;
+        stop)
+            echo "============ stop $j atlas ============"
+            ssh hdp101  "source /etc/profile;$INSTALL_PATH/atlas/bin/atlas_stop.py"
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+ranger(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            echo "============ start $i atlas ============"
+            ssh hdp101 "source /etc/profile;ranger-admin start"
+            ssh hdp101 "source /etc/profile;ranger-usersync start"
+            ;;
+        stop)
+            echo "============ stop $j atlas ============"
+            ssh hdp101  "source /etc/profile;ranger-admin stop"
+            ssh hdp101  "source /etc/profile;ranger-usersync stop"
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+superset(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            echo "start superset..."
+            source ~/.bashrc
+            superset status >/dev/null 2>&1
+            if [[ $? -eq 0 ]]; then
+                conda activate superset; gunicorn --workers 5 --timeout 120 --bind hdp101:8787 --daemon 'superset.app:create_app()'
+            else
+                echo "superset正在运行"
+            fi
+            ;;
+        restart)
+            superset stop
+            superset start
+            ;;
+        stop)
+            echo "stop superset..."
+            superset status >/dev/null 2>&1
+            if [[ $? -eq 0 ]]; then
+                echo "superset未在运行"
+            else
+                ps -ef | awk '/gunicorn/ && !/awk/{print $2}' | xargs kill -9
+            fi
+            ;;
+        status)
+            result=`ps -ef | awk '/gunicorn/ && !/awk/{print $2}' | wc -l`
+            if [[ $result -eq 0 ]]; then
+                echo "superset未在运行"
+                return 0
+            else
+                echo "superset正在运行"
+                return 1
+            fi
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+args()
+{
+    usage="Usage: $0 (dfs|yarn|zk|kafka|spark|flink|hbase|start|stop)"
+
+    if [ $# -lt 2 ]; then
+        echo $usage
+        exit 1
+    fi
+
+    case $1 in
+	  dfs)
+		dfs $2
+		;;
+	  yarn)
+		yarn $2
+		;;
+	  hdp)
+		hadoop $2
+		;;
+	  spark)
+		spark $2
+		;;
+	  zookeeper)
+		zk $2
+		;;
+	  flink)
+		flink $2
+		;;
+	  hbase)
+		hbase $2
+		;;
+	  kafka)
+		kafka $2
+		;;
+	  kibana)
+		kibana $2
+		;;
+	  elasticsearch)
+		elasticsearch $2
+		;;
+	  redis)
+		redis $2
+		;;
+	  logger)
+		flink_logger $2
+		;;
+	  hive)
+		hive $2
+		;;
+	  maxwell)
+		Maxwell $2
+		;;
+	  canal)
+		canal $2
+		;;
+	  azkaban)
+		azkaban $2
+		;;
+	  superset)
+		superset $2
+		;;
+	  presto)
+		presto $2
+		;;
+	  kylin)
+		kylin $2
+		;;
+	  solr)
+		solr $2
+		;;
+	  atlas)
+		atlas $2
+		;;
+	  ranger)
+		ranger $2
+		;;
+	  *)
+		echo $usage
+		;;
+    esac
+}
+args $@
+
