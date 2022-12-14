@@ -27,4 +27,7 @@ install_ssh() {
         echo "========The hostname is: ${HOSTNAME_LIST[$i]}, and the password free login is completed ========"
     done
 }
-install_ssh
+
+if [ "${IS_VAGRANT}" == "true" ];then
+    install_ssh
+fi

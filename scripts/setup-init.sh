@@ -54,10 +54,6 @@ install_init(){
     chmod -R 755 ${INSTALL_PATH}
     chown -R ${DEFAULT_USER}:${DEFAULT_GROUP} ${INSTALL_PATH}
 
-    # 生成免密登录
-    log info "生成免密登录"
-    setssh
-
     # 统一缩进为4
     echo "set tabstop=4" >> ${PROFILE}
     echo "set softtabstop=4" >> ${PROFILE}

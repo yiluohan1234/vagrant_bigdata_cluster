@@ -31,7 +31,7 @@ VBC_SCRIPTS_DIR=${VBC_SCRIPTS_DIR:-$DEFAULT_SCRIPTS_DIR}
 . $VBC_SCRIPTS_DIR/setup-azkaban.sh
 . $VBC_SCRIPTS_DIR/setup-presto.sh
 . $VBC_SCRIPTS_DIR/setup-kylin.sh
-
+. $VBC_SCRIPTS_DIR/setup-ssh.sh
 
 usage()
 {
