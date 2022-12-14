@@ -1,30 +1,34 @@
 #!/bin/bash
 #set -x
-CUR=$(cd `dirname 0`;pwd)
-. $CUR/setup-canal.sh
-. $CUR/setup-es.sh
-. $CUR/setup-flink.sh
-. $CUR/setup-flume.sh
-. $CUR/setup-hadoop.sh
-. $CUR/setup-hbase.sh
-. $CUR/setup-hive.sh
-. $CUR/setup-java.sh
-. $CUR/setup-kafka.sh
-. $CUR/setup-kibana.sh
-. $CUR/setup-maven.sh
-. $CUR/setup-maxwell.sh
-. $CUR/setup-mysql.sh
-. $CUR/setup-nginx.sh
-. $CUR/setup-phoenix.sh
-. $CUR/setup-redis.sh
-. $CUR/setup-scala.sh
-. $CUR/setup-spark.sh
-. $CUR/setup-sqoop.sh
-. $CUR/setup-zookeeper.sh
-. $CUR/setup-azkaban.sh
-. $CUR/setup-presto.sh
-. $CUR/setup-kylin.sh
-#. $CUR/common.sh
+bin=`dirname "${BASH_SOURCE-$0}"`
+bin=`cd "$bin"; pwd`
+
+DEFAULT_SCRIPTS_DIR="$bin"/
+VGC_SCRIPTS_DIR=${VGC_SCRIPTS_DIR:-$DEFAULT_SCRIPTS_DIR}
+
+. $VGC_SCRIPTS_DIR/setup-canal.sh
+. $VGC_SCRIPTS_DIR/setup-es.sh
+. $VGC_SCRIPTS_DIR/setup-flink.sh
+. $VGC_SCRIPTS_DIR/setup-flume.sh
+. $VGC_SCRIPTS_DIR/setup-hadoop.sh
+. $VGC_SCRIPTS_DIR/setup-hbase.sh
+. $VGC_SCRIPTS_DIR/setup-hive.sh
+. $VGC_SCRIPTS_DIR/setup-java.sh
+. $VGC_SCRIPTS_DIR/setup-kafka.sh
+. $VGC_SCRIPTS_DIR/setup-kibana.sh
+. $VGC_SCRIPTS_DIR/setup-maven.sh
+. $VGC_SCRIPTS_DIR/setup-maxwell.sh
+. $VGC_SCRIPTS_DIR/setup-mysql.sh
+. $VGC_SCRIPTS_DIR/setup-nginx.sh
+. $VGC_SCRIPTS_DIR/setup-phoenix.sh
+. $VGC_SCRIPTS_DIR/setup-redis.sh
+. $VGC_SCRIPTS_DIR/setup-scala.sh
+. $VGC_SCRIPTS_DIR/setup-spark.sh
+. $VGC_SCRIPTS_DIR/setup-sqoop.sh
+. $VGC_SCRIPTS_DIR/setup-zookeeper.sh
+. $VGC_SCRIPTS_DIR/setup-azkaban.sh
+. $VGC_SCRIPTS_DIR/setup-presto.sh
+. $VGC_SCRIPTS_DIR/setup-kylin.sh
 
 
 usage()
