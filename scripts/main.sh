@@ -36,6 +36,8 @@ usage()
     case $1 in
         "")
 	    echo "Usage: main.sh command [options]"
+	    echo "      main.sh init"
+	    echo "      main.sh host"
 	    echo "      main.sh canal"
 	    echo "      main.sh es"
 	    echo "      main.sh flink"
@@ -67,6 +69,12 @@ args()
 {
     if [ $# -ne 0 ]; then
 	case $1 in
+		init)
+		    install_init
+		    ;;
+		host)
+		    install_hosts
+		    ;;
 		azkaban)
 		    install_azkaban
 		    ;;
