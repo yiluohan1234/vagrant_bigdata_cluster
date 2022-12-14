@@ -1,11 +1,6 @@
 #!/bin/bash
 #set -x
-bin=`dirname "${BASH_SOURCE-$0}"`
-bin=`cd "$bin"; pwd`
-
-DEFAULT_SCRIPTS_DIR="$bin"/
-VGC_SCRIPTS_DIR=${VGC_SCRIPTS_DIR:-$DEFAULT_SCRIPTS_DIR}
-. $VGC_SCRIPTS_DIR/vbc-config.sh
+source "/vagrant/scripts/vbc-config.sh"
 
 install_ssh() {
     if [ ! -f ~/.ssh/id_rsa ];then
