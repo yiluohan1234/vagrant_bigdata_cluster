@@ -1,7 +1,8 @@
 #!/bin/bash
 #set -x
-source "/vagrant/scripts/common.sh"
-
+if [ -d /vagrant/scripts ];then
+    source "/vagrant/scripts/common.sh"
+fi
 
 setup_presto() {
     local app_name=$1
@@ -28,7 +29,7 @@ setup_presto() {
         node_file_path=${INSTALL_PATH}/${app_name}/etc/node.properties
         config_file_path=${INSTALL_PATH}/${app_name}/etc/config.properties
         
-        if [ "$hostname" != "hdp101" ];then
+        if [ "$hostname" != ${HOSTNAME_LIST[1]} ];then
             sed -i 's@^node.id=.*@node.id=ffffffff-ffff-ffff-ffff-fffffffffff'${ip_end}'@' ${node_file_path}
             sed -i 's@coordinator=true@coordinator=false@' ${config_file_path}
             sed -i '2d' ${config_file_path}
@@ -42,38 +43,21 @@ setup_presto() {
     fi
 }
 
-download_presto() {
-    local app_name=$1
-    local app_name_upper=`get_string_upper ${app_name}`
-    local app_version=$(eval echo \$${app_name_upper}_VERSION)
-    local archive=$(eval echo \$${app_name_upper}_ARCHIVE)
-    local download_url=$(eval echo \$${app_name_upper}_MIRROR_DOWNLOAD)
-
-    log info "install ${app_name}"
-    if resourceExists ${archive}; then
-        installFromLocal ${archive}
-    else
-        installFromRemote ${archive} ${download_url}
-    fi
-    mv ${INSTALL_PATH}/"${app_version}" ${INSTALL_PATH}/${app_name}
-    chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_name}
-    rm ${DOWNLOAD_PATH}/${archive}
-}
-
 dispatch_presto() {
     local app_name=$1
     dispatch_app ${app_name}
-    for i in {"hdp102","hdp103"};
+    for i in ${HOSTNAME_LIST[@]};
     do
-        node_name=$i
+        current_hostname=`cat /etc/hostname`
         ip=`cat /etc/hosts |grep $i|awk '{print $1}'`
         ip_end=${ip##*.} 
         node_file_path=${INSTALL_PATH}/${app_name}/etc/node.properties
         config_file_path=${INSTALL_PATH}/${app_name}/etc/config.properties
-
-        ssh $i "sed -i 's@^node.id=.*@node.id=ffffffff-ffff-ffff-ffff-fffffffffff'${ip_end}'@' ${node_file_path}"
-        ssh $i "sed -i 's@coordinator=true@coordinator=false@' ${config_file_path}"
-        ssh $i "sed -i '2d' ${config_file_path}"
+        if [ "$current_hostname" != "$i" ];then
+            ssh $i "sed -i 's@^node.id=.*@node.id=ffffffff-ffff-ffff-ffff-fffffffffff'${ip_end}'@' ${node_file_path}"
+            ssh $i "sed -i 's@coordinator=true@coordinator=false@' ${config_file_path}"
+            ssh $i "sed -i '2d' ${config_file_path}"
+        fi
     done
 }
 
@@ -81,15 +65,15 @@ install_presto() {
     local app_name="presto"
     if [ ! -d ${INSTALL_PATH}/${app_name} ];then
         log info "setup ${app_name}"
-
-        download_presto ${app_name}
+        download_and_unzip_app ${app_name}
+        setup_presto ${app_name}
+        setupEnv_app $app_name
+        if [ "${IS_VAGRANT}" != "true" ];then
+            dispatch_presto ${app_name}
+        fi
+        source ${PROFILE}
     fi
-    setup_presto ${app_name}
-    setupEnv_app $app_name
-    if [ "${IS_VAGRANT}" != "true" ];then
-        dispatch_presto ${app_name}
-    fi
-    source ${PROFILE}
+    
 }
 
 
