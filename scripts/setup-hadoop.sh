@@ -1,6 +1,8 @@
 #!/bin/bash
 #set -x
-source "/vagrant/scripts/common.sh"
+if [ -d /vagrant/scripts ];then
+    source "/vagrant/scripts/common.sh"
+fi 
 
 setup_hadoop() {
     local app_name=$1
@@ -9,7 +11,7 @@ setup_hadoop() {
     local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
 
     log info "creating ${app_name} directories"
-    mkdir -p ${INSTALL_PATH}/hadoop/tmp
+    mkdir -p ${INSTALL_PATH}/${app_name}/tmp
 	
     log info "copying over ${app_name} configuration files"
     cp -f ${res_dir}/* ${conf_dir}
@@ -30,33 +32,17 @@ setup_hadoop() {
     fi
 }
 
-download_hadoop() {
-    local app_name=$1
-    local app_name_upper=`get_string_upper ${app_name}`
-    local app_version=$(eval echo \$${app_name_upper}_VERSION)
-    local archive=$(eval echo \$${app_name_upper}_ARCHIVE)
-    local download_url=$(eval echo \$${app_name_upper}_MIRROR_DOWNLOAD)
-
-    log info "install ${app_name}"
-    if resourceExists ${archive}; then
-        installFromLocal ${archive}
-    else
-        installFromRemote ${archive} ${download_url}
-    fi
-    mv ${INSTALL_PATH}/"${app_version}" ${INSTALL_PATH}/${app_name}
-    chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_name}
-    rm ${DOWNLOAD_PATH}/${archive}
-}
-
 install_hadoop() {
     local app_name="hadoop"
     log info "setup ${app_name}"
     if [ ! -d ${INSTALL_PATH}/${app_name} ];then
-        download_hadoop ${app_name}
+        download_and_unzip_app ${app_name}
         setupEnv_app ${app_name} sbin
+        setup_hadoop ${app_name}
+        if [ "${IS_VAGRANT}" != "true" ];then
+            dispatch_app ${app_name}
+        fi
     fi
-    setup_hadoop ${app_name}
-    
     
     echo 'export HDFS_NAMENODE_USER="root"' >> $PROFILE
     echo 'export HDFS_DATANODE_USER="root"' >> $PROFILE
@@ -66,13 +52,7 @@ install_hadoop() {
     # 解决Unable to load native-hadoop library for your platform
     echo 'export LD_LIBRARY_PATH=$HADOOP_HOME/lib/native/:$LD_LIBRARY_PATH' >> ${PROFILE}
 
-    if [ "${IS_VAGRANT}" != "true" ];then
-        dispatch_app ${app_name}
-    fi
-
     source ${PROFILE}
-    #format_hdfs
-    #start_daemons
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then
