@@ -1,6 +1,8 @@
 #!/bin/bash
 #set -x
-source "/vagrant/scripts/vbc-config.sh"
+if [ -d /vagrant/scripts ];then
+    source "/vagrant/scripts/vbc-config.sh"
+fi
 
 # sh setup-hosts.sh -hostname myid
 # 4,5,6
