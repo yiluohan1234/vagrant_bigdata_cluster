@@ -1,18 +1,33 @@
 #!/bin/bash
 #set -x
-source "/vagrant/scripts/common.sh"
+source "/vagrant/scripts/vbc-config.sh"
+
+# sh setup-hosts.sh -hostname myid
+# 4,5,6
+while getopts i: option
+do
+    case "${option}"
+    in
+        i) id=${OPTARG};;
+    esac
+done
 
 install_init(){
-    # 创建hadoop组、创建各用户并设置密码
-    groupadd hadoop
-    for user in {"hdfs","yarn","mapred","hive"};
-    do
-        useradd $user -g hadoop -d /home/$user
-        # 各个用户的默认密码是vagrant
-        echo $user | passwd --stdin $user
-    done
-    # 修改vagrant用户信息，把vagrant添加到组hadoop中
-    usermod -a -G hadoop vagrant
+    # 更改主机名称
+    hostnamectl set-hostname ${HOSTNAME_LIST[$(( id-1 ))]}
+
+    if [ "${IS_KERBEROS}" == "true" ];then
+        # 创建hadoop组、创建各用户并设置密码
+        groupadd hadoop
+        for user in {"hdfs","yarn","mapred","hive"};
+        do
+            useradd $user -g hadoop -d /home/$user
+            # 各个用户的默认密码是vagrant
+            echo $user | passwd --stdin $user
+        done
+        # 修改vagrant用户信息，把vagrant添加到组hadoop中
+        usermod -a -G hadoop vagrant
+    fi 
 
     # 创建生成日志目录
     # APP_LOG=/opt/module/applog/log/
@@ -30,7 +45,7 @@ install_init(){
     log info "copy init shell to ${INIT_SHELL_BIN}"
     for name in ${HOSTNAME_LIST[@]}; do host_list="${host_list:-} ""$name"; done
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
-        sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${INIT_PATH}/`
+        sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" ${INIT_PATH}/jpsall
         sed -i "s@hdp{101..103}@${host_list}@g"  ${INIT_PATH}/xsync
         sed -i "s@hdp{101..103}@${host_list}@g"  ${INIT_PATH}/xcall
         sed -i "s@hdp{101..103}@${host_list}@g"  ${INIT_PATH}/jpsall
