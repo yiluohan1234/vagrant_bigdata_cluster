@@ -1,6 +1,8 @@
 #!/bin/bash
 #set -x
-source "/vagrant/scripts/common.sh"
+if [ -d /vagrant/scripts ];then
+    source "/vagrant/scripts/common.sh"
+fi
 
 setup_#@() {
     local app_name=$1
@@ -32,50 +34,29 @@ setup_#@() {
     fi
 }
 
-download_#@() {
-    local app_name=$1
-    local app_name_upper=`get_string_upper ${app_name}`
-    local app_version=$(eval echo \$${app_name_upper}_VERSION)
-    local archive=$(eval echo \$${app_name_upper}_ARCHIVE)
-    local download_url=$(eval echo \$${app_name_upper}_MIRROR_DOWNLOAD)
-
-    log info "install ${app_name}"
-    if resourceExists ${archive}; then
-        installFromLocal ${archive}
-    else
-        installFromRemote ${archive} ${download_url}
-    fi
-    mv ${INSTALL_PATH}/"${app_version}" ${INSTALL_PATH}/${app_name}
-    chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
-    rm ${DOWNLOAD_PATH}/${archive}
-}
-
 dispatch_#@() {
     local app_name=$1
     dispatch_app ${app_name}
-    for i in {"hdp102","hdp103"};
+    for host in ${HOSTNAME_LIST[@]};
     do
-        node_name=$i
-        node_host=`cat /etc/hosts |grep $i|awk '{print $1}'`
-        file_path=${INSTALL_PATH}/${app_name}/config/elasticsearch.yml
-
-        echo "------modify $i server.properties-------"
-        #ssh $i "sed -i 's/^node.name: .*/node.name: '$node_name'/' $file_path"
-        ssh $i "sed -i 's@^network.host: .*@network.host: '${node_host}'@' ${file_path}"
+        current_hostname=`cat /etc/hosts |grep $i|awk '{print $1}'`
+        ssh $host "sed -i 's@^network.host: .*@network.host: '${node_host}'@' ${file_path}"
     done
 }
 
 install_#@() {
     local app_name="#@"
-    log info "setup ${app_name}"
-
-    download_#@ ${app_name}
-    setup_#@ ${app_name}
-    setupEnv_app $app_name
-    if [ "${IS_VAGRANT}" != "true" ];then
-        dispatch_#@ ${app_name}
+    if [ ! -d ${INSTALL_PATH}/${app_name} ];then
+        log info "setup ${app_name}"
+        download_and_unzip_app ${app_name}
+        setup_#@ ${app_name}
+        setupEnv_app $app_name
+        
+        if [ "${IS_VAGRANT}" != "true" ];then
+            dispatch_#@ ${app_name}
+        fi
+        source ${PROFILE}
     fi
-    source ${PROFILE}
 }
 
 
