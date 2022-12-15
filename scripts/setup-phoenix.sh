@@ -16,7 +16,7 @@ setup_phoenix() {
         length=${#HOSTNAME_LIST[@]}
         for ((i=0; i<$length; i++))
         do
-            host=${HOSTNAME_LIST[1]}
+            host=${HOSTNAME_LIST[0]}
             current_hostname=`cat /etc/hostname`
             if [ "$current_hostname" != "$host" ];then
                 scp ${INSTALL_PATH}/phoenix/phoenix-${PHOENIX_VERSION_NUM}-HBase-${HBASE_VERSION_NUM:0:3}-server.jar ${DEFAULT_USER}@$host:${INSTALL_PATH}/hbase/lib
