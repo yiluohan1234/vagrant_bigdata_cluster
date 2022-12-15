@@ -1,6 +1,8 @@
 #!/bin/bash
 #set -x
-source "/vagrant/scripts/common.sh"
+if [ -d /vagrant/scripts ];then
+    source "/vagrant/scripts/common.sh"
+fi
 
 setup_flink() {
     local app_name=$1
@@ -16,29 +18,11 @@ setup_flink() {
     fi
 }
 
-download_flink() {
-    local app_name=$1
-    local app_name_upper=`get_string_upper ${app_name}`
-    local app_version=$(eval echo \$${app_name_upper}_VERSION)
-    local archive=$(eval echo \$${app_name_upper}_ARCHIVE)
-    local download_url=$(eval echo \$${app_name_upper}_MIRROR_DOWNLOAD)
-
-    log info "install ${app_name}"
-    if resourceExists ${archive}; then
-        installFromLocal ${archive}
-    else
-        installFromRemote ${archive} ${download_url}
-    fi
-    mv ${INSTALL_PATH}/"${app_version}" ${INSTALL_PATH}/${app_name}
-    chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_name}
-    rm ${DOWNLOAD_PATH}/${archive}
-}
-
 install_flink() {
     local app_name="flink"
     log info "setup ${app_name}"
     if [ ! -d ${INSTALL_PATH}/${app_name} ];then
-        download_flink ${app_name}
+        download_and_unzip_app ${app_name}
         setup_flink ${app_name}
         setupEnv_app ${app_name}
 
