@@ -1,6 +1,8 @@
 #!/bin/bash
 #set -x
-source "/vagrant/scripts/common.sh"
+if [ -d /vagrant/scripts ];then
+    source "/vagrant/scripts/common.sh"
+fi
 
 setup_kafka() {
     local app_name=$1
@@ -33,37 +35,23 @@ setup_kafka() {
     fi
 }
 
-download_kafka() {
-    local app_name=$1
-    local app_name_upper=`get_string_upper ${app_name}`
-    local app_version=$(eval echo \$${app_name_upper}_VERSION)
-    local archive=$(eval echo \$${app_name_upper}_ARCHIVE)
-    local download_url=$(eval echo \$${app_name_upper}_MIRROR_DOWNLOAD)
-
-    log info "install ${app_name}"
-    if resourceExists ${archive}; then
-        installFromLocal ${archive}
-    else
-        installFromRemote ${archive} ${download_url}
-    fi
-    mv ${INSTALL_PATH}/"${app_version}" ${INSTALL_PATH}/${app_name}
-    chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_name}
-    rm ${DOWNLOAD_PATH}/${archive}
-}
-
 dispatch_kafka() {
     local app_name=$1
     dispatch_app ${app_name}
-    for i in {"hdp102","hdp103"};
-    do
+    length=${#HOSTNAME_LIST[@]}
+    for ((i=0; i<$length; i++));do
+        current_hostname=`cat /etc/hostname`
         ip=`cat /etc/hosts |grep $i|awk '{print $1}'`
         ip_end=${ip##*.} 
         value="PLAINTEXT://$ip:9092"
         file_path=${INSTALL_PATH}/${app_name}/config/server.properties
-        echo "------modify $i server.properties-------"
-        ssh $i "sed -i 's/^broker.id=.*/broker.id='${ip_end}'/' ${file_path}"
-        ssh $i "sed -i 's@^listeners=.*@listeners='${value}'@' ${file_path}"
-        ssh $i "sed -i 's@^advertised.listeners=.*@advertised.listeners='${value}'@' ${file_path}"
+
+        if [ "$current_hostname" != "${HOSTNAME_LIST[0]}" ];then
+            echo "------modify $i server.properties-------"
+            ssh ${HOSTNAME_LIST[$i]} "sed -i 's/^broker.id=.*/broker.id='${ip_end}'/' ${file_path}"
+            ssh ${HOSTNAME_LIST[$i]} "sed -i 's@^listeners=.*@listeners='${value}'@' ${file_path}"
+            ssh ${HOSTNAME_LIST[$i]} "sed -i 's@^advertised.listeners=.*@advertised.listeners='${value}'@' ${file_path}"
+        fi
     done
 }
 
@@ -71,7 +59,7 @@ install_kafka() {
     local app_name="kafka"
     log info "setup $app_name"
     if [ ! -d ${INSTALL_PATH}/${app_name} ];then
-        download_kafka ${app_name}
+        download_and_unzip_app ${app_name}
         setup_kafka ${app_name}
         setupEnv_app ${app_name}
         if [ "$IS_VAGRANT" != "true" ];then
