@@ -22,9 +22,9 @@ install_mysql() {
     PORT="3306"
     USERNAME="root"
     
-    mysql -u${USERNAME} -p${PASSWORD} -e "set global validate_password_policy=0;  \
-        set global validate_password_length=4;  \
-        ALTER USER 'root'@'localhost' IDENTIFIED BY \'${dbrootpwd}\'; \
+    mysql -u${USERNAME} -p${PASSWORD} -e "set global validate_password_policy=0; \
+        set global validate_password_length=4; \
+        ALTER USER 'root'@'localhost' IDENTIFIED BY \'${MYSQL_PASSWORD}\'; \
         use mysql; \
         update user set host='%' where user='root'; \
         create user 'hive'@'%' IDENTIFIED BY 'hive'; \

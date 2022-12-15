@@ -29,7 +29,7 @@ echo "vm.max_map_count=262144" >> /etc/sysctl.conf
 # 安装基本的软件：-q（不显示安装的过程）
 # 高质量软件包管理
 log info "安装 epel-release sshpass lrzsz expect unzip zip vim-enhanced lzop dos2unix nmap-ncat net-tools nc wget lsof"
-for app in ${CENTOS_BASIC_APPS[@]};do 
+for app in ${CENTOS_BASIC_APPS[@]};do   
     yum install -y -q ${app}
 done 
 

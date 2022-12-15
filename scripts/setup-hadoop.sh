@@ -15,7 +15,7 @@ setup_hadoop() {
 	
     log info "copying over ${app_name} configuration files"
     cp -f ${res_dir}/${HADOOP_VERSION_NUM}/* ${conf_dir}
-    mv ${conf_dir}/${HADOOP_VERSION_NUM}/hadoop-lzo-0.4.20.jar ${INSTALL_PATH}/hadoop/share/hadoop/common
+    mv ${conf_dir}/hadoop-lzo-0.4.20.jar ${INSTALL_PATH}/hadoop/share/hadoop/common
     #echo 'export CLASSPATH=$CLASSPATH:${INSTALL_PATH}/hadoop/share/hadoop/common' >> $PROFILE
     if [ "${IS_KERBEROS}" == "true" ];then
         sed -i '31,49s/vagrant/hive/g' ${conf_dir}/core-site.xml
