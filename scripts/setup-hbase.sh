@@ -1,6 +1,8 @@
 #!/bin/bash
 #set -x
-source "/vagrant/scripts/common.sh"
+if [ -d /vagrant/scripts ];then
+    source "/vagrant/scripts/common.sh"
+fi
 
 setup_hbase() {
     local app_name=$1
@@ -12,7 +14,8 @@ setup_hbase() {
     cp -f ${res_dir}/* ${conf_dir}
     cp ${INSTALL_PATH}/hadoop/etc/hadoop/core-site.xml ${INSTALL_PATH}/hbase/conf/
     cp ${INSTALL_PATH}/hadoop/etc/hadoop/hdfs-site.xml ${INSTALL_PATH}/hbase/conf/
-
+    mv ${INSTALL_PATH}/hbase/lib/slf4j-log4j12-1.7.25.jar ${INSTALL_PATH}/hbase/lib/slf4j-log4j12-1.7.25.jar_bak
+    
     if [ "${IS_KERBEROS}" != "true" ];then
         sed -i '55,83d' ${conf_dir}/hbase-site.xml
     fi
@@ -22,30 +25,11 @@ setup_hbase() {
     fi
 }
 
-download_hbase() {
-    local app_name=$1
-    local app_name_upper=`get_string_upper ${app_name}`
-    local app_version=$(eval echo \$${app_name_upper}_VERSION)
-    local archive=$(eval echo \$${app_name_upper}_ARCHIVE)
-    local download_url=$(eval echo \$${app_name_upper}_MIRROR_DOWNLOAD)
-
-    log info "install ${app_name}"
-    if resourceExists ${archive}; then
-        installFromLocal ${archive}
-    else
-        installFromRemote ${archive} ${download_url}
-    fi
-    mv ${INSTALL_PATH}/"${app_version}" ${INSTALL_PATH}/${app_name}
-    rm ${DOWNLOAD_PATH}/${archive}
-    mv ${INSTALL_PATH}/hbase/lib/slf4j-log4j12-1.7.25.jar ${INSTALL_PATH}/hbase/lib/slf4j-log4j12-1.7.25.jar_bak
-}
-
 install_hbase() {
     local app_name="hbase"
     if [ ! -d ${INSTALL_PATH}/${app_name} ];then
         log info "setup ${app_name}"
-
-        download_hbase ${app_name}
+        download_and_unzip_app ${app_name}
         setup_hbase ${app_name}
         setupEnv_app ${app_name}
 
