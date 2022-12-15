@@ -1,6 +1,8 @@
 #!/bin/bash
 #set -x
-source "/vagrant/scripts/common.sh"
+if [ -d /vagrant/scripts ];then
+    source "/vagrant/scripts/common.sh"
+fi
 
 setup_es() {
     local app_name=$1
@@ -30,51 +32,38 @@ setup_es() {
     fi
 }
 
-download_es() {
-    local app_name=$1
-    local app_name_upper=`get_string_upper ${app_name}`
-    local app_version=$(eval echo \$${app_name_upper}_VERSION)
-    local archive=$(eval echo \$${app_name_upper}_ARCHIVE)
-    local download_url=$(eval echo \$${app_name_upper}_MIRROR_DOWNLOAD)
-
-    log info "install ${app_name}"
-    if resourceExists ${archive}; then
-        installFromLocal ${archive}
-    else
-        installFromRemote ${archive} ${download_url}
-    fi
-    mv ${INSTALL_PATH}/"${app_version}" ${INSTALL_PATH}/${app_name}
-    chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_name}
-    rm ${DOWNLOAD_PATH}/${archive}
-}
-
 dispatch_es() {
     local app_name=$1
     dispatch_app ${app_name}
-    for i in {"hdp102","hdp103"};
-    do
-        node_name=$i
+    length=${#HOSTNAME_LIST[@]}
+    for ((i=0; i<$length; i++));do
+        current_hostname=`cat /etc/hostname`
+        
         node_host=`cat /etc/hosts |grep $i|awk '{print $1}'`
         file_path=${INSTALL_PATH}/${app_name}/config/elasticsearch.yml
 
-        echo "------modify $i server.properties-------"
-        #ssh $i "sed -i 's/^node.name: .*/node.name: '$node_name'/' $file_path"
-        ssh $i "sed -i 's@^network.host: .*@network.host: '${node_host}'@' ${file_path}"
+        if [ "$current_hostname" != "${HOSTNAME_LIST[0]}" ];then
+            echo "------modify $i server.properties-------"
+            #ssh $i "sed -i 's/^node.name: .*/node.name: '$node_name'/' $file_path"
+            ssh ${HOSTNAME_LIST[$i]} "sed -i 's@^network.host: .*@network.host: '${node_host}'@' ${file_path}"
+        fi
     done
 }
 
 install_es() {
     local app_name="elasticsearch"
-    log info "setup ${app_name}"
+    if [ ! -d ${INSTALL_PATH}/${app_name} ];then
+        log info "setup ${app_name}"
 
-    download_es ${app_name}
-    setup_es ${app_name}
-    setupEnv_app ${app_name}
+        download_and_unzip_app ${app_name}
+        setup_es ${app_name}
+        setupEnv_app ${app_name}
 
-    if [ "${IS_VAGRANT}" != "true" ];then
-        dispatch_es ${app_name}
+        if [ "${IS_VAGRANT}" != "true" ];then
+            dispatch_es ${app_name}
+        fi
+        source ${PROFILE}
     fi
-    source ${PROFILE}
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then
