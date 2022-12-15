@@ -6,10 +6,19 @@ HOSTNAME_LIST=("master" "slave1" "slave2")
 PASSWD_LIST=("vagrant" "vagrant" "vagrant")
 
 # 是否用vagrant安装集群
-IS_VAGRANT="false"
+IS_VAGRANT="true"
 
 # 是否用kerberos
 IS_KERBEROS="false"
+
+# 是否安装中文包
+IS_CHINESE="false"
+
+# 是否更新git
+IS_UPDATE_GIT="false"
+
+# 是否安装Github520
+IS_GITHUB="false"
 
 # default user and group
 DEFAULT_USER=root
@@ -29,7 +38,7 @@ INIT_PATH=$RESOURCE_PATH/init_bin
 INIT_SHELL_BIN=$INSTALL_PATH/init_bin
 
 # 环境变量配置文件
-PROFILE=/etc/profile.d/hdp_env.sh
+PROFILE=/etc/profile
 
 # 下载组建的镜像地址
 # 1:https://archive.apache.org/dist
@@ -39,3 +48,7 @@ DOWNLOAD_REPO=https://mirrors.huaweicloud.com/apache
 
 # ssh
 SSH_CONF=/home/vagrant/resources/ssh
+
+# Centos basic apps list.
+# CENTOS_BASIC_APPS=("epel-release" "sshpass" "lrzsz" "expect" "unzip" "zip" "vim-enhanced" "lzop" "dos2unix" "nmap-ncat" "net-tools" "nc" "wget" "lsof" "telnet" "tcpdump" "ntp")
+CENTOS_BASIC_APPS=("epel-release" "sshpass" "lrzsz" "expect")

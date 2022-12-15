@@ -160,6 +160,24 @@ wget_mysql_connector(){
     rm -rf $INSTALL_PATH/mysql-connector-java-5.1.49
 }
 
+download_and_unzip_app() {
+    local app_name=$1
+    local app_name_upper=`get_string_upper ${app_name}`
+    local app_version=$(eval echo \$${app_name_upper}_VERSION)
+    local archive=$(eval echo \$${app_name_upper}_ARCHIVE)
+    local download_url=$(eval echo \$${app_name_upper}_MIRROR_DOWNLOAD)
+    local app_dir_name=$(eval echo \$${app_name_upper}_DIR_NAME)
+
+    log info "install ${app_name}"
+    if resourceExists ${archive}; then
+        installFromLocal ${archive}
+    else
+        installFromRemote ${archive} ${download_url}
+    fi
+    mv ${INSTALL_PATH}/${app_dir_name} ${INSTALL_PATH}/${app_name}
+    chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_name}
+    # rm ${DOWNLOAD_PATH}/${archive}
+}
 # log
 DATETIME=`date "+%F %T"`
 
