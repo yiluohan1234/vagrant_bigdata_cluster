@@ -2,6 +2,7 @@
 #set -x
 if [ -d /vagrant/scripts ];then
     source "/vagrant/scripts/vbc-config.sh"
+    source "/vagrant/scripts/vbc-function.sh"
 fi
 
 # sh setup-hosts.sh -hostname myid
