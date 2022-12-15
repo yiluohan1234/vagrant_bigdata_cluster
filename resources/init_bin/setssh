@@ -1,6 +1,8 @@
 #!/bin/bash
 #set -x
-source "/vagrant/scripts/vbc-config.sh"
+if [ -d /vagrant/scripts ];then
+    source "/vagrant/scripts/vbc-config.sh"
+fi
 
 install_ssh() {
     if [ ! -f ~/.ssh/id_rsa ];then
