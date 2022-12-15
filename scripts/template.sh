@@ -40,13 +40,12 @@ dispatch_#@() {
     length=${#HOSTNAME_LIST[@]}
     for ((i=0; i<$length; i++));do
         current_hostname=`cat /etc/hostname`
-        node_host=`cat /etc/hosts |grep $i|awk '{print $1}'`
         file_path=${INSTALL_PATH}/${app_name}/config/elasticsearch.yml
 
         if [ "$current_hostname" != "${HOSTNAME_LIST[0]}" ];then
             echo "------modify $i server.properties-------"
             #ssh $i "sed -i 's/^node.name: .*/node.name: '$node_name'/' $file_path"
-            ssh $i "sed -i 's@^network.host: .*@network.host: '${node_host}'@' ${file_path}"
+            ssh ${HOSTNAME_LIST[$i]} "sed -i 's@^network.host: .*@network.host: '${node_host}'@' ${file_path}"
         fi
     done
 }
