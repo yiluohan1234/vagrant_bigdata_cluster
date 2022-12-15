@@ -1,6 +1,8 @@
 #!/bin/bash
 #set -x
-source "/vagrant/scripts/common.sh"
+if [ -d /vagrant/scripts ];then
+    source "/vagrant/scripts/common.sh"
+fi
 
 install_miniconda() {
     # install Miniconda3
@@ -45,5 +47,5 @@ superset fab create-admin
 # Superset 初始化
 superset init
 
-gunicorn --workers 5 --timeout 120 --bind hdp101:8787  "superset.app:create_app()" --daemon
+gunicorn --workers 5 --timeout 120 --bind hdp101:8787 "superset.app:create_app()" --daemon
 conda install mysqlclient
