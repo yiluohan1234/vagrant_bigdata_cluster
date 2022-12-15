@@ -29,7 +29,7 @@ setup_presto() {
         node_file_path=${INSTALL_PATH}/${app_name}/etc/node.properties
         config_file_path=${INSTALL_PATH}/${app_name}/etc/config.properties
         
-        if [ "$hostname" != ${HOSTNAME_LIST[1]} ];then
+        if [ "$hostname" != ${HOSTNAME_LIST[0]} ];then
             sed -i 's@^node.id=.*@node.id=ffffffff-ffff-ffff-ffff-fffffffffff'${ip_end}'@' ${node_file_path}
             sed -i 's@coordinator=true@coordinator=false@' ${config_file_path}
             sed -i '2d' ${config_file_path}
