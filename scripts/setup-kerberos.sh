@@ -1,6 +1,8 @@
 #!/bin/bash
 #set -x
-source "/vagrant/scripts/common.sh"
+if [ -d /vagrant/scripts ];then
+    source "/vagrant/scripts/common.sh"
+fi
 
 setup_Kerberos() {
     # 修改/etc/krb5.conf文件
