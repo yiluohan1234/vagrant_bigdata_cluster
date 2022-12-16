@@ -7,6 +7,94 @@ check_process(){
     echo $pid
     [[ "$pid" =~ "$ppid" ]] && [ "$ppid" ] && return 0 || return 1
 }
+
+dfs(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            ssh hdp101 "source /etc/profile;$INSTALL_PATH/hadoop/sbin/start-dfs.sh"
+            ;;
+        stop)
+            ssh hdp101 "source /etc/profile;$INSTALL_PATH/hadoop/sbin/stop-dfs.sh"
+            ;;
+        format)
+            ssh hdp101 "source /etc/profile;$INSTALL_PATH/hadoop/bin/hdfs namenode -format"
+            ;;
+        restart)
+            dfs stop
+	    dfs start
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+yarn(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/sbin/start-yarn.sh"
+            ;;
+        stop)
+            ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/sbin/stop-yarn.sh"
+            ;;
+        restart)
+            yarn stop
+	        yarn start
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+hadoop(){
+    usage="Usage: $0 (start|stop|format)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            echo " --------------- 启动 hdfs ---------------"
+            ssh hdp101 "source /etc/profile;$INSTALL_PATH/hadoop/sbin/start-dfs.sh"
+            echo " --------------- 启动 yarn ---------------"
+            ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/sbin/start-yarn.sh"
+            echo " --------------- 启动 historyserver ---------------"
+            ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/bin/mapred --daemon start historyserver"
+            ;;
+        stop)
+            echo " --------------- 关闭 historyserver ---------------"
+            ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/bin/mapred --daemon stop historyserver"
+            echo " --------------- 关闭 yarn ---------------"
+            ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/sbin/stop-yarn.sh"
+            echo " --------------- 关闭 hdfs ---------------"
+            ssh hdp101 "source /etc/profile;$INSTALL_PATH/hadoop/sbin/stop-dfs.sh"
+            ;;
+        restart)
+            hadoop stop
+            hadoop start
+            ;;
+        format)
+            ssh hdp101 "$INSTALL_PATH/hadoop/bin/hdfs namenode -format"
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
 zk(){
     usage="Usage: $0 (start|stop|status)"
 
@@ -16,21 +104,21 @@ zk(){
     fi
     case $1 in
         start)
-            for i in {"hdp101","hdp102","hdp103"};
+            for i in hdp{101..103};
             do
                 echo "-----$1 $i zookeeper-------"
                 ssh $i "source /etc/profile;$INSTALL_PATH/zookeeper/bin/zkServer.sh start"
             done
             ;;
         stop)
-            for i in {"hdp101","hdp102","hdp103"};
+            for i in hdp{101..103};
             do
                 echo "------$1 $i zookeeper-------"
                 ssh $i "source /etc/profile;$INSTALL_PATH/zookeeper/bin/zkServer.sh stop"
             done
             ;;
         status)
-            for i in {"hdp101","hdp102","hdp103"};
+            for i in hdp{101..103};
             do
                 echo "------$i status-------"
                 ssh $i "source /etc/profile;$INSTALL_PATH/zookeeper/bin/zkServer.sh status"
@@ -61,104 +149,18 @@ kafka(){
             else
                 echo "Zookeeper has been started"
             fi
-            for i in {"hdp101","hdp102","hdp103"};
+            for i in hdp{101..103};
             do
                 echo "-----$1 $i kafka-------"
                 ssh $i "source /etc/profile;$INSTALL_PATH/kafka/bin/kafka-server-start.sh -daemon $INSTALL_PATH/kafka/config/server.properties"
             done
             ;;
         stop)
-            for j in {"hdp101","hdp102","hdp103"};
+            for j in hdp{101..103};
             do
                 echo "-----$1 $j kafka-------"
                 ssh $j  "kill -9 \$(ps ax |grep -i 'Kafka'| grep java| grep -v grep| awk '{print \$1}')"
             done
-            ;;
-        *)
-            echo $usage
-            ;;
-    esac
-}
-dfs(){
-    usage="Usage: $0 (start|stop)"
-
-    if [ $# -lt 1 ]; then
-        echo $usage
-        exit 1
-    fi
-    case $1 in
-        start)
-            ssh hdp101 "$INSTALL_PATH/hadoop/sbin/start-dfs.sh"
-            ;;
-        stop)
-            ssh hdp101 "$INSTALL_PATH/hadoop/sbin/stop-dfs.sh"
-            ;;
-        format)
-            ssh hdp101 "$INSTALL_PATH/hadoop/bin/hdfs namenode -format"
-            ;;
-        restart)
-            dfs stop
-	    dfs start
-            ;;
-        *)
-            echo $usage
-            ;;
-    esac
-}
-yarn(){
-    usage="Usage: $0 (start|stop)"
-
-    if [ $# -lt 1 ]; then
-        echo $usage
-        exit 1
-    fi
-    case $1 in
-        start)
-            ssh hdp102 "$INSTALL_PATH/hadoop/sbin/start-yarn.sh"
-            ;;
-        stop)
-            ssh hdp102 "$INSTALL_PATH/hadoop/sbin/stop-yarn.sh"
-            ;;
-        restart)
-            yarn stop
-	    yarn start
-            ;;
-        *)
-            echo $usage
-            ;;
-    esac
-}
-
-hadoop(){
-    usage="Usage: $0 (start|stop|format)"
-
-    if [ $# -lt 1 ]; then
-        echo $usage
-        exit 1
-    fi
-    case $1 in
-        start)
-            echo " --------------- 启动 hdfs ---------------"
-            ssh hdp101 "$INSTALL_PATH/hadoop/sbin/start-dfs.sh"
-            echo " --------------- 启动 yarn ---------------"
-            ssh hdp102 "$INSTALL_PATH/hadoop/sbin/start-yarn.sh"
-            #echo " --------------- 启动 historyserver ---------------"
-            #ssh hdp101 "$INSTALL_PATH/hadoop/bin/mapred --daemon start historyserver"
-            ;;
-        stop)
-            #echo " --------------- 关闭 historyserver ---------------"
-            #ssh hdp101 "$INSTALL_PATH/hadoop/bin/mapred --daemon stop historyserver"
-            echo " --------------- 关闭 yarn ---------------"
-            ssh hdp102 "$INSTALL_PATH/hadoop/sbin/stop-yarn.sh"
-            echo " --------------- 关闭 hdfs ---------------"
-            ssh hdp101 "$INSTALL_PATH/hadoop/sbin/stop-dfs.sh"
-            ;;
-        restart)
-            hadoop stop
-            hadoop start
-            ;;
-        format)
-            ssh hdp101 "$INSTALL_PATH/hadoop/bin/hdfs namenode -format"
             ;;
         *)
             echo $usage
@@ -286,14 +288,14 @@ elasticsearch(){
     fi
     case $1 in
         start)
-            for i in {"hdp101","hdp102","hdp103"};
+            for i in hdp{101..103};
             do
                 echo "-----$1 $i elasticsearch-------"
                 ssh $i "source /etc/profile;$INSTALL_PATH/elasticsearch/bin/elasticsearch -d -p pid"
             done
             ;;
         stop)
-            for j in {"hdp101","hdp102","hdp103"};
+            for j in hdp{101..103};
             do
                 echo "-----$1 $j elasticsearch-------"
                 ssh $j  "kill -9 \$(ps ax |grep -i 'elasticsearch'| grep java| grep -v grep| awk '{print \$1}')"
@@ -318,14 +320,14 @@ solr(){
     fi
     case $1 in
         start)
-            for i in {"hdp101","hdp102","hdp103"};
+            for i in hdp{101..103};
             do
                 echo "-----$1 $i solr-------"
                 ssh $i "source /etc/profile;$INSTALL_PATH/solr/bin/solr start"
             done
             ;;
         stop)
-            for j in {"hdp101","hdp102","hdp103"};
+            for j in hdp{101..103};
             do
                 echo "-----$1 $i solr-------"
                 ssh $i "source /etc/profile;$INSTALL_PATH/solr/bin/solr stop"
@@ -403,7 +405,7 @@ spark_logger(){
     fi
     case $1 in
         start)
-            for i in {"hdp101","hdp102","hdp103"};
+            for i in hdp{101..103};
             do
                 echo "-----$1 $i rt_logger-------"
                 ssh $i "nohup $INSTALL_PATH/java/bin/java -Xms32m -Xmx64m -jar ${spark_logger_dir}/rt_logger/gmall2021-logger-0.0.1-SNAPSHOT.jar > /dev/null 2>&1 &"
@@ -414,7 +416,7 @@ spark_logger(){
             done
             ;;
         stop)
-            for j in {"hdp101","hdp102","hdp103"};
+            for j in hdp{101..103};
             do
                 echo "-----$1 $j rt_logger-------"
                 ssh $j  "kill -9 \$(ps -ef|grep gmall2021-logger-0.0.1-SNAPSHOT.jar| grep -v grep| awk '{print \$2}')"
@@ -440,7 +442,7 @@ flink_logger(){
     fi
     case $1 in
         start)
-            for i in {"hdp101","hdp102","hdp103"};
+            for i in hdp{101..103};
             do
                 echo "-----$1 $i rt_logger-------"
                 ssh $i "nohup $INSTALL_PATH/java/bin/java -Xms32m -Xmx64m -jar ${flink_logger_dir}/flink_logger/gmall-logger.jar > /dev/null 2>&1 &"
@@ -455,7 +457,7 @@ flink_logger(){
         stop)
             #echo "============NGINX============"
             #nginx -s stop
-            for j in {"hdp101","hdp102","hdp103"};
+            for j in hdp{101..103};
             do
                 echo "-----$1 $j rt_logger-------"
                 ssh $j  "kill -9 \$(ps -ef|grep gmall-logger.jar| grep -v grep| awk '{print \$2}')"
@@ -578,7 +580,7 @@ azkaban(){
     fi
     case $1 in
         start)
-            for i in {"hdp101","hdp102","hdp103"};
+            for i in hdp{101..103};
             do
                 echo "============ start $i azkaban-exec-server ============"
                 ssh $i "source /etc/profile;cd $INSTALL_PATH/azkaban/exec-server/;bin/start-exec.sh"
@@ -591,7 +593,7 @@ azkaban(){
         stop)
             echo "============ stop hdp101 azkaban-web-server ============"
             ssh hdp101 "source /etc/profile;cd $INSTALL_PATH/azkaban/web-server/;bin/shutdown-web.sh"
-            for j in {"hdp101","hdp102","hdp103"};
+            for j in hdp{101..103};
             do
                 echo "============ stop $j azkaban-exec-server ============"
                 ssh $j  "source /etc/profile;cd $INSTALL_PATH/azkaban/exec-server/;bin/shutdown-exec.sh"
@@ -612,14 +614,14 @@ presto(){
     fi
     case $1 in
         start)
-            for i in {"hdp101","hdp102","hdp103"};
+            for i in hdp{101..103};
             do
                 echo "============ start $i presto-server ============"
                 ssh $i "source /etc/profile;cd $INSTALL_PATH/presto;bin/launcher start"
             done
             ;;
         stop)
-            for j in {"hdp101","hdp102","hdp103"};
+            for j in hdp{101..103};
             do
                 echo "============ stop $j presto-server ============"
                 ssh $j  "source /etc/profile;cd $INSTALL_PATH/presto;bin/launcher stop"

@@ -17,96 +17,34 @@
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
-    <!-- nn web端访问地址 -->
-    <property> 
-        <name>dfs.namenode.http-address</name>
-        <value>hdp101:9870</value>
-    </property>
-    <!-- 2nnweb端访问地址 -->
-    <property>
-        <name>dfs.namenode.secondary.http-address</name>
-        <value>hdp103:9868</value>
-    </property>
-    <!-- 测试环境指定HDFS副本的数量1 -->
-    <property>
-        <name>dfs.replication</name>
-        <value>1</value>
-    </property>
-    <!-- 访问DataNode数据块时需通过Kerberos认证 -->
-    <property>
-      <name>dfs.block.access.token.enable</name>
-      <value>true</value>
-    </property>
-
-    <!-- NameNode服务的Kerberos主体,_HOST会自动解析为服务所在的主机名 -->
-    <property>
-      <name>dfs.namenode.kerberos.principal</name>
-      <value>nn/_HOST@EXAMPLE.COM</value>
-    </property>
-
-    <!-- NameNode服务的Kerberos密钥文件路径 -->
-    <property>
-      <name>dfs.namenode.keytab.file</name>
-      <value>/etc/security/keytab/nn.service.keytab</value>
-    </property>
-
-    <!-- Secondary NameNode服务的Kerberos主体 -->
-    <property>
-      <name>dfs.secondary.namenode.keytab.file</name>
-      <value>/etc/security/keytab/sn.service.keytab</value>
-    </property>
-
-    <!-- Secondary NameNode服务的Kerberos密钥文件路径 -->
-    <property>
-      <name>dfs.secondary.namenode.kerberos.principal</name>
-      <value>sn/_HOST@EXAMPLE.COM</value>
-    </property>
-
-    <!-- NameNode Web服务的Kerberos主体 -->
-    <property>
-      <name>dfs.namenode.kerberos.internal.spnego.principal</name>
-      <value>HTTP/_HOST@EXAMPLE.COM</value>
-    </property>
-
-    <!-- WebHDFS REST服务的Kerberos主体 -->
-    <property>
-      <name>dfs.web.authentication.kerberos.principal</name>
-      <value>HTTP/_HOST@EXAMPLE.COM</value>
-    </property>
-
-    <!-- Secondary NameNode Web UI服务的Kerberos主体 -->
-    <property>
-      <name>dfs.secondary.namenode.kerberos.internal.spnego.principal</name>
-      <value>HTTP/_HOST@EXAMPLE.COM</value>
-    </property>
-
-    <!-- Hadoop Web UI的Kerberos密钥文件路径 -->
-    <property>
-      <name>dfs.web.authentication.kerberos.keytab</name>
-      <value>/etc/security/keytab/spnego.service.keytab</value>
-    </property>
-
-    <!-- DataNode服务的Kerberos主体 -->
-    <property>
-      <name>dfs.datanode.kerberos.principal</name>
-      <value>dn/_HOST@EXAMPLE.COM</value>
-    </property>
-
-    <!-- DataNode服务的Kerberos密钥文件路径 -->
-    <property>
-      <name>dfs.datanode.keytab.file</name>
-      <value>/etc/security/keytab/dn.service.keytab</value>
-    </property>
-
-    <!-- 配置NameNode Web UI 使用HTTPS协议 -->
-    <property>
-      <name>dfs.http.policy</name>
-      <value>HTTPS_ONLY</value>
-    </property>
-
-    <!-- 配置DataNode数据传输保护策略为仅认证模式 -->
-    <property>
-      <name>dfs.data.transfer.protection</name>
-      <value>authentication</value>
-    </property>
+  <!-- nn web端访问地址 -->
+  <property>
+    <name>dfs.namenode.http-address</name>
+    <value>hdp101:9870</value>
+  </property>
+  <!-- NN有一个工作线程池，用来处理不同DN的并发心跳以及客户端并发的元数据操作。 -->
+  <property>
+    <name>dfs.namenode.handler.count</name>
+    <value>21</value>
+  </property>
+  <!-- 2nnweb端访问地址 -->
+  <property>
+    <name>dfs.namenode.secondary.http-address</name>
+    <value>hdp103:9868</value>
+  </property>
+  <!-- 测试环境指定HDFS副本的数量1 -->
+  <property>
+    <name>dfs.replication</name>
+    <value>1</value>
+  </property>
+  <!-- HDFS中启用权限检查配置-->
+  <property>
+    <name>dfs.permissions.enabled</name>
+    <value>false</value>
+  </property>
+  <!-- 兼容hive配置 -->
+  <property>
+    <name>dfs.webhdfs.enabled</name>
+    <value>true</value>
+  </property>
 </configuration>

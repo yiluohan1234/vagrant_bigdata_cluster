@@ -17,31 +17,58 @@
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
-    <!-- 指定MapReduce程序运行在Yarn上 -->
-    <property>
-        <name>mapreduce.framework.name</name>
-        <value>yarn</value>
-    </property>
-    <!-- 历史服务器端地址 -->
-    <property>
-        <name>mapreduce.jobhistory.address</name>
-        <value>hdp101:10020</value>
-    </property>
+  <!-- 指定MapReduce程序运行在Yarn上 -->
+  <property>
+    <name>mapreduce.framework.name</name>
+    <value>yarn</value>
+  </property>
+  <!-- 历史服务器端地址 -->
+  <property>
+    <name>mapreduce.jobhistory.address</name>
+    <value>hdp102:10020</value>
+  </property>
 
-    <!-- 历史服务器web端地址 -->
-    <property>
-        <name>mapreduce.jobhistory.webapp.address</name>
-        <value>hdp101:19888</value>
-    </property>
-    <!-- 历史服务器的Kerberos主体 -->
-    <property>
-      <name>mapreduce.jobhistory.keytab</name>
-      <value>/etc/security/keytab/jhs.service.keytab</value>
-    </property>
-
-    <!-- 历史服务器的Kerberos密钥文件 -->
-    <property>
-      <name>mapreduce.jobhistory.principal</name>
-      <value>jhs/_HOST@EXAMPLE.COM</value>
-    </property>
+  <!-- 历史服务器web端地址 -->
+  <property>
+    <name>mapreduce.jobhistory.webapp.address</name>
+    <value>hdp102:19888</value>
+  </property>
+  <property>
+    <name>yarn.app.mapreduce.am.env</name>
+    <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
+  </property>
+  <property>
+    <name>mapreduce.map.env</name>
+    <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
+  </property>
+  <property>
+    <name>mapreduce.reduce.env</name>
+    <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
+  </property>
+  <!-- 配置正在运行中的日志在hdfs上的存放路径 -->
+  <property>
+    <name>mapreduce.jobhistory.intermediate-done-dir</name>
+    <value>/jobhistory/done_intermediate</value>
+  </property>
+  <!-- 配置运行过的日志存放在hdfs上的存放路径 -->
+  <property>
+    <name>mapreduce.jobhistory.done-dir</name>
+    <value>/jobhistory/done</value>
+  </property>
+  <property>
+    <name>mapreduce.application.classpath</name>
+    <value>
+      /home/vagrant/apps/hadoop/etc/hadoop,
+      /home/vagrant/apps/hadoop/share/hadoop/common/lib/*,
+      /home/vagrant/apps/hadoop/share/hadoop/common/*,
+      /home/vagrant/apps/hadoop/share/hadoop/hdfs,
+      /home/vagrant/apps/hadoop/share/hadoop/hdfs/lib/*,
+      /home/vagrant/apps/hadoop/share/hadoop/hdfs/*,
+      /home/vagrant/apps/hadoop/share/hadoop/mapreduce/lib/*,
+      /home/vagrant/apps/hadoop/share/hadoop/mapreduce/*,
+      /home/vagrant/apps/hadoop/share/hadoop/yarn,
+      /home/vagrant/apps/hadoop/share/hadoop/yarn/lib/*,
+      /home/vagrant/apps/hadoop/share/hadoop/yarn/*
+    </value>
+  </property>
 </configuration>

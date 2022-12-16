@@ -9,26 +9,25 @@ setup_hadoop() {
     local app_name_upper=`get_string_upper ${app_name}`
     local res_dir=$(eval echo \$${app_name_upper}_RES_DIR)
     local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
+    local app_ver_dir=$(eval echo \$${app_name_upper}_VERSION_NUM)
 
     log info "creating ${app_name} directories"
     mkdir -p ${INSTALL_PATH}/${app_name}/tmp
 	
     log info "copying over ${app_name} configuration files"
-    cp -f ${res_dir}/${HADOOP_VERSION_NUM}/* ${conf_dir}
+    cp -f ${res_dir}/${app_ver_dir}/* ${conf_dir}
+    # hadoop-env.sh(modify)
+    sed -i "s@^# export JAVA_HOME=.*@export JAVA_HOME=${INSTALL_PATH}/java@" ${conf_dir}/hadoop-env.sh
+    # yarn-evn.sh(add)
+    echo "export JAVA_HOME=${INSTALL_PATH}/java" >> ${conf_dir}/yarn-env.sh
+
     mv ${conf_dir}/hadoop-lzo-0.4.20.jar ${INSTALL_PATH}/hadoop/share/hadoop/common
-    #echo 'export CLASSPATH=$CLASSPATH:${INSTALL_PATH}/hadoop/share/hadoop/common' >> $PROFILE
-    if [ "${IS_KERBEROS}" == "true" ];then
-        sed -i '31,49s/vagrant/hive/g' ${conf_dir}/core-site.xml
-        sed -i '30,34s/vagrant/hive/g' ${conf_dir}/core-site.xml
-    else
-        sed -i '66,99d' ${conf_dir}/core-site.xml
-        sed -i '35,111d' ${conf_dir}/hdfs-site.xml
-        sed -i '36,46d' ${conf_dir}/mapred-site.xml
-        sed -i '73,112d' ${conf_dir}/yarn-site.xml
-        rm -rf ${conf_dir}/ssl-server.xml
-    fi
+    
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
+        sed -i "s@hdp101@${HOSTNAME_LIST[0]}@g" `grep 'hdp101' -rl ${conf_dir}/`
+        sed -i "s@hdp102@${HOSTNAME_LIST[1]}@g" `grep 'hdp102' -rl ${conf_dir}/`
+        sed -i "s@hdp103@${HOSTNAME_LIST[2]}@g" `grep 'hdp103' -rl ${conf_dir}/`
     fi
 }
 
