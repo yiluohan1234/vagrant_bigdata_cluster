@@ -47,8 +47,8 @@ DOWNLOAD_REPO=https://mirrors.huaweicloud.com/apache
 # DOWNLOAD_REPO_APACHE=https://archive.apache.org/dist
 
 # Centos basic apps list.
-CENTOS_BASIC_APPS=("epel-release" "sshpass" "lrzsz" "expect" "unzip" "zip" "vim-enhanced" "lzop" "dos2unix" "nmap-ncat" "net-tools" "nc" "wget" "lsof" "telnet" "tcpdump" "ntp")
-# CENTOS_BASIC_APPS=("epel-release" "sshpass" "lrzsz" "expect")
+# CENTOS_BASIC_APPS=("epel-release" "sshpass" "lrzsz" "expect" "unzip" "zip" "vim-enhanced" "lzop" "dos2unix" "net-tools" "nc" "wget" "lsof" "telnet" "tcpdump" "ntp")
+CENTOS_BASIC_APPS=("epel-release" "sshpass" "lrzsz" "expect")
 
 # mysql
 MYSQL_HOST=hdp103

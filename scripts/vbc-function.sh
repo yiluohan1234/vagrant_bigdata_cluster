@@ -114,13 +114,13 @@ installFromRemote() {
 dispatch_app(){
     local app_name=$1
     log info "dispatch $app_name"
-    for i in "${HOSTNAME[@]}"
+    for hostname in "${HOSTNAME_list[@]}"
     do
         cur_hostname=`cat /etc/hostname`
-        if [ $cur_hostname != $i ];then
-            log info "--------dispatch to $i--------"
-            scp -r -q ${INSTALL_PATH}/$app_name $DEFAULT_USER@$i:${INSTALL_PATH}/
-            scp -q $PROFILE $DEFAULT_USER@$i:$PROFILE
+        if [ $cur_hostname != $hostname ];then
+            log info "--------dispatch to $hostname--------"
+            scp -r -q ${INSTALL_PATH}/$app_name $DEFAULT_USER@$hostname:${INSTALL_PATH}/
+            scp -q $PROFILE $DEFAULT_USER@$hostname:$PROFILE
         fi
     done
 }

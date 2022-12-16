@@ -3,7 +3,7 @@
 bin=`dirname "${BASH_SOURCE-$0}"`
 bin=`cd "$bin"; pwd`
 
-DEFAULT_SCRIPTS_DIR="$bin"/
+DEFAULT_SCRIPTS_DIR="$bin"/../scripts
 VGC_SCRIPTS_DIR=${VGC_SCRIPTS_DIR:-$DEFAULT_SCRIPTS_DIR}
 . $VGC_SCRIPTS_DIR/vbc-config.sh
 . $VGC_SCRIPTS_DIR/vbc-function.sh

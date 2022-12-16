@@ -52,6 +52,10 @@ install_init(){
         sed -i "s@hdp{101..103}@${host_list}@g"  ${INIT_PATH}/xsync
         sed -i "s@hdp{101..103}@${host_list}@g"  ${INIT_PATH}/xcall
         sed -i "s@hdp{101..103}@${host_list}@g"  ${INIT_PATH}/jpsall
+        sed -i "s@hdp{101..103}@${host_list}@g"  ${INIT_PATH}/bigstart
+        sed -i "s@hdp101@${HOSTNAME_LIST[0]}@g"  ${INIT_PATH}/bigstart
+        sed -i "s@hdp102@${HOSTNAME_LIST[1]}@g"  ${INIT_PATH}/bigstart
+        sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" ${INIT_PATH}/bigstart
     fi
     cp $INIT_PATH/jpsall ${INIT_SHELL_BIN}
     cp $INIT_PATH/bigstart ${INIT_SHELL_BIN}

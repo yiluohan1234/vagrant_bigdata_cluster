@@ -42,14 +42,6 @@ install_hadoop() {
             dispatch_app ${app_name}
         fi
     fi
-    
-    echo 'export HDFS_NAMENODE_USER="root"' >> $PROFILE
-    echo 'export HDFS_DATANODE_USER="root"' >> $PROFILE
-    echo 'export HDFS_SECONDARYNAMENODE_USER="root"' >> $PROFILE
-    echo 'export YARN_RESOURCEMANAGER_USER="root"' >> $PROFILE
-    echo 'export YARN_NODEMANAGER_USER="root"' >> $PROFILE
-    # 解决Unable to load native-hadoop library for your platform
-    echo 'export LD_LIBRARY_PATH=$HADOOP_HOME/lib/native/:$LD_LIBRARY_PATH' >> ${PROFILE}
 
     source ${PROFILE}
 }
