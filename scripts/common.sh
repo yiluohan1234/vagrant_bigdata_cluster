@@ -9,18 +9,21 @@ VGC_SCRIPTS_DIR=${VGC_SCRIPTS_DIR:-$DEFAULT_SCRIPTS_DIR}
 . $VGC_SCRIPTS_DIR/vbc-function.sh
 
 # app版本
-HADOOP_VERSION=hadoop-3.1.3
+# HADOOP_VERSION=hadoop-3.1.3
+HADOOP_VERSION=hadoop-2.7.7
 # HIVE_VERSION=hive-3.1.2
 HIVE_VERSION=hive-2.3.4
-HBASE_VERSION=hbase-2.0.6
-SPARK_VERSION=spark-3.0.0
-FLINK_VERSION=flink-1.13.4
-SQOOP_VERSION=sqoop-1.4.7
-ZOOKEEPER_VERSION=zookeeper-3.5.7
+HBASE_VERSION=hbase-1.6.0
+SCALA_VERSION=scala-2.11.11
+SPARK_VERSION=spark-2.4.3
+ZOOKEEPER_VERSION=zookeeper-3.6.3
 # KAFKA_VERSION=kafka_2.11-2.4.1
-KAFKA_VERSION=kafka_2.12-3.0.0
+# KAFKA_VERSION=kafka_2.12-3.0.0
+KAFKA_VERSION=kafka_2.0-0.10.2.2
+FLINK_VERSION=flink-1.13.4
+
+SQOOP_VERSION=sqoop-1.4.7
 FLUME_VERSION=flume-1.9.0
-SCALA_VERSION=scala-2.12.10
 MAVEN_VERSION=maven-3.6.1
 MYSQL_CONNECTOR_VERSION=mysql-connector-java-5.1.49
 MYSQL_VERSION=mysql-5.7.35
@@ -33,7 +36,7 @@ CANAL_VERSION=canal.deployer-1.1.5
 MAXWELL_VERSION=maxwell-1.29.2
 AZKABAN_VERSION=azkaban-3.84.4
 PRESTO_VERSION=presto-server-0.196
-KYLIN_VERSION=apache-kylin-3.0.2
+KYLIN_VERSION=kylin-3.0.2
 
 
 
@@ -270,8 +273,8 @@ PRESTO_CONF_DIR=$INSTALL_PATH/presto/etc
 # kylin
 # https://mirrors.huaweicloud.com/apache/kylin/apache-kylin-3.0.2/apache-kylin-3.0.2-bin-hadoop3.tar.gz
 KYLIN_VERSION_NUM=`get_app_version_num $AZKABAN_VERSION "-" 3`
-KYLIN_ARCHIVE=${KYLIN_VERSION}-bin-hadoop3.tar.gz
-KYLIN_DIR_NAME=${KYLIN_VERSION}-bin-hadoop3
+KYLIN_ARCHIVE=apache-${KYLIN_VERSION}-bin-hadoop3.tar.gz
+KYLIN_DIR_NAME=apache-${KYLIN_VERSION}-bin-hadoop3
 KYLIN_MIRROR_DOWNLOAD=https://mirrors.huaweicloud.com/apache/kylin/$KYLIN_VERSION/$KYLIN_ARCHIVE
 KYLIN_RES_DIR=$RESOURCE_PATH/kylin
 KYLIN_CONF_DIR=$INSTALL_PATH/kylin/bin
