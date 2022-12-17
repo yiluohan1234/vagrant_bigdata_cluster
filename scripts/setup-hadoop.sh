@@ -24,13 +24,13 @@ setup_hadoop() {
     # hadoop-env.sh(modify)
     sed -i "s@^export JAVA_HOME=.*@export JAVA_HOME=${INSTALL_PATH}/java@" ${conf_dir}/hadoop-env.sh
     # yarn-evn.sh(add)
-    echo "export JAVA_HOME=${INSTALL_PATH}/java" >> ${conf_dir}${conf_dir}/yarn-env.sh
+    echo "export JAVA_HOME=${INSTALL_PATH}/java" >> ${conf_dir}/yarn-env.sh
     # master and slaves
     echo "${HOSTNAME_LIST[0]}" >> ${conf_dir}/master
     sed -i '1,$d' ${conf_dir}/slaves 
     echo -e "${HOSTNAME_LIST[0]}\n${HOSTNAME_LIST[1]}\n${HOSTNAME_LIST[2]}" >> ${conf_dir}/slaves
 
-    mv ${conf_dir}/hadoop-lzo-0.4.20.jar ${INSTALL_PATH}/hadoop/share/hadoop/common
+    mv ${res_dir}/hadoop-lzo-0.4.20.jar ${INSTALL_PATH}/hadoop/share/hadoop/common
     
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
