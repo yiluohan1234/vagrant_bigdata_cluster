@@ -4,6 +4,16 @@ if [ -d /vagrant/scripts ];then
     source "/vagrant/scripts/common.sh"
 fi
 
+# sh setup-hosts.sh -i myid
+# 4,5,6
+while getopts i: option
+do
+    case "${option}"
+    in
+        i) ID=${OPTARG};;
+    esac
+done
+
 setup_kafka() {
     local app_name=$1
     local app_name_upper=`get_string_upper ${app_name}`
@@ -21,10 +31,13 @@ setup_kafka() {
     # server.properties
     current_hostname=`cat /etc/hostname`
     value="PLAINTEXT://${current_hostname}:9092"
-    sed -i 's/^broker.id=.*/broker.id=1/' ${conf_dir}/server.properties
+    if [ "${IS_VAGRANT}" == "true" ];then
+        sed -i "s/^broker.id=.*/broker.id=${ID}/" ${conf_dir}/server.properties
+    fi
     sed -i 's@^#listeners=.*@listeners='${value}'@' ${conf_dir}/server.properties
     sed -i 's@^#advertised.listeners=.*@advertised.listeners='${value}'@' ${conf_dir}/server.properties
     sed -i 's@^num.partitions=.*@num.partitions=3@' ${conf_dir}/server.properties
+    sed -i "s@^zookeeper.connect=.*@zookeeper.connect=${HOSTNAME_LIST[0]}:2181,${HOSTNAME_LIST[1]}:2181,${HOSTNAME_LIST[2]}:2181/kafka@" ${conf_dir}/server.properties
     
     # consumer.properties,producer.properties,zookeeper.properties
     sed -i "s@^zookeeper.connect=.*@zookeeper.connect=${HOSTNAME_LIST[0]}:2181,${HOSTNAME_LIST[1]}:2181,${HOSTNAME_LIST[2]}:2181@" ${conf_dir}/consumer.properties
@@ -39,17 +52,19 @@ setup_kafka() {
 dispatch_kafka() {
     local app_name=$1
     dispatch_app ${app_name}
+    sed -i "s/^broker.id=.*/broker.id=1/" ${INSTALL_PATH}/${app_name}/config/server.properties
     length=${#HOSTNAME_LIST[@]}
     for ((i=0; i<$length; i++));do
         current_hostname=`cat /etc/hostname`
-        value="PLAINTEXT://${current_hostname}:9092"
+        value="PLAINTEXT://${HOSTNAME_LIST[$i]}:9092"
         file_path=${INSTALL_PATH}/${app_name}/config/server.properties
 
         if [ "$current_hostname" != "${HOSTNAME_LIST[$i]}" ];then
-            echo "------modify $i server.properties-------"
+            echo "------modify ${HOSTNAME_LIST[$i]} server.properties-------"
             ssh ${HOSTNAME_LIST[$i]} "sed -i 's/^broker.id=.*/broker.id='$(($i+1))'/' ${file_path}"
             ssh ${HOSTNAME_LIST[$i]} "sed -i 's@^listeners=.*@listeners='${value}'@' ${file_path}"
             ssh ${HOSTNAME_LIST[$i]} "sed -i 's@^advertised.listeners=.*@advertised.listeners='${value}'@' ${file_path}"
+            ssh ${HOSTNAME_LIST[$i]} "sed -i 's@^zookeeper.connect=.*@zookeeper.connect='${HOSTNAME_LIST[0]}':2181,'${HOSTNAME_LIST[1]}':2181,'${HOSTNAME_LIST[2]}':2181/kafka@' ${file_path}"
         fi
     done
 }
