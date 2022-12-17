@@ -61,10 +61,10 @@ dispatch_zookeeper() {
     length=${#HOSTNAME_LIST[@]}
     for ((i=0; i<$length; i++));do
         current_hostname=`cat /etc/hostname`
-        if [ "$current_hostname" != "${HOSTNAME_LIST[0]}" ];then
+        if [ "$current_hostname" != "${HOSTNAME_LIST[$i]}" ];then
             ssh ${HOSTNAME_LIST[$i]} "mkdir -p ${INSTALL_PATH}/${app_name}/data"
             ssh ${HOSTNAME_LIST[$i]} "mkdir -p ${INSTALL_PATH}/${app_name}/logs"
-            ssh ${HOSTNAME_LIST[$i]} "echo $i >> ${INSTALL_PATH}/${app_name}/data/myid"
+            ssh ${HOSTNAME_LIST[$i]} "echo $(($i+1)) >> ${INSTALL_PATH}/${app_name}/data/myid"
         fi
     done
 }
