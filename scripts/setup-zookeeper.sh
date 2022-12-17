@@ -55,7 +55,6 @@ setup_zookeeper() {
 
 dispatch_zookeeper() {
     local app_name=$1
-    log info "dispatch ${app_name}" 
     dispatch_app ${app_name}
     echo "1" >> ${INSTALL_PATH}/${app_name}/data/myid
     length=${#HOSTNAME_LIST[@]}
