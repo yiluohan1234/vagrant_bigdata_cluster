@@ -13,6 +13,7 @@ setup_sqoop() {
     sed -i '134,143s/^/#/' ${INSTALL_PATH}/${app_name}/bin/configure-sqoop
 
     # sqoop-env.sh
+    cp ${conf_dir}/sqoop-env-template.sh ${conf_dir}/sqoop-env.sh
     echo "export HADOOP_COMMON_HOME=/home/vagrant/apps/hadoop" >> ${conf_dir}/sqoop-env.sh
     echo "export HADOOP_MAPRED_HOME=/home/vagrant/apps/hadoop" >> ${conf_dir}/sqoop-env.sh
     echo "export HBASE_HOME=/home/vagrant/apps/hbase" >> ${conf_dir}/sqoop-env.sh
