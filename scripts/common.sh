@@ -48,6 +48,7 @@ JAVA_DIR_NAME=jdk1.8.0_201
 # https://mirrors.huaweicloud.com/apache/hadoop/core/hadoop-3.1.3/hadoop-3.1.3.tar.gz
 # https://archive.apache.org/dist => https://mirrors.huaweicloud.com/apache
 HADOOP_VERSION_NUM=`get_app_version_num $HADOOP_VERSION "-" 2`
+HADOOP_VERSION_NUM_TWO=`echo ${HADOOP_VERSION:7:3}`
 HADOOP_ARCHIVE=$HADOOP_VERSION.tar.gz
 HADOOP_DIR_NAME=$HADOOP_VERSION
 HADOOP_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/hadoop/core/$HADOOP_VERSION/$HADOOP_ARCHIVE
@@ -82,8 +83,8 @@ HBASE_CONF_DIR=$INSTALL_PATH/hbase/conf
 #         https://archive.apache.org/dist/spark/spark-2.4.6/spark-2.4.6-bin-hadoop2.7.tgz
 # https://mirrors.huaweicloud.com/apache/spark/spark-3.0.0/spark-3.0.0-bin-hadoop3.2.tgz
 SPARK_VERSION_NUM=`get_app_version_num $SPARK_VERSION "-" 2`
-SPARK_ARCHIVE=$SPARK_VERSION-bin-hadoop3.2.tgz
-SPARK_DIR_NAME=${SPARK_VERSION}-bin-hadoop3.2
+SPARK_ARCHIVE=$SPARK_VERSION-bin-hadoop${HADOOP_VERSION_NUM_TWO}.tgz
+SPARK_DIR_NAME=${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION_NUM_TWO}
 SPARK_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/spark/$SPARK_VERSION/$SPARK_ARCHIVE
 SPARK_RES_DIR=$RESOURCE_PATH/spark
 SPARK_CONF_DIR=$INSTALL_PATH/spark/conf

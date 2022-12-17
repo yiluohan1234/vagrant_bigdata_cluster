@@ -16,6 +16,7 @@ do
 done
 
 install_init(){
+    log info "install init"
     # 更改主机名称
     hostnamectl set-hostname ${HOSTNAME_LIST[$(( id-1 ))]}
 
@@ -45,18 +46,19 @@ install_init(){
 
 
     # 复制初始化程序到init_shell的bin目录
-    log info "copy init shell to ${INIT_SHELL_BIN}"
+    # log info "copy init shell to ${INIT_SHELL_BIN}"
     for name in ${HOSTNAME_LIST[@]}; do host_list="${host_list:-} ""$name"; done
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" ${INIT_PATH}/jpsall
-        sed -i "s@hdp{101..103}@${host_list}@g"  ${INIT_PATH}/xsync
-        sed -i "s@hdp{101..103}@${host_list}@g"  ${INIT_PATH}/xcall
-        sed -i "s@hdp{101..103}@${host_list}@g"  ${INIT_PATH}/jpsall
-        sed -i "s@hdp{101..103}@${host_list}@g"  ${INIT_PATH}/bigstart
-        sed -i "s@hdp101@${HOSTNAME_LIST[0]}@g"  ${INIT_PATH}/bigstart
-        sed -i "s@hdp102@${HOSTNAME_LIST[1]}@g"  ${INIT_PATH}/bigstart
-        sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" ${INIT_PATH}/bigstart
     fi
+    sed -i "s@hdp{101..103}@${host_list}@g"  ${INIT_PATH}/xsync
+    sed -i "s@hdp{101..103}@${host_list}@g"  ${INIT_PATH}/xcall
+    sed -i "s@hdp{101..103}@${host_list}@g"  ${INIT_PATH}/jpsall
+    sed -i "s@hdp{101..103}@${host_list}@g"  ${INIT_PATH}/bigstart
+    sed -i "s@hdp101@${HOSTNAME_LIST[0]}@g"  ${INIT_PATH}/bigstart
+    sed -i "s@hdp102@${HOSTNAME_LIST[1]}@g"  ${INIT_PATH}/bigstart
+    sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" ${INIT_PATH}/bigstart
+
     cp $INIT_PATH/jpsall ${INIT_SHELL_BIN}
     cp $INIT_PATH/bigstart ${INIT_SHELL_BIN}
     cp $INIT_PATH/setssh ${INIT_SHELL_BIN}
