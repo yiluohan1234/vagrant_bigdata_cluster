@@ -46,7 +46,7 @@ dispatch_kafka() {
         value="PLAINTEXT://$ip:9092"
         file_path=${INSTALL_PATH}/${app_name}/config/server.properties
 
-        if [ "$current_hostname" != "${HOSTNAME_LIST[0]}" ];then
+        if [ "$current_hostname" != "${HOSTNAME_LIST[$i]}" ];then
             echo "------modify $i server.properties-------"
             ssh ${HOSTNAME_LIST[$i]} "sed -i 's/^broker.id=.*/broker.id='${ip_end}'/' ${file_path}"
             ssh ${HOSTNAME_LIST[$i]} "sed -i 's@^listeners=.*@listeners='${value}'@' ${file_path}"
