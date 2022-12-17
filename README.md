@@ -357,7 +357,7 @@ bigstart kibana start(或stop)
 
 [ResourceManager](http://hdp102:8088)
 
-[JobHistory](http://hdp101:19888/jobhistory)
+[JobHistory](http://hdp102:19888/jobhistory)
 
 [Spark](http://hdp101:8080/)
 

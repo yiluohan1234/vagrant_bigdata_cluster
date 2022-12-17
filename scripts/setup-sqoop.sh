@@ -10,8 +10,14 @@ setup_sqoop() {
     local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
 
     log info "copying over ${app_name} configuration files"
-    cp -f ${res_dir}/sqoop-env.sh ${conf_dir}
-    cp -f ${res_dir}/configure-sqoop ${INSTALL_PATH}/${app_name}/bin
+    sed -i '134,143s/^/#/' ${INSTALL_PATH}/${app_name}/bin/configure-sqoop
+
+    # sqoop-env.sh
+    echo "export HADOOP_COMMON_HOME=/home/vagrant/apps/hadoop" >> ${conf_dir}/sqoop-env.sh
+    echo "export HADOOP_MAPRED_HOME=/home/vagrant/apps/hadoop" >> ${conf_dir}/sqoop-env.sh
+    echo "export HBASE_HOME=/home/vagrant/apps/hbase" >> ${conf_dir}/sqoop-env.sh
+    echo "export HIVE_HOME=/home/vagrant/apps/hive" >> ${conf_dir}/sqoop-env.sh
+    echo "export ZOOCFGDIR=/home/vagrant/apps/zookeeper/conf" >> ${conf_dir}/sqoop-env.sh
 
     wget_mysql_connector ${INSTALL_PATH}/${app_name}/lib
 

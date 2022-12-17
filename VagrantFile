@@ -79,15 +79,15 @@ Vagrant.configure("2") do |config|
       #   end
       # end
 
-      # node.vm.provision "shell" do |s|
-      #   s.path = "scripts/setup-zookeeper.sh"
-      #   s.args = "-i #{i}"
-      # end
+      node.vm.provision "shell" do |s|
+        s.path = "scripts/setup-zookeeper.sh"
+        s.args = "-i #{i}"
+      end
       
-      # node.vm.provision "shell",  path: "scripts/setup-hbase.sh"
-      # node.vm.provision "shell",  path: "scripts/setup-scala.sh"
-      # node.vm.provision "shell",  path: "scripts/setup-spark.sh"
-      # node.vm.provision "shell",  path: "scripts/setup-kafka.sh"
+      node.vm.provision "shell",  path: "scripts/setup-hbase.sh"
+      node.vm.provision "shell",  path: "scripts/setup-scala.sh"
+      node.vm.provision "shell",  path: "scripts/setup-spark.sh"
+      node.vm.provision "shell",  path: "scripts/setup-kafka.sh"
       # node.vm.provision "shell",  path: "scripts/setup-sqoop.sh"
       
       # node.vm.provision "shell",  path: "scripts/setup-phoenix.sh"
@@ -104,7 +104,7 @@ Vagrant.configure("2") do |config|
       #   end
       # end
 
-      # node.vm.provision "shell",  path: "scripts/setup-clean.sh"
+      node.vm.provision "shell",  path: "scripts/setup-clean.sh"
     end
   end
 end

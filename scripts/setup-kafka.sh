@@ -14,21 +14,22 @@ setup_kafka() {
     mkdir -p ${INSTALL_PATH}/kafka/tmp/kafka-logs
 
     log info "copying over $app_name configuration files"
-    cp -f ${res_dir}/* ${conf_dir}
-    echo -e "\n" >> ${INSTALL_PATH}/kafka/bin/kafka-run-class.sh
-    echo "export JAVA_HOME=/home/vagrant/apps/java" >> ${INSTALL_PATH}/kafka/bin/kafka-run-class.sh
+    # cp -f ${res_dir}/* ${conf_dir}
+    # echo -e "\n" >> ${INSTALL_PATH}/kafka/bin/kafka-run-class.sh
+    # echo "export JAVA_HOME=/home/vagrant/apps/java" >> ${INSTALL_PATH}/kafka/bin/kafka-run-class.sh
 
-    if [ "$IS_VAGRANT" == "true" ];then
-        hostname=`cat /etc/hostname`
-        ip=`cat /etc/hosts |grep ${hostname}|awk '{print $1}'`
-        ip_end=${ip##*.} 
-        value="PLAINTEXT://${ip}:9092"
-        file_path=${INSTALL_PATH}/${app_name}/config/server.properties
-        log info "------modify $i server.properties-------"
-        sed -i 's/^broker.id=.*/broker.id='${ip_end}'/' ${file_path}
-        sed -i 's@^listeners=.*@listeners='${value}'@' ${file_path}
-        sed -i 's@^advertised.listeners=.*@advertised.listeners='${value}'@' ${file_path}
-    fi
+    # server.properties
+    current_hostname=`cat /etc/hostname`
+    value="PLAINTEXT://${current_hostname}:9092"
+    sed -i 's/^broker.id=.*/broker.id=1/' ${conf_dir}/server.properties
+    sed -i 's@^listeners=.*@listeners='${value}'@' ${conf_dir}/server.properties
+    sed -i 's@^advertised.listeners=.*@advertised.listeners='${value}'@' ${conf_dir}/server.properties
+    sed -i 's@^num.partitions=.*@num.partitions=3@' ${conf_dir}/server.properties
+    
+    # consumer.properties,producer.properties,zookeeper.properties
+    sed -i "s@^zookeeper.connect=.*@zookeeper.connect=${HOSTNAME_LIST[0]}:2181,${HOSTNAME_LIST[1]}:2181,${HOSTNAME_LIST[2]}:2181@" ${conf_dir}/consumer.properties
+    sed -i "s@^bootstrap.servers=.*@bootstrap.servers=${HOSTNAME_LIST[0]}:9092,${HOSTNAME_LIST[1]}:9092,${HOSTNAME_LIST[2]}:9092@" ${conf_dir}/producer.properties
+    sed -i 's@^dataDir=.*@dataDir=/home/vagrant/apps/zookeeper/data@' ${conf_dir}/zookeeper.properties
 
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
@@ -41,14 +42,12 @@ dispatch_kafka() {
     length=${#HOSTNAME_LIST[@]}
     for ((i=0; i<$length; i++));do
         current_hostname=`cat /etc/hostname`
-        ip=`cat /etc/hosts |grep $i|awk '{print $1}'`
-        ip_end=${ip##*.} 
-        value="PLAINTEXT://$ip:9092"
+        value="PLAINTEXT://${current_hostname}:9092"
         file_path=${INSTALL_PATH}/${app_name}/config/server.properties
 
         if [ "$current_hostname" != "${HOSTNAME_LIST[$i]}" ];then
             echo "------modify $i server.properties-------"
-            ssh ${HOSTNAME_LIST[$i]} "sed -i 's/^broker.id=.*/broker.id='${ip_end}'/' ${file_path}"
+            ssh ${HOSTNAME_LIST[$i]} "sed -i 's/^broker.id=.*/broker.id='$(($i+1))'/' ${file_path}"
             ssh ${HOSTNAME_LIST[$i]} "sed -i 's@^listeners=.*@listeners='${value}'@' ${file_path}"
             ssh ${HOSTNAME_LIST[$i]} "sed -i 's@^advertised.listeners=.*@advertised.listeners='${value}'@' ${file_path}"
         fi
