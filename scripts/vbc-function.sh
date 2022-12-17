@@ -180,7 +180,7 @@ dispatch_app(){
 setupEnv_app() {
     local app_name=$1
     local type_name=$2
-    echo "creating $app_name environment variables"
+    log info "creating $app_name environment variables"
     local app_path=${INSTALL_PATH}/$app_name
     local app_name_uppercase=$(echo $app_name | tr '[a-z]' '[A-Z]')
     #LOWERCASE=$(echo $app_name | tr '[A-Z]' '[a-z]')
