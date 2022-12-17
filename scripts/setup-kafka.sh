@@ -22,8 +22,8 @@ setup_kafka() {
     current_hostname=`cat /etc/hostname`
     value="PLAINTEXT://${current_hostname}:9092"
     sed -i 's/^broker.id=.*/broker.id=1/' ${conf_dir}/server.properties
-    sed -i 's@^listeners=.*@listeners='${value}'@' ${conf_dir}/server.properties
-    sed -i 's@^advertised.listeners=.*@advertised.listeners='${value}'@' ${conf_dir}/server.properties
+    sed -i 's@^#listeners=.*@listeners='${value}'@' ${conf_dir}/server.properties
+    sed -i 's@^#advertised.listeners=.*@advertised.listeners='${value}'@' ${conf_dir}/server.properties
     sed -i 's@^num.partitions=.*@num.partitions=3@' ${conf_dir}/server.properties
     
     # consumer.properties,producer.properties,zookeeper.properties
