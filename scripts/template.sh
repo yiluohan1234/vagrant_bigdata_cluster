@@ -12,11 +12,17 @@ setup_#@() {
 
     log info "create ${app_name} configuration directories"
     mkdir -p ${INSTALL_PATH}/elasticsearch/datas
-    mkdir -p ${INSTALL_PATH}/elasticsearch/logs
 
     log info "copying over ${app_name} configuration files"
     # 将resources配置文件拷贝到插件的配置目录
     cp -f $res_dir/* $conf_dir
+
+    sed -i '1,$d' ${conf_dir}/regionservers 
+    echo -e "${HOSTNAME_LIST[0]}\n${HOSTNAME_LIST[1]}\n${HOSTNAME_LIST[2]}" >> ${conf_dir}/regionservers
+    # 更换默认配置
+    sed -i "s@hdp101@${HOSTNAME_LIST[0]}@g" `grep 'hdp101' -rl ${conf_dir}/`
+    sed -i "s@hdp102@${HOSTNAME_LIST[1]}@g" `grep 'hdp102' -rl ${conf_dir}/`
+    sed -i "s@hdp103@${HOSTNAME_LIST[2]}@g" `grep 'hdp103' -rl ${conf_dir}/`
     
     # 配置环境中不同节点配置不同的情况
     if [ "${IS_VAGRANT}" == "true" ];then
