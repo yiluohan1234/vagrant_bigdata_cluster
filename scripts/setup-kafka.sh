@@ -42,11 +42,8 @@ setup_kafka() {
     # consumer.properties,producer.properties,zookeeper.properties
     sed -i "s@^zookeeper.connect=.*@zookeeper.connect=${HOSTNAME_LIST[0]}:2181,${HOSTNAME_LIST[1]}:2181,${HOSTNAME_LIST[2]}:2181@" ${conf_dir}/consumer.properties
     sed -i "s@^bootstrap.servers=.*@bootstrap.servers=${HOSTNAME_LIST[0]}:9092,${HOSTNAME_LIST[1]}:9092,${HOSTNAME_LIST[2]}:9092@" ${conf_dir}/producer.properties
-    sed -i 's@^dataDir=.*@dataDir=/home/vagrant/apps/zookeeper/data@' ${conf_dir}/zookeeper.properties
+    sed -i "s@^dataDir=.*@dataDir=${INSTALL_PATH}/zookeeper/data@" ${conf_dir}/zookeeper.properties
 
-    if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
-        sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
-    fi
 }
 
 dispatch_kafka() {
