@@ -2,13 +2,19 @@
 bin=`dirname "${BASH_SOURCE-$0}"`
 bin=`cd "$bin"; pwd`
 
-DEFAULT_MAIN_DIR="$bin"/../
+DEFAULT_MAIN_DIR="$bin"/..
 VGC_MAIN_DIR=${VGC_MAIN_DIR:-$DEFAULT_MAIN_DIR}
 
 # ip,hostname
 IP_LIST=("192.168.10.101" "192.168.10.102" "192.168.10.103")
 HOSTNAME_LIST=("master" "slave1" "slave2")
 PASSWD_LIST=("vagrant" "vagrant" "vagrant")
+
+# 安装目录
+INSTALL_PATH=/opt/module
+
+# 环境变量配置文件
+PROFILE=/etc/profile
 
 # 是否用vagrant安装集群
 IS_VAGRANT="true"
@@ -32,18 +38,12 @@ DEFAULT_GROUP=root
 # 配置文件目录
 RESOURCE_PATH=$VGC_MAIN_DIR/resources
 
-# 安装目录
-INSTALL_PATH=/opt/module
-
 # 组件下载目录
 DOWNLOAD_PATH=$VGC_MAIN_DIR/downloads
 
 # 初始化集群目录
 INIT_PATH=$RESOURCE_PATH/init_bin
 INIT_SHELL_BIN=$INSTALL_PATH/init_bin
-
-# 环境变量配置文件
-PROFILE=/etc/profile
 
 # 下载组建的镜像地址
 # 1:https://archive.apache.org/dist

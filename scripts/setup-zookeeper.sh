@@ -25,8 +25,8 @@ setup_zookeeper() {
     mkdir -p ${INSTALL_PATH}/zookeeper/logs
     touch ${INSTALL_PATH}/zookeeper/data/myid
 
-    log info "copying over ${app_name} configuration files"
-    cp -f ${res_dir}/* ${conf_dir}
+    log info "modify the ${app_name} configuration files"
+    # cp -f ${res_dir}/* ${conf_dir}
 
     # log4j.properties
     log4j_path=${conf_dir}/log4j.properties
@@ -38,6 +38,15 @@ setup_zookeeper() {
     # zkEnv.sh
     zkenv_path=${INSTALL_PATH}/${app_name}/bin/zkEnv.sh
     sed -i 's@ZOO_LOG4J_PROP="INFO,CONSOLE"*@ZOO_LOG4J_PROP="INFO,CONSOLE,ROLLINGFILE"@' ${zkenv_path}
+
+    # zoo.cfg
+    cp ${conf_dir}/zoo_sample.cfg ${conf_dir}/zoo.cfg
+    sed -i "s@^dataDir=.*@dataDir=${INSTALL_PATH}/zookeeper/data@" ${conf_dir}/zoo.cfg
+    echo "dataLogDir=${INSTALL_PATH}/zookeeper/logs" >> ${conf_dir}/zoo.cfg
+    length=${#HOSTNAME_LIST[@]}
+    for ((i=0; i<$length; i++));do
+        echo "server.$(($i+1))=${HOSTNAME_LIST[$i]}:2888:3888" >> ${conf_dir}/zoo.cfg
+    done
 
     if [ "${IS_VAGRANT}" == "true" ];then
         echo $MYID >>${INSTALL_PATH}/zookeeper/data/myid

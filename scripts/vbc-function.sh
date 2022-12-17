@@ -157,6 +157,7 @@ installFromRemote() {
 ## @description 分发app目录
 ## @param app_name
 ## @eg dispatch_app kafka
+## i=$(($i+1))
 dispatch_app(){
     local app_name=$1
     log info "dispatch $app_name"
