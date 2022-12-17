@@ -6,7 +6,7 @@ fi
 
 install_mysql() {
     # 安装mysql57
-    wget http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
+    curl -o /root/mysql57-community-release-el7-11.noarch.rpm -O -L http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
     rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
     yum -y install mysql57-community-release-el7-11.noarch.rpm
     yum -y install mysql-community-server
@@ -47,7 +47,7 @@ install_mysql() {
     
     # 删除
     yum -y remove mysql57-community-release-el7-11.noarch
-    rm -rf ~/mysql57-community-release-el7-11.noarch.rpm
+    rm -rf /root/mysql57-community-release-el7-11.noarch.rpm
 
 }
 
