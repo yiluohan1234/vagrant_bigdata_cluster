@@ -70,13 +70,16 @@ hadoop(){
             echo " --------------- 启动 hdfs ---------------"
             ssh hdp101 "source /etc/profile;$INSTALL_PATH/hadoop/sbin/start-dfs.sh"
             echo " --------------- 启动 yarn ---------------"
+            # 哪台机器部署resoucemanager哪台机器启动
             ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/sbin/start-yarn.sh"
             echo " --------------- 启动 historyserver ---------------"
-            ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/bin/mapred --daemon start historyserver"
+            # ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/bin/mapred --daemon start historyserver"
+            ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/sbin/mr-jobhistory-daemon.sh start historyserver"
             ;;
         stop)
             echo " --------------- 关闭 historyserver ---------------"
-            ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/bin/mapred --daemon stop historyserver"
+            # ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/bin/mapred --daemon stop historyserver"
+            ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/sbin/mr-jobhistory-daemon.sh stop historyserver"
             echo " --------------- 关闭 yarn ---------------"
             ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/sbin/stop-yarn.sh"
             echo " --------------- 关闭 hdfs ---------------"

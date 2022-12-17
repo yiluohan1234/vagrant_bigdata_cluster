@@ -8,7 +8,7 @@ Vagrant.configure("2") do |config|
   #config.ssh.private_key_path = "~/.ssh/id_rsa"
   #config.ssh.forward_agent = true
   numNodes = 3
-  nodeRange = 1..1
+  nodeRange = 1..3
   (nodeRange.first).upto(nodeRange.last).each do |i|
     config.vm.define "hdp#{i}" do |node|
       # 设置虚拟机的Box
@@ -37,12 +37,66 @@ Vagrant.configure("2") do |config|
       end
 
       # 使用shell脚本进行软件安装和配置
-      # node.vm.provision "shell",  path: "scripts/setup-centos.sh"
+      node.vm.provision "shell",  path: "scripts/setup-centos.sh"
+      node.vm.provision "shell" do |s|
+        s.path = "scripts/setup-init.sh"
+        s.args = "-i #{i}"
+      end
+      node.vm.provision "shell",  path: "scripts/setup-hosts.sh"
+      node.vm.provision "shell",  path: "scripts/setup-java.sh"
+      node.vm.provision "shell",  path: "scripts/setup-hadoop.sh"
+      # node.vm.provision "shell",  path: "scripts/setup-kerberos.sh"
+
+
+      # if i == nodeRange.first
+      #   node.vm.provision "shell" do |s|
+      #     s.path = "scripts/setup-maven.sh"
+      #   end
+      #   node.vm.provision "shell" do |s|
+      #     s.path = "scripts/setup-azkaban.sh"
+      #   end
+      #   node.vm.provision "shell" do |s|
+      #     s.path = "scripts/setup-kylin.sh"
+      #   end
+      #   node.vm.provision "shell" do |s|
+      #       s.path = "scripts/setup-hive.sh"
+      #       # s.privileged = false
+      #   end
+      #   node.vm.provision "shell" do |s|
+      #      s.path = "scripts/setup-nginx.sh"
+      #   end
+      #   node.vm.provision "shell" do |s|
+      #      s.path = "scripts/setup-kibana.sh"
+      #   end
+      #   node.vm.provision "shell" do |s|
+      #      s.path = "scripts/setup-redis.sh"
+      #   end
+      #   node.vm.provision "shell" do |s|
+      #      s.path = "scripts/setup-canal.sh"
+      #   end
+      #   node.vm.provision "shell" do |s|
+      #      s.path = "scripts/setup-maxwell.sh"
+      #   end
+      # end
+
       # node.vm.provision "shell" do |s|
-      #   s.path = "scripts/setup-init.sh"
+      #   s.path = "scripts/setup-zookeeper.sh"
       #   s.args = "-i #{i}"
       # end
-      # node.vm.provision "shell",  path: "scripts/setup-hosts.sh"
+      
+      # node.vm.provision "shell",  path: "scripts/setup-hbase.sh"
+      # node.vm.provision "shell",  path: "scripts/setup-scala.sh"
+      # node.vm.provision "shell",  path: "scripts/setup-spark.sh"
+      # node.vm.provision "shell",  path: "scripts/setup-kafka.sh"
+      # node.vm.provision "shell",  path: "scripts/setup-sqoop.sh"
+      
+      # node.vm.provision "shell",  path: "scripts/setup-phoenix.sh"
+      # node.vm.provision "shell",  path: "scripts/setup-flume.sh"
+      # node.vm.provision "shell",  path: "scripts/setup-flink.sh"
+      # node.vm.provision "shell",  path: "scripts/setup-presto.sh"
+      # node.vm.provision "shell",  path: "scripts/setup-es.sh"
+      # node.vm.provision "shell",  path: "scripts/setup-zabbix.sh"
+      
 
       # if i == nodeRange.last
       #   node.vm.provision "shell" do |s|
@@ -50,54 +104,6 @@ Vagrant.configure("2") do |config|
       #   end
       # end
 
-      # node.vm.provision "shell",  path: "scripts/setup-java.sh"
-      # # node.vm.provision "shell",  path: "scripts/setup-kerberos.sh"
-      # node.vm.provision "shell",  path: "scripts/setup-hadoop.sh"
-      # node.vm.provision "shell" do |s|
-      #   s.path = "scripts/setup-zookeeper.sh"
-      #   s.args = "-i #{i}"
-      # end
-      if i == nodeRange.first
-        # node.vm.provision "shell" do |s|
-        #   s.path = "scripts/setup-maven.sh"
-        # end
-        # node.vm.provision "shell" do |s|
-        #   s.path = "scripts/setup-azkaban.sh"
-        # end
-        # node.vm.provision "shell" do |s|
-        #   s.path = "scripts/setup-kylin.sh"
-        # end
-        # node.vm.provision "shell" do |s|
-        #     s.path = "scripts/setup-hive.sh"
-        #     # s.privileged = false
-        # end
-        # node.vm.provision "shell" do |s|
-        #    s.path = "scripts/setup-nginx.sh"
-        # end
-        # node.vm.provision "shell" do |s|
-        #    s.path = "scripts/setup-kibana.sh"
-        # end
-        # node.vm.provision "shell" do |s|
-        #    s.path = "scripts/setup-redis.sh"
-        # end
-        # node.vm.provision "shell" do |s|
-        #    s.path = "scripts/setup-canal.sh"
-        # end
-        # node.vm.provision "shell" do |s|
-        #    s.path = "scripts/setup-maxwell.sh"
-        # end
-      end
-      # node.vm.provision "shell",  path: "scripts/setup-sqoop.sh"
-      # node.vm.provision "shell",  path: "scripts/setup-scala.sh"
-      # node.vm.provision "shell",  path: "scripts/setup-spark.sh"
-      node.vm.provision "shell",  path: "scripts/setup-kafka.sh"
-      # node.vm.provision "shell",  path: "scripts/setup-hbase.sh"
-      # node.vm.provision "shell",  path: "scripts/setup-flume.sh"
-      # node.vm.provision "shell",  path: "scripts/setup-flink.sh"
-      # node.vm.provision "shell",  path: "scripts/setup-phoenix.sh"
-      # node.vm.provision "shell",  path: "scripts/setup-presto.sh"
-      # # node.vm.provision "shell",  path: "scripts/setup-zabbix.sh"
-      # node.vm.provision "shell",  path: "scripts/setup-es.sh"
       # node.vm.provision "shell",  path: "scripts/setup-clean.sh"
     end
   end

@@ -1,29 +1,75 @@
 #!/bin/bash
+# log
+DATETIME=`date "+%F %T"`
 
-## @description  Check if an array has a given value
-## @audience     public
-## @stability    stable
-## @replaceable  yes
-## @param        element
-## @param        array
-## @returns      0 = yes
-## @returns      1 = no
-function hadoop_array_contains
-{
-  declare element=$1
-  shift
-  declare val
+success() {
+    printf "\r$DATETIME [ \033[00;32mINFO\033[0m ]%s\n" "$1"
+}
 
-  if [[ "$#" -eq 0 ]]; then
-    return 1
-  fi
+warn() {
+    printf "\r$DATETIME [\033[0;33mWARNING\033[0m]%s\n" "$1"
+}
 
-  for val in "${@}"; do
-    if [[ "${val}" == "${element}" ]]; then
-      return 0
+fail() {
+    printf "\r$DATETIME [ \033[0;31mERROR\033[0m ]%s\n" "$1"
+}
+
+usage() {
+    echo "Usage: ${0##*/} {info|warn|err} MSG"
+}
+
+## @description log
+## @param info/warn/err
+## @param info
+## @eg log info/warn/err "This is a test.."
+log() {
+    if [ $# -lt 2 ]; then
+        log err "Not enough arguments [$#] to log."
     fi
-  done
-  return 1
+
+    __LOG_PRIO="$1"
+    shift
+    __LOG_MSG="$*"
+
+    case "${__LOG_PRIO}" in
+        crit) __LOG_PRIO="CRIT";;
+        err) __LOG_PRIO="ERROR";;
+        warn) __LOG_PRIO="WARNING";;
+        info) __LOG_PRIO="INFO";;
+        debug) __LOG_PRIO="DEBUG";;
+    esac
+
+    if [ "${__LOG_PRIO}" = "INFO" ]; then
+        success " $__LOG_MSG"
+    elif [ "${__LOG_PRIO}" = "WARNING" ]; then
+        warn " $__LOG_MSG"
+    elif [ "${__LOG_PRIO}" = "ERROR" ]; then
+        fail " $__LOG_MSG"
+    else
+       usage
+    fi
+}
+
+# 将配置转换为xml
+# eg: get_app_version_num $HIVE_VERSION "-" 2
+create_property_xml() {
+    local in=$1
+    local out=$2
+
+    log info "配置 $in"
+    sed -i "/<configuration>/Q" $out
+    echo "<configuration>" >> $out
+    for line in `cat $in | grep -v '#'| grep -v '^$'`
+    do
+        name=`echo $line|cut -d "=" -f 1`
+        value=`echo $line|cut -d "=" -f 2`
+
+        echo "  <property>" >> $out
+        echo "    <name>$name</name>" >> $out
+        echo "    <value>$value</value>" >> $out
+        echo "  </property>" >> $out
+    done
+    echo "</configuration>" >> $out
 }
 
 # 获取app的版本号
@@ -114,8 +160,9 @@ installFromRemote() {
 dispatch_app(){
     local app_name=$1
     log info "dispatch $app_name"
-    for hostname in "${HOSTNAME_list[@]}"
-    do
+    length=${#HOSTNAME_LIST[@]}
+    for ((i=0; i<$length; i++));do
+        hostname=${HOSTNAME_LIST[$i]}
         cur_hostname=`cat /etc/hostname`
         if [ $cur_hostname != $hostname ];then
             log info "--------dispatch to $hostname--------"
@@ -177,56 +224,6 @@ download_and_unzip_app() {
     mv ${INSTALL_PATH}/${app_dir_name} ${INSTALL_PATH}/${app_name}
     chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_name}
     # rm ${DOWNLOAD_PATH}/${archive}
-}
-# log
-DATETIME=`date "+%F %T"`
-
-success() {
-    printf "\r$DATETIME [ \033[00;32mINFO\033[0m ]%s\n" "$1"
-}
-
-warn() {
-    printf "\r$DATETIME [\033[0;33mWARNING\033[0m]%s\n" "$1"
-}
-
-fail() {
-    printf "\r$DATETIME [ \033[0;31mERROR\033[0m ]%s\n" "$1"
-}
-
-usage() {
-    echo "Usage: ${0##*/} {info|warn|err} MSG"
-}
-
-## @description log
-## @param info/warn/err
-## @param info
-## @eg log info/warn/err "This is a test.."
-log() {
-    if [ $# -lt 2 ]; then
-        log err "Not enough arguments [$#] to log."
-    fi
-
-    __LOG_PRIO="$1"
-    shift
-    __LOG_MSG="$*"
-
-    case "${__LOG_PRIO}" in
-        crit) __LOG_PRIO="CRIT";;
-        err) __LOG_PRIO="ERROR";;
-        warn) __LOG_PRIO="WARNING";;
-        info) __LOG_PRIO="INFO";;
-        debug) __LOG_PRIO="DEBUG";;
-    esac
-
-    if [ "${__LOG_PRIO}" = "INFO" ]; then
-        success " $__LOG_MSG"
-    elif [ "${__LOG_PRIO}" = "WARNING" ]; then
-        warn " $__LOG_MSG"
-    elif [ "${__LOG_PRIO}" = "ERROR" ]; then
-        fail " $__LOG_MSG"
-    else
-       usage
-    fi
 }
 
 ## @description 显示apps的版本号

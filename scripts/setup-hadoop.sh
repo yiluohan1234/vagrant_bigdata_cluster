@@ -15,11 +15,20 @@ setup_hadoop() {
     mkdir -p ${INSTALL_PATH}/${app_name}/tmp
 	
     log info "copying over ${app_name} configuration files"
-    cp -f ${res_dir}/${app_ver_dir}/* ${conf_dir}
+    # cp -f ${res_dir}/${app_ver_dir}/* ${conf_dir}
+    create_property_xml ${res_dir}/core-site.properties ${conf_dir}/core-site.xml
+    create_property_xml ${res_dir}/hdfs-site.properties ${conf_dir}/hdfs-site.xml
+    cp ${conf_dir}/mapred-site.xml.template ${conf_dir}/mapred-site.xml
+    create_property_xml ${res_dir}/mapred-site.properties ${conf_dir}/mapred-site.xml
+    create_property_xml ${res_dir}/yarn-site.properties ${conf_dir}/yarn-site.xml
     # hadoop-env.sh(modify)
-    sed -i "s@^# export JAVA_HOME=.*@export JAVA_HOME=${INSTALL_PATH}/java@" ${conf_dir}/hadoop-env.sh
+    sed -i "s@^export JAVA_HOME=.*@export JAVA_HOME=${INSTALL_PATH}/java@" ${conf_dir}/hadoop-env.sh
     # yarn-evn.sh(add)
-    echo "export JAVA_HOME=${INSTALL_PATH}/java" >> ${conf_dir}/yarn-env.sh
+    echo "export JAVA_HOME=${INSTALL_PATH}/java" >> ${conf_dir}${conf_dir}/yarn-env.sh
+    # master and slaves
+    echo "${HOSTNAME_LIST[0]}" >> ${conf_dir}/master
+    sed -i '1,$d' ${conf_dir}/slaves 
+    echo -e "${HOSTNAME_LIST[0]}\n${HOSTNAME_LIST[1]}\n${HOSTNAME_LIST[2]}" >> ${conf_dir}/slaves
 
     mv ${conf_dir}/hadoop-lzo-0.4.20.jar ${INSTALL_PATH}/hadoop/share/hadoop/common
     

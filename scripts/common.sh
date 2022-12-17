@@ -38,15 +38,13 @@ AZKABAN_VERSION=azkaban-3.84.4
 PRESTO_VERSION=presto-server-0.196
 KYLIN_VERSION=kylin-3.0.2
 
-
-
 # java
 JAVA_ARCHIVE=jdk-8u201-linux-x64.tar.gz
 JAVA_MIRROR_DOWNLOAD=https://repo.huaweicloud.com/java/jdk/8u201-b09/$JAVA_ARCHIVE
 JAVA_DIR_NAME=jdk1.8.0_201
 # hadoop
 # 支持版本：3.3.1, 3.3.0, 3.2.2-3.2.0, 3.1.4-3.1.0, 3.0.3-3.0.0, 2.9.2-2.9.0, 2.8.5-2.8.0, 2.7.7-2.7.0等
-#         https://archive.apache.org/dist/hadoop/core/hadoop-2.7.6/hadoop-2.7.6.tar.gz
+#         https://archive.apache.org/dist/hadoop/core/hadoop-2.7.7/hadoop-2.7.7.tar.gz
 # https://mirrors.huaweicloud.com/apache/hadoop/core/hadoop-3.1.3/hadoop-3.1.3.tar.gz
 # https://archive.apache.org/dist => https://mirrors.huaweicloud.com/apache
 HADOOP_VERSION_NUM=`get_app_version_num $HADOOP_VERSION "-" 2`
