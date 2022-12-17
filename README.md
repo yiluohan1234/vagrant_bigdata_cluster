@@ -10,7 +10,7 @@
 | :-: | ---  | -------------------------- | ----------------- |
 | OS   | centos7.6  | centos7.6             | centos7.6         |
 | JDK  | jdk1.8                                             | jdk1.8                     | jdk1.8            |
-| HDFS      | NameNode<br>DataNode<br/>JobHistoryServer | DataNode | DataNode<br/>SecondaryNameNode |
+| HDFS      | NameNode<br/>DataNode | DataNode<br/>JobHistoryServer | DataNode<br/>SecondaryNameNode |
 | YARN      | NodeManager    | ResourceManager<br/>NodeManager | NodeManager       |
 | Hive | Hive | NA | NA |
 | HBase     | HMaster<br>HRegionServer                           | HRegionServer              | HRegionServer     |
