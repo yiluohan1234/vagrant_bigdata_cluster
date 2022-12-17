@@ -30,7 +30,7 @@ setup_flink() {
     # masters and workers
     sed -i '1,$d' ${conf_dir}/masters 
     echo "${HOSTNAME_LIST[0]}" >> ${conf_dir}/masters
-    sed -i '1,$d' ${conf_dir}/regionservers 
+    sed -i '1,$d' ${conf_dir}/workers 
     echo -e "${HOSTNAME_LIST[0]}\n${HOSTNAME_LIST[1]}\n${HOSTNAME_LIST[2]}" >> ${conf_dir}/workers
 
 }
