@@ -215,7 +215,7 @@ download_and_unzip_app() {
     local download_url=$(eval echo \$${app_name_upper}_MIRROR_DOWNLOAD)
     local app_dir_name=$(eval echo \$${app_name_upper}_DIR_NAME)
 
-    log info "install ${app_name}"
+    log info "download_and_unzip_app ${app_name}"
     if resourceExists ${archive}; then
         installFromLocal ${archive}
     else

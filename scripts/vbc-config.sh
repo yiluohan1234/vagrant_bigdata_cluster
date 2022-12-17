@@ -1,4 +1,9 @@
 #!/bin/bash
+bin=`dirname "${BASH_SOURCE-$0}"`
+bin=`cd "$bin"; pwd`
+
+DEFAULT_MAIN_DIR="$bin"/../
+VGC_MAIN_DIR=${VGC_MAIN_DIR:-$DEFAULT_MAIN_DIR}
 
 # ip,hostname
 IP_LIST=("192.168.10.101" "192.168.10.102" "192.168.10.103")
@@ -25,13 +30,13 @@ DEFAULT_USER=root
 DEFAULT_GROUP=root
 
 # 配置文件目录
-RESOURCE_PATH=/vagrant/resources
+RESOURCE_PATH=$VGC_MAIN_DIR/resources
 
 # 安装目录
 INSTALL_PATH=/opt/module
 
 # 组件下载目录
-DOWNLOAD_PATH=/vagrant/downloads
+DOWNLOAD_PATH=$VGC_MAIN_DIR/downloads
 
 # 初始化集群目录
 INIT_PATH=$RESOURCE_PATH/init_bin

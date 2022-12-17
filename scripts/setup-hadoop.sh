@@ -42,7 +42,7 @@ setup_hadoop() {
 
 install_hadoop() {
     local app_name="hadoop"
-    log info "setup ${app_name}"
+    log info "install ${app_name}"
     if [ ! -d ${INSTALL_PATH}/${app_name} ];then
         download_and_unzip_app ${app_name}
         setupEnv_app ${app_name} sbin
