@@ -16,18 +16,27 @@ setup_hive() {
 	
     log info "modifying over ${app_name} configuration files"
     # cp -f ${res_dir}/hive* ${conf_dir}
-    # cp ${conf_dir}/hive-log4j2.properties.template ${conf_dir}/hive-log4j2.properties
+    cp ${conf_dir}/hive-env.sh.template  ${conf_dir}/hive-env.sh
     # hive-env.sh
     echo "export HADOOP_HOME=${INSTALL_PATH}/hadoop" >> ${conf_dir}/hive-env.sh
     echo "export HIVE_CONF_DIR=${INSTALL_PATH}/hive/conf" >> ${conf_dir}/hive-env.sh
     echo "export HIVE_AUX_JARS_PATH=${INSTALL_PATH}/hive/lib" >> ${conf_dir}/hive-env.sh
 
+    echo '<?xml version="1.0" encoding="UTF-8"?>' >> ${conf_dir}/hive-site.xml
+    echo '<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>' >> ${conf_dir}/hive-site.xml
+    echo '<configuration>' >> ${conf_dir}/hive-site.xml
+    echo '</configuration>' >> ${conf_dir}/hive-site.xml
     create_property_xml ${res_dir}/hive-site.properties ${conf_dir}/hive-site.xml
 
     # 解决log4j冲突
     # mv ${INSTALL_PATH}/hive/lib/log4j-slf4j-impl-2.10.0.jar ${INSTALL_PATH}/hive/lib/log4j-slf4j-impl-2.10.0.jar_bak
     
     wget_mysql_connector ${INSTALL_PATH}/hive/lib
+
+    # 更换默认配置
+    sed -i "s@hdp101@${HOSTNAME_LIST[0]}@g" `grep 'hdp101' -rl ${conf_dir}/`
+    # sed -i "s@hdp102@${HOSTNAME_LIST[1]}@g" `grep 'hdp102' -rl ${conf_dir}/`
+    sed -i "s@hdp103@${HOSTNAME_LIST[2]}@g" `grep 'hdp103' -rl ${conf_dir}/`
 
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
