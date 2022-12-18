@@ -2,6 +2,6 @@
  
 for host in hdp{101..103};
 do
-    echo --------- Current hostname is $name, exec $* ----------
+    echo --------- Current hostname is $host, exec $* ----------
     ssh $host "$*"
 done

@@ -1,6 +1,8 @@
 #!/bin/bash
 #set -x
-source "/vagrant/scripts/common.sh"
+if [ -d /vagrant/scripts ];then
+    source "/vagrant/scripts/common.sh"
+fi
 
 setup_#@() {
     local app_name=$1
@@ -10,11 +12,17 @@ setup_#@() {
 
     log info "create ${app_name} configuration directories"
     mkdir -p ${INSTALL_PATH}/elasticsearch/datas
-    mkdir -p ${INSTALL_PATH}/elasticsearch/logs
 
     log info "copying over ${app_name} configuration files"
     # 将resources配置文件拷贝到插件的配置目录
     cp -f $res_dir/* $conf_dir
+
+    sed -i '1,$d' ${conf_dir}/regionservers 
+    echo -e "${HOSTNAME_LIST[0]}\n${HOSTNAME_LIST[1]}\n${HOSTNAME_LIST[2]}" >> ${conf_dir}/regionservers
+    # 更换默认配置
+    sed -i "s@hdp101@${HOSTNAME_LIST[0]}@g" `grep 'hdp101' -rl ${conf_dir}/`
+    sed -i "s@hdp102@${HOSTNAME_LIST[1]}@g" `grep 'hdp102' -rl ${conf_dir}/`
+    sed -i "s@hdp103@${HOSTNAME_LIST[2]}@g" `grep 'hdp103' -rl ${conf_dir}/`
     
     # 配置环境中不同节点配置不同的情况
     if [ "${IS_VAGRANT}" == "true" ];then
@@ -32,50 +40,35 @@ setup_#@() {
     fi
 }
 
-download_#@() {
-    local app_name=$1
-    local app_name_upper=`get_string_upper ${app_name}`
-    local app_version=$(eval echo \$${app_name_upper}_VERSION)
-    local archive=$(eval echo \$${app_name_upper}_ARCHIVE)
-    local download_url=$(eval echo \$${app_name_upper}_MIRROR_DOWNLOAD)
-
-    log info "install ${app_name}"
-    if resourceExists ${archive}; then
-        installFromLocal ${archive}
-    else
-        installFromRemote ${archive} ${download_url}
-    fi
-    mv ${INSTALL_PATH}/"${app_version}" ${INSTALL_PATH}/${app_name}
-    chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
-    rm ${DOWNLOAD_PATH}/${archive}
-}
-
 dispatch_#@() {
     local app_name=$1
     dispatch_app ${app_name}
-    for i in {"hdp102","hdp103"};
-    do
-        node_name=$i
-        node_host=`cat /etc/hosts |grep $i|awk '{print $1}'`
+    length=${#HOSTNAME_LIST[@]}
+    for ((i=0; i<$length; i++));do
+        current_hostname=`cat /etc/hostname`
         file_path=${INSTALL_PATH}/${app_name}/config/elasticsearch.yml
 
-        echo "------modify $i server.properties-------"
-        #ssh $i "sed -i 's/^node.name: .*/node.name: '$node_name'/' $file_path"
-        ssh $i "sed -i 's@^network.host: .*@network.host: '${node_host}'@' ${file_path}"
+        if [ "$current_hostname" != "${HOSTNAME_LIST[0]}" ];then
+            echo "------modify $i server.properties-------"
+            #ssh $i "sed -i 's/^node.name: .*/node.name: '$node_name'/' $file_path"
+            ssh ${HOSTNAME_LIST[$i]} "sed -i 's@^network.host: .*@network.host: '${node_host}'@' ${file_path}"
+        fi
     done
 }
 
 install_#@() {
     local app_name="#@"
-    log info "setup ${app_name}"
-
-    download_#@ ${app_name}
-    setup_#@ ${app_name}
-    setupEnv_app $app_name
-    if [ "${IS_VAGRANT}" != "true" ];then
-        dispatch_#@ ${app_name}
+    if [ ! -d ${INSTALL_PATH}/${app_name} ];then
+        log info "setup ${app_name}"
+        download_and_unzip_app ${app_name}
+        setup_#@ ${app_name}
+        setupEnv_app $app_name
+        
+        if [ "${IS_VAGRANT}" != "true" ];then
+            dispatch_#@ ${app_name}
+        fi
+        source ${PROFILE}
     fi
-    source ${PROFILE}
 }
 
 

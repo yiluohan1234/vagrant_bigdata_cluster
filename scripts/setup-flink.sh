@@ -1,6 +1,8 @@
 #!/bin/bash
 #set -x
-source "/vagrant/scripts/common.sh"
+if [ -d /vagrant/scripts ];then
+    source "/vagrant/scripts/common.sh"
+fi
 
 setup_flink() {
     local app_name=$1
@@ -8,37 +10,36 @@ setup_flink() {
     local res_dir=$(eval echo \$${app_name_upper}_RES_DIR)
     local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
 
-    log info "copying over ${app_name} configuration files"
-    cp -f ${res_dir}/* ${conf_dir}
+    log info "modifying over ${app_name} configuration files"
+    # cp -f ${res_dir}/* ${conf_dir}
 
-    if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
-        sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
-    fi
-}
+    # flink-conf.yaml
+    echo "jobmanager.rpc.address: ${HOSTNAME_LIST[0]}" >> ${conf_dir}/flink-conf.yaml
+    echo "jobmanager.rpc.port: 6123" >> ${conf_dir}/flink-conf.yaml
+    echo "jobmanager.heap.size: 1024m" >> ${conf_dir}/flink-conf.yaml
+    echo "taskmanager.heap.size: 1024m" >> ${conf_dir}/flink-conf.yaml
+    echo "taskmanager.numberOfTaskSlots: 10" >> ${conf_dir}/flink-conf.yaml
+    echo "taskmanager.memory.preallocate: false" >> ${conf_dir}/flink-conf.yaml
+    echo "parallelism.default: 1" >> ${conf_dir}/flink-conf.yaml
+    echo "jobmanager.web.port: 8381" >> ${conf_dir}/flink-conf.yaml
+    echo "rest.port: 8381" >> ${conf_dir}/flink-conf.yaml
+    echo "env.java.opts: -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=75 -XX:+UseCMSInitiatingOccupancyOnly -XX:+AlwaysPreTouch -server -XX:+HeapDumpOnOutOfMemoryError" >> ${conf_dir}/flink-conf.yaml
+    echo "env.java.home: ${INSTALL_PATH}/java" >> ${conf_dir}/flink-conf.yaml
+    echo "classloader.resolve-order: parent-first" >> ${conf_dir}/flink-conf.yaml
 
-download_flink() {
-    local app_name=$1
-    local app_name_upper=`get_string_upper ${app_name}`
-    local app_version=$(eval echo \$${app_name_upper}_VERSION)
-    local archive=$(eval echo \$${app_name_upper}_ARCHIVE)
-    local download_url=$(eval echo \$${app_name_upper}_MIRROR_DOWNLOAD)
+    # masters and workers
+    sed -i '1,$d' ${conf_dir}/masters 
+    echo "${HOSTNAME_LIST[0]}" >> ${conf_dir}/masters
+    sed -i '1,$d' ${conf_dir}/workers 
+    echo -e "${HOSTNAME_LIST[0]}\n${HOSTNAME_LIST[1]}\n${HOSTNAME_LIST[2]}" >> ${conf_dir}/workers
 
-    log info "install ${app_name}"
-    if resourceExists ${archive}; then
-        installFromLocal ${archive}
-    else
-        installFromRemote ${archive} ${download_url}
-    fi
-    mv ${INSTALL_PATH}/"${app_version}" ${INSTALL_PATH}/${app_name}
-    chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_name}
-    rm ${DOWNLOAD_PATH}/${archive}
 }
 
 install_flink() {
     local app_name="flink"
     log info "setup ${app_name}"
     if [ ! -d ${INSTALL_PATH}/${app_name} ];then
-        download_flink ${app_name}
+        download_and_unzip_app ${app_name}
         setup_flink ${app_name}
         setupEnv_app ${app_name}
 

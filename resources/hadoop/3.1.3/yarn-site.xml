@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+<configuration>
+  <!-- 指定ResourceManager的地址-->
+  <property>
+    <name>yarn.resourcemanager.hostname</name>
+    <value>hdp102</value>
+  </property>
+
+  <!-- 指定MR走shuffle -->
+  <property>
+    <name>yarn.nodemanager.aux-services</name>
+    <value>mapreduce_shuffle</value>
+  </property>
+
+  <!-- 环境变量的继承 -->
+  <!-- v3.1.3的bug需要添加HADOOP_MAPRED_HOME -->
+  <property>
+    <name>yarn.nodemanager.env-whitelist</name>
+    <value>
+      JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_MAPRED_HOME</value>
+  </property>
+
+  <!-- yarn容器允许分配的最大最小内存 -->
+  <property>
+    <name>yarn.scheduler.minimum-allocation-mb</name>
+    <value>512</value>
+  </property>
+  <property>
+    <name>yarn.scheduler.maximum-allocation-mb</name>
+    <value>4096</value>
+  </property>
+
+  <!-- yarn容器允许管理的物理内存大小 -->
+  <property>
+    <name>yarn.nodemanager.resource.memory-mb</name>
+    <value>4096</value>
+  </property>
+  <!-- 如果没配置ApplicationMaster入口无法使用，默认：${yarn.resourcemanager.hostname}:8088 -->
+  <property>
+    <name>yarn.resourcemanager.webapp.address</name>
+    <value>hdp102:8088</value>
+  </property>
+  <!-- 关闭yarn对虚拟内存和物理内存的限制检查 -->
+  <property>
+    <name>yarn.nodemanager.vmem-check-enabled</name>
+    <value>false</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.pmem-check-enabled</name>
+    <value>false</value>
+  </property>
+  <!-- 开启日志聚集功能 -->
+  <property>
+    <name>yarn.log-aggregation-enable</name>
+    <value>true</value>
+  </property>
+
+  <!-- 设置日志聚集服务器地址 -->
+  <property>
+    <name>yarn.log.server.url</name>
+    <value>http://hdp102:19888/jobhistory/logs</value>
+  </property>
+
+  <!-- 设置日志保留时间为7天 -->
+  <property>
+    <name>yarn.log-aggregation.retain-seconds</name>
+    <value>604800</value>
+  </property>
+  <property>
+    <name>yarn.application.classpath</name>
+    <value>
+      /home/vagrant/apps/hadoop/etc/hadoop,
+      /home/vagrant/apps/hadoop/share/hadoop/common/lib/*,
+      /home/vagrant/apps/hadoop/share/hadoop/common/*,
+      /home/vagrant/apps/hadoop/share/hadoop/hdfs,
+      /home/vagrant/apps/hadoop/share/hadoop/hdfs/lib/*,
+      /home/vagrant/apps/hadoop/share/hadoop/hdfs/*,
+      /home/vagrant/apps/hadoop/share/hadoop/mapreduce/lib/*,
+      /home/vagrant/apps/hadoop/share/hadoop/mapreduce/*,
+      /home/vagrant/apps/hadoop/share/hadoop/yarn,
+      /home/vagrant/apps/hadoop/share/hadoop/yarn/lib/*,
+      /home/vagrant/apps/hadoop/share/hadoop/yarn/*
+    </value>
+  </property>
+</configuration>

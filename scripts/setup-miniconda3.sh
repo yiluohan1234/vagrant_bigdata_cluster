@@ -1,6 +1,8 @@
 #!/bin/bash
 #set -x
-source "/vagrant/scripts/common.sh"
+if [ -d /vagrant/scripts ];then
+    source "/vagrant/scripts/common.sh"
+fi
 
 install_miniconda() {
     local app_name="miniconda"
@@ -20,7 +22,6 @@ install_miniconda() {
 
     source ${PROFILE}
 }
-
 
 if [ "${IS_VAGRANT}" == "true" ];then
     install_miniconda

@@ -1,6 +1,8 @@
 #!/bin/bash
 #set -x
-source "/vagrant/scripts/common.sh"
+if [ -d /vagrant/scripts ];then
+    source "/vagrant/scripts/common.sh"
+fi
 
 setup_spark() {
     local app_name=$1
@@ -8,53 +10,51 @@ setup_spark() {
     local res_dir=$(eval echo \$${app_name_upper}_RES_DIR)
     local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
 
-    log info "copying over ${app_name} configuration files"
-    # basic
-    cp -f ${res_dir}/slaves ${conf_dir}
-    cp -f ${res_dir}/spark-defaults.conf ${conf_dir}
-    cp -f ${res_dir}/spark-env.sh ${conf_dir}
-    wget_mysql_connector ${INSTALL_PATH}/spark/jars
+    log info "modifying over ${app_name} configuration files"
+    # spark-env.sh
+    cp ${conf_dir}/spark-env.sh.template ${conf_dir}/spark-env.sh
+    echo "export SPARK_MASTER_IP=${HOSTNAME_LIST[0]}" >> ${conf_dir}/spark-env.sh
+    echo "export SCALA_HOME=${INSTALL_PATH}/scala" >> ${conf_dir}/spark-env.sh
+    echo "export JAVA_HOME=${INSTALL_PATH}/java" >> ${conf_dir}/spark-env.sh
+    echo "export HADOOP_HOME=${INSTALL_PATH}/hadoop" >> ${conf_dir}/spark-env.sh
+    echo 'export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop' >> ${conf_dir}/spark-env.sh
+    echo 'export YARN_CONF_DIR=$HADOOP_HOME/etc/hadoop' >> ${conf_dir}/spark-env.sh
+    echo 'export SPARK_HISTORY_OPTS="-Dspark.history.ui.port=18080 -Dspark.history.retainedApplications=3 -Dspark.history.fs.logDirectory=hdfs://'${HOSTNAME_LIST[0]}':9000/spark-log"' >> ${conf_dir}/spark-env.sh
+    # spark-defaults.conf
+    cp ${conf_dir}/spark-defaults.conf.template ${conf_dir}/spark-defaults.conf
+    echo "spark.master                     yarn" >> ${conf_dir}/spark-defaults.conf
+    echo "spark.eventLog.enabled           true" >> ${conf_dir}/spark-defaults.conf
+    echo "spark.eventLog.dir               hdfs://${HOSTNAME_LIST[0]}:9000/spark-log" >> ${conf_dir}/spark-defaults.conf
+    echo "spark.eventLog.compress          true" >> ${conf_dir}/spark-defaults.conf
+    echo "spark.serializer                 org.apache.spark.serializer.KryoSerializer" >> ${conf_dir}/spark-defaults.conf
+    echo "spark.executor.memory            1g" >> ${conf_dir}/spark-defaults.conf
+    echo "spark.driver.memory              1g" >> ${conf_dir}/spark-defaults.conf
+    echo 'spark.executor.extraJavaOptions  -XX:+PrintGCDetails -Dkey=value -Dnumbers="one two three"' >> ${conf_dir}/spark-defaults.conf
+    # slaves
+    cp ${conf_dir}/slaves.template ${conf_dir}/slaves
+    sed -i "/localhost/Q" ${conf_dir}/slaves 
+    echo -e "${HOSTNAME_LIST[0]}\n${HOSTNAME_LIST[1]}\n${HOSTNAME_LIST[2]}" >> ${conf_dir}/slaves
 
-    if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
-        sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
-    fi
+    wget_mysql_connector ${INSTALL_PATH}/${app_name}/jars
+
     # yarn-site.xml
-    #cp -f ${HADOOP_RES_DIR}/yarn-site.xml ${SPARK_CONF_DIR}
+    #cp -f ${INSTALL_PATH}/hadoop/etc/hadoop/yarn-site.xml ${conf_dir}
     
     # hive-site.xml
-    #cp -f ${HIVE_RES_DIR}/hive-site.xml ${SPARK_CONF_DIR}
+    #cp -f ${INSTALL_PATH}/hive/conf/hive-site.xml ${conf_dir}
     #cp -rf ${INSTALL_PATH}/spark/jars/*.jar ${INSTALL_PATH}/hive/lib/
-}
-
-download_spark() {
-    local app_name=$1
-    local app_name_upper=`get_string_upper ${app_name}`
-    local app_version=$(eval echo \$${app_name_upper}_VERSION)
-    local archive=$(eval echo \$${app_name_upper}_ARCHIVE)
-    local download_url=$(eval echo \$${app_name_upper}_MIRROR_DOWNLOAD)
-
-    log info "install ${app_name}"
-    if resourceExists ${archive}; then
-        installFromLocal ${archive}
-    else
-        installFromRemote ${archive} ${download_url}
-    fi
-    mv ${INSTALL_PATH}/"${SPARK_VERSION}-bin-hadoop3.2" ${INSTALL_PATH}/${app_name}
-    chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_name}
-    rm ${DOWNLOAD_PATH}/${archive}
 }
 
 install_spark() {
     local app_name="spark"
     if [ ! -d ${INSTALL_PATH}/${app_name} ];then
         log info "setup ${app_name}"
-
-        download_spark ${app_name}
+        download_and_unzip_app ${app_name}
         setup_spark ${app_name}
         setupEnv_app ${app_name}
-        # if [ "${IS_VAGRANT}" != "true" ];then
-        #     dispatch_app ${app_name}
-        # fi
+        if [ "${IS_VAGRANT}" != "true" ];then
+            dispatch_app ${app_name}
+        fi
         source ${PROFILE}
     fi
 }
