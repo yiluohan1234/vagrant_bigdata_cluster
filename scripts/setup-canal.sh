@@ -7,8 +7,25 @@ fi
 setup_canal() {
     local app_name=$1
     log info "copying over $app_name configuration files"
-    cp -f ${CANAL_RES_DIR}/canal.properties ${CANAL_CONF_DIR}
-    cp -f ${CANAL_RES_DIR}/instance.properties ${CANAL_CONF_DIR}/example
+    # cp -f ${CANAL_RES_DIR}/canal.properties ${CANAL_CONF_DIR}
+    # cp -f ${CANAL_RES_DIR}/instance.properties ${CANAL_CONF_DIR}/example
+
+    # canal.properties
+    sed -i "s@^canal.serverMode =.*@canal.serverMode = kafka@g" ${CANAL_CONF_DIR}/canal.properties
+    sed -i "s@^canal.zkServers =.*@canal.zkServers = ${HOSTNAME_LIST[0]}:2181,${HOSTNAME_LIST[1]}:2181,${HOSTNAME_LIST[2]}:2181@g" ${CANAL_CONF_DIR}/canal.properties
+    sed -i "s@^canal.serverMode =.*@canal.serverMode = kafka@g" ${CANAL_CONF_DIR}/canal.properties
+    sed -i '116s/^/#/' ${CANAL_CONF_DIR}/canal.properties
+    sed -i '117s/^#//' ${CANAL_CONF_DIR}/canal.properties
+    sed -i "s@^kafka.bootstrap.servers =.*@kafka.bootstrap.servers = ${HOSTNAME_LIST[0]}:9092,${HOSTNAME_LIST[1]}:9092,${HOSTNAME_LIST[2]}:9092@g" ${CANAL_CONF_DIR}/canal.properties
+    
+
+    # example/instance.properties
+    sed -i "s@^canal.instance.master.address=.*@canal.instance.master.address=${HOSTNAME_LIST[2]}:3306@g" ${CANAL_CONF_DIR}/example/instance.properties
+    sed -i "s@^# canal.instance.mysql.slaveId=.*@canal.instance.mysql.slaveId=20@g" ${CANAL_CONF_DIR}/example/instance.properties
+    sed -i "s@^canal.instance.dbUsername=.*@canal.instance.dbUsername=canal@g" ${CANAL_CONF_DIR}/example/instance.properties
+    sed -i "s@^canal.instance.dbPassword=.*@canal.instance.dbPassword=canal@g" ${CANAL_CONF_DIR}/example/instance.properties
+
+    
 }
 
 download_canal() {

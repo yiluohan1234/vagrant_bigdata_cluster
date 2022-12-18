@@ -19,24 +19,24 @@ SPARK_VERSION=spark-2.4.3
 ZOOKEEPER_VERSION=zookeeper-3.6.3
 # KAFKA_VERSION=kafka_2.11-2.4.1
 # KAFKA_VERSION=kafka_2.12-3.0.0
-KAFKA_VERSION=kafka_2.0-0.10.2.2
+KAFKA_VERSION=kafka_2.10-0.10.2.2
+SQOOP_VERSION=sqoop-1.4.7
 FLINK_VERSION=flink-1.13.4
 
-SQOOP_VERSION=sqoop-1.4.7
 FLUME_VERSION=flume-1.9.0
 MAVEN_VERSION=maven-3.6.1
 MYSQL_CONNECTOR_VERSION=mysql-connector-java-5.1.49
-MYSQL_VERSION=mysql-5.7.35
-PHOENIX_VERSION=apache-phoenix-5.0.0-HBase-2.0-bin
-NGINX_VERSION=nginx-1.18.0
+PHOENIX_VERSION=phoenix-hbase-1.6-4.16.0
+PRESTO_VERSION=presto-server-0.196
 ELASTICSEARCH_VERSION=elasticsearch-6.6.0
 KIBANA_VERSION=kibana-6.6.0
-REDIS_VERSION=redis-5.0.12
 CANAL_VERSION=canal.deployer-1.1.5
 MAXWELL_VERSION=maxwell-1.29.2
 AZKABAN_VERSION=azkaban-3.84.4
-PRESTO_VERSION=presto-server-0.196
 KYLIN_VERSION=kylin-3.0.2
+MYSQL_VERSION=mysql-5.7.35
+NGINX_VERSION=nginx-1.18.0
+REDIS_VERSION=redis-5.0.12
 
 # java
 JAVA_ARCHIVE=jdk-8u201-linux-x64.tar.gz
@@ -156,13 +156,13 @@ KAFKA_CONF_DIR=$INSTALL_PATH/kafka/config
 
 # phoenix
 # 支持版本：具体查看下载地址
-#        https://archive.apache.org/dist/phoenix/apache-phoenix-4.14.0-HBase-1.2/bin/apache-phoenix-4.14.0-HBase-1.2-bin.tar.gz
-# https://mirrors.huaweicloud.com/apache/phoenix/apache-phoenix-4.14.0-HBase-1.2/bin/apache-phoenix-4.14.0-HBase-1.2-bin.tar.gz
-PHOENIX_VERSION_NUM=`get_app_version_num $PHOENIX_VERSION "-" 3`
-H_VERSION_NUM=`get_app_version_num $PHOENIX_VERSION "-" 5`
-PHOENIX_ARCHIVE=${PHOENIX_VERSION}.tar.gz
-PHOENIX_DIR_NAME=${PHOENIX_VERSION}
-PHOENIX_MIRROR_DOWNLOAD=${DOWNLOAD_REPO}/phoenix/apache-phoenix-${PHOENIX_VERSION_NUM}-HBase-${H_VERSION_NUM}/bin/$PHOENIX_ARCHIVE
+#        https://archive.apache.org/dist/phoenix/phoenix-4.16.0/phoenix-hbase-1.6-4.16.0-bin.tar.gz
+# https://mirrors.huaweicloud.com/apache/phoenix/phoenix-4.16.0/phoenix-hbase-1.6-4.16.0-bin.tar.gz
+PHOENIX_VERSION_NUM=`get_app_version_num $PHOENIX_VERSION "-" 4`
+HBASE_VERSION_NUM=`get_app_version_num $PHOENIX_VERSION "-" 3`
+PHOENIX_ARCHIVE=${PHOENIX_VERSION}-bin.tar.gz
+PHOENIX_DIR_NAME=${PHOENIX_VERSION}-bin
+PHOENIX_MIRROR_DOWNLOAD=${DOWNLOAD_REPO}/phoenix/phoenix-${PHOENIX_VERSION_NUM}/$PHOENIX_ARCHIVE
 PHOENIX_RES_DIR=$RESOURCE_PATH/phoenix
 PHOENIX_CONF_DIR=$INSTALL_PATH/phoenix/conf
 
@@ -196,10 +196,11 @@ MAVEN_CONF_DIR=$INSTALL_PATH/maven/conf
 
 # maxwell
 # 支持版本：具体见下载地址
-# https://github.com/zendesk/maxwell/releases/download/v1.25.0/maxwell-1.25.0.tar.gz
+# https://ghproxy.com/https://github.com/zendesk/maxwell/releases/download/v1.25.0/maxwell-1.25.0.tar.gz
 MAXWELL_VERSION_NUM=`get_app_version_num $MAXWELL_VERSION "-" 2`
 MAXWELL_ARCHIVE=${MAXWELL_VERSION}.tar.gz
-MAXWELL_MIRROR_DOWNLOAD=https://github.com/zendesk/maxwell/releases/download/v${MAXWELL_VERSION_NUM}/$MAXWELL_ARCHIVE
+MAXWELL_DIR_NAME=${MAXWELL_VERSION}
+MAXWELL_MIRROR_DOWNLOAD=${GITHUB_DOWNLOAD_REPO}/https://github.com/zendesk/maxwell/releases/download/v${MAXWELL_VERSION_NUM}/$MAXWELL_ARCHIVE
 MAXWELL_RES_DIR=$RESOURCE_PATH/maxwell
 MAXWELL_CONF_DIR=$INSTALL_PATH/maxwell
 
@@ -246,17 +247,17 @@ REDIS_CONF_DIR=$INSTALL_PATH/redis/conf
 
 # canal
 # 支持版本：具体见下载地址
-# https://github.com/alibaba/canal/releases/download/canal-1.1.5/canal.deployer-1.1.5.tar.gz
+# https://ghproxy.com/https://github.com/alibaba/canal/releases/download/canal-1.1.5/canal.deployer-1.1.5.tar.gz
 CANAL_VERSION_NUM=`get_app_version_num $CANAL_VERSION "-" 2`
 CANAL_ARCHIVE=${CANAL_VERSION}.tar.gz
-CANAL_MIRROR_DOWNLOAD=https://github.com/alibaba/canal/releases/download/canal-${CANAL_VERSION_NUM}/${CANAL_ARCHIVE}
+CANAL_MIRROR_DOWNLOAD=${GITHUB_DOWNLOAD_REPO}/https://github.com/alibaba/canal/releases/download/canal-${CANAL_VERSION_NUM}/${CANAL_ARCHIVE}
 CANAL_RES_DIR=$RESOURCE_PATH/canal
 CANAL_CONF_DIR=$INSTALL_PATH/canal/conf
 
 # azkaban
 AZKABAN_VERSION_NUM=`get_app_version_num $AZKABAN_VERSION "-" 2`
 AZKABAN_ARCHIVE=${AZKABAN_VERSION_NUM}.tar.gz
-AZKABAN_MIRROR_DOWNLOAD=https://github.com/azkaban/azkaban/archive/$AZKABAN_ARCHIVE
+AZKABAN_MIRROR_DOWNLOAD=${GITHUB_DOWNLOAD_REPO}/https://github.com/azkaban/azkaban/archive/$AZKABAN_ARCHIVE
 AZKABAN_RES_DIR=$RESOURCE_PATH/azkaban
 
 # presto
