@@ -13,8 +13,6 @@ install_mysql() {
 
     # 启动并设置开机自启
     systemctl start mysqld.service
-    cp ${MYSQL_RES_DIR}/my.cnf /etc/my.cnf 
-    systemctl restart mysqld.service
     systemctl enable mysqld.service
 
     # 更改初始密码
