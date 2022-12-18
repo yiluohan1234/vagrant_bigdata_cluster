@@ -33,6 +33,8 @@ setup_kafka() {
     value="PLAINTEXT://${current_hostname}:9092"
     if [ "${IS_VAGRANT}" == "true" ];then
         sed -i "s/^broker.id=.*/broker.id=${ID}/" ${conf_dir}/server.properties
+    else 
+        sed -i "s/^broker.id=.*/broker.id=1/" ${INSTALL_PATH}/${app_name}/config/server.properties
     fi
     sed -i 's@^#listeners=.*@listeners='${value}'@' ${conf_dir}/server.properties
     sed -i 's@^#advertised.listeners=.*@advertised.listeners='${value}'@' ${conf_dir}/server.properties
@@ -49,7 +51,6 @@ setup_kafka() {
 dispatch_kafka() {
     local app_name=$1
     dispatch_app ${app_name}
-    sed -i "s/^broker.id=.*/broker.id=1/" ${INSTALL_PATH}/${app_name}/config/server.properties
     length=${#HOSTNAME_LIST[@]}
     for ((i=0; i<$length; i++));do
         current_hostname=`cat /etc/hostname`

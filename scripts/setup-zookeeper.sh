@@ -50,13 +50,14 @@ setup_zookeeper() {
 
     if [ "${IS_VAGRANT}" == "true" ];then
         echo $MYID >>${INSTALL_PATH}/zookeeper/data/myid
+    else 
+        echo "1" >> ${INSTALL_PATH}/${app_name}/data/myid
     fi
 }
 
 dispatch_zookeeper() {
     local app_name=$1
     dispatch_app ${app_name}
-    echo "1" >> ${INSTALL_PATH}/${app_name}/data/myid
     length=${#HOSTNAME_LIST[@]}
     for ((i=0; i<$length; i++));do
         current_hostname=`cat /etc/hostname`
