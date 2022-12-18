@@ -53,8 +53,8 @@ DOWNLOAD_REPO=https://mirrors.huaweicloud.com/apache
 GITHUB_DOWNLOAD_REPO=https://ghproxy.com
 
 # Centos basic apps list.
-# CENTOS_BASIC_APPS=("epel-release" "sshpass" "lrzsz" "expect" "unzip" "zip" "vim-enhanced" "lzop" "dos2unix" "net-tools" "nc" "wget" "lsof" "telnet" "tcpdump" "ntp")
-CENTOS_BASIC_APPS=("epel-release" "sshpass" "lrzsz" "expect" "wget")
+CENTOS_BASIC_APPS=("epel-release" "sshpass" "lrzsz" "expect" "unzip" "zip" "vim-enhanced" "lzop" "dos2unix" "net-tools" "nc" "wget" "lsof" "telnet" "tcpdump" "ntp")
+# CENTOS_BASIC_APPS=("epel-release" "sshpass" "lrzsz" "expect" "wget")
 
 # mysql
 MYSQL_HOST=${HOSTNAME_LIST[2]}

@@ -15,8 +15,8 @@ setup_hive() {
     mkdir -p ${INSTALL_PATH}/hive/tmpdir
 	
     log info "copying over ${app_name} configuration files"
-    cp -f ${res_dir}/hive* ${conf_dir}
-    cp ${conf_dir}/hive-log4j2.properties.template ${conf_dir}/hive-log4j2.properties
+    # cp -f ${res_dir}/hive* ${conf_dir}
+    # cp ${conf_dir}/hive-log4j2.properties.template ${conf_dir}/hive-log4j2.properties
     # hive-env.sh
     echo "export HADOOP_HOME=/home/vagrant/apps/hadoop" >> ${conf_dir}/hive-env.sh
     echo "export HIVE_CONF_DIR=/home/vagrant/apps/hive/conf" >> ${conf_dir}/hive-env.sh
@@ -25,7 +25,7 @@ setup_hive() {
     create_property_xml ${res_dir}/hive-site.properties ${conf_dir}/hive-site.xml
 
     # 解决log4j冲突
-    mv ${INSTALL_PATH}/hive/lib/log4j-slf4j-impl-2.10.0.jar ${INSTALL_PATH}/hive/lib/log4j-slf4j-impl-2.10.0.jar_bak
+    # mv ${INSTALL_PATH}/hive/lib/log4j-slf4j-impl-2.10.0.jar ${INSTALL_PATH}/hive/lib/log4j-slf4j-impl-2.10.0.jar_bak
     
     wget_mysql_connector ${INSTALL_PATH}/hive/lib
 
