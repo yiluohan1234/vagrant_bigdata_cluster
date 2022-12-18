@@ -13,7 +13,7 @@ install_mysql() {
 
     # 启动并设置开机自启
     systemctl start mysqld.service
-    cp ${MYSQL_CONF_DIR}/my.cnf /etc/my.cnf 
+    cp ${MYSQL_RES_DIR}/my.cnf /etc/my.cnf 
     systemctl restart mysqld.service
     systemctl enable mysqld.service
 
