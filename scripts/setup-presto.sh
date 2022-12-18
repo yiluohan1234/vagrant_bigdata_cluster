@@ -4,6 +4,16 @@ if [ -d /vagrant/scripts ];then
     source "/vagrant/scripts/common.sh"
 fi
 
+# sh setup-hosts.sh -i myid
+# 4,5,6
+while getopts i: option
+do
+    case "${option}"
+    in
+        i) ID=${OPTARG};;
+    esac
+done
+
 setup_presto() {
     local app_name=$1
     local app_name_upper=`get_string_upper ${app_name}`
@@ -14,27 +24,39 @@ setup_presto() {
     mkdir -p ${INSTALL_PATH}/presto/data
     mkdir -p ${INSTALL_PATH}/presto/etc/catalog
 
-    log info "copying over ${app_name} configuration files"
-    # 将resources配置文件拷贝到插件的配置目录
-    cp -f $res_dir/jvm.config $conf_dir
-    cp -f $res_dir/node.properties $conf_dir
-    cp -f $res_dir/config.properties $conf_dir
-    cp -f $res_dir/hive.properties $conf_dir/catalog
+    log info "modifying over ${app_name} configuration files"
+    # config.properties
+    echo "coordinator=false" >> $conf_dir/config.properties
+    # echo "node-scheduler.include-coordinator=false" >> $conf_dir/config.properties
+    echo "http-server.http.port=8881" >> $conf_dir/config.properties
+    echo "query.max-memory=50GB" >> $conf_dir/config.properties
+    echo "discovery-server.enabled=true" >> $conf_dir/config.properties
+    echo "discovery.uri=http://${HOSTNAME_LIST[0]}:8881" >> $conf_dir/config.properties
+    # hive.properties
+    echo "connector.name=hive-hadoop2" >> $conf_dir/catalog/hive.properties
+    echo "hive.metastore.uri=thrift://${HOSTNAME_LIST[0]}:9083" >> $conf_dir/catalog/hive.properties
+    # jvm.config
+    echo "-server" >> $conf_dir/jvm.config
+    echo "-Xmx16G" >> $conf_dir/jvm.config
+    echo "-XX:+UseG1GC" >> $conf_dir/jvm.config
+    echo "-XX:G1HeapRegionSize=32M" >> $conf_dir/jvm.config
+    echo "-XX:+UseGCOverheadLimit" >> $conf_dir/jvm.config
+    echo "-XX:+ExplicitGCInvokesConcurrent" >> $conf_dir/jvm.config
+    echo "-XX:+HeapDumpOnOutOfMemoryError" >> $conf_dir/jvm.config
+    echo "-XX:+ExitOnOutOfMemoryError" >> $conf_dir/jvm.config
+    # node.properties
+    echo "node.environment=production" >> $conf_dir/catalog/node.properties
+    echo "node.id=ffffffff-ffff-ffff-ffff-fffffffffff1" >> $conf_dir/catalog/node.properties
+    echo "node.data-dir=${INSTALL_PATH}/presto/data" >> $conf_dir/catalog/node.properties
+
     
     # 配置环境中不同节点配置不同的情况
     if [ "${IS_VAGRANT}" == "true" ];then
-        hostname=`cat /etc/hostname`
-        ip=`cat /etc/hosts |grep ${hostname}|awk '{print $1}'`
-        ip_end=${ip##*.} 
-        node_file_path=${INSTALL_PATH}/${app_name}/etc/node.properties
-        config_file_path=${INSTALL_PATH}/${app_name}/etc/config.properties
-        
-        if [ "$hostname" != ${HOSTNAME_LIST[0]} ];then
-            sed -i 's@^node.id=.*@node.id=ffffffff-ffff-ffff-ffff-fffffffffff'${ip_end}'@' ${node_file_path}
-            sed -i 's@coordinator=true@coordinator=false@' ${config_file_path}
-            sed -i '2d' ${config_file_path}
-        fi
+        sed -i 's@^node.id=.*@node.id=ffffffff-ffff-ffff-ffff-fffffffffff'$ID'@' ${INSTALL_PATH}/${app_name}/etc/node.properties    
+    else 
+        sed -i 's@^node.id=.*@node.id=ffffffff-ffff-ffff-ffff-fffffffffff1@' ${INSTALL_PATH}/${app_name}/etc/node.properties
     fi
+
     curl -o ${INSTALL_PATH}/${app_name}/presto-cli-0.196-executable.jar -O -L http://maven.aliyun.com/nexus/content/groups/public/com/facebook/presto/presto-cli/0.196/presto-cli-0.196-executable.jar
     mv ${INSTALL_PATH}/${app_name}/presto-cli-0.196-executable.jar ${INSTALL_PATH}/${app_name}/prestocli
     chmod a+x ${INSTALL_PATH}/${app_name}/prestocli
@@ -46,17 +68,12 @@ setup_presto() {
 dispatch_presto() {
     local app_name=$1
     dispatch_app ${app_name}
-    for i in ${HOSTNAME_LIST[@]};
-    do
+    for ((i=0; i<$length; i++));do
         current_hostname=`cat /etc/hostname`
-        ip=`cat /etc/hosts |grep $i|awk '{print $1}'`
-        ip_end=${ip##*.} 
         node_file_path=${INSTALL_PATH}/${app_name}/etc/node.properties
         config_file_path=${INSTALL_PATH}/${app_name}/etc/config.properties
-        if [ "$current_hostname" != "$i" ];then
-            ssh $i "sed -i 's@^node.id=.*@node.id=ffffffff-ffff-ffff-ffff-fffffffffff'${ip_end}'@' ${node_file_path}"
-            ssh $i "sed -i 's@coordinator=true@coordinator=false@' ${config_file_path}"
-            ssh $i "sed -i '2d' ${config_file_path}"
+        if [ "$current_hostname" != "${HOSTNAME_LIST[$i]}" ];then
+            ssh $i "sed -i 's@^node.id=.*@node.id=ffffffff-ffff-ffff-ffff-fffffffffff'$(($i+1))'@' ${node_file_path}"
         fi
     done
 }
