@@ -8,7 +8,7 @@ install_redis() {
     local app_name="redis"
     log info "setup ${app_name}"
 
-    yum install -y redis
+    yum install -y -q redis
 
     # 修改配置文件
     sed -i 's@^bind 127.0.0.1.*@#bind 127.0.0.1 -::1@' /etc/redis.conf

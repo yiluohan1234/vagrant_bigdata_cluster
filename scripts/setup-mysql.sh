@@ -8,8 +8,8 @@ install_mysql() {
     # 安装mysql57
     curl -o /root/mysql57-community-release-el7-11.noarch.rpm -O -L http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
     rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
-    yum -y install mysql57-community-release-el7-11.noarch.rpm
-    yum -y install mysql-community-server
+    yum -y -q install /root/mysql57-community-release-el7-11.noarch.rpm
+    yum -y -q install mysql-community-server
 
     # 启动并设置开机自启
     systemctl start mysqld.service
@@ -24,7 +24,7 @@ install_mysql() {
     
     mysql -u${USERNAME} -p${PASSWORD} -e "set global validate_password_policy=0; \
         set global validate_password_length=4; \
-        ALTER USER 'root'@'localhost' IDENTIFIED BY \'${MYSQL_PASSWORD}\'; \
+        ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}'; \
         use mysql; \
         update user set host='%' where user='root'; \
         create user 'hive'@'%' IDENTIFIED BY 'hive'; \
