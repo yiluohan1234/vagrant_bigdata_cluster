@@ -1,7 +1,7 @@
 #!/bin/bash
 #set -x
 if [ -d /vagrant/scripts ];then
-    source "/vagrant/scripts/vbc-config.sh"
+    source "/vagrant/scripts/common.sh"
 fi
 
 install_mysql() {
@@ -13,6 +13,8 @@ install_mysql() {
 
     # 启动并设置开机自启
     systemctl start mysqld.service
+    cp ${MYSQL_CONF_DIR}/my.cnf /etc/my.cnf 
+    systemctl restart mysqld.service
     systemctl enable mysqld.service
 
     # 更改初始密码

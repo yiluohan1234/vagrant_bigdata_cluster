@@ -57,6 +57,6 @@ GITHUB_DOWNLOAD_REPO=https://ghproxy.com
 CENTOS_BASIC_APPS=("epel-release" "sshpass" "lrzsz" "expect" "wget")
 
 # mysql
-MYSQL_HOST=hdp103
+MYSQL_HOST=${HOSTNAME_LIST[2]}
 MYSQL_USER=root
 MYSQL_PASSWORD=199037
