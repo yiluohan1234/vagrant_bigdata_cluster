@@ -10,9 +10,12 @@ setup_kibana() {
     local res_dir=$(eval echo \$${app_name_upper}_RES_DIR)
     local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
 
-    log info "copying over $app_name configuration files"
-    cp -f ${res_dir}/* ${conf_dir}
+    log info "modifying over $app_name configuration files"
     mkdir -p ${INSTALL_PATH}/${app_name}/logs
+    
+    sed -i 's@^#server.host:.*@server.host: "0.0.0.0"@' ${conf_dir}/kibana.yml
+    sed -i 's@^#elasticsearch.hosts.*@elasticsearch.hosts: ["http://'${HOSTNAME_LIST[0]}':9200", "http://'${HOSTNAME_LIST[1]}':9200", "http://'${HOSTNAME_LIST[2]}':9200"]@' ${conf_dir}/kibana.yml
+    
 
 }
 
