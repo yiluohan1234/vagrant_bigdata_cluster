@@ -28,10 +28,6 @@ setup_nginx() {
 
     cp ${res_dir}/* ${conf_dir}
     chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
-
-    if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
-        sed -i "s@/home/vagrant/apps@$INSTALL_PATH@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
-    fi
     
 }
 
