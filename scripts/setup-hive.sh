@@ -16,27 +16,23 @@ setup_hive() {
 	
     log info "copying over ${app_name} configuration files"
     cp -f ${res_dir}/hive* ${conf_dir}
+    cp ${conf_dir}/hive-log4j2.properties.template ${conf_dir}/hive-log4j2.properties
+    # hive-env.sh
+    echo "export HADOOP_HOME=/home/vagrant/apps/hadoop" >> ${conf_dir}/hive-env.sh
+    echo "export HIVE_CONF_DIR=/home/vagrant/apps/hive/conf" >> ${conf_dir}/hive-env.sh
+    echo "export HIVE_AUX_JARS_PATH=/home/vagrant/apps/hive/lib" >> ${conf_dir}/hive-env.sh
 
-    if [ "${IS_KERBEROS}" != "true" ];then
-        sed -i '77,113d' ${conf_dir}/hive-site.xml
-    fi
+    create_property_xml ${res_dir}/hive-site.properties ${conf_dir}/hive-site.xml
 
-    # 安装phoenix后hive启动失败
-    #rm ${INSTALL_PATH}/hive/lib/icu4j-4.8.1.jar
-    # java.lang.NoSuchMethodError: com.google.common.base.Preconditions.checkArgument
-    #rm ${INSTALL_PATH}/hive/lib/guava-19.0.jar
-    #cp ${INSTALL_PATH}/hadoop/share/hadoop/common/lib/guava-27.0-jre.jar ${INSTALL_PATH}/hive/lib
     # 解决log4j冲突
     mv ${INSTALL_PATH}/hive/lib/log4j-slf4j-impl-2.10.0.jar ${INSTALL_PATH}/hive/lib/log4j-slf4j-impl-2.10.0.jar_bak
-    mv ${conf_dir}/hivefunction-1.0-SNAPSHOT.jar ${INSTALL_PATH}/hive/lib/
     
     wget_mysql_connector ${INSTALL_PATH}/hive/lib
 
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
     fi
-    chmod -R 755 $INSTALL_PATH
-    chown -R $DEFAULT_USER:$DEFAULT_GROUP $INSTALL_PATH
+
 }
 
 install_hive() {
@@ -47,9 +43,9 @@ install_hive() {
         download_and_unzip_app ${app_name}
         setup_hive ${app_name}
         setupEnv_app ${app_name}
-        # if [ "$IS_VAGRANT" != "true" ];then
-        #     dispatch_app ${app_name}
-        # fi
+        if [ "$IS_VAGRANT" != "true" ];then
+            dispatch_app ${app_name}
+        fi
         source ${PROFILE}
     fi
 }
