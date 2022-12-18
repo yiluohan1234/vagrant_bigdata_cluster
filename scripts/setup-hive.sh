@@ -31,7 +31,7 @@ setup_hive() {
     # 解决log4j冲突
     # mv ${INSTALL_PATH}/hive/lib/log4j-slf4j-impl-2.10.0.jar ${INSTALL_PATH}/hive/lib/log4j-slf4j-impl-2.10.0.jar_bak
     # 解决jline的版本冲突
-    # cp ${INSTALL_PATH}/hive/lib/jline-2.12.jar ${INSTALL_PATH}/hadoop/hadoop-2.7.7/share/hadoop/yarn/lib/ 
+    cp ${INSTALL_PATH}/hive/lib/jline-2.12.jar ${INSTALL_PATH}/hadoop/share/hadoop/yarn/lib/ 
     
     wget_mysql_connector ${INSTALL_PATH}/hive/lib
 
