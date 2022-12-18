@@ -10,13 +10,9 @@ setup_kylin() {
     local res_dir=$(eval echo \$${app_name_upper}_RES_DIR)
     local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
 
-    log info "copying over ${app_name} configuration files"
-    # 将resources配置文件拷贝到插件的配置目录
-    cp -f $res_dir/* $conf_dir
+    log info "copying over ${app_name} configuration files"  
+    sed -i "s@^spark_dependency=.*@spark_dependency=`find -L $spark_home/jars -name '*.jar' ! -name '*slf4j*' ! -name '*jackson*' ! -name '*metastore*' ! -name '*calcite*' ! -name '*doc*' ! -name '*test*' ! -name '*sources*' ''-printf '%p:' | sed 's/:$//'`@" ${INSTALL_PATH}/${app_name}/bin/find-spark-dependency.sh
     
-    if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
-        sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
-    fi
 }
 
 install_kylin() {
