@@ -45,9 +45,9 @@ setup_presto() {
     echo "-XX:+HeapDumpOnOutOfMemoryError" >> $conf_dir/jvm.config
     echo "-XX:+ExitOnOutOfMemoryError" >> $conf_dir/jvm.config
     # node.properties
-    echo "node.environment=production" >> $conf_dir/catalog/node.properties
-    echo "node.id=ffffffff-ffff-ffff-ffff-fffffffffff1" >> $conf_dir/catalog/node.properties
-    echo "node.data-dir=${INSTALL_PATH}/presto/data" >> $conf_dir/catalog/node.properties
+    echo "node.environment=production" >> $conf_dir/node.properties
+    echo "node.id=ffffffff-ffff-ffff-ffff-fffffffffff1" >> $conf_dir/node.properties
+    echo "node.data-dir=${INSTALL_PATH}/presto/data" >> $conf_dir/node.properties
 
     
     # 配置环境中不同节点配置不同的情况
