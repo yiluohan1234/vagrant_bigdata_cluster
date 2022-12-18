@@ -11,7 +11,7 @@ setup_kylin() {
     local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
 
     log info "copying over ${app_name} configuration files"  
-    sed -i "s@^spark_dependency=.*@spark_dependency=`find -L $spark_home/jars -name '*.jar' ! -name '*slf4j*' ! -name '*jackson*' ! -name '*metastore*' ! -name '*calcite*' ! -name '*doc*' ! -name '*test*' ! -name '*sources*' ''-printf '%p:' | sed 's/:$//'`@" ${INSTALL_PATH}/${app_name}/bin/find-spark-dependency.sh
+    sed -i 's@^spark_dependency=.*@spark_dependency=`find -L $spark_home/jars -name '*.jar' ! -name '*slf4j*' ! -name '*jackson*' ! -name '*metastore*' ! -name '*calcite*' ! -name '*doc*' ! -name '*test*' ! -name '*sources*' ''-printf '%p:' | sed 's/:$//'`@' ${INSTALL_PATH}/${app_name}/bin/find-spark-dependency.sh
     
 }
 
