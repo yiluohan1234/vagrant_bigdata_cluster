@@ -62,7 +62,7 @@ create_property_xml() {
     for line in `cat $in | grep -v '#'| grep -v '^$'`
     do
         name=`echo $line|cut -d "=" -f 1`
-        value=`echo $line|cut -d "=" -f 2`
+        value=`echo $line|cut -d "=" -f 2-`
 
         echo "  <property>" >> $out
         echo "    <name>$name</name>" >> $out
