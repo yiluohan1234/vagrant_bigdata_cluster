@@ -16,6 +16,9 @@ setup_hbase() {
     sed -i "s@^# export HBASE_MANAGES_ZK=.*@export HBASE_MANAGES_ZK=false@" ${conf_dir}/hbase-env.sh
     sed -i "s@^# export JAVA_HOME=.*@export JAVA_HOME=${INSTALL_PATH}/java@" ${conf_dir}/hbase-env.sh
     # sed -i "s@^# export HBASE_CLASSPATH=.*@export HBASE_CLASSPATH=${INSTALL_PATH}/hadoop/@" ${conf_dir}/hbase-env.sh
+    # 启动报错：PermSize 和 MaxPermSize 的限制,HBase默认这两个参数有128M的限制，由于长期使用导致程序超过了该阈值
+    sed -i '/export HBASE_MASTER_OPTS="$HBASE_MASTER_OPTS -XX:PermSize=128m -XX:MaxPermSize=128m -XX:ReservedCodeCacheSize=256m"/s/^/#/g' ${conf_dir}/hbase-env.sh
+    sed -i '/export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS -XX:PermSize=128m -XX:MaxPermSize=128m -XX:ReservedCodeCacheSize=256m"/s/^/#/g' ${conf_dir}/hbase-env.sh
     
     # hbase-site.xml
     create_property_xml ${res_dir}/hbase-site.properties ${conf_dir}/hbase-site.xml

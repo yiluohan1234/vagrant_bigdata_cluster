@@ -16,7 +16,6 @@ setup_phoenix() {
 
 dispatch_phoenix() {
     local app_name=$1
-    log info "dispatch ${app_name}" 
     dispatch_app ${app_name}
 
     length=${#HOSTNAME_LIST[@]}

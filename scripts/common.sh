@@ -271,10 +271,11 @@ PRESTO_CONF_DIR=$INSTALL_PATH/presto/etc
 
 # kylin
 # https://mirrors.huaweicloud.com/apache/kylin/apache-kylin-3.0.2/apache-kylin-3.0.2-bin-hadoop3.tar.gz
+# https://mirrors.huaweicloud.com/apache/kylin/apache-kylin-3.0.2/apache-kylin-3.0.2-bin-hbase1x.tar.gz
 KYLIN_VERSION_NUM=`get_app_version_num $AZKABAN_VERSION "-" 3`
 KYLIN_ARCHIVE=apache-${KYLIN_VERSION}-bin-hbase1x.tar.gz
 KYLIN_DIR_NAME=apache-${KYLIN_VERSION}-bin-hbase1x
-KYLIN_MIRROR_DOWNLOAD=https://mirrors.huaweicloud.com/apache/kylin/$KYLIN_VERSION/$KYLIN_ARCHIVE
+KYLIN_MIRROR_DOWNLOAD=https://mirrors.huaweicloud.com/apache/kylin/apache-$KYLIN_VERSION/$KYLIN_ARCHIVE
 KYLIN_RES_DIR=$RESOURCE_PATH/kylin
 KYLIN_CONF_DIR=$INSTALL_PATH/kylin/bin
 

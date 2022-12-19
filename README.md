@@ -4,8 +4,6 @@
 
 本集群创建的组件如下表所示。
 
-
-
 | 组件      | hdp101                                             | hdp102                     | hdp103            |
 | :-: | ---  | -------------------------- | ----------------- |
 | OS   | centos7.6  | centos7.6             | centos7.6         |
@@ -14,8 +12,8 @@
 | YARN      | NodeManager    | ResourceManager<br/>NodeManager | NodeManager       |
 | Hive | Hive | NA | NA |
 | HBase     | HMaster<br>HRegionServer                           | HRegionServer              | HRegionServer     |
-| Spark     | masterHistoryServer                                | worker                     | worker            |
-| Flink     | StandaloneSession<br>ClusterEntrypoint             | TaskManagerRunner          | TaskManagerRunner |
+| Spark     | master<br/>worker        | worker                     | worker            |
+| Flink     | StandaloneSessionClusterEntrypoint<br/>TaskManagerRunner | TaskManagerRunner          | TaskManagerRunner |
 | Zookeeper | QuorumPeerMain                                     | QuorumPeerMain             | QuorumPeerMain    |
 | Kafka     | kafka                                              | Kafka                      | Kafka             |
 | Flume     | flume                                              | flume                      | flume             |
@@ -29,27 +27,25 @@
 | Kibana | Kibana | NA | NA |
 
 
-
-
 组件版本：
 
 ```
 Java: 1.8
-Hadoop: 3.1.3
+Hadoop: 2.7.7
 Hive: 2.3.4
-Hbase: 2.0.6
-Spark: 3.0.0
+Hbase: 1.6.0
+Spark: 2.4.3
 Flink: 1.12.4
-Zookeeper: 3.5.7
-Kafka: 3.0.0
+Zookeeper: 3.6.3
+Kafka: 2.10-0.10.2.2
 Flume: 1.9.0
-Scala: 2.12.10
+Scala: 2.11.11
 Maven: 3.6.1
 Sqoop: 1.4.7
 MySQl Connector: 5.1.49
-MySQL: 5.7.35
-Nginx: 1.18.0
-Redis: 5.0.12
+MySQL: 5.7.40（yum安装）
+Nginx: 1.20.1（yum安装）
+Redis: 3.2.12（yum安装）
 Elasticsearch: 6.6.0
 Kibana: 6.6.0
 Canal: 1.25.0
@@ -58,10 +54,10 @@ Presto: 0.196
 Kylin: 3.0.2
 ```
 
-## 二、基本硬件准备
+## 二、基本准备
 
 1. 集群默认启动三个节点，每个节点的默认内存是2G，所以你的机器至少需要6G
-2. 我的测试环境：Vagrant 2.2.14， Virtualbox 6.0.14
+2. 我的测试环境软件版本：Vagrant 2.2.14， Virtualbox 6.0.14
 
 ## 三、安装集群环境
 
@@ -118,11 +114,16 @@ setssh
 
 #### 1）启动
 
-在`hdp101`机器上执行以下命令对hadoop集群进行格式化，并启动hdfs和yarn。
+在 `hdp101` 机器上执行以下命令对hadoop集群进行格式化，并启动hdfs和yarn。
 
 ```
 hdfs namenode -format
 start-dfs.sh
+```
+
+在 `hdp102` 机器上执行以下命令，启动yarn和jobhistory。
+
+```
 start-yarn.sh
 mr-jobhistory-daemon.sh start historyserver (mapred --damon)
 ```
@@ -130,8 +131,8 @@ mr-jobhistory-daemon.sh start historyserver (mapred --damon)
 或者
 
 ```
-bigstart dfs start
-bigstart yarn start
+bigstart hdp format
+bigstart hdp start
 ```
 
 #### 2）测试
@@ -146,21 +147,7 @@ yarn jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples*.jar pi 2
 
 #### 1）启动
 
-（1）上传并解压spark-3.0.0-bin-without-hadoop.tgz
-
-```
-wget https://mirrors.huaweicloud.com/apache/spark/spark-3.0.0/spark-3.0.0-bin-without-hadoop.tgz
-tar -zxvf spark-3.0.0-bin-without-hadoop.tgz
-```
-
-（2）上传Spark纯净版jar包到HDFS
-
-```
-hadoop fs -mkdir /spark-jars
-hadoop fs -put spark-3.0.0-bin-without-hadoop/jars/* /spark-jars
-```
-
-在`hdp101`机器上执行以下命令。
+在 `hdp101` 机器上执行以下命令。
 
 ```
 $SPARK_HOME/sbin/start-all.sh
@@ -179,11 +166,6 @@ bigstart spark start
 ```
 hdfs dfs -mkdir /spark-log
 
-spark-submit --master spark://hdp101:7077 \
---deploy-mode cluster \
---class org.apache.spark.examples.SparkPi \
-$SPARK_HOME/examples/jars/spark-examples*.jar 100
-
 spark-submit --class org.apache.spark.examples.SparkPi \
 --master yarn \
 --num-executors 1 \
@@ -195,7 +177,7 @@ $SPARK_HOME/examples/jars/spark-examples*.jar 100
 
 #### 1）启动
 
-在`hdp101`机器上执行以下命令。
+在 `hdp101` 机器上执行以下命令。
 
 ```
 $FLINK_HOME/bin/start-cluster.sh
@@ -220,14 +202,14 @@ flink run $FLINK_HOME/examples/batch/WordCount.jar
 
 #### 1）启动
 
-~~在`hdp103`节点登录MySQL数据库，创建hive的元数据库。~~（已在mysql安装时完成，**mysql默认密码为199037**）
+~~在 `hdp103` 节点登录MySQL数据库，创建hive的元数据库。~~（已在mysql安装时完成，**mysql默认密码为199037**）
 
 ```
 # 创建hive的元数据库
 mysql -uroot -p199037 -e "create user 'hive'@'%' IDENTIFIED BY 'hive';GRANT ALL PRIVILEGES ON *.* TO 'hive'@'%' WITH GRANT OPTION;grant all on *.* to 'hive'@'localhost' identified by 'hive';flush privileges;"
 ```
 
-在`hdp101`节点，初始化元数据，看到 schemaTool completed ，即初始化成功！
+在 `hdp101` 节点，初始化元数据，看到 schemaTool completed ，即初始化成功！
 
 ```
 schematool -initSchema -dbType mysql
@@ -246,12 +228,11 @@ hadoop和hive的两个guava.jar版本不一致
 
 #### 2）Hive服务启动与测试
 
-在`hdp101`节点，创建测试数据
+在 `hdp101` 节点，创建测试数据
 
 ```
 # 创建数据文件
 vi ~/stu.txt
-
 ```
 
 内容如下：
@@ -271,7 +252,7 @@ vi ~/stu.txt
 # 创建表
 hive (default)>  CREATE TABLE stu(id INT,name STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
 # 加载数据
-hive (default)> load data local inpath '/home/vagrant/stu.txt' into table stu;
+hive (default)> load data local inpath '/root/stu.txt' into table stu;
 # 查看库表
 hive (default)> select * from stu;
 OK
@@ -281,6 +262,32 @@ OK
 4       zhaoliu
 Time taken: 3.301 seconds, Fetched: 4 row(s)
 ```
+### 6、启动Zookeeper
+
+在 `hdp101` 节点登录执行以下命令。（注意：不能以root执行）
+
+```
+bigstart es start(或stop)
+```
+
+jpsall查看一下进程：
+
+```
+[vagrant@hdp101 ~]$ jpsall 
+--------------------- hdp101节点 ---------------------
+2899 QuorumPeerMain
+--------------------- hdp102节点 ---------------------
+25511 QuorumPeerMain
+--------------------- hdp103节点 ---------------------
+25993 QuorumPeerMain
+```
+
+[PrettyZoo](https://github.com/vran-dev/PrettyZoo)
+
+### 7、启动Elasticsearch
+
+在 `hdp101` 节点登录执行以下命令。（注意：不能以root执行）
+
 ```
 bigstart es start(或stop)
 ```
@@ -303,51 +310,68 @@ jpsall查看一下进程：
 25993 QuorumPeerMain
 ```
 
-### 7、启动Kibana
+访问 http://hdp101:9200/_cat/nodes?v 查看节点状态。
 
-在`hdp101`节点登录执行以下命令。
+### 8、启动Kibana
 
-```
-bigstart kibana start(或stop)
-```
-
-
-
-### 6、启动Elasticsearch
-
-在`hdp101`节点登录执行以下命令。
-
-```
-bigstart es start(或stop)
-```
-
-jpsall查看一下进程：
-
-```
-[vagrant@hdp101 ~]$ jpsall 
---------------------- hdp101节点 ---------------------
-3185 Kafka
-2899 QuorumPeerMain
-3365 Elasticsearch
---------------------- hdp102节点 ---------------------
-25511 QuorumPeerMain
-25800 Kafka
-25964 Elasticsearch
---------------------- hdp103节点 ---------------------
-26276 Kafka
-26440 Elasticsearch
-25993 QuorumPeerMain
-```
-
-### 7、启动Kibana
-
-在`hdp101`节点登录执行以下命令。
+在 `hdp101` 节点登录执行以下命令。
 
 ```
 bigstart kibana start(或stop)
 ```
 
+```
+WARN: Establishing SSL connection without server's identity verification is not recommended. According to MySQL 5.5.45+, 5.6.26+ and 5.7.6+ requirements SSL connection must be established by default if explicit option isn't set. For compliance with existing applications not using SSL the verifyServerCertificate property is set to 'false'. You need either to explicitly disable SSL by setting useSSL=false, or set useSSL=true and provide truststore for server certificate verification.
+```
 
+访问 http://hdp101:5601/ 查看。
+
+### 9、启动Kafka
+
+#### 1）启动
+
+在 `hdp101` 节点登录执行以下命令：
+
+```
+bigstart zookeeper start
+bigstart kibana start(或stop)
+```
+
+#### 2）测试
+
+在 `hdp101` 节点执行以下命令，创建topic：test
+
+```
+kafka-topics.sh --zookeeper hdp101:2181,hdp102:2181,hdp103:2181/kafka --create --topic test --replication-factor 1 --partitions 3
+```
+
+在 `hdp101` 节点执行以下命令，生产者生产数据
+
+```
+kafka-console-producer.sh --broker-list hdp101:9092,hdp102:9092,hdp103:9092 --topic test
+hello world
+```
+
+在 `hdp103` 节点执行以下命令，消费者消费数据
+
+```
+kafka-console-consumer.sh --bootstrap-server hdp101:9092,hdp102:9092,hdp103:9092 --topic test --from-beginning
+```
+
+### 10、启动Hbase
+
+#### 1）启动
+
+在 `hdp101` 节点登录执行以下命令：
+
+```
+bigstart zookeeper start
+bigstart hbase start(或stop)
+```
+
+#### 2）测试
+
+略
 
 ## 六. Web UI
 

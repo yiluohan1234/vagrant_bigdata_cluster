@@ -28,6 +28,7 @@ install_mysql() {
         use mysql; \
         update user set host='%' where user='root'; \
         create user 'hive'@'%' IDENTIFIED BY 'hive'; \
+        CREATE DATABASE hive; \
         GRANT ALL PRIVILEGES ON *.* TO 'hive'@'%' WITH GRANT OPTION; \
         GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'canal'@'%' IDENTIFIED BY 'canal'; \
         CREATE DATABASE maxwell; \

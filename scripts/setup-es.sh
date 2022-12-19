@@ -32,12 +32,12 @@ setup_es() {
     # elasticsearch.yml
     
     sed -i 's@^#cluster.name:.*@cluster.name: "hdp-testing-es"@' ${conf_dir}/elasticsearch.yml
-    sed -i 's@^#path.data:.*@'${INSTALL_PATH}'/elasticsearch/data@' ${conf_dir}/elasticsearch.yml
-    sed -i 's@^#path.logs:.*@'${INSTALL_PATH}'/elasticsearch/logs@' ${conf_dir}/elasticsearch.yml
+    sed -i 's@^#path.data:.*@path.data: '${INSTALL_PATH}'/elasticsearch/data@' ${conf_dir}/elasticsearch.yml
+    sed -i 's@^#path.logs:.*@path.logs: '${INSTALL_PATH}'/elasticsearch/logs@' ${conf_dir}/elasticsearch.yml
     sed -i 's@^#bootstrap.memory_lock:.*@bootstrap.memory_lock: false@' ${conf_dir}/elasticsearch.yml
     
     sed -i 's@^#http.port: .*@http.port: 9200@' ${conf_dir}/elasticsearch.yml
-    sed -i 's@^#discovery.zen.ping.unicast.hosts: .*@#discovery.zen.ping.unicast.hosts: ["'${HOSTNAME_LIST[0]}'", "'${HOSTNAME_LIST[1]}'", "'${HOSTNAME_LIST[2]}'"]@' ${conf_dir}/elasticsearch.yml
+    sed -i 's@^#discovery.zen.ping.unicast.hosts: .*@discovery.zen.ping.unicast.hosts: ["'${HOSTNAME_LIST[0]}'", "'${HOSTNAME_LIST[1]}'", "'${HOSTNAME_LIST[2]}'"]@' ${conf_dir}/elasticsearch.yml
     sed -i 's@^#discovery.zen.minimum_master_nodes: .*@discovery.zen.minimum_master_nodes: 2@' ${conf_dir}/elasticsearch.yml
     sed -i 's@^#gateway.recover_after_nodes: .*@gateway.recover_after_nodes: 3@' ${conf_dir}/elasticsearch.yml  
 

@@ -7,7 +7,7 @@ VGC_MAIN_DIR=${VGC_MAIN_DIR:-$DEFAULT_MAIN_DIR}
 
 # ip,hostname
 IP_LIST=("192.168.10.101" "192.168.10.102" "192.168.10.103")
-HOSTNAME_LIST=("master" "slave1" "slave2")
+HOSTNAME_LIST=("hdp101" "hdp102" "hdp103")
 PASSWD_LIST=("vagrant" "vagrant" "vagrant")
 
 # 安装目录
@@ -32,8 +32,8 @@ IS_UPDATE_GIT="false"
 IS_GITHUB="false"
 
 # default user and group
-DEFAULT_USER=root
-DEFAULT_GROUP=root
+DEFAULT_USER=vagrant
+DEFAULT_GROUP=vagrant
 
 # 配置文件目录
 RESOURCE_PATH=$VGC_MAIN_DIR/resources
@@ -53,8 +53,8 @@ DOWNLOAD_REPO=https://mirrors.huaweicloud.com/apache
 GITHUB_DOWNLOAD_REPO=https://ghproxy.com
 
 # Centos basic apps list.
-# CENTOS_BASIC_APPS=("epel-release" "sshpass" "lrzsz" "expect" "unzip" "zip" "vim-enhanced" "lzop" "dos2unix" "net-tools" "nc" "wget" "lsof" "telnet" "tcpdump" "ntp")
-CENTOS_BASIC_APPS=("epel-release" "sshpass" "lrzsz" "expect" "wget")
+CENTOS_BASIC_APPS=("epel-release" "sshpass" "lrzsz" "expect" "unzip" "zip" "vim-enhanced" "lzop" "dos2unix" "net-tools" "nc" "wget" "lsof" "telnet" "tcpdump" "ntp")
+# CENTOS_BASIC_APPS=("epel-release" "sshpass" "lrzsz" "expect" "wget")
 
 # mysql
 MYSQL_HOST=${HOSTNAME_LIST[2]}

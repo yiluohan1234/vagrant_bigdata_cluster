@@ -10,7 +10,7 @@ setup_flume() {
     local res_dir=$(eval echo \$${app_name_upper}_RES_DIR)
     local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
 
-    log info "copying over $app_name configuration files"
+    log info "modifying over $app_name configuration files"
     # flume-env.sh
     cp ${conf_dir}/flume-env.sh.template ${conf_dir}/flume-env.sh
     sed -i "s@^# export JAVA_HOME=.*@export JAVA_HOME=${INSTALL_PATH}/java@" ${conf_dir}/flume-env.sh
@@ -23,7 +23,7 @@ setup_flume() {
     cp ${res_dir}/kafka-flume-hdfs.conf ${conf_dir}
 
     # 将lib文件夹下的guava-11.0.2.jar删除以兼容Hadoop-3.1.3
-    rm ${INSTALL_PATH}/${app_name}/lib/guava-11.0.2.jar
+    # rm ${INSTALL_PATH}/${app_name}/lib/guava-11.0.2.jar
 
     # 更换默认配置
     sed -i "s@hdp101@${HOSTNAME_LIST[0]}@g" `grep 'hdp101' -rl ${conf_dir}/`

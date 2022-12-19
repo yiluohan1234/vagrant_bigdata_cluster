@@ -16,9 +16,11 @@ setup_spark() {
     echo "export SPARK_MASTER_IP=${HOSTNAME_LIST[0]}" >> ${conf_dir}/spark-env.sh
     echo "export SCALA_HOME=${INSTALL_PATH}/scala" >> ${conf_dir}/spark-env.sh
     echo "export JAVA_HOME=${INSTALL_PATH}/java" >> ${conf_dir}/spark-env.sh
+    echo "export SPARK_WORKER_MEMORY=1g" >> ${conf_dir}/spark-env.sh
     echo "export HADOOP_HOME=${INSTALL_PATH}/hadoop" >> ${conf_dir}/spark-env.sh
     echo 'export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop' >> ${conf_dir}/spark-env.sh
     echo 'export YARN_CONF_DIR=$HADOOP_HOME/etc/hadoop' >> ${conf_dir}/spark-env.sh
+
     echo 'export SPARK_HISTORY_OPTS="-Dspark.history.ui.port=18080 -Dspark.history.retainedApplications=3 -Dspark.history.fs.logDirectory=hdfs://'${HOSTNAME_LIST[0]}':9000/spark-log"' >> ${conf_dir}/spark-env.sh
     # spark-defaults.conf
     cp ${conf_dir}/spark-defaults.conf.template ${conf_dir}/spark-defaults.conf
