@@ -29,7 +29,7 @@ Vagrant.configure("2") do |config|
       # VirtaulBox相关配置
       node.vm.provider "virtualbox" do |v|
         # 设置虚拟机的名称
-        v.name = "hdp#{i}"
+        v.name = "hdp10#{i}"
         # 设置虚拟机的内存大小
         v.memory = 2048
         # 设置虚拟机的CPU个数
