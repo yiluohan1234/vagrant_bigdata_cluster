@@ -7,7 +7,7 @@ VGC_MAIN_DIR=${VGC_MAIN_DIR:-$DEFAULT_MAIN_DIR}
 
 # ip,hostname
 IP_LIST=("192.168.10.101" "192.168.10.102" "192.168.10.103")
-HOSTNAME_LIST=("master" "slave1" "slave2")
+HOSTNAME_LIST=("hdp101" "hdp102" "hdp103")
 PASSWD_LIST=("vagrant" "vagrant" "vagrant")
 
 # 安装目录
