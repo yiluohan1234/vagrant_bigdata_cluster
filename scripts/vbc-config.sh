@@ -32,8 +32,8 @@ IS_UPDATE_GIT="false"
 IS_GITHUB="false"
 
 # default user and group
-DEFAULT_USER=root
-DEFAULT_GROUP=root
+DEFAULT_USER=vagrant
+DEFAULT_GROUP=vagrant
 
 # 配置文件目录
 RESOURCE_PATH=$VGC_MAIN_DIR/resources
