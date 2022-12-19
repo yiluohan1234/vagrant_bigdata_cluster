@@ -10,7 +10,7 @@ Vagrant.configure("2") do |config|
   numNodes = 3
   nodeRange = 1..3
   (nodeRange.first).upto(nodeRange.last).each do |i|
-    config.vm.define "hdp#{i}" do |node|
+    config.vm.define "hdp10#{i}" do |node|
       # 设置虚拟机的Box
       node.vm.box = "centos/7"
       # 设置虚拟机的Box的版本号
