@@ -31,6 +31,9 @@ IS_UPDATE_GIT="false"
 # 是否安装Github520
 IS_GITHUB="false"
 
+# 是否删除/vagrant
+IS_DEL_VAGRANT="true"
+
 # default user and group
 DEFAULT_USER=vagrant
 DEFAULT_GROUP=root
