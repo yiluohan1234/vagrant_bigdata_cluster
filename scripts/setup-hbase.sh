@@ -19,19 +19,19 @@ setup_hbase() {
     # 启动报错：PermSize 和 MaxPermSize 的限制,HBase默认这两个参数有128M的限制，由于长期使用导致程序超过了该阈值
     sed -i '/export HBASE_MASTER_OPTS="$HBASE_MASTER_OPTS -XX:PermSize=128m -XX:MaxPermSize=128m -XX:ReservedCodeCacheSize=256m"/s/^/#/g' ${conf_dir}/hbase-env.sh
     sed -i '/export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS -XX:PermSize=128m -XX:MaxPermSize=128m -XX:ReservedCodeCacheSize=256m"/s/^/#/g' ${conf_dir}/hbase-env.sh
-    
+
     # hbase-site.xml
     create_property_xml ${res_dir}/hbase-site.properties ${conf_dir}/hbase-site.xml
 
     # regionservers 和 backup-masters
-    sed -i '1,$d' ${conf_dir}/regionservers 
+    sed -i '1,$d' ${conf_dir}/regionservers
     echo -e "${HOSTNAME_LIST[0]}\n${HOSTNAME_LIST[1]}\n${HOSTNAME_LIST[2]}" >> ${conf_dir}/regionservers
     # echo "${HOSTNAME_LIST[1]}" >> ${conf_dir}/backup-masters
 
     cp ${INSTALL_PATH}/hadoop/etc/hadoop/core-site.xml ${INSTALL_PATH}/hbase/conf/
     cp ${INSTALL_PATH}/hadoop/etc/hadoop/hdfs-site.xml ${INSTALL_PATH}/hbase/conf
-    mv ${INSTALL_PATH}/hbase/lib/slf4j-log4j12-1.7.25.jar ${INSTALL_PATH}/hbase/lib/slf4j-log4j12-1.7.25.jar_bak
-    
+    # mv ${INSTALL_PATH}/hbase/lib/slf4j-log4j12-1.7.25.jar ${INSTALL_PATH}/hbase/lib/slf4j-log4j12-1.7.25.jar_bak
+
     # 更换默认配置
     sed -i "s@hdp101@${HOSTNAME_LIST[0]}@g" `grep 'hdp101' -rl ${conf_dir}/`
     sed -i "s@hdp102@${HOSTNAME_LIST[1]}@g" `grep 'hdp102' -rl ${conf_dir}/`
@@ -53,7 +53,7 @@ install_hbase() {
         if [ "${IS_VAGRANT}" != "true" ];then
             dispatch_app ${app_name}
         fi
-        
+
         source ${PROFILE}
     fi
 }
