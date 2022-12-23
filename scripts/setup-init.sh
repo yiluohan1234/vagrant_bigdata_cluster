@@ -31,7 +31,7 @@ install_init(){
         done
         # 修改vagrant用户信息，把vagrant添加到组hadoop中
         usermod -a -G hadoop vagrant
-    fi 
+    fi
 
     # 创建生成日志目录
     # APP_LOG=/opt/module/applog/log/
@@ -58,6 +58,14 @@ install_init(){
     sed -i "s@hdp101@${HOSTNAME_LIST[0]}@g"  ${INIT_PATH}/bigstart
     sed -i "s@hdp102@${HOSTNAME_LIST[1]}@g"  ${INIT_PATH}/bigstart
     sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" ${INIT_PATH}/bigstart
+    if [ -d /vagrant/scripts ];then
+        host_list=`cat /vagrant/scripts/vbc-config.sh |grep '^HOSTNAME_LIST'`
+    else
+        cur_dir=`dirname "${BASH_SOURCE-$0}"`
+        cur_dir=`cd "$bin"; pwd`
+        host_list=`cat ${cur_dir}/vbc-config.sh |grep '^HOSTNAME_LIST'`
+    fi
+    sed -i "6a${host_list}" ${INIT_PATH}/setssh
 
     cp $INIT_PATH/jpsall ${INIT_SHELL_BIN}
     cp $INIT_PATH/bigstart ${INIT_SHELL_BIN}
