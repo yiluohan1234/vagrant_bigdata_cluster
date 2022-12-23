@@ -32,7 +32,7 @@ IS_UPDATE_GIT="false"
 IS_GITHUB="false"
 
 # 是否删除/vagrant
-IS_DEL_VAGRANT="false"
+IS_DEL_VAGRANT="true"
 
 # default user and group
 DEFAULT_USER=vagrant
