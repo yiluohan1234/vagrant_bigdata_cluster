@@ -5,7 +5,7 @@ if [ -d /vagrant/scripts ];then
 fi
 
 TOTAL_NODES=3
-# sh 
+# sh
 # sh install_hosts.sh -s 1 -t 3
 # 4,5,6
 while getopts s:t: option
@@ -19,9 +19,10 @@ done
 
 install_hosts() {
     log info "modifying /etc/hosts file"
+    sed -i '/^127.0.1.1/'d /etc/hosts
 
     length=${#HOSTNAME_LIST[@]}
-    for ((i=0; i<$length; i++));do 
+    for ((i=0; i<$length; i++));do
         entry="${IP_LIST[$i]} ${HOSTNAME_LIST[$i]}"
         log info "-------------adding ${entry}-------------"
         echo "${entry}" >> /etc/hosts
