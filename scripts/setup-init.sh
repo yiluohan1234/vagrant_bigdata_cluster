@@ -60,12 +60,15 @@ install_init(){
     sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" ${INIT_PATH}/bigstart
     if [ -d /vagrant/scripts ];then
         host_list=`cat /vagrant/scripts/vbc-config.sh |grep '^HOSTNAME_LIST'`
+        pass_wd=`cat /vagrant/scripts/vbc-config.sh |grep '^PASSWD_LIST'`
     else
         cur_dir=`dirname "${BASH_SOURCE-$0}"`
         cur_dir=`cd "$bin"; pwd`
         host_list=`cat ${cur_dir}/vbc-config.sh |grep '^HOSTNAME_LIST'`
+        pass_wd=`cat ${cur_dir}/vbc-config.sh |grep '^PASSWD_LIST'`
     fi
     sed -i "6a${host_list}" ${INIT_PATH}/setssh
+    sed -i "6a${pass_wd}" ${INIT_PATH}/setssh
 
     cp $INIT_PATH/jpsall ${INIT_SHELL_BIN}
     cp $INIT_PATH/bigstart ${INIT_SHELL_BIN}
