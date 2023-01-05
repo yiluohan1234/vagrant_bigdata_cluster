@@ -34,9 +34,9 @@ install_init(){
     fi
 
     # 创建生成日志目录
-    # APP_LOG=/opt/module/applog/log/
-    # [ ! -d $APP_LOG ] && mkdir -p $APP_LOG
-    # chown -R ${DEFAULT_USER}:${DEFAULT_GROUP} $APP_LOG
+    APP_LOG=/opt/module/applog/log/
+    [ ! -d $APP_LOG ] && mkdir -p $APP_LOG
+    chown -R ${DEFAULT_USER}:${DEFAULT_GROUP} $APP_LOG
     [ ! -d ${INSTALL_PATH} ] && mkdir -p ${INSTALL_PATH}
     [ ! -d ${DOWNLOAD_PATH} ] && mkdir -p ${DOWNLOAD_PATH}
     [ ! -d ${INIT_SHELL_BIN} ] && mkdir -p ${INIT_SHELL_BIN}
