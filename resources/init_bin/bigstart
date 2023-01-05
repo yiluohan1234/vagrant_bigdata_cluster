@@ -400,7 +400,7 @@ redis(){
 
 spark_logger(){
     usage="Usage: $0 (start|stop|restart)"
-    local spark_logger_dir=/opt/module/rt_gmall
+    local spark_logger_dir=/opt/module/gd_gmall
 
     if [ $# -lt 1 ]; then
         echo $usage
@@ -411,22 +411,22 @@ spark_logger(){
             for i in hdp{101..103};
             do
                 echo "-----$1 $i rt_logger-------"
-                ssh $i "nohup $INSTALL_PATH/java/bin/java -Xms32m -Xmx64m -jar ${spark_logger_dir}/rt_logger/gmall2021-logger-0.0.1-SNAPSHOT.jar > /dev/null 2>&1 &"
-                if [ $i == "hdp101" ];then
-                    echo "============start NGINX============"
-                    $INSTALL_PATH/nginx/sbin/nginx
-                fi
+                ssh $i "nohup $INSTALL_PATH/java/bin/java -Xms32m -Xmx64m -jar ${spark_logger_dir}/logger/gmall-logger.jar > /dev/null 2>&1 &"
+                # if [ $i == "hdp101" ];then
+                #     echo "============start NGINX============"
+                #     $INSTALL_PATH/nginx/sbin/nginx
+                # fi
             done
             ;;
         stop)
             for j in hdp{101..103};
             do
                 echo "-----$1 $j rt_logger-------"
-                ssh $j  "kill -9 \$(ps -ef|grep gmall2021-logger-0.0.1-SNAPSHOT.jar| grep -v grep| awk '{print \$2}')"
-                if [ $j == "hdp101" ];then
-                    echo "============NGINX============"
-                    $INSTALL_PATH/nginx/sbin/nginx -s stop
-                fi
+                ssh $j  "kill -9 \$(ps -ef|grep gmall-logger.jar| grep -v grep| awk '{print \$2}')"
+                # if [ $j == "hdp101" ];then
+                #     echo "============NGINX============"
+                #     $INSTALL_PATH/nginx/sbin/nginx -s stop
+                # fi
             done
             ;;
         *)
