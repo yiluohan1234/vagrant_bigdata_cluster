@@ -23,6 +23,7 @@ KAFKA_VERSION=kafka_2.10-0.10.2.2
 SQOOP_VERSION=sqoop-1.4.7
 FLINK_VERSION=flink-1.13.4
 
+NIFI_VERSION=nifi-1.13.0
 FLUME_VERSION=flume-1.9.0
 MAVEN_VERSION=maven-3.6.1
 MYSQL_CONNECTOR_VERSION=mysql-connector-java-5.1.49
@@ -88,6 +89,17 @@ SPARK_DIR_NAME=${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION_NUM_TWO}
 SPARK_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/spark/$SPARK_VERSION/$SPARK_ARCHIVE
 SPARK_RES_DIR=$RESOURCE_PATH/spark
 SPARK_CONF_DIR=$INSTALL_PATH/spark/conf
+
+# nifi
+# 支持版本：具体见下载地址
+#         https://archive.apache.org/dist/nifi/1.13.0/nifi-1.13.0-bin.tar.gz
+# https://mirrors.huaweicloud.com/apache/nifi/1.13.0/nifi-1.13.0-bin.tar.gz
+NIFI_VERSION_NUM=`get_app_version_num $NIFI_VERSION "-" 2`
+NIFI_ARCHIVE=$NIFI_VERSION-bin.tar.gz
+NIFI_DIR_NAME=${NIFI_VERSION}
+NIFI_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/nifi/$NIFI_VERSION/$NIFI_ARCHIVE
+NIFI_RES_DIR=$RESOURCE_PATH/nifi
+NIFI_CONF_DIR=$INSTALL_PATH/nifi/conf
 
 # scala
 # 支持版本：2.10.X, 2.11.X, 2.12.X, 2.13.X

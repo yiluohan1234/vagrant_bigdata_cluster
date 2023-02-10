@@ -15,7 +15,7 @@ install_ssh() {
                 \"Enter same passphrase again:\" { send \"\r\" ; exp_continue}
             }";
     fi
-    
+
     length=${#HOSTNAME_LIST[@]}
     for ((i=0; i<$length; i++));do
         expect -c "

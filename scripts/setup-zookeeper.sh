@@ -19,9 +19,9 @@ setup_zookeeper() {
     local app_name_upper=`get_string_upper ${app_name}`
     local res_dir=$(eval echo \$${app_name_upper}_RES_DIR)
     local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
-    
+
     log info "creating $app_name directories"
-    mkdir -p ${INSTALL_PATH}/zookeeper/data 
+    mkdir -p ${INSTALL_PATH}/zookeeper/data
     mkdir -p ${INSTALL_PATH}/zookeeper/logs
     touch ${INSTALL_PATH}/zookeeper/data/myid
 
@@ -50,7 +50,7 @@ setup_zookeeper() {
 
     if [ "${IS_VAGRANT}" == "true" ];then
         echo $MYID >>${INSTALL_PATH}/zookeeper/data/myid
-    else 
+    else
         echo "1" >> ${INSTALL_PATH}/${app_name}/data/myid
     fi
 }
@@ -79,9 +79,9 @@ install_zookeeper() {
         if [ "${IS_VAGRANT}" != "true" ];then
             dispatch_zookeeper ${app_name}
         fi
-        source ${PROFILE} 
+        source ${PROFILE}
     fi
-    
+
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then
