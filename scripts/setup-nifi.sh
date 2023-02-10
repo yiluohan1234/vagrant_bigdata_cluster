@@ -76,5 +76,5 @@ install_nifi() {
 }
 
 if [ "${IS_VAGRANT}" == "true" ];then
-    install_spark
+    install_nifi
 fi
