@@ -2,7 +2,7 @@
 #set -x
 if [ -d /vagrant/scripts ];then
     source "/vagrant/scripts/common.sh"
-fi 
+fi
 
 setup_hadoop() {
     local app_name=$1
@@ -13,7 +13,7 @@ setup_hadoop() {
 
     log info "creating ${app_name} directories"
     mkdir -p ${INSTALL_PATH}/${app_name}/tmp
-	
+
     log info "copying over ${app_name} configuration files"
     # cp -f ${res_dir}/${app_ver_dir}/* ${conf_dir}
     create_property_xml ${res_dir}/core-site.properties ${conf_dir}/core-site.xml
@@ -26,9 +26,15 @@ setup_hadoop() {
     # yarn-evn.sh(add)
     echo "export JAVA_HOME=${INSTALL_PATH}/java" >> ${conf_dir}/yarn-env.sh
     # master and slaves
-    echo "${HOSTNAME_LIST[0]}" >> ${conf_dir}/master
-    sed -i '1,$d' ${conf_dir}/slaves 
-    echo -e "${HOSTNAME_LIST[0]}\n${HOSTNAME_LIST[1]}\n${HOSTNAME_LIST[2]}" >> ${conf_dir}/slaves
+    # echo "${HOSTNAME_LIST[0]}" >> ${conf_dir}/master
+    if [ ! -f ${conf_dir}/slaves ]
+    then
+        sed -i '1,$d' ${conf_dir}/workers
+        echo -e "${HOSTNAME_LIST[0]}\n${HOSTNAME_LIST[1]}\n${HOSTNAME_LIST[2]}" >> ${conf_dir}/workers
+    else
+        sed -i '1,$d' ${conf_dir}/slaves
+        echo -e "${HOSTNAME_LIST[0]}\n${HOSTNAME_LIST[1]}\n${HOSTNAME_LIST[2]}" >> ${conf_dir}/slaves
+    fi
 
     mv ${res_dir}/hadoop-lzo-0.4.20.jar ${INSTALL_PATH}/hadoop/share/hadoop/common
 
@@ -36,7 +42,7 @@ setup_hadoop() {
     sed -i "s@hdp101@${HOSTNAME_LIST[0]}@g" `grep 'hdp101' -rl ${conf_dir}/`
     sed -i "s@hdp102@${HOSTNAME_LIST[1]}@g" `grep 'hdp102' -rl ${conf_dir}/`
     sed -i "s@hdp103@${HOSTNAME_LIST[2]}@g" `grep 'hdp103' -rl ${conf_dir}/`
-    
+
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
     fi
