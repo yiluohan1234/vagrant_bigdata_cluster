@@ -20,17 +20,18 @@ install_init(){
     # 更改主机名称
     hostnamectl set-hostname ${HOSTNAME_LIST[$(( id-1 ))]}
 
+    # 创建hadoop组、创建各用户并设置密码
+    groupadd hadoop
+    # 修改vagrant用户信息，把vagrant添加到组hadoop中
+    usermod -a -G hadoop vagrant
     if [ "${IS_KERBEROS}" == "true" ];then
-        # 创建hadoop组、创建各用户并设置密码
-        groupadd hadoop
+
         for user in {"hdfs","yarn","mapred","hive"};
         do
             useradd $user -g hadoop -d /home/$user
             # 各个用户的默认密码是vagrant
             echo $user | passwd --stdin $user
         done
-        # 修改vagrant用户信息，把vagrant添加到组hadoop中
-        usermod -a -G hadoop vagrant
     fi
 
     # 创建生成日志目录
