@@ -13,10 +13,12 @@ setup_hive() {
     log info "creating $app_name directories"
     mkdir -p ${INSTALL_PATH}/hive/logs
     mkdir -p ${INSTALL_PATH}/hive/tmpdir
-	
+
     log info "modifying over ${app_name} configuration files"
     # cp -f ${res_dir}/hive* ${conf_dir}
     cp ${conf_dir}/hive-env.sh.template  ${conf_dir}/hive-env.sh
+    sed -i 's@^# export HADOOP_HEAPSIZE=.*@export HADOOP_HEAPSIZE=2048@' ${conf_dir}/hive-env.sh
+
     # hive-env.sh
     echo "export HADOOP_HOME=${INSTALL_PATH}/hadoop" >> ${conf_dir}/hive-env.sh
     echo "export HIVE_CONF_DIR=${INSTALL_PATH}/hive/conf" >> ${conf_dir}/hive-env.sh
@@ -31,8 +33,8 @@ setup_hive() {
     # 解决log4j冲突
     # mv ${INSTALL_PATH}/hive/lib/log4j-slf4j-impl-2.10.0.jar ${INSTALL_PATH}/hive/lib/log4j-slf4j-impl-2.10.0.jar_bak
     # 解决jline的版本冲突
-    cp ${INSTALL_PATH}/hive/lib/jline-2.12.jar ${INSTALL_PATH}/hadoop/share/hadoop/yarn/lib/ 
-    
+    cp ${INSTALL_PATH}/hive/lib/jline-2.12.jar ${INSTALL_PATH}/hadoop/share/hadoop/yarn/lib/
+
     wget_mysql_connector ${INSTALL_PATH}/hive/lib
 
     # 更换默认配置
