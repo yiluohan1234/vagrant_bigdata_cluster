@@ -35,8 +35,8 @@ IS_GITHUB="false"
 IS_DEL_VAGRANT="true"
 
 # default user and group
-DEFAULT_USER=root
-DEFAULT_GROUP=root
+DEFAULT_USER=vagrant
+DEFAULT_GROUP=hadoop
 
 # 配置文件目录
 RESOURCE_PATH=$VGC_MAIN_DIR/resources
