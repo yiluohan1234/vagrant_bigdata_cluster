@@ -18,7 +18,11 @@ setup_hadoop() {
     # cp -f ${res_dir}/${app_ver_dir}/* ${conf_dir}
     create_property_xml ${res_dir}/core-site.properties ${conf_dir}/core-site.xml
     create_property_xml ${res_dir}/hdfs-site.properties ${conf_dir}/hdfs-site.xml
-    cp ${conf_dir}/mapred-site.xml.template ${conf_dir}/mapred-site.xml
+
+    if [ ! -f ${conf_dir}/mapred-site.xml ]
+    then
+        cp ${conf_dir}/mapred-site.xml.template ${conf_dir}/mapred-site.xml
+    fi
     create_property_xml ${res_dir}/mapred-site.properties ${conf_dir}/mapred-site.xml
     create_property_xml ${res_dir}/yarn-site.properties ${conf_dir}/yarn-site.xml
     # hadoop-env.sh(modify)

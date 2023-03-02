@@ -35,7 +35,7 @@ IS_GITHUB="false"
 IS_DEL_VAGRANT="true"
 
 # default user and group
-DEFAULT_USER=vagrant
+DEFAULT_USER=root
 DEFAULT_GROUP=root
 
 # 配置文件目录
