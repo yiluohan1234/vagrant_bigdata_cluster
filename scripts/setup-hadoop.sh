@@ -26,7 +26,7 @@ setup_hadoop() {
     create_property_xml ${res_dir}/mapred-site.properties ${conf_dir}/mapred-site.xml
     create_property_xml ${res_dir}/yarn-site.properties ${conf_dir}/yarn-site.xml
     # hadoop-env.sh(modify)
-    sed -i "s@^export JAVA_HOME=.*@export JAVA_HOME=${INSTALL_PATH}/java@" ${conf_dir}/hadoop-env.sh
+    sed -i "s@^# export JAVA_HOME=.*\|^export JAVA_HOME=.*@export JAVA_HOME=${INSTALL_PATH}/java@" ${conf_dir}/hadoop-env.sh
     # yarn-evn.sh(add)
     echo "export JAVA_HOME=${INSTALL_PATH}/java" >> ${conf_dir}/yarn-env.sh
     # master and slaves
