@@ -9,11 +9,14 @@ VGC_SCRIPTS_DIR=${VGC_SCRIPTS_DIR:-$DEFAULT_SCRIPTS_DIR}
 . $VGC_SCRIPTS_DIR/vbc-function.sh
 
 # app版本
-HADOOP_VERSION=hadoop-3.2.3
 # HADOOP_VERSION=hadoop-2.7.7
-HIVE_VERSION=hive-3.1.3
+HADOOP_VERSION=hadoop-3.2.2
 # HIVE_VERSION=hive-2.3.4
-HBASE_VERSION=hbase-1.6.0
+HIVE_VERSION=hive-3.1.3
+# HBASE_VERSION=hbase-1.6.0
+# PHOENIX_VERSION=phoenix-hbase-1.6-4.16.0
+HBASE_VERSION=hbase-2.0.5
+PHOENIX_VERSION=apache-phoenix-5.0.0-HBase-2.0
 # SCALA_VERSION=scala-2.11.11
 SCALA_VERSION=scala-2.12.16
 SPARK_VERSION=spark-3.2.3
@@ -28,7 +31,6 @@ NIFI_VERSION=nifi-1.13.0
 FLUME_VERSION=flume-1.9.0
 MAVEN_VERSION=maven-3.6.1
 MYSQL_CONNECTOR_VERSION=mysql-connector-java-5.1.49
-PHOENIX_VERSION=phoenix-hbase-1.6-4.16.0
 PRESTO_VERSION=presto-server-0.196
 ELASTICSEARCH_VERSION=elasticsearch-6.6.0
 KIBANA_VERSION=kibana-6.6.0
@@ -47,7 +49,7 @@ JAVA_DIR_NAME=jdk1.8.0_201
 # hadoop
 # 支持版本：3.3.1, 3.3.0, 3.2.2-3.2.0, 3.1.4-3.1.0, 3.0.3-3.0.0, 2.9.2-2.9.0, 2.8.5-2.8.0, 2.7.7-2.7.0等
 #         https://archive.apache.org/dist/hadoop/core/hadoop-2.7.7/hadoop-2.7.7.tar.gz
-# https://mirrors.huaweicloud.com/apache/hadoop/core/hadoop-3.1.3/hadoop-3.1.3.tar.gz
+# https://mirrors.huaweicloud.com/apache/hadoop/core/hadoop-3.2.2/hadoop-3.2.2.tar.gz
 # https://archive.apache.org/dist => https://mirrors.huaweicloud.com/apache
 HADOOP_VERSION_NUM=`get_app_version_num $HADOOP_VERSION "-" 2`
 HADOOP_VERSION_NUM_TWO=`echo ${HADOOP_VERSION:7:3}`
@@ -82,8 +84,8 @@ HBASE_CONF_DIR=$INSTALL_PATH/hbase/conf
 
 # spark
 # 支持版本：具体见下载地址
-#         https://archive.apache.org/dist/spark/spark-2.4.6/spark-2.4.6-bin-hadoop2.7.tgz
-# https://mirrors.huaweicloud.com/apache/spark/spark-3.0.0/spark-3.0.0-bin-hadoop3.2.tgz
+#         https://archive.apache.org/dist/spark/spark-2.4.3/spark-2.4.3-bin-hadoop2.7.tgz
+# https://mirrors.huaweicloud.com/apache/spark/spark-3.2.3/spark-3.2.3-bin-hadoop3.2.tgz
 SPARK_VERSION_NUM=`get_app_version_num $SPARK_VERSION "-" 2`
 SPARK_ARCHIVE=$SPARK_VERSION-bin-hadoop${HADOOP_VERSION_NUM_TWO}.tgz
 SPARK_DIR_NAME=${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION_NUM_TWO}
@@ -167,15 +169,26 @@ KAFKA_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/kafka/$KAFKA_VERSION_NUM/$KAFKA_ARCHIVE
 KAFKA_RES_DIR=$RESOURCE_PATH/kafka
 KAFKA_CONF_DIR=$INSTALL_PATH/kafka/config
 
-# phoenix
+# phoenix 1.6
 # 支持版本：具体查看下载地址
 #        https://archive.apache.org/dist/phoenix/phoenix-4.16.0/phoenix-hbase-1.6-4.16.0-bin.tar.gz
 # https://mirrors.huaweicloud.com/apache/phoenix/phoenix-4.16.0/phoenix-hbase-1.6-4.16.0-bin.tar.gz
-PHOENIX_VERSION_NUM=`get_app_version_num $PHOENIX_VERSION "-" 4`
-HBASE_VERSION_NUM=`get_app_version_num $PHOENIX_VERSION "-" 3`
+# PHOENIX_VERSION_NUM=`get_app_version_num $PHOENIX_VERSION "-" 4`
+# PHOENIX_HBASE_VERSION_NUM=`get_app_version_num $PHOENIX_VERSION "-" 3`
+# PHOENIX_ARCHIVE=${PHOENIX_VERSION}-bin.tar.gz
+# PHOENIX_DIR_NAME=${PHOENIX_VERSION}-bin
+# PHOENIX_MIRROR_DOWNLOAD=${DOWNLOAD_REPO}/phoenix/phoenix-${PHOENIX_VERSION_NUM}/$PHOENIX_ARCHIVE
+# PHOENIX_RES_DIR=$RESOURCE_PATH/phoenix
+# PHOENIX_CONF_DIR=$INSTALL_PATH/phoenix/conf
+
+# phoenix 2.0
+# 支持版本：具体查看下载地址
+# https://archive.apache.org/dist/phoenix/apache-phoenix-5.0.0-HBase-2.0/bin/apache-phoenix-5.0.0-HBase-2.0-bin.tar.gz
+PHOENIX_VERSION_NUM=`get_app_version_num $PHOENIX_VERSION "-" 3`
+PHOENIX_HBASE_VERSION_NUM=`get_app_version_num $PHOENIX_VERSION "-" 5`
 PHOENIX_ARCHIVE=${PHOENIX_VERSION}-bin.tar.gz
 PHOENIX_DIR_NAME=${PHOENIX_VERSION}-bin
-PHOENIX_MIRROR_DOWNLOAD=${DOWNLOAD_REPO}/phoenix/phoenix-${PHOENIX_VERSION_NUM}/$PHOENIX_ARCHIVE
+PHOENIX_MIRROR_DOWNLOAD=${DOWNLOAD_REPO}/phoenix/${PHOENIX_VERSION}/bin/$PHOENIX_ARCHIVE
 PHOENIX_RES_DIR=$RESOURCE_PATH/phoenix
 PHOENIX_CONF_DIR=$INSTALL_PATH/phoenix/conf
 

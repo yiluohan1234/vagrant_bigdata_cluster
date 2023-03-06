@@ -32,16 +32,23 @@ setup_spark() {
     echo "spark.executor.memory            1g" >> ${conf_dir}/spark-defaults.conf
     echo "spark.driver.memory              1g" >> ${conf_dir}/spark-defaults.conf
     echo 'spark.executor.extraJavaOptions  -XX:+PrintGCDetails -Dkey=value -Dnumbers="one two three"' >> ${conf_dir}/spark-defaults.conf
-    # slaves
-    cp ${conf_dir}/slaves.template ${conf_dir}/slaves
-    sed -i "/localhost/Q" ${conf_dir}/slaves 
-    echo -e "${HOSTNAME_LIST[0]}\n${HOSTNAME_LIST[1]}\n${HOSTNAME_LIST[2]}" >> ${conf_dir}/slaves
+    # slaves or workers
+    if [ ! -f ${conf_dir}/slaves.template ]
+    then
+        cp ${conf_dir}/workers.template ${conf_dir}/workers
+        sed -i "/localhost/Q" ${conf_dir}/workers
+        echo -e "${HOSTNAME_LIST[0]}\n${HOSTNAME_LIST[1]}\n${HOSTNAME_LIST[2]}" >> ${conf_dir}/workers
+    else
+        cp ${conf_dir}/slaves.template ${conf_dir}/slaves
+        sed -i "/localhost/Q" ${conf_dir}/slaves
+        echo -e "${HOSTNAME_LIST[0]}\n${HOSTNAME_LIST[1]}\n${HOSTNAME_LIST[2]}" >> ${conf_dir}/slaves
+    fi
 
     wget_mysql_connector ${INSTALL_PATH}/${app_name}/jars
 
     # yarn-site.xml
     #cp -f ${INSTALL_PATH}/hadoop/etc/hadoop/yarn-site.xml ${conf_dir}
-    
+
     # hive-site.xml
     #cp -f ${INSTALL_PATH}/hive/conf/hive-site.xml ${conf_dir}
     #cp -rf ${INSTALL_PATH}/spark/jars/*.jar ${INSTALL_PATH}/hive/lib/

@@ -31,15 +31,15 @@
 
 ```
 Java: 1.8
-Hadoop: 2.7.7
-Hive: 2.3.4
-Hbase: 1.6.0
-Spark: 2.4.3
-Flink: 1.12.4
+Hadoop: 3.2.2
+Hive: 3.1.3
+Hbase: 2.0.5
+Spark: 3.2.3
+Flink: 1.13.4
 Zookeeper: 3.6.3
-Kafka: 2.10-0.10.2.2
+Kafka: kafka_2.12-3.0.0
 Flume: 1.9.0
-Scala: 2.11.11
+Scala: 2.12.16
 Maven: 3.6.1
 Sqoop: 1.4.7
 MySQl Connector: 5.1.49

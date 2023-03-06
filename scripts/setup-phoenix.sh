@@ -7,8 +7,9 @@ fi
 setup_phoenix() {
     local app_name=$1
 
-    log info "copying server.jar to hbase"
-    cp ${INSTALL_PATH}/phoenix/phoenix-server-hbase-${HBASE_VERSION_NUM}-${PHOENIX_VERSION_NUM}.jar ${INSTALL_PATH}/hbase/lib
+    log info "copying server.jar to hbase"phoenix-5.0.0-HBase-2.0-server.jar
+    # cp ${INSTALL_PATH}/phoenix/phoenix-server-hbase-${PHOENIX_HBASE_VERSION_NUM}-${PHOENIX_VERSION_NUM}.jar ${INSTALL_PATH}/hbase/lib
+    cp ${INSTALL_PATH}/phoenix/phoenix-${PHOENIX_VERSION_NUM}-HBase-${PHOENIX_HBASE_VERSION_NUM}-server.jar ${INSTALL_PATH}/hbase/lib
     # cp ${INSTALL_PATH}/phoenix/phoenix-${PHOENIX_VERSION_NUM}-HBase-${HBASE_VERSION_NUM:0:3}-client.jar ${INSTALL_PATH}/hbase/lib
     # cp ${INSTALL_PATH}/phoenix/phoenix-core-${PHOENIX_VERSION_NUM}-HBase-${HBASE_VERSION_NUM:0:3}.jar ${INSTALL_PATH}/hbase/lib
     cp ${INSTALL_PATH}/hbase/conf/hbase-site.xml ${INSTALL_PATH}/phoenix/bin
