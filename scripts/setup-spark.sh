@@ -26,7 +26,8 @@ setup_spark() {
     cp ${conf_dir}/spark-defaults.conf.template ${conf_dir}/spark-defaults.conf
     echo "spark.master                     yarn" >> ${conf_dir}/spark-defaults.conf
     echo "spark.eventLog.enabled           true" >> ${conf_dir}/spark-defaults.conf
-    echo "spark.eventLog.dir               hdfs://${HOSTNAME_LIST[0]}:9000/spark-log" >> ${conf_dir}/spark-defaults.conf
+    #echo "spark.eventLog.dir               hdfs://${HOSTNAME_LIST[0]}:9000/spark-log" >> ${conf_dir}/spark-defaults.conf
+    echo "spark.eventLog.dir               hdfs://${HOSTNAME_LIST[0]}:8020/spark-log" >> ${conf_dir}/spark-defaults.conf
     echo "spark.eventLog.compress          true" >> ${conf_dir}/spark-defaults.conf
     echo "spark.serializer                 org.apache.spark.serializer.KryoSerializer" >> ${conf_dir}/spark-defaults.conf
     echo "spark.executor.memory            1g" >> ${conf_dir}/spark-defaults.conf
@@ -38,6 +39,7 @@ setup_spark() {
         cp ${conf_dir}/workers.template ${conf_dir}/workers
         sed -i "/localhost/Q" ${conf_dir}/workers
         echo -e "${HOSTNAME_LIST[0]}\n${HOSTNAME_LIST[1]}\n${HOSTNAME_LIST[2]}" >> ${conf_dir}/workers
+        echo "export JAVA_HOME=${INSTALL_PATH}/java" >> ${conf_dir}/../sbin/spark-config.sh
     else
         cp ${conf_dir}/slaves.template ${conf_dir}/slaves
         sed -i "/localhost/Q" ${conf_dir}/slaves
