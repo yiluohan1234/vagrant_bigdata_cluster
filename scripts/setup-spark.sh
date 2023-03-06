@@ -21,7 +21,8 @@ setup_spark() {
     echo 'export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop' >> ${conf_dir}/spark-env.sh
     echo 'export YARN_CONF_DIR=$HADOOP_HOME/etc/hadoop' >> ${conf_dir}/spark-env.sh
 
-    echo 'export SPARK_HISTORY_OPTS="-Dspark.history.ui.port=18080 -Dspark.history.retainedApplications=3 -Dspark.history.fs.logDirectory=hdfs://'${HOSTNAME_LIST[0]}':9000/spark-log"' >> ${conf_dir}/spark-env.sh
+    # echo 'export SPARK_HISTORY_OPTS="-Dspark.history.ui.port=18080 -Dspark.history.retainedApplications=3 -Dspark.history.fs.logDirectory=hdfs://'${HOSTNAME_LIST[0]}':9000/spark-log"' >> ${conf_dir}/spark-env.sh
+    echo 'export SPARK_HISTORY_OPTS="-Dspark.history.ui.port=18080 -Dspark.history.retainedApplications=3 -Dspark.history.fs.logDirectory=hdfs://'${HOSTNAME_LIST[0]}':8020/spark-log"' >> ${conf_dir}/spark-env.sh
     # spark-defaults.conf
     cp ${conf_dir}/spark-defaults.conf.template ${conf_dir}/spark-defaults.conf
     echo "spark.master                     yarn" >> ${conf_dir}/spark-defaults.conf
