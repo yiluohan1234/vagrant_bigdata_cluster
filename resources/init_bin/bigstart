@@ -27,13 +27,14 @@ dfs(){
             ;;
         restart)
             dfs stop
-	    dfs start
+            dfs start
             ;;
         *)
             echo $usage
             ;;
     esac
 }
+
 yarn(){
     usage="Usage: $0 (start|stop)"
 
@@ -58,6 +59,32 @@ yarn(){
     esac
 }
 
+historyserver(){
+    usage="Usage: $0 (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            echo " --------------- 启动 historyserver ---------------"
+            ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/bin/mapred --daemon start historyserver"
+            ;;
+        stop)
+            echo " --------------- 关闭 historyserver ---------------"
+            ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/bin/mapred --daemon stop historyserver"
+            ;;
+        restart)
+            historyserver stop
+	        historyserver start
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
 hadoop(){
     usage="Usage: $0 (start|stop|format)"
 
@@ -73,13 +100,13 @@ hadoop(){
             # 哪台机器部署resoucemanager哪台机器启动
             ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/sbin/start-yarn.sh"
             echo " --------------- 启动 historyserver ---------------"
-            # ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/bin/mapred --daemon start historyserver"
-            ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/sbin/mr-jobhistory-daemon.sh start historyserver"
+            ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/bin/mapred --daemon start historyserver"
+            # ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/sbin/mr-jobhistory-daemon.sh start historyserver"
             ;;
         stop)
             echo " --------------- 关闭 historyserver ---------------"
-            # ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/bin/mapred --daemon stop historyserver"
-            ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/sbin/mr-jobhistory-daemon.sh stop historyserver"
+            ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/bin/mapred --daemon stop historyserver"
+            # ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/sbin/mr-jobhistory-daemon.sh stop historyserver"
             echo " --------------- 关闭 yarn ---------------"
             ssh hdp102 "source /etc/profile;$INSTALL_PATH/hadoop/sbin/stop-yarn.sh"
             echo " --------------- 关闭 hdfs ---------------"
@@ -180,16 +207,17 @@ spark(){
     fi
     case $1 in
         start)
-            ssh hdp101 "$INSTALL_PATH/spark/sbin/start-all.sh"
+            ssh hdp101 "source /etc/profile;$INSTALL_PATH/spark/sbin/start-all.sh"
             ;;
         stop)
-            ssh hdp101 "$INSTALL_PATH/spark/sbin/stop-all.sh"
+            ssh hdp101 "source /etc/profile;$INSTALL_PATH/spark/sbin/stop-all.sh"
             ;;
         *)
             echo $usage
             ;;
     esac
 }
+
 flink(){
     usage="Usage(flink): $0 (start|stop)"
 
@@ -199,16 +227,17 @@ flink(){
     fi
     case $1 in
         start)
-            ssh hdp101 "$INSTALL_PATH/flink/bin/start-cluster.sh"
+            ssh hdp101 "source /etc/profile;$INSTALL_PATH/flink/bin/start-cluster.sh"
             ;;
         stop)
-            ssh hdp101 "$INSTALL_PATH/flink/bin/stop-cluster.sh"
+            ssh hdp101 "source /etc/profile;$INSTALL_PATH/flink/bin/stop-cluster.sh"
             ;;
         *)
             echo $usage
             ;;
     esac
 }
+
 hbase(){
     usage="Usage(hbase): $0 (start|stop)"
 
@@ -228,10 +257,10 @@ hbase(){
             else
                 echo "Zookeeper has been started"
             fi
-            ssh hdp101 "$INSTALL_PATH/hbase/bin/start-hbase.sh"
+            ssh hdp101 "source /etc/profile;$INSTALL_PATH/hbase/bin/start-hbase.sh"
             ;;
         stop)
-            ssh hdp101 "$INSTALL_PATH/hbase/bin/stop-hbase.sh"
+            ssh hdp101 "source /etc/profile;$INSTALL_PATH/hbase/bin/stop-hbase.sh"
             ;;
         *)
             echo $usage
@@ -766,6 +795,9 @@ args()
 		;;
 	  yarn)
 		yarn $2
+		;;
+	  historyserver)
+		historyserver $2
 		;;
 	  hdp)
 		hadoop $2
