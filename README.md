@@ -252,7 +252,7 @@ vi ~/stu.txt
 # 创建表
 hive (default)>  CREATE TABLE stu(id INT,name STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
 # 加载数据
-hive (default)> load data local inpath '/root/stu.txt' into table stu;
+hive (default)> load data local inpath '/home/vagrant/stu.txt' into table stu;
 # 查看库表
 hive (default)> select * from stu;
 OK
@@ -267,7 +267,7 @@ Time taken: 3.301 seconds, Fetched: 4 row(s)
 在 `hdp101` 节点登录执行以下命令。（注意：不能以root执行）
 
 ```
-bigstart es start(或stop)
+bigstart zookeeper start(或stop)
 ```
 
 jpsall查看一下进程：
@@ -289,7 +289,7 @@ jpsall查看一下进程：
 在 `hdp101` 节点登录执行以下命令。（注意：不能以root执行）
 
 ```
-bigstart es start(或stop)
+bigstart elasticsearch start(或stop)
 ```
 
 jpsall查看一下进程：
