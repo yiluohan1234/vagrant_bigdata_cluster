@@ -81,7 +81,7 @@ _service_tool()
        ;;
 
        'hive')
-       COMPREPLY=( $(compgen -W 'start stop status restart' -- $cur ) )
+       COMPREPLY=( $(compgen -W 'start stop status restart init' -- $cur ) )
         ;;
 
        'maxwell')

@@ -591,6 +591,9 @@ hive(){
             check_process HiveMetastore 9083 >/dev/null && echo "Metastore服务运行正常" || echo "Metastore服务运行异常"
             check_process HiveServer2 10000 >/dev/null && echo "HiveServer2服务运行正常" || echo "HiveServer2服务运行异常"
             ;;
+        "init")
+            schematool -initSchema -dbType mysql
+            ;;
         "restart")
             hive stop
             sleep 2
