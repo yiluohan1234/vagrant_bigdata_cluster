@@ -139,7 +139,7 @@ FLINK_CONF_DIR=$INSTALL_PATH/flink/conf
 # flume
 # 支持版本：1.9.0, 1.8.0, 1.7.0, 1.6.0, 1.5.2-1.5.0等
 #        https://archive.apache.org/dist/flume/1.6.0/apache-flume-1.6.0-bin.tar.gz
-# https://mirrors.huaweicloud.com/apache/flume/1.6.0/apache-flume-1.6.0-bin.tar.gz
+# https://mirrors.huaweicloud.com/apache/flume/1.9.0/apache-flume-1.9.0-bin.tar.gz
 FLUME_VERSION_NUM=`get_app_version_num $FLUME_VERSION "-" 2`
 FLUME_ARCHIVE=apache-${FLUME_VERSION}-bin.tar.gz
 FLUME_DIR_NAME=apache-${FLUME_VERSION}-bin
@@ -150,7 +150,7 @@ FLUME_CONF_DIR=$INSTALL_PATH/flume/conf
 # zookeeper
 # 支持版本：3.7.0, 3.6.3-3.6.0, 3.5.9-3.5.5, 3.4.14-3.4.0, 3.3.6-3.3.3
 #         https://archive.apache.org/dist/zookeeper/zookeeper-3.4.10/zookeeper-3.4.10.tar.gz
-# https://mirrors.huaweicloud.com/apache/zookeeper/zookeeper-3.4.10/zookeeper-3.4.10.tar.gz
+# https://mirrors.huaweicloud.com/apache/zookeeper/zookeeper-3.5.7/apache-zookeeper-3.5.7-bin.tar.gz
 ZOOKEEPER_VERSION_NUM=`get_app_version_num $ZOOKEEPER_VERSION "-" 2`
 ZOOKEEPER_ARCHIVE=apache-${ZOOKEEPER_VERSION}-bin.tar.gz
 ZOOKEEPER_DIR_NAME=apache-${ZOOKEEPER_VERSION}-bin
@@ -161,7 +161,7 @@ ZOOKEEPER_CONF_DIR=$INSTALL_PATH/zookeeper/conf
 # kafka
 # 支持版本：具体查看下载地址
 #         https://archive.apache.org/dist/kafka/0.11.0.3/kafka_2.11-0.11.0.3.tgz
-# https://mirrors.huaweicloud.com/apache/kafka/0.11.0.3/kafka_2.11-0.11.0.3.tgz
+# https://mirrors.huaweicloud.com/apache/kafka/3.0.0/kafka_2.12-3.0.0.tgz
 KAFKA_VERSION_NUM=`get_app_version_num $KAFKA_VERSION "-" 2`
 KAFKA_ARCHIVE=${KAFKA_VERSION}.tgz
 KAFKA_DIR_NAME=${KAFKA_VERSION}
