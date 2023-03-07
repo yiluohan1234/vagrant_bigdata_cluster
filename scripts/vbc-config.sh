@@ -11,6 +11,11 @@ IP_LIST=("192.168.10.101" "192.168.10.102" "192.168.10.103")
 HOSTNAME_LIST=("hadoop102" "hadoop103" "hadoop104")
 PASSWD_LIST=("vagrant" "vagrant" "vagrant")
 # PASSWD_LIST=("atguigu" "atguigu" "atguigu")
+
+# default user and group
+DEFAULT_USER=atguigu
+DEFAULT_GROUP=hadoop
+
 # 安装目录
 INSTALL_PATH=/opt/module
 
@@ -34,10 +39,6 @@ IS_GITHUB="false"
 
 # 是否删除/vagrant
 IS_DEL_VAGRANT="true"
-
-# default user and group
-DEFAULT_USER=vagrant
-DEFAULT_GROUP=hadoop
 
 # 配置文件目录
 RESOURCE_PATH=$VGC_MAIN_DIR/resources
