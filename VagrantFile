@@ -16,7 +16,8 @@ Vagrant.configure("2") do |config|
       # 设置虚拟机的Box的版本号
       node.vm.box_version = "1804.02"
       # 设置虚拟机的主机名:hdp101
-      node.vm.hostname="hdp10#{i}"
+      # node.vm.hostname="hdp10#{i}"
+      node.vm.hostname="hadoop10#{i+1}"
       # 虚拟机的默认登录名和密码："vagrant","vagrant"
       #node.ssh.username = "vagrant"
       # 设置虚拟机的登录密码
@@ -29,7 +30,8 @@ Vagrant.configure("2") do |config|
       # VirtaulBox相关配置
       node.vm.provider "virtualbox" do |v|
         # 设置虚拟机的名称
-        v.name = "hdp10#{i}"
+        # v.name = "hdp10#{i}"
+        v.name = "hadoop10#{i+1}"
         # 设置虚拟机的内存大小
         v.memory = 2048
         # 设置虚拟机的CPU个数
@@ -81,11 +83,11 @@ Vagrant.configure("2") do |config|
       node.vm.provision "shell",  path: "scripts/setup-scala.sh"
       node.vm.provision "shell",  path: "scripts/setup-spark.sh"
       node.vm.provision "shell",  path: "scripts/setup-sqoop.sh"
-      
+
       node.vm.provision "shell",  path: "scripts/setup-phoenix.sh"
       node.vm.provision "shell",  path: "scripts/setup-flume.sh"
       node.vm.provision "shell",  path: "scripts/setup-flink.sh"
-      
+
 
       node.vm.provision "shell" do |s|
         s.path = "scripts/setup-zookeeper.sh"
@@ -102,7 +104,7 @@ Vagrant.configure("2") do |config|
       node.vm.provision "shell" do |s|
         s.path = "scripts/setup-es.sh"
         s.args = "-i #{i}"
-      end  
+      end
 
       if i == nodeRange.last
         node.vm.provision "shell" do |s|
