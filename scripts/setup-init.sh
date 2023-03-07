@@ -24,6 +24,10 @@ install_init(){
     groupadd hadoop
     # 修改vagrant用户信息，把vagrant添加到组hadoop中
     usermod -a -G hadoop vagrant
+    # 增加 atguigu 用户
+    useradd atguigu -g hadoop -d /home/atguigu
+    echo atguigu | passwd --stdin atguigu
+
     if [ "${IS_KERBEROS}" == "true" ];then
 
         for user in {"hdfs","yarn","mapred","hive"};
@@ -33,6 +37,10 @@ install_init(){
             echo $user | passwd --stdin $user
         done
     fi
+
+    # 配置atguigu和vagrant用户具有root权限
+    sed -i "/## Same thing without a password/iatguigu   ALL=(ALL)     NOPASSWD:ALL" /etc/sudoers
+    sed -i "/## Same thing without a password/ivagrant   ALL=(ALL)     NOPASSWD:ALL" /etc/sudoers
 
     # 创建生成日志目录
     APP_LOG=/opt/module/applog/log/
