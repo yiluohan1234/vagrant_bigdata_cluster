@@ -33,16 +33,23 @@ setup_kafka() {
     value="PLAINTEXT://${current_hostname}:9092"
     if [ "${IS_VAGRANT}" == "true" ];then
         sed -i "s/^broker.id=.*/broker.id=${ID}/" ${conf_dir}/server.properties
-    else 
+    else
         sed -i "s/^broker.id=.*/broker.id=1/" ${INSTALL_PATH}/${app_name}/config/server.properties
     fi
     sed -i 's@^#listeners=.*@listeners='${value}'@' ${conf_dir}/server.properties
     sed -i 's@^#advertised.listeners=.*@advertised.listeners='${value}'@' ${conf_dir}/server.properties
     sed -i 's@^num.partitions=.*@num.partitions=3@' ${conf_dir}/server.properties
     sed -i "s@^zookeeper.connect=.*@zookeeper.connect=${HOSTNAME_LIST[0]}:2181,${HOSTNAME_LIST[1]}:2181,${HOSTNAME_LIST[2]}:2181/kafka@" ${conf_dir}/server.properties
-    
+
     # consumer.properties,producer.properties,zookeeper.properties
-    sed -i "s@^zookeeper.connect=.*@zookeeper.connect=${HOSTNAME_LIST[0]}:2181,${HOSTNAME_LIST[1]}:2181,${HOSTNAME_LIST[2]}:2181@" ${conf_dir}/consumer.properties
+    # consumer.properties 2.x之前是zookeeper.connect，3.x之后是bootstrap.servers
+    len_consumer_config=`cat ${conf_dir}/consumer.properties |grep zookeeper.connect|wc -l`
+    if [ $len_consumer_config -gt 0 ]
+    then
+        sed -i "s@^zookeeper.connect=.*@zookeeper.connect=${HOSTNAME_LIST[0]}:2181,${HOSTNAME_LIST[1]}:2181,${HOSTNAME_LIST[2]}:2181@" ${conf_dir}/consumer.properties
+    else
+        sed -i "s@^bootstrap.servers=.*@bootstrap.servers=${HOSTNAME_LIST[0]}:9092,${HOSTNAME_LIST[1]}:9092,${HOSTNAME_LIST[2]}:9092@" ${conf_dir}/consumer.properties
+    fi
     sed -i "s@^bootstrap.servers=.*@bootstrap.servers=${HOSTNAME_LIST[0]}:9092,${HOSTNAME_LIST[1]}:9092,${HOSTNAME_LIST[2]}:9092@" ${conf_dir}/producer.properties
     sed -i "s@^dataDir=.*@dataDir=${INSTALL_PATH}/zookeeper/data@" ${conf_dir}/zookeeper.properties
 
