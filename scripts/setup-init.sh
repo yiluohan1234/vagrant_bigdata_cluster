@@ -26,7 +26,7 @@ install_init(){
     usermod -a -G hadoop vagrant
     # 增加 atguigu 用户
     useradd atguigu -g hadoop -d /home/atguigu
-    echo atguigu | passwd --stdin atguigu
+    echo atguigu | passwd --stdin vagrant
 
     if [ "${IS_KERBEROS}" == "true" ];then
 

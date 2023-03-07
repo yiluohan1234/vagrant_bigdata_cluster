@@ -9,8 +9,8 @@ VGC_MAIN_DIR=${VGC_MAIN_DIR:-$DEFAULT_MAIN_DIR}
 IP_LIST=("192.168.10.101" "192.168.10.102" "192.168.10.103")
 # HOSTNAME_LIST=("hdp101" "hdp102" "hdp103")
 HOSTNAME_LIST=("hadoop102" "hadoop103" "hadoop104")
-# PASSWD_LIST=("vagrant" "vagrant" "vagrant")
-PASSWD_LIST=("atguigu" "atguigu" "atguigu")
+PASSWD_LIST=("vagrant" "vagrant" "vagrant")
+# PASSWD_LIST=("atguigu" "atguigu" "atguigu")
 # 安装目录
 INSTALL_PATH=/opt/module
 
