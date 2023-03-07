@@ -21,14 +21,25 @@ setup_spark() {
     echo 'export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop' >> ${conf_dir}/spark-env.sh
     echo 'export YARN_CONF_DIR=$HADOOP_HOME/etc/hadoop' >> ${conf_dir}/spark-env.sh
 
-    # echo 'export SPARK_HISTORY_OPTS="-Dspark.history.ui.port=18080 -Dspark.history.retainedApplications=3 -Dspark.history.fs.logDirectory=hdfs://'${HOSTNAME_LIST[0]}':9000/spark-log"' >> ${conf_dir}/spark-env.sh
-    echo 'export SPARK_HISTORY_OPTS="-Dspark.history.ui.port=18080 -Dspark.history.retainedApplications=3 -Dspark.history.fs.logDirectory=hdfs://'${HOSTNAME_LIST[0]}':8020/spark-log"' >> ${conf_dir}/spark-env.sh
+    VERSION_PAT="2.([0-9]).([0-9])"
+    if [[ $HADOOP_VERSION_NUM =~ $VERSION_PAT ]]
+    then
+        echo 'export SPARK_HISTORY_OPTS="-Dspark.history.ui.port=18080 -Dspark.history.retainedApplications=3 -Dspark.history.fs.logDirectory=hdfs://'${HOSTNAME_LIST[0]}':9000/spark-log"' >> ${conf_dir}/spark-env.sh
+    else
+        echo 'export SPARK_HISTORY_OPTS="-Dspark.history.ui.port=18080 -Dspark.history.retainedApplications=3 -Dspark.history.fs.logDirectory=hdfs://'${HOSTNAME_LIST[0]}':8020/spark-log"' >> ${conf_dir}/spark-env.sh
+    fi
     # spark-defaults.conf
     cp ${conf_dir}/spark-defaults.conf.template ${conf_dir}/spark-defaults.conf
     echo "spark.master                     yarn" >> ${conf_dir}/spark-defaults.conf
     echo "spark.eventLog.enabled           true" >> ${conf_dir}/spark-defaults.conf
-    #echo "spark.eventLog.dir               hdfs://${HOSTNAME_LIST[0]}:9000/spark-log" >> ${conf_dir}/spark-defaults.conf
-    echo "spark.eventLog.dir               hdfs://${HOSTNAME_LIST[0]}:8020/spark-log" >> ${conf_dir}/spark-defaults.conf
+
+    if [[ $HADOOP_VERSION_NUM =~ $VERSION_PAT ]]
+    then
+        echo "spark.eventLog.dir               hdfs://${HOSTNAME_LIST[0]}:9000/spark-log" >> ${conf_dir}/spark-defaults.conf
+    else
+        echo "spark.eventLog.dir               hdfs://${HOSTNAME_LIST[0]}:8020/spark-log" >> ${conf_dir}/spark-defaults.conf
+    fi
+
     echo "spark.eventLog.compress          true" >> ${conf_dir}/spark-defaults.conf
     echo "spark.serializer                 org.apache.spark.serializer.KryoSerializer" >> ${conf_dir}/spark-defaults.conf
     echo "spark.executor.memory            1g" >> ${conf_dir}/spark-defaults.conf
