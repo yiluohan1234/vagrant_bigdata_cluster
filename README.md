@@ -1,10 +1,10 @@
-# vagrant_bigdata_cluster
+# atguigu_bigdata_cluster
 
 ## 一、基本介绍
 
 本集群创建的组件如下表所示。
 
-| 组件      | hdp101                                             | hdp102                     | hdp103            |
+| 组件      | hadoop102                                             | hadoop103                     | hadoop104            |
 | :-: | ---  | -------------------------- | ----------------- |
 | OS   | centos7.6  | centos7.6             | centos7.6         |
 | JDK  | jdk1.8                                             | jdk1.8                     | jdk1.8            |
@@ -57,13 +57,13 @@ Kylin: 3.0.2
 ## 二、基本准备
 
 1. 集群默认启动三个节点，每个节点的默认内存是2G，所以你的机器至少需要6G
-2. 我的测试环境软件版本：Vagrant 2.2.14， Virtualbox 6.0.14
+2. 我的测试环境软件版本：vagrant 2.2.14， Virtualbox 6.0.14
 
 ## 三、安装集群环境
 
 1. [下载和安装VirtualBOX](https://www.virtualbox.org/wiki/Downloads)
 
-2. [下载和安装Vagrant](http://www.vagrantup.com/downloads.html)
+2. [下载和安装vagrant](http://www.atguiguup.com/downloads.html)
 
 3. 克隆本项目到本地，并cd到项目所在目录
 
@@ -114,14 +114,14 @@ setssh
 
 #### 1）启动
 
-在 `hdp101` 机器上执行以下命令对hadoop集群进行格式化，并启动hdfs和yarn。
+在 `hadoop102` 机器上执行以下命令对hadoop集群进行格式化，并启动hdfs和yarn。
 
 ```
 hdfs namenode -format
 start-dfs.sh
 ```
 
-在 `hdp102` 机器上执行以下命令，启动yarn和jobhistory。
+在 `hadoop103` 机器上执行以下命令，启动yarn和jobhistory。
 
 ```
 start-yarn.sh
@@ -147,7 +147,7 @@ yarn jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples*.jar pi 2
 
 #### 1）启动
 
-在 `hdp101` 机器上执行以下命令。
+在 `hadoop102` 机器上执行以下命令。
 
 ```
 $SPARK_HOME/sbin/start-all.sh
@@ -177,7 +177,7 @@ $SPARK_HOME/examples/jars/spark-examples*.jar 100
 
 #### 1）启动
 
-在 `hdp101` 机器上执行以下命令。
+在 `hadoop102` 机器上执行以下命令。
 
 ```
 $FLINK_HOME/bin/start-cluster.sh
@@ -202,14 +202,14 @@ flink run $FLINK_HOME/examples/batch/WordCount.jar
 
 #### 1）启动
 
-~~在 `hdp103` 节点登录MySQL数据库，创建hive的元数据库。~~（已在mysql安装时完成，**mysql默认密码为199037**）
+~~在 `hadoop104` 节点登录MySQL数据库，创建hive的元数据库。~~（已在mysql安装时完成，**mysql默认密码为199037**）
 
 ```
 # 创建hive的元数据库
 mysql -uroot -p199037 -e "create user 'hive'@'%' IDENTIFIED BY 'hive';GRANT ALL PRIVILEGES ON *.* TO 'hive'@'%' WITH GRANT OPTION;grant all on *.* to 'hive'@'localhost' identified by 'hive';flush privileges;"
 ```
 
-在 `hdp101` 节点，初始化元数据，看到 schemaTool completed ，即初始化成功！
+在 `hadoop102` 节点，初始化元数据，看到 schemaTool completed ，即初始化成功！
 
 ```
 schematool -initSchema -dbType mysql
@@ -228,7 +228,7 @@ hadoop和hive的两个guava.jar版本不一致
 
 #### 2）Hive服务启动与测试
 
-在 `hdp101` 节点，创建测试数据
+在 `hadoop102` 节点，创建测试数据
 
 ```
 # 创建数据文件
@@ -248,11 +248,20 @@ vi ~/stu.txt
 
 ```
 # 启动hive
-[vagrant@hdp101 ~]$ hive
+[atguigu@hadoop102 ~]$ hive
 # 创建表
 hive (default)>  CREATE TABLE stu(id INT,name STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
 # 加载数据
-hive (default)> load data local inpath '/home/vagrant/stu.txt' into table stu;
+hive (default)> load data local inpath '/home/atguigu/stu.txt' into table stu;
+
+hive (default)> SET hive.exec.mode.local.auto=true;
+
+hive (default)> insert overwrite table stu
+values ('00001','zhangsan'),
+('00002','lisi'),
+('00003','wangwu'),
+('00004','zhaoliu');
+
 # 查看库表
 hive (default)> select * from stu;
 OK
@@ -264,7 +273,7 @@ Time taken: 3.301 seconds, Fetched: 4 row(s)
 ```
 ### 6、启动Zookeeper
 
-在 `hdp101` 节点登录执行以下命令。（注意：不能以root执行）
+在 `hadoop102` 节点登录执行以下命令。（注意：不能以root执行）
 
 ```
 bigstart zookeeper start(或stop)
@@ -273,12 +282,12 @@ bigstart zookeeper start(或stop)
 jpsall查看一下进程：
 
 ```
-[vagrant@hdp101 ~]$ jpsall 
---------------------- hdp101节点 ---------------------
+[atguigu@hadoop102 ~]$ jpsall 
+--------------------- hadoop102节点 ---------------------
 2899 QuorumPeerMain
---------------------- hdp102节点 ---------------------
+--------------------- hadoop103节点 ---------------------
 25511 QuorumPeerMain
---------------------- hdp103节点 ---------------------
+--------------------- hadoop104节点 ---------------------
 25993 QuorumPeerMain
 ```
 
@@ -286,7 +295,7 @@ jpsall查看一下进程：
 
 ### 7、启动Elasticsearch
 
-在 `hdp101` 节点登录执行以下命令。（注意：不能以root执行）
+在 `hadoop102` 节点登录执行以下命令。（注意：不能以root执行）
 
 ```
 bigstart elasticsearch start(或stop)
@@ -295,26 +304,26 @@ bigstart elasticsearch start(或stop)
 jpsall查看一下进程：
 
 ```
-[vagrant@hdp101 ~]$ jpsall 
---------------------- hdp101节点 ---------------------
+[atguigu@hadoop102 ~]$ jpsall 
+--------------------- hadoop102节点 ---------------------
 3185 Kafka
 2899 QuorumPeerMain
 3365 Elasticsearch
---------------------- hdp102节点 ---------------------
+--------------------- hadoop103节点 ---------------------
 25511 QuorumPeerMain
 25800 Kafka
 25964 Elasticsearch
---------------------- hdp103节点 ---------------------
+--------------------- hadoop104节点 ---------------------
 26276 Kafka
 26440 Elasticsearch
 25993 QuorumPeerMain
 ```
 
-访问 http://hdp101:9200/_cat/nodes?v 查看节点状态。
+访问 http://hadoop102:9200/_cat/nodes?v 查看节点状态。
 
 ### 8、启动Kibana
 
-在 `hdp101` 节点登录执行以下命令。
+在 `hadoop102` 节点登录执行以下命令。
 
 ```
 bigstart kibana start(或stop)
@@ -324,45 +333,50 @@ bigstart kibana start(或stop)
 WARN: Establishing SSL connection without server's identity verification is not recommended. According to MySQL 5.5.45+, 5.6.26+ and 5.7.6+ requirements SSL connection must be established by default if explicit option isn't set. For compliance with existing applications not using SSL the verifyServerCertificate property is set to 'false'. You need either to explicitly disable SSL by setting useSSL=false, or set useSSL=true and provide truststore for server certificate verification.
 ```
 
-访问 http://hdp101:5601/ 查看。
+访问 http://hadoop102:5601/ 查看。
 
 ### 9、启动Kafka
 
 #### 1）启动
 
-在 `hdp101` 节点登录执行以下命令：
+在 `hadoop102` 节点登录执行以下命令：
 
 ```
 bigstart zookeeper start
-bigstart kibana start(或stop)
+bigstart kafka start(或stop)
 ```
 
 #### 2）测试
 
-在 `hdp101` 节点执行以下命令，创建topic：test
+在 `hadoop102` 节点执行以下命令，创建topic：test
 
 ```
-kafka-topics.sh --zookeeper hdp101:2181,hdp102:2181,hdp103:2181/kafka --create --topic test --replication-factor 1 --partitions 3
+# 2.2之前
+kafka-topics.sh --zookeeper hadoop102:2181,hadoop103:2181,hadoop104:2181/kafka --create --topic test --replication-factor 1 --partitions 3
+# 3.0.0
+kafka-topics.sh --bootstrap-server hadoop102:9092,hadoop103:9092,hadoop104:9092 --create --topic test --replication-factor 1 --partitions 3
 ```
 
-在 `hdp101` 节点执行以下命令，生产者生产数据
+[Kafka报错：Exception in thread “main“ joptsimple.UnrecognizedOptionException: zookeeper is not a recogn](https://blog.csdn.net/succing/article/details/127334561)
+
+在 `hadoop102` 节点执行以下命令，生产者生产数据
 
 ```
-kafka-console-producer.sh --broker-list hdp101:9092,hdp102:9092,hdp103:9092 --topic test
+kafka-console-producer.sh --broker-list hadoop102:9092,hadoop103:9092,hadoop104:9092 --topic test
 hello world
 ```
 
-在 `hdp103` 节点执行以下命令，消费者消费数据
+在 `hadoop104` 节点执行以下命令，消费者消费数据
 
 ```
-kafka-console-consumer.sh --bootstrap-server hdp101:9092,hdp102:9092,hdp103:9092 --topic test --from-beginning
+kafka-console-consumer.sh --bootstrap-server hadoop102:9092,hadoop103:9092,hadoop104:9092 --topic test --from-beginning
 ```
 
 ### 10、启动Hbase
 
 #### 1）启动
 
-在 `hdp101` 节点登录执行以下命令：
+在 `hadoop102` 节点登录执行以下命令：
 
 ```
 bigstart zookeeper start
@@ -371,24 +385,41 @@ bigstart hbase start(或stop)
 
 #### 2）测试
 
-略
+```
+[atguigu@hadoop102 ~]$ jpsall 
+--------------------- hadoop102节点 ---------------------
+1507 DataNode
+5224 HRegionServer
+1401 NameNode
+5065 HMaster
+3099 QuorumPeerMain
+--------------------- hadoop103节点 ---------------------
+1175 DataNode
+2620 QuorumPeerMain
+3372 HRegionServer
+--------------------- hadoop104节点 ---------------------
+1280 SecondaryNameNode
+1218 DataNode
+1988 QuorumPeerMain
+3102 HRegionServer
+```
 
 ## 六. Web UI
 
 可以通过以下链接访问大数据组件的web页面。
 
-[HDFS](http://hdp101:9870)
+[HDFS](http://hadoop102:9870)
 
-[ResourceManager](http://hdp102:8088)
+[ResourceManager](http://hadoop103:8088)
 
-[JobHistory](http://hdp102:19888/jobhistory)
+[JobHistory](http://hadoop103:19888/jobhistory)
 
-[Spark](http://hdp101:8080/)
+[Spark](http://hadoop102:8080/)
 
-[Flink](http://hdp101:8381/)
+[Flink](http://hadoop102:8381/)
 
-[Elasticsearch](http://hdp101:9200/_cat/nodes?v)
+[Elasticsearch](http://hadoop102:9200/_cat/nodes?v)
 
-[Kibana](http://hdp101:5601/)
+[Kibana](http://hadoop102:5601/)
 
-[Hbase](http://hdp101:16010/)
+[Hbase](http://hadoop102:16010/)
