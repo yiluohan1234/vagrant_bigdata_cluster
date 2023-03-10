@@ -97,7 +97,8 @@ install_jdk()
         echo -e "\n" >> /etc/profile
         source /etc/profile
     fi
-    curl -o /vagrant/bigstart -O -L https://github.com/yiluohan1234/vagrant_bigdata_cluster/blob/master/resources/init_bin/complete_tool.sh
+    curl -o /vagrant/complete_tool.sh -O -L https://github.com/yiluohan1234/vagrant_bigdata_cluster/blob/master/resources/init_bin/complete_tool.sh
+    curl -o /vagrant/bigstart -O -L https://github.com/yiluohan1234/vagrant_bigdata_cluster/blob/master/resources/single_node/bigstart
     [ -f /vagrant/bigstart ] && cp /vagrant/bigstart /usr/bin && chmod a+x /usr/bin/bigstart
     [ -f /vagrant/complete_tool.sh ] && cp /vagrant/complete_tool.sh /etc/profile.d
 }
