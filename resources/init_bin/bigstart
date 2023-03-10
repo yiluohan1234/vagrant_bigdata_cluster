@@ -570,6 +570,7 @@ Maxwell(){
 hive(){
     USAGE="Usage: $0 (start|stop|status)"
     HIVE_LOG_DIR=$INSTALL_PATH/hive/logs
+    [ ! -d ${HIVE_LOG_DIR} ] && mkdir ${HIVE_LOG_DIR}
 
     case $1 in
         start)
