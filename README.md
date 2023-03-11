@@ -1,4 +1,4 @@
-# atguigu_bigdata_cluster
+# vagrant_bigdata_cluster
 
 ## 一、基本介绍
 
