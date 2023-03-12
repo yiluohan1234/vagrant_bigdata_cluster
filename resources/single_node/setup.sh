@@ -12,7 +12,9 @@ HIVE_URL=https://mirrors.huaweicloud.com/apache/hive/hive-2.3.4/apache-hive-2.3.
 SCALA_URL=https://downloads.lightbend.com/scala/2.11.12/scala-2.11.12.tgz
 SPARK_URL=https://mirrors.huaweicloud.com/apache/spark/spark-2.0.2/spark-2.0.2-bin-hadoop2.7.tgz
 ZOOKEEPER_URL=https://mirrors.huaweicloud.com/apache/zookeeper/zookeeper-3.5.7/apache-zookeeper-3.5.7-bin.tar.gz
-HBASE_URL=https://mirrors.huaweicloud.com/apache/hbase/1.2.6/hbase-1.2.6-bin.tar.gz
+HBASE_URL=https://mirrors.huaweicloud.com/apache/hbase/1.4.8/hbase-1.4.8-bin.tar.gz
+PHOENIX_URL=https://archive.apache.org/dist/phoenix/apache-phoenix-4.14.0-HBase-1.4/bin/apache-phoenix-4.14.0-HBase-1.4-bin.tar.gz
+KAFKA_URL=https://mirrors.huaweicloud.com/apache/kafka/2.4.1/kafka_2.11-2.4.1.tgz
 
 setupEnv_app() {
     local app_name=$1
@@ -67,6 +69,31 @@ wget_mysql_connector(){
     rm -rf ${INSTALL_PATH}/${file:0:27}
 }
 
+install_init(){
+    echo "install init"
+    # ssh 设置允许密码登录
+    sed -i 's@^PasswordAuthentication no@PasswordAuthentication yes@g' /etc/ssh/sshd_config
+    sed -i 's@^#PubkeyAuthentication yes@PubkeyAuthentication yes@g' /etc/ssh/sshd_config
+    systemctl restart sshd.service
+
+    # 安装基础软件
+    yum install -y -q net-tools vim-enhanced sshpass expect wget
+
+    # 配置vagrant用户具有root权限
+    sed -i "/## Same thing without a password/ivagrant   ALL=(ALL)     NOPASSWD:ALL" /etc/sudoers
+
+    # 添加hosts
+    sed -i '/^127.0.1.1/'d /etc/hosts
+    echo "192.168.10.101  ${HOST_NAME}" >> /etc/hosts
+
+    # 修改DNS
+    sed -i "s@^nameserver.*@nameserver 114.114.114.114@" /etc/resolv.conf
+
+    # 创建安装目录
+    mkdir /opt/module
+    chown -R vagrant:vagrant /opt/
+}
+
 install_jdk()
 {
     local app=java
@@ -97,8 +124,6 @@ install_jdk()
         echo -e "\n" >> /etc/profile
         source /etc/profile
     fi
-    curl -o /vagrant/complete_tool.sh -O -L https://github.com/yiluohan1234/vagrant_bigdata_cluster/blob/master/resources/init_bin/complete_tool.sh
-    curl -o /vagrant/bigstart -O -L https://github.com/yiluohan1234/vagrant_bigdata_cluster/blob/master/resources/single_node/bigstart
     [ -f /vagrant/bigstart ] && cp /vagrant/bigstart /usr/bin && chmod a+x /usr/bin/bigstart
     [ -f /vagrant/complete_tool.sh ] && cp /vagrant/complete_tool.sh /etc/profile.d
 }
@@ -124,10 +149,10 @@ install_hadoop()
         sed -i "s@^export JAVA_HOME=.*@export JAVA_HOME=${INSTALL_PATH}/java@" ${INSTALL_PATH}/${app}/etc/hadoop/hadoop-env.sh
         set_property ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml "fs.defaultFS" "hdfs://${HOST_NAME}:9000"
         set_property ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml "hadoop.tmp.dir" "${INSTALL_PATH}/hadoop/hadoopdata"
-        set_property ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml "hadoop.http.staticuser.user" "vagrant"
-        set_property ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml "hadoop.proxyuser.vagrant.hosts" "*"
-        set_property ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml "hadoop.proxyuser.vagrant.groups" "*"
-        set_property ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml "hadoop.proxyuser.vagrant.users" "*"
+        set_property ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml "hadoop.http.staticuser.user" "root"
+        set_property ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml "hadoop.proxyuser.root.hosts" "*"
+        set_property ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml "hadoop.proxyuser.root.groups" "*"
+        set_property ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml "hadoop.proxyuser.root.users" "*"
         set_property ${INSTALL_PATH}/${app}/etc/hadoop/hdfs-site.xml "dfs.replication" "1"
         set_property ${INSTALL_PATH}/${app}/etc/hadoop/hdfs-site.xml "dfs.datanode.name.dir" "${INSTALL_PATH}/hadoop/hadoopdata/name"
         set_property ${INSTALL_PATH}/${app}/etc/hadoop/hdfs-site.xml "dfs.datanode.data.dir" "${INSTALL_PATH}/hadoop/hadoopdata/data"
@@ -238,6 +263,7 @@ install_hive()
         set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.server2.thrift.port" "10000"
         set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.server2.thrift.bind.host" "${HOST_NAME}"
         set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.metastore.uris" "thrift://${HOST_NAME}:9083"
+        set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.exec.mode.local.auto" "true"
 
         wget_mysql_connector ${INSTALL_PATH}/${app}/lib
         # 添加环境变量
@@ -330,7 +356,6 @@ install_zk()
         # 配置
         cp  ${INSTALL_PATH}/${app}/conf/zoo_sample.cfg ${INSTALL_PATH}/${app}/conf/zoo.cfg
         sed -i "s@^dataDir=.*@dataDir=${INSTALL_PATH}/${app}/data@" ${INSTALL_PATH}/${app}/conf/zoo.cfg
-        echo "server.0=${HOST_NAME}:2888:3888" >> ${INSTALL_PATH}/${app}/conf/zoo.cfg
         mkdir -p ${INSTALL_PATH}/${app}/data
         echo "1" >> ${INSTALL_PATH}/${app}/data/myid
         # 添加环境变量
@@ -357,17 +382,69 @@ install_hbase()
         # 配置
         sed -i "s@^# export HBASE_MANAGES_ZK=.*@export HBASE_MANAGES_ZK=false@" ${INSTALL_PATH}/${app}/conf/hbase-env.sh
         sed -i "s@^# export JAVA_HOME=.*@export JAVA_HOME=${INSTALL_PATH}/java@" ${INSTALL_PATH}/${app}/conf/hbase-env.sh
-        sed -i '/export HBASE_MASTER_OPTS="$HBASE_MASTER_OPTS -XX:PermSize=128m -XX:MaxPermSize=128m -XX:ReservedCodeCacheSize=256m"/s/^/#/g' ${INSTALL_PATH}/${app}/conf/hbase-env.sh
-        sed -i '/export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS -XX:PermSize=128m -XX:MaxPermSize=128m -XX:ReservedCodeCacheSize=256m"/s/^/#/g' ${INSTALL_PATH}/${app}/conf/hbase-env.sh
         set_property ${INSTALL_PATH}/${app}/conf/hbase-site.xml "hbase.rootdir" "hdfs://${HOST_NAME}:9000/hbase"
         set_property ${INSTALL_PATH}/${app}/conf/hbase-site.xml "hbase.zookeeper.quorum" "${HOST_NAME}"
         set_property ${INSTALL_PATH}/${app}/conf/hbase-site.xml "hbase.cluster.distributed" "true"
-        echo -e "${HOST_NAME}" >> ${INSTALL_PATH}/${app}/conf/regionservers
+        set_property ${INSTALL_PATH}/${app}/conf/hbase-site.xml "phoenix.schema.isNamespaceMappingEnabled" "true"
+        set_property ${INSTALL_PATH}/${app}/conf/hbase-site.xml "phoenix.schema.mapSystemTablesToNamespace" "true"
+        echo -e "${HOST_NAME}" > ${INSTALL_PATH}/${app}/conf/regionservers
         # 添加环境变量
         setupEnv_app ${app}
     fi
 }
 
+install_phoenix()
+{
+    local app=phoenix
+    local url=${PHOENIX_URL}
+    local file=${url##*/}
+
+    echo "install ${app}"
+    # 安装
+    if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
+    then
+        curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
+    fi
+    tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
+    mv ${INSTALL_PATH}/${file:0:35} ${INSTALL_PATH}/${app}
+    if [ -d ${INSTALL_PATH}/${app} ]
+    then
+        # 配置
+        cp ${INSTALL_PATH}/${app}/phoenix-4.14.0-HBase-1.4-server.jar ${INSTALL_PATH}/hbase/lib
+        cp ${INSTALL_PATH}/hbase/conf/hbase-site.xml ${INSTALL_PATH}/phoenix/bin
+        # 添加环境变量
+        setupEnv_app ${app}
+    fi
+}
+
+install_kafka()
+{
+    local app=kafka
+    local url=${KAFKA_URL}
+    local file=${url##*/}
+
+    echo "install ${app}"
+    # 安装
+    if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
+    then
+        curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
+    fi
+    tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
+    mv ${INSTALL_PATH}/${file:0:16} ${INSTALL_PATH}/${app}
+    if [ -d ${INSTALL_PATH}/${app} ]
+    then
+        # 配置
+        value="listeners=PLAINTEXT://${HOST_NAME}:9092"
+        sed -i 's@^#listeners=.*@listeners='${value}'@' ${INSTALL_PATH}/${app}/config/server.properties
+        sed -i 's@^#advertised.listeners=.*@advertised.listeners='${value}'@' ${INSTALL_PATH}/${app}/config/server.properties
+        sed -i "s@^zookeeper.connect=.*@zookeeper.connect=${HOST_NAME}:2181/kafka@" ${INSTALL_PATH}/${app}/config/server.properties
+
+        # 添加环境变量
+        setupEnv_app ${app}
+    fi
+}
+
+install_init
 install_jdk
 install_hadoop
 install_mysql
@@ -377,4 +454,6 @@ install_scala
 install_spark
 install_zk
 install_hbase
+install_phoenix
+install_kafka
 
