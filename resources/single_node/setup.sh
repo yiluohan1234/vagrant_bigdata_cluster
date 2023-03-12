@@ -92,6 +92,13 @@ install_init(){
     # 创建安装目录
     mkdir /opt/module
     chown -R vagrant:vagrant /opt/
+    complete_url=https://github.com/yiluohan1234/vagrant_bigdata_cluster/blob/master/resources/init_bin/complete_tool.sh
+    bigstart_url=https://github.com/yiluohan1234/vagrant_bigdata_cluster/blob/master/resources/single_node/bigstart
+    curl -o /vagrant/complete_tool.sh -O -L ${complete_url}
+    curl -o /vagrant/bigstart -O -L ${bigstart_url}
+    
+    [ -f /vagrant/bigstart ] && cp /vagrant/bigstart /usr/bin && chmod a+x /usr/bin/bigstart
+    [ -f /vagrant/complete_tool.sh ] && cp /vagrant/complete_tool.sh /etc/profile.d
 }
 
 install_jdk()
@@ -124,8 +131,6 @@ install_jdk()
         echo -e "\n" >> /etc/profile
         source /etc/profile
     fi
-    [ -f /vagrant/bigstart ] && cp /vagrant/bigstart /usr/bin && chmod a+x /usr/bin/bigstart
-    [ -f /vagrant/complete_tool.sh ] && cp /vagrant/complete_tool.sh /etc/profile.d
 }
 
 install_hadoop()
