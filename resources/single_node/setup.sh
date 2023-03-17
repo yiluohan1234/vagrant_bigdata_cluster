@@ -92,11 +92,11 @@ install_init(){
     # 创建安装目录
     mkdir /opt/module
     chown -R vagrant:vagrant /opt/
-    complete_url=https://github.com/yiluohan1234/vagrant_bigdata_cluster/blob/master/resources/init_bin/complete_tool.sh
-    bigstart_url=https://github.com/yiluohan1234/vagrant_bigdata_cluster/blob/master/resources/single_node/bigstart
-    curl -o /vagrant/complete_tool.sh -O -L ${complete_url}
-    curl -o /vagrant/bigstart -O -L ${bigstart_url}
-    
+    # complete_url=https://github.com/yiluohan1234/vagrant_bigdata_cluster/blob/master/resources/init_bin/complete_tool.sh
+    # bigstart_url=https://github.com/yiluohan1234/vagrant_bigdata_cluster/blob/master/resources/single_node/bigstart
+    # curl -o /vagrant/complete_tool.sh -O -L ${complete_url}
+    # curl -o /vagrant/bigstart -O -L ${bigstart_url}
+
     [ -f /vagrant/bigstart ] && cp /vagrant/bigstart /usr/bin && chmod a+x /usr/bin/bigstart
     [ -f /vagrant/complete_tool.sh ] && cp /vagrant/complete_tool.sh /etc/profile.d
 }
@@ -193,7 +193,7 @@ install_mysql() {
     local USERNAME="root"
     local MYSQL_PASSWORD="123456"
     local PORT="3306"
-    
+
     mysql -u${USERNAME} -p${PASSWORD} -e "set global validate_password_policy=0; \
         set global validate_password_length=4; \
         ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}'; \
@@ -203,7 +203,7 @@ install_mysql() {
         CREATE DATABASE hive; \
         GRANT ALL PRIVILEGES ON *.* TO 'hive'@'%' WITH GRANT OPTION; \
         flush privileges;" --connect-expired-password
-    
+
     # 删除
     yum -y remove mysql57-community-release-el7-11.noarch
     rm -rf /root/mysql57-community-release-el7-11.noarch.rpm
@@ -224,7 +224,7 @@ install_ssh() {
                 \"Enter same passphrase again:\" { send \"\r\" ; exp_continue}
             }";
     fi
-    
+
     length=${#HOSTNAME_LIST[@]}
     for ((i=0; i<$length; i++));do
         expect -c "
@@ -269,6 +269,8 @@ install_hive()
         set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.server2.thrift.bind.host" "${HOST_NAME}"
         set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.metastore.uris" "thrift://${HOST_NAME}:9083"
         set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.exec.mode.local.auto" "true"
+        set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.strict.checks.cartesian.product" "false"
+        set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.mapred.mode" "nonstrict"
 
         wget_mysql_connector ${INSTALL_PATH}/${app}/lib
         # 添加环境变量
