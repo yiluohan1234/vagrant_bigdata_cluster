@@ -92,10 +92,12 @@ install_init(){
     # 创建安装目录
     mkdir /opt/module
     chown -R vagrant:vagrant /opt/
-    # complete_url=https://github.com/yiluohan1234/vagrant_bigdata_cluster/blob/master/resources/init_bin/complete_tool.sh
-    # bigstart_url=https://github.com/yiluohan1234/vagrant_bigdata_cluster/blob/master/resources/single_node/bigstart
+    complete_url=https://raw.githubusercontent.com/yiluohan1234/vagrant_bigdata_cluster/master/resources/init_bin/complete_tool.sh
+    bigstart_url=https://raw.githubusercontent.com/yiluohan1234/vagrant_bigdata_cluster/master/resources/single_node/bigstart
     # curl -o /vagrant/complete_tool.sh -O -L ${complete_url}
     # curl -o /vagrant/bigstart -O -L ${bigstart_url}
+    wget -P /vagrant/ ${complete_url}
+    wget -P /vagrant/ ${bigstart_url}
 
     [ -f /vagrant/bigstart ] && cp /vagrant/bigstart /usr/bin && chmod a+x /usr/bin/bigstart
     [ -f /vagrant/complete_tool.sh ] && cp /vagrant/complete_tool.sh /etc/profile.d
@@ -120,7 +122,7 @@ install_jdk()
     curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
     tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
     mv ${INSTALL_PATH}/jdk1.8.0_201 ${INSTALL_PATH}/${app}
- 	if [ -d ${INSTALL_PATH}/${app} ]
+ 	  if [ -d ${INSTALL_PATH}/${app} ]
     then
         # 添加环境变量
         echo "# jdk environment" >> /etc/profile
