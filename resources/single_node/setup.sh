@@ -4,8 +4,11 @@ bin=`cd "$bin"; pwd`
 DEFAULT_DOWNLOAD_DIR="$bin"/download
 DEFAULT_DOWNLOAD_DIR=${DEFAULT_DOWNLOAD_DIR:-$DEFAULT_DOWNLOAD_DIR}
 [ ! -d $DEFAULT_DOWNLOAD_DIR ] && mkdir -p $DEFAULT_DOWNLOAD_DIR
+
 INSTALL_PATH=/opt/module
 HOST_NAME=hadoop
+
+# Install url
 JAVA_URL=https://repo.huaweicloud.com/java/jdk/8u201-b09/jdk-8u201-linux-x64.tar.gz
 HADOOP_URL=https://mirrors.huaweicloud.com/apache/hadoop/core/hadoop-2.7.7/hadoop-2.7.7.tar.gz
 HIVE_URL=https://mirrors.huaweicloud.com/apache/hive/hive-2.3.4/apache-hive-2.3.4-bin.tar.gz
@@ -15,7 +18,8 @@ ZOOKEEPER_URL=https://mirrors.huaweicloud.com/apache/zookeeper/zookeeper-3.5.7/a
 HBASE_URL=https://mirrors.huaweicloud.com/apache/hbase/1.4.8/hbase-1.4.8-bin.tar.gz
 PHOENIX_URL=https://archive.apache.org/dist/phoenix/apache-phoenix-4.14.0-HBase-1.4/bin/apache-phoenix-4.14.0-HBase-1.4-bin.tar.gz
 KAFKA_URL=https://mirrors.huaweicloud.com/apache/kafka/2.4.1/kafka_2.11-2.4.1.tgz
-
+大数据集群
+# Add environment variables to the profile file
 setupEnv_app() {
     local app_name=$1
     local type_name=$2
@@ -32,7 +36,7 @@ setupEnv_app() {
     echo -e "\n" >> /etc/profile
 }
 
-# 将配置转换为xml
+# Convert configuration to xml format
 set_property() {
     local properties_file=$1
     local name=$2
@@ -56,6 +60,7 @@ set_property() {
     echo "</configuration>" >> ${properties_file}
 }
 
+# Download mysql connector to specified directory
 wget_mysql_connector(){
     local cp_path=$1
     local file=mysql-connector-java-5.1.49.tar.gz
@@ -69,27 +74,28 @@ wget_mysql_connector(){
     rm -rf ${INSTALL_PATH}/${file:0:27}
 }
 
+# Initial configuration
 install_init(){
     echo "install init"
-    # ssh 设置允许密码登录
+    # Set SSH to allow password login
     sed -i 's@^PasswordAuthentication no@PasswordAuthentication yes@g' /etc/ssh/sshd_config
     sed -i 's@^#PubkeyAuthentication yes@PubkeyAuthentication yes@g' /etc/ssh/sshd_config
     systemctl restart sshd.service
 
-    # 安装基础软件
+    # Install CentOS basic software
     yum install -y -q net-tools vim-enhanced sshpass expect wget
 
-    # 配置vagrant用户具有root权限
+    # Configure the vagrant user to have root privileges
     sed -i "/## Same thing without a password/ivagrant   ALL=(ALL)     NOPASSWD:ALL" /etc/sudoers
 
-    # 添加hosts
+    # Add ip address to hosts file
     sed -i '/^127.0.1.1/'d /etc/hosts
     echo "192.168.10.101  ${HOST_NAME}" >> /etc/hosts
 
-    # 修改DNS
+    # Modify DNS
     sed -i "s@^nameserver.*@nameserver 114.114.114.114@" /etc/resolv.conf
 
-    # 创建安装目录
+    # Create an installation directory and change directory owner permissions
     mkdir /opt/module
     chown -R vagrant:vagrant /opt/
     complete_url=https://raw.githubusercontent.com/yiluohan1234/vagrant_bigdata_cluster/master/resources/init_bin/complete_tool.sh
@@ -103,6 +109,7 @@ install_init(){
     [ -f /vagrant/complete_tool.sh ] && cp /vagrant/complete_tool.sh /etc/profile.d
 }
 
+# install java
 install_jdk()
 {
     local app=java
@@ -114,7 +121,7 @@ install_jdk()
     fi
 
     echo "install ${app}"
-    # 安装
+    # Install
     if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
     then
         curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
@@ -124,7 +131,7 @@ install_jdk()
     mv ${INSTALL_PATH}/jdk1.8.0_201 ${INSTALL_PATH}/${app}
  	  if [ -d ${INSTALL_PATH}/${app} ]
     then
-        # 添加环境变量
+        # Add environment variables to /etc/profile
         echo "# jdk environment" >> /etc/profile
         echo "export JAVA_HOME=${INSTALL_PATH}/${app}" >> /etc/profile
         echo 'export JRE_HOME=${JAVA_HOME}/jre' >> /etc/profile
@@ -135,6 +142,7 @@ install_jdk()
     fi
 }
 
+# Install hadoop
 install_hadoop()
 {
     local app=hadoop
@@ -142,7 +150,7 @@ install_hadoop()
     local file=${url##*/}
 
     echo "install ${app}"
-    # 安装
+    # Install
     if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
     then
         curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
@@ -152,7 +160,7 @@ install_hadoop()
 
     if [ -d ${INSTALL_PATH}/${app} ]
     then
-        # 配置 hadoop-env.sh core-site.xml hdfs-site.xml yarn-site.xml mapred-site.xml slaves
+        # Configure hadoop-env.sh core-site.xml hdfs-site.xml yarn-site.xml mapred-site.xml slaves
         sed -i "s@^export JAVA_HOME=.*@export JAVA_HOME=${INSTALL_PATH}/java@" ${INSTALL_PATH}/${app}/etc/hadoop/hadoop-env.sh
         set_property ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml "fs.defaultFS" "hdfs://${HOST_NAME}:9000"
         set_property ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml "hadoop.tmp.dir" "${INSTALL_PATH}/hadoop/hadoopdata"
@@ -173,24 +181,25 @@ install_hadoop()
         # slaves
         echo -e "${HOST_NAME}" > ${INSTALL_PATH}/${app}/etc/hadoop/slaves
         echo "export JAVA_HOME=${INSTALL_PATH}/java" >> ${INSTALL_PATH}/${app}/etc/hadoop/yarn-env.sh
-        # 添加环境变量
+        # Add environment variables
         setupEnv_app ${app} sbin
     fi
 }
 
+# Install mysql
 install_mysql() {
-    # 安装mysql57
+    # Install mysql57
     curl -o /root/mysql57-community-release-el7-11.noarch.rpm -O -L http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
     rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
     yum -y -q install /root/mysql57-community-release-el7-11.noarch.rpm
     yum -y -q install mysql-community-server
 
-    # 启动并设置开机自启
+    # Start and set up to start automatically
     systemctl start mysqld.service
     systemctl enable mysqld.service
 
-    # 更改初始密码
-    #1获取安装时的临时密码（在第一次登录时就是用这个密码）：
+    # Change initial password
+    # Obtain the temporary password during installation (this password is used when logging in for the first time)
     local PASSWORD=`grep 'temporary password' /var/log/mysqld.log|awk -F "root@localhost: " '{print $2}'`
     local USERNAME="root"
     local MYSQL_PASSWORD="123456"
@@ -206,12 +215,13 @@ install_mysql() {
         GRANT ALL PRIVILEGES ON *.* TO 'hive'@'%' WITH GRANT OPTION; \
         flush privileges;" --connect-expired-password
 
-    # 删除
+    # Delete rpm and noarch
     yum -y remove mysql57-community-release-el7-11.noarch
     rm -rf /root/mysql57-community-release-el7-11.noarch.rpm
 
 }
 
+# Configure ssh password-free login
 install_ssh() {
     local HOSTNAME_LIST=("${HOST_NAME}")
     local PASSWD_LIST=("vagrant")
@@ -241,6 +251,7 @@ install_ssh() {
     done
 }
 
+# Install hive
 install_hive()
 {
     local app=hive
@@ -248,7 +259,7 @@ install_hive()
     local file=${url##*/}
 
     echo "install ${app}"
-    # 安装
+    # Install
     if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
     then
         curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
@@ -257,7 +268,7 @@ install_hive()
     mv ${INSTALL_PATH}/${file:0:21} ${INSTALL_PATH}/${app}
     if [ -d ${INSTALL_PATH}/${app} ]
     then
-        # 配置 hive-site.xml
+        # Configure hive-site.xml
         set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "javax.jdo.option.ConnectionURL" "jdbc:mysql://${HOST_NAME}:3306/hive?createDatabaseIfNotExist=true&amp;useSSL=false" true
         set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "javax.jdo.option.ConnectionDriverName" "com.mysql.jdbc.Driver"
         set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "javax.jdo.option.ConnectionUserName" "hive"
@@ -275,11 +286,12 @@ install_hive()
         set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.mapred.mode" "nonstrict"
 
         wget_mysql_connector ${INSTALL_PATH}/${app}/lib
-        # 添加环境变量
+        # Add environment variables
         setupEnv_app ${app}
     fi
 }
 
+# Install scala
 install_scala()
 {
     local app=scala
@@ -287,7 +299,7 @@ install_scala()
     local file=${url##*/}
 
     echo "install ${app}"
-    # 安装
+    # Install
     if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
     then
         curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
@@ -296,11 +308,12 @@ install_scala()
     mv ${INSTALL_PATH}/${file:0:13} ${INSTALL_PATH}/${app}
     if [ -d ${INSTALL_PATH}/${app} ]
     then
-        # 添加环境变量
+        # Add environment variables
         setupEnv_app ${app}
     fi
 }
 
+# Install Spark
 install_spark()
 {
     local app=spark
@@ -308,7 +321,7 @@ install_spark()
     local file=${url##*/}
 
     echo "install ${app}"
-    # 安装
+    # Install
     if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
     then
         curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
@@ -317,7 +330,7 @@ install_spark()
     mv ${INSTALL_PATH}/${file:0:25} ${INSTALL_PATH}/${app}
     if [ -d ${INSTALL_PATH}/${app} ]
     then
-        # 配置
+        # Configure spark-env.sh, spark-defaults.conf, slaves
         cp ${INSTALL_PATH}/${app}/conf/spark-env.sh.template ${INSTALL_PATH}/${app}/conf/spark-env.sh
         echo "export SPARK_MASTER_IP=${HOST_NAME}" >> ${INSTALL_PATH}/${app}/conf/spark-env.sh
         echo "export SCALA_HOME=${INSTALL_PATH}/scala" >> ${INSTALL_PATH}/${app}/conf/spark-env.sh
@@ -341,11 +354,12 @@ install_spark()
         cp ${INSTALL_PATH}/${app}/conf/slaves.template ${INSTALL_PATH}/${app}/conf/slaves
         echo '${HOST_NAME}' > ${INSTALL_PATH}/${app}/conf/slaves
         wget_mysql_connector ${INSTALL_PATH}/${app}/jars
-        # 添加环境变量
+        # Add environment variables
         setupEnv_app ${app}
     fi
 }
 
+# Install Zookeeper
 install_zk()
 {
     local app=zookeeper
@@ -353,7 +367,7 @@ install_zk()
     local file=${url##*/}
 
     echo "install ${app}"
-    # 安装
+    # Install
     if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
     then
         curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
@@ -362,16 +376,17 @@ install_zk()
     mv ${INSTALL_PATH}/${file:0:26} ${INSTALL_PATH}/${app}
     if [ -d ${INSTALL_PATH}/${app} ]
     then
-        # 配置
+        # Configure zoo.cfg
         cp  ${INSTALL_PATH}/${app}/conf/zoo_sample.cfg ${INSTALL_PATH}/${app}/conf/zoo.cfg
         sed -i "s@^dataDir=.*@dataDir=${INSTALL_PATH}/${app}/data@" ${INSTALL_PATH}/${app}/conf/zoo.cfg
         mkdir -p ${INSTALL_PATH}/${app}/data
         echo "1" >> ${INSTALL_PATH}/${app}/data/myid
-        # 添加环境变量
+        # Add environment variables
         setupEnv_app ${app}
     fi
 }
 
+# Install Hbase
 install_hbase()
 {
     local app=hbase
@@ -379,7 +394,7 @@ install_hbase()
     local file=${url##*/}
 
     echo "install ${app}"
-    # 安装
+    # Install
     if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
     then
         curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
@@ -388,7 +403,7 @@ install_hbase()
     mv ${INSTALL_PATH}/${file:0:11} ${INSTALL_PATH}/${app}
     if [ -d ${INSTALL_PATH}/${app} ]
     then
-        # 配置
+        # Configure
         sed -i "s@^# export HBASE_MANAGES_ZK=.*@export HBASE_MANAGES_ZK=false@" ${INSTALL_PATH}/${app}/conf/hbase-env.sh
         sed -i "s@^# export JAVA_HOME=.*@export JAVA_HOME=${INSTALL_PATH}/java@" ${INSTALL_PATH}/${app}/conf/hbase-env.sh
         set_property ${INSTALL_PATH}/${app}/conf/hbase-site.xml "hbase.rootdir" "hdfs://${HOST_NAME}:9000/hbase"
@@ -397,11 +412,12 @@ install_hbase()
         set_property ${INSTALL_PATH}/${app}/conf/hbase-site.xml "phoenix.schema.isNamespaceMappingEnabled" "true"
         set_property ${INSTALL_PATH}/${app}/conf/hbase-site.xml "phoenix.schema.mapSystemTablesToNamespace" "true"
         echo -e "${HOST_NAME}" > ${INSTALL_PATH}/${app}/conf/regionservers
-        # 添加环境变量
+        # Add environment variables
         setupEnv_app ${app}
     fi
 }
 
+# Install Phoenix
 install_phoenix()
 {
     local app=phoenix
@@ -409,7 +425,7 @@ install_phoenix()
     local file=${url##*/}
 
     echo "install ${app}"
-    # 安装
+    # Install
     if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
     then
         curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
@@ -418,14 +434,15 @@ install_phoenix()
     mv ${INSTALL_PATH}/${file:0:35} ${INSTALL_PATH}/${app}
     if [ -d ${INSTALL_PATH}/${app} ]
     then
-        # 配置
+        # Configure
         cp ${INSTALL_PATH}/${app}/phoenix-4.14.0-HBase-1.4-server.jar ${INSTALL_PATH}/hbase/lib
         cp ${INSTALL_PATH}/hbase/conf/hbase-site.xml ${INSTALL_PATH}/phoenix/bin
-        # 添加环境变量
+        # Add environment variables
         setupEnv_app ${app}
     fi
 }
 
+# Install Kafka
 install_kafka()
 {
     local app=kafka
@@ -433,7 +450,7 @@ install_kafka()
     local file=${url##*/}
 
     echo "install ${app}"
-    # 安装
+    # Install
     if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
     then
         curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
@@ -442,27 +459,31 @@ install_kafka()
     mv ${INSTALL_PATH}/${file:0:16} ${INSTALL_PATH}/${app}
     if [ -d ${INSTALL_PATH}/${app} ]
     then
-        # 配置
+        # Configure
         value="listeners=PLAINTEXT://${HOST_NAME}:9092"
         sed -i 's@^#listeners=.*@listeners='${value}'@' ${INSTALL_PATH}/${app}/config/server.properties
         sed -i 's@^#advertised.listeners=.*@advertised.listeners='${value}'@' ${INSTALL_PATH}/${app}/config/server.properties
         sed -i "s@^zookeeper.connect=.*@zookeeper.connect=${HOST_NAME}:2181/kafka@" ${INSTALL_PATH}/${app}/config/server.properties
 
-        # 添加环境变量
+        # Add environment variables
         setupEnv_app ${app}
     fi
 }
 
-install_init
-install_jdk
-install_hadoop
-install_mysql
-install_ssh
-install_hive
-install_scala
-install_spark
-install_zk
-install_hbase
-install_phoenix
-install_kafka
+main(){
+  install_init
+  install_jdk
+  install_hadoop
+  install_mysql
+  install_ssh
+  install_hive
+  install_scala
+  install_spark
+  install_zk
+  install_hbase
+  install_phoenix
+  install_kafka
+}
+
+main
 
