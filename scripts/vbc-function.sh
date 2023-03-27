@@ -50,7 +50,7 @@ log() {
     fi
 }
 
-# 将配置转换为xml
+# Convert configuration to xml
 # eg: get_app_version_num $HIVE_VERSION "-" 2
 create_property_xml() {
     local in=$1
@@ -72,7 +72,7 @@ create_property_xml() {
     echo "</configuration>" >> $out
 }
 
-# 获取app的版本号
+# Get the version number of the app
 # eg: get_app_version_num $HIVE_VERSION "-" 2
 get_app_version_num() {
     local app_version=$1
@@ -88,8 +88,8 @@ get_app_version_num() {
     echo $app_num
 }
 
-## @description 判断DOWN_PATH下文件是否存在
-## @param 压缩文件名字
+## @description Determine whether the file exists under DOWNLOAD_PATH
+## @param zip file name
 ## @eg  resourceExists hadoop2.7.2.tar.gz
 resourceExists()
 {
@@ -102,7 +102,7 @@ resourceExists()
     fi
 }
 
-## @description 判断某一目录文件是否存在
+## @description Determine whether a directory file exists
 # eg: fileExists /home/vagrant/text.txt
 fileExists()
 {
@@ -115,13 +115,13 @@ fileExists()
     fi
 }
 
-## @description 判断软件是否安装
+## @description Determine whether the software is installed
 ## @eg command_exists expect
 command_exists() {
     command -v "$@" > /dev/null 2>&1
 }
 
-## @description 将字符串变为大写
+## @description convert a string to uppercase
 ## @param app_name
 ## @eg get_string_upper es
 get_string_upper() {
@@ -130,8 +130,8 @@ get_string_upper() {
     echo $app_name_upper
 }
 
-## @description 从本地DOWLOAD_PATH解压组件到INSTALL_PATH
-## @param local_archieve文件名称
+## @description Unzip components from local DOWLOAD_PATH to INSTALL_PATH
+## @param local_archieve
 ## @eg installFromLocal $HADOOP_ARCHIVE
 installFromLocal() {
     LOCAL_ARCHIVE=$1
@@ -140,8 +140,8 @@ installFromLocal() {
     tar -xzf ${FILE} -C ${INSTALL_PATH}
 }
 
-## @description 从网上下载组件到DOWNLOAD_PATH，并解压到INSTALL_PATH
-## @param local_archieve文件名称
+## @description Download components from the Internet to DOWNLOAD_PATH, and unzip them to INSTALL_PATH
+## @param local_archieve
 ## @eg installFromRemote $HADOOP_ARCHIVE $HADOOP_MIRROR_DOWNLOAD
 installFromRemote() {
     LOCAL_ARCHIVE=$1
@@ -154,7 +154,7 @@ installFromRemote() {
     tar -xzf ${FILE} -C ${INSTALL_PATH}
 }
 
-## @description 分发app目录
+## @description Distribute app directory
 ## @param app_name
 ## @eg dispatch_app kafka
 ## i=$(($i+1))
@@ -173,7 +173,7 @@ dispatch_app(){
     done
 }
 
-## @description 设置app_name的环境变量
+## @description Set the environment variable of app_name
 ## @param app_name
 ## @param type
 ## @eg setupEnv_app kafka
@@ -194,7 +194,7 @@ setupEnv_app() {
     echo -e "\n" >> $PROFILE
 }
 
-## @description 下载mysql connector的jar到某一目录
+## @description Download the jar of mysql connector to a certain directory
 ## @param directory
 ## @eg wget_mysql_connector /home/vagrant/apps/hive/lib
 wget_mysql_connector(){
@@ -227,7 +227,7 @@ download_and_unzip_app() {
     # rm ${DOWNLOAD_PATH}/${archive}
 }
 
-## @description 显示apps的版本号
+## @description Display the version number of apps
 ## @param None
 ## @eg display_apps_num
 display_apps_num() {

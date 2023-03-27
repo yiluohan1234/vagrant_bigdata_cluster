@@ -17,16 +17,16 @@ done
 
 install_init(){
     log info "install init"
-    # 更改主机名称
+    # change hostname
     hostnamectl set-hostname ${HOSTNAME_LIST[$(( id-1 ))]}
 
-    # 创建hadoop组、创建各用户并设置密码
+    # Create a hadoop group, create each user and set a password
     groupadd hadoop
-    # 修改vagrant用户信息，把vagrant添加到组hadoop中
+    # Modify the vagrant user information and add vagrant to the group hadoop
     usermod -a -G hadoop vagrant
-    # 增加 atguigu 用户
+    # Add atguigu user
     useradd atguigu -g hadoop -d /home/atguigu
-    # 为atguigu用户设置密码vagrant
+    # Set password vagrant for atguigu user
     echo vagrant | passwd --stdin atguigu
 
     if [ "${IS_KERBEROS}" == "true" ];then
@@ -34,16 +34,16 @@ install_init(){
         for user in {"hdfs","yarn","mapred","hive"};
         do
             useradd $user -g hadoop -d /home/$user
-            # 各个用户的默认密码是vagrant
+            # The default password for each user is vagrant
             echo $user | passwd --stdin $user
         done
     fi
 
-    # 配置atguigu和vagrant用户具有root权限
+    # Configure atguigu and vagrant users with root privileges
     sed -i "/## Same thing without a password/iatguigu   ALL=(ALL)     NOPASSWD:ALL" /etc/sudoers
     sed -i "/## Same thing without a password/ivagrant   ALL=(ALL)     NOPASSWD:ALL" /etc/sudoers
 
-    # 创建生成日志目录
+    # Create build log directory
     APP_LOG=/opt/module/applog/log/
     [ ! -d $APP_LOG ] && mkdir -p $APP_LOG
     chown -R ${DEFAULT_USER}:${DEFAULT_GROUP} $APP_LOG
@@ -55,7 +55,7 @@ install_init(){
     chown -R ${DEFAULT_USER}:${DEFAULT_GROUP} ${INIT_SHELL_BIN}
 
 
-    # 复制初始化程序到init_shell的bin目录
+    # Copy the initialization program to the bin directory of the init shell
     # log info "copy init shell to ${INIT_SHELL_BIN}"
     for name in ${HOSTNAME_LIST[@]}; do host_list="${host_list:-} ""$name"; done
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
@@ -95,11 +95,11 @@ install_init(){
     echo 'export PATH=${INIT_SHELL_BIN}:$PATH' >> ${PROFILE}
     source ${PROFILE}
 
-    # 设置安装目录权限
+    # Set installation directory permissions
     chmod -R 755 ${INSTALL_PATH}
     chown -R ${DEFAULT_USER}:${DEFAULT_GROUP} ${INSTALL_PATH}
 
-    # 统一缩进为4
+    # Uniform indentation to 4
     echo "set tabstop=4" >> ${PROFILE}
     echo "set softtabstop=4" >> ${PROFILE}
     echo "set shiftwidth=4" >> ${PROFILE}

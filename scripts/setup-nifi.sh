@@ -32,11 +32,11 @@ setup_nifi() {
 
     sed -i "s@^nifi.cluster.is.node=.*@nifi.cluster.is.node=true@" ${conf_dir}/nifi.properties
 
-    # 节点的协议端口。默认为空白
+    # The protocol port of the node. Default is blank
     sed -i "s@^nifi.cluster.node.protocol.port=.*@nifi.cluster.node.protocol.port=28001@" ${conf_dir}/nifi.properties
-    # 指定集群中所需的节点数，以便提前选择流。这允许集群中的节点避免在开始处理之前等待很长时间
+    # Specifies the desired number of nodes in the cluster for stream selection ahead of time. This allows nodes in the cluster to avoid waiting a long time before starting processing
     sed -i "s@^nifi.cluster.flow.election.max.candidates=.*@nifi.cluster.flow.election.max.candidates=1@" ${conf_dir}/nifi.properties
-    # 连接外部ZooKeeper连接地址
+    # Connect to the external ZooKeeper connection address
     sed -i "s@^nifi.zookeeper.connect.string=.*@nifi.zookeeper.connect.string=${HOSTNAME_LIST[0]}:2181,${HOSTNAME_LIST[1]}:2181,${HOSTNAME_LIST[2]}:2181@" ${conf_dir}/nifi.properties
 
     # state-management.xml

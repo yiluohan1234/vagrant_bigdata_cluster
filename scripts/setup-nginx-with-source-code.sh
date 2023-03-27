@@ -11,7 +11,7 @@ setup_nginx() {
     local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
 
     log info "install dependency packages"
-    yum install -y make zlib zlib-devel gcc-c++ libtool  openssl openssl-devel
+    yum install -y make zlib zlib-devel gcc-c++ libtool openssl openssl-devel
     cd ${INSTALL_PATH}/${NGINX_VERSION}
 
     log info "configure ${INSTALL_PATH}/nginx"
@@ -23,12 +23,12 @@ setup_nginx() {
     rm ${DOWNLOAD_PATH}/${NGINX_ARCHIVE}
     rm -rf ${INSTALL_PATH}/${NGINX_VERSION}
 
-    # 让当前用户的某个应用程序可以使用1024以下端口
+    # Allow an application of the current user to use ports below 1024
     setcap cap_net_bind_service=+eip ${INSTALL_PATH}/nginx/sbin/nginx
 
     cp ${res_dir}/* ${conf_dir}
     chown -R vagrant:vagrant ${INSTALL_PATH}/${app_name}
-    
+
 }
 
 download_nginx() {

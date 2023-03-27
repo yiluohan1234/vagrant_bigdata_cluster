@@ -16,41 +16,41 @@ PASSWD_LIST=("vagrant" "vagrant" "vagrant")
 DEFAULT_USER=atguigu
 DEFAULT_GROUP=hadoop
 
-# 安装目录
+# installation directory
 INSTALL_PATH=/opt/module
 
-# 环境变量配置文件
+# Environment variable configuration file
 PROFILE=/etc/profile
 
-# 是否用vagrant安装集群
+# Whether to install the cluster with vagrant
 IS_VAGRANT="true"
 
-# 是否用kerberos
+# Whether to use kerberos
 IS_KERBEROS="false"
 
-# 是否安装中文包
+# Whether to install the Chinese pack
 IS_CHINESE="false"
 
-# 是否更新git
+# Whether to update git
 IS_UPDATE_GIT="false"
 
-# 是否安装Github520
+# Whether to install Github520
 IS_GITHUB="false"
 
-# 是否删除/vagrant
+# Whether to delete /vagrant
 IS_DEL_VAGRANT="true"
 
-# 配置文件目录
+# configuration file directory
 RESOURCE_PATH=$VGC_MAIN_DIR/resources
 
-# 组件下载目录
+# Component download directory
 DOWNLOAD_PATH=$VGC_MAIN_DIR/downloads
 
-# 初始化集群目录
+# Initialize the cluster directory
 INIT_PATH=$RESOURCE_PATH/init_bin
 INIT_SHELL_BIN=$INSTALL_PATH/init_bin
 
-# 下载组建的镜像地址
+# Download url of component
 # 1:https://archive.apache.org/dist
 # 2:https://mirrors.huaweicloud.com/apache
 DOWNLOAD_REPO=https://mirrors.huaweicloud.com/apache

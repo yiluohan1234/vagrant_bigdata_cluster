@@ -8,10 +8,10 @@ install_nginx() {
     local app_name="nginx"
     log info "setup ${app_name}"
 
-    # 安装
+    # Install
     yum install -y -q nginx
 
-    # 启动并设置开机自启
+    # Start and set up to start automatically
     systemctl start nginx.service
     systemctl enable nginx.service
 }

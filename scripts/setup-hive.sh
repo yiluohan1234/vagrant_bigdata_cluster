@@ -30,10 +30,10 @@ setup_hive() {
     echo '</configuration>' >> ${conf_dir}/hive-site.xml
     create_property_xml ${res_dir}/hive-site.properties ${conf_dir}/hive-site.xml
 
-    # 解决log4j冲突
+    # Resolving log4j conflicts
     mv ${INSTALL_PATH}/hive/lib/guava-19.0.jar ${INSTALL_PATH}/hive/lib/guava-19.0.jar_bak
     cp ${INSTALL_PATH}/hadoop/share/hadoop/common/lib/guava-27.0-jre.jar ${INSTALL_PATH}/hive/lib
-    # 解决jline的版本冲突
+    # Resolve the version conflict of jline
     # cp ${INSTALL_PATH}/hive/lib/jline-2.12.jar ${INSTALL_PATH}/hadoop/share/hadoop/yarn/lib/
 
     wget_mysql_connector ${INSTALL_PATH}/hive/lib

@@ -5,7 +5,7 @@ if [ -d /vagrant/scripts ];then
 fi
 
 setup_Kerberos() {
-    # 修改/etc/krb5.conf文件
+    # Modify /etc/krb5.conf file
     sed -i '10 a dns_lookup_kdc = false' /etc/krb5.conf
     sed -i 's/^dns_lookup_kdc =.*/ dns_lookup_kdc = false/g' /etc/krb5.conf
     sed -i 's/^# default_realm =.*/ default_realm = EXAMPLE.COM/g' /etc/krb5.conf
@@ -15,12 +15,12 @@ setup_Kerberos() {
     sed -i 's/^#  kdc =.*/  kdc = hdp101/g' /etc/krb5.conf
     sed -i 's/^# }.*/ }/g' /etc/krb5.conf
     if [ "$hostname" = "hdp101" ];then
-        # 管理员主体认证:kinit admin/admin(hdp101)
+        # Administrator principal authentication:kinit admin/admin(hdp101)
         kdb5_util create -s << EOF
 admin
 admin
 EOF
-        # 启动KDC和Kadmin
+        # Start KDC and Kadmin
         systemctl start krb5kdc
         systemctl enable krb5kdc
         systemctl start kadmin
@@ -39,7 +39,7 @@ download_Kerberos() {
 
     hostname=`cat /etc/hostname`
     if [ "$hostname" = "hdp101" ];then
-        yum install -y krb5-server 
+        yum install -y krb5-server
     fi
 }
 

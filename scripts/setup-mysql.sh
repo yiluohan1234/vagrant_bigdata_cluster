@@ -5,23 +5,23 @@ if [ -d /vagrant/scripts ];then
 fi
 
 install_mysql() {
-    # 安装mysql57
+    # Install mysql57
     curl -o /root/mysql57-community-release-el7-11.noarch.rpm -O -L http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
     rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
     yum -y -q install /root/mysql57-community-release-el7-11.noarch.rpm
     yum -y -q install mysql-community-server
 
-    # 启动并设置开机自启
+    # Start and set up to start automatically
     systemctl start mysqld.service
     systemctl enable mysqld.service
 
-    # 更改初始密码
-    #1获取安装时的临时密码（在第一次登录时就是用这个密码）：
+    # change initial password
+    # Obtain the temporary password during installation (this password is used when logging in for the first time)：
     PASSWORD=`grep 'temporary password' /var/log/mysqld.log|awk -F "root@localhost: " '{print $2}'`
 
     PORT="3306"
     USERNAME="root"
-    
+
     mysql -u${USERNAME} -p${PASSWORD} -e "set global validate_password_policy=0; \
         set global validate_password_length=4; \
         ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}'; \
@@ -45,8 +45,8 @@ install_mysql() {
         CREATE DATABASE gmall CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'; \
         CREATE DATABASE gmall_report CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'; \
         flush privileges;" --connect-expired-password
-    
-    # 删除
+
+    # Delete
     yum -y remove mysql57-community-release-el7-11.noarch
     rm -rf /root/mysql57-community-release-el7-11.noarch.rpm
 

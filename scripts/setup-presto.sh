@@ -49,11 +49,11 @@ setup_presto() {
     echo "node.id=ffffffff-ffff-ffff-ffff-fffffffffff1" >> $conf_dir/node.properties
     echo "node.data-dir=${INSTALL_PATH}/presto/data" >> $conf_dir/node.properties
 
-    
-    # 配置环境中不同节点配置不同的情况
+
+    # Different configurations of different nodes in the configuration environment
     if [ "${IS_VAGRANT}" == "true" ];then
-        sed -i 's@^node.id=.*@node.id=ffffffff-ffff-ffff-ffff-fffffffffff'$ID'@' ${INSTALL_PATH}/${app_name}/etc/node.properties    
-    else 
+        sed -i 's@^node.id=.*@node.id=ffffffff-ffff-ffff-ffff-fffffffffff'$ID'@' ${INSTALL_PATH}/${app_name}/etc/node.properties
+    else
         sed -i 's@^node.id=.*@node.id=ffffffff-ffff-ffff-ffff-fffffffffff1@' ${INSTALL_PATH}/${app_name}/etc/node.properties
     fi
 
@@ -90,7 +90,7 @@ install_presto() {
         fi
         source ${PROFILE}
     fi
-    
+
 }
 
 

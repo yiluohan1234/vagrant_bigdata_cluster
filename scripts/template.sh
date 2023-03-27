@@ -14,27 +14,27 @@ setup_#@() {
     mkdir -p ${INSTALL_PATH}/elasticsearch/datas
 
     log info "copying over ${app_name} configuration files"
-    # 将resources配置文件拷贝到插件的配置目录
+    # Copy the resources configuration file to the configuration directory of the plugin
     cp -f $res_dir/* $conf_dir
 
-    sed -i '1,$d' ${conf_dir}/regionservers 
+    sed -i '1,$d' ${conf_dir}/regionservers
     echo -e "${HOSTNAME_LIST[0]}\n${HOSTNAME_LIST[1]}\n${HOSTNAME_LIST[2]}" >> ${conf_dir}/regionservers
-    # 更换默认配置
+    # Replace the default configuration
     sed -i "s@hdp101@${HOSTNAME_LIST[0]}@g" `grep 'hdp101' -rl ${conf_dir}/`
     sed -i "s@hdp102@${HOSTNAME_LIST[1]}@g" `grep 'hdp102' -rl ${conf_dir}/`
     sed -i "s@hdp103@${HOSTNAME_LIST[2]}@g" `grep 'hdp103' -rl ${conf_dir}/`
-    
-    # 配置环境中不同节点配置不同的情况
+
+    # Different configurations of different nodes in the configuration environment
     if [ "${IS_VAGRANT}" == "true" ];then
         hostname=`cat /etc/hostname`
         node_host=`cat /etc/hosts |grep ${hostname}|awk '{print $1}'`
         file_path=${INSTALL_PATH}/${app_name}/config/elasticsearch.yml
-        
+
         echo "------modify $i server.properties-------"
         #sed -i 's/^node.name: .*/node.name: '$hostname'/' $file_path
         sed -i 's@^network.host: .*@network.host: '${node_host}'@' ${file_path}
     fi
-    
+
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`
     fi
@@ -63,7 +63,7 @@ install_#@() {
         download_and_unzip_app ${app_name}
         setup_#@ ${app_name}
         setupEnv_app $app_name
-        
+
         if [ "${IS_VAGRANT}" != "true" ];then
             dispatch_#@ ${app_name}
         fi

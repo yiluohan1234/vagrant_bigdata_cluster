@@ -39,12 +39,12 @@ pip install apache-superset -i https://pypi.douban.com/simple/
 pip install pillow -i https://pypi.douban.com/simple/
 pip install gunicorn -i https://pypi.douban.com/simple/
 
-# 初始化 Supetset 数据库
+# Initialize the Supetset database
 superset db upgrade
 export FLASK_APP=superset
-# 创建管理员用户
+# Create an admin user
 superset fab create-admin
-# Superset 初始化
+# Superset initialization
 superset init
 
 gunicorn --workers 5 --timeout 120 --bind hdp101:8787 "superset.app:create_app()" --daemon

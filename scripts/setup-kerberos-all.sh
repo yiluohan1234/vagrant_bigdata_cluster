@@ -5,8 +5,8 @@ setup_Kerberos_hadoop_basic_config() {
     local INSTALL_PATH=/opt/module
     local GITEE_RESOURCE_URL_PATH=https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/resources
     local conf_dir=${INSTALL_PATH}/hadoop/etc/hadoop
-    
-    # 重新复制配置文件
+
+    # Copy the configuration file again
     curl -o ${conf_dir}/core-site.xml -LJO ${GITEE_RESOURCE_URL_PATH}/hadoop/core-site.xml
     curl -o ${conf_dir}/hdfs-site.xml -LJO ${GITEE_RESOURCE_URL_PATH}/hadoop/hdfs-site.xml
     curl -o ${conf_dir}/mapred-site.xml -LJO ${GITEE_RESOURCE_URL_PATH}/hadoop/mapred-site.xml
@@ -23,20 +23,10 @@ setup_Kerberos_hadoop_basic_config() {
         sed -i '73,112d' ${conf_dir}/yarn-site.xml
         rm -rf ${conf_dir}/ssl-server.xml
     fi
-  
-    # 创建hadoop组、创建各用户并设置密码
-    # groupadd hadoop
-    # useradd hdfs -g hadoop
-    # echo hdfs | passwd --stdin  hdfs
-    # useradd yarn -g hadoop
-    # echo yarn | passwd --stdin yarn
-    # useradd mapred -g hadoop
-    # echo mapred | passwd --stdin mapred
-    # usermod -a -G hadoop vagrant
 
-    # 创建keytab文件目录
+    # Create keytab file directory
     mkdir /etc/security/keytab/
- 
+
     hostname=`cat /etc/hostname`
     if [ "$hostname" = "hdp101" ];then
         # hdp101
@@ -47,10 +37,10 @@ setup_Kerberos_hadoop_basic_config() {
         kadmin -padmin/admin -wadmin -q"addprinc -randkey nm/hdp101"
         kadmin -padmin/admin -wadmin -q"xst -k /etc/security/keytab/nm.service.keytab nm/hdp101"
         kadmin -padmin/admin -wadmin -q"addprinc -randkey jhs/hdp101"
-        kadmin -padmin/admin -wadmin -q"xst -k /etc/security/keytab/jhs.service.keytab jhs/hdp101"  
+        kadmin -padmin/admin -wadmin -q"xst -k /etc/security/keytab/jhs.service.keytab jhs/hdp101"
         kadmin -padmin/admin -wadmin -q"addprinc -randkey HTTP/hdp101"
         kadmin -padmin/admin -wadmin -q"xst -k /etc/security/keytab/spnego.service.keytab HTTP/hdp101"
-        
+
         kadmin -padmin/admin -wadmin -q"addprinc -pw vagrant vagrant"
     elif [ "$hostname" = "hdp102" ];then
         # hdp102
@@ -86,18 +76,18 @@ setup_Kerberos_hadoop_basic_config() {
 y
 
 EOF
-    # 修改所有节点keytab文件的所有者和访问权限
+    # Modify the owner and access permissions of all node keytab files
     chown -R root:hadoop /etc/security/keytab/
     chmod 660 /etc/security/keytab/*
     # xsync /etc/security/keytab/keystore
 
-    # 修改$HADOOP_HOME/etc/hadoop/container-executor.cfg
+    # Modify $HADOOP_HOME/etc/hadoop/container-executor.cfg
     sed -i 's@^banned.users=.*@banned.users=hdfs,yarn,mapred@' ${INSTALL_PATH}/hadoop/etc/hadoop/container-executor.cfg
     sed -i 's@^yarn.nodemanager.linux-container-executor.group=.*@yarn.nodemanager.linux-container-executor.group=hadoop@' ${INSTALL_PATH}/hadoop/etc/hadoop/container-executor.cfg
 
-    # 修改$HADOOP_HOME/etc/hadoop/yarn-site.xml文件
+    # Modify $HADOOP_HOME/etc/hadoop/yarn-site.xml file
 
-    # 配置Yarn使用LinuxContainerExecutor
+    # Configure Yarn to use Linux Container Executor
     chown root:hadoop ${INSTALL_PATH}/hadoop/bin/container-executor
     chmod 6050 ${INSTALL_PATH}/hadoop/bin/container-executor
     chown root:hadoop ${INSTALL_PATH}/hadoop/etc/hadoop/container-executor.cfg
@@ -106,10 +96,10 @@ EOF
     chown root:hadoop ${INSTALL_PATH}/hadoop
     chown root:hadoop /opt/module
     chmod 400 ${INSTALL_PATH}/hadoop/etc/hadoop/container-executor.cfg
-    
-    # 修改本地路径权限
+
+    # Modify local path permissions
     if [ "$hostname" = "hdp101" ];then
-        # 修改本地路径权限:name.dir:hdp101
+        # Modify local path permissions:name.dir:hdp101
         chown -R hdfs:hadoop ${INSTALL_PATH}/hadoop/tmp/dfs/name/
         chmod 700 ${INSTALL_PATH}/hadoop/tmp/dfs/name/
     fi
@@ -148,14 +138,14 @@ EOF
 
     # $HADOOP_HOME/bin/mapred
     echo "$hostname"
-    sed -i '17a\MAPRED_HISTORYSERVER_USER=mapred' ${INSTALL_PATH}/hadoop/bin/mapred 
+    sed -i '17a\MAPRED_HISTORYSERVER_USER=mapred' ${INSTALL_PATH}/hadoop/bin/mapred
 }
 setup_Kerberos_hadoop(){
     for i in {"hdp101","hdp102","hdp103"};
-    do 
+    do
         ssh $i "$(typeset -f setup_Kerberos_hadoop_basic_config); setup_Kerberos_hadoop_basic_config"
     done
-    # 重启hdp
+    # restart hdp
     for i in {"hdp101","hdp102","hdp103"};
     do
         if [ "$i" = "hdp101" ];then
@@ -171,12 +161,12 @@ setup_Kerberos_hadoop(){
     done
     sleep 6
     #bigstart hdp restart
-    # 创建hdfs/hadoop主体(hdp101)
+    # Create hdfs/hadoop principal (hdp101)
     kadmin.local -q "addprinc hdfs/hadoop" << EOF
 hdfs
 hdfs
 EOF
-    echo "hdfs" |kinit hdfs/hadoop 
+    echo "hdfs" |kinit hdfs/hadoop
 
     hadoop fs -chown hdfs:hadoop / /tmp /user
     hadoop fs -chmod 755 /
@@ -201,11 +191,11 @@ EOF
     hadoop fs -chown vagrant:hadoop /user/vagrant
 }
 setup_Kerberos_hive() {
-    # 创建系统用户
+    # create system user
     # useradd hive -g hadoop
     # echo hive | passwd --stdin hive
     if [ "$hostname" = "hdp101" ];then
-        # 创建hive kerberos主体
+        # Create hive kerberos principal
         kadmin -padmin/admin -wadmin -q"addprinc -randkey hive/hdp101"
         kadmin -padmin/admin -wadmin -q"xst -k /etc/security/keytab/hive.service.keytab hive/hdp101"
         chown -R root:hadoop /etc/security/keytab/
@@ -215,7 +205,7 @@ setup_Kerberos_hive() {
     local app_name_upper=`get_string_upper ${app_name}`
     local res_dir=$(eval echo \$${app_name_upper}_RES_DIR)
     local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
-	
+
     log info "copying over ${app_name} configuration files"
     cp -f ${res_dir}/hive* ${conf_dir}
 

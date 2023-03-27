@@ -11,23 +11,23 @@ setup_zabbix() {
     sed -i 's/Hostname=Zabbix server/#Hostname=Zabbix server/' /etc/zabbix/zabbix_agentd.conf
 
     hostname=`cat /etc/hostname`
-    # 配置环境中不同节点配置不同的情况
+    # Different configurations of different nodes in the configuration environment
     if [ "${IS_VAGRANT}" == "true" ];then
         if [ "$hostname" = "$MYSQL_HOST" ];then
-            # 导入Zabbix建表语句
+            # Import Zabbix table creation statement
             zabbix_server_path=`ls /usr/share/doc/|grep zabbix-server`
             zcat /usr/share/doc/$zabbix_server_path/create.sql.gz | mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} zabbix
-            # server配置
+            # server configuration
             sed -i 's/^# DBHost=.*/DBHost='${MYSQL_HOST}'/g' /etc/zabbix/zabbix_server.conf
             sed -i 's/^DBUser=zabbix/DBUser='${MYSQL_USER}'/g' /etc/zabbix/zabbix_server.conf
             sed -i 's/^# DBPassword=/DBPassword='${MYSQL_PASSWORD}'/g' /etc/zabbix/zabbix_server.conf
-            # 配置时区
+            # Set timezone
             echo "php_value[date.timezone] = Asia/Shanghai" >> /etc/opt/rh/rh-php72/php-fpm.d/zabbix.conf
-            
+
         fi
     fi
 
-    # 启动Zabbix
+    # Start Zabbix
     if [ "$hostname" != "$MYSQL_HOST" ];then
         systemctl start zabbix-agent
         systemctl enable zabbix-agent
@@ -43,7 +43,7 @@ download_zabbix() {
     sed -i 's/http:\/\/repo.zabbix.com/https:\/\/mirrors.aliyun.com\/zabbix/g' /etc/yum.repos.d/zabbix.repo
     sed -i '11s/enabled=0/enabled=1/' /etc/yum.repos.d/zabbix.repo
     yum install -y -q zabbix-agent
-    
+
     hostname=`cat /etc/hostname`
     if [ "$hostname" = "$MYSQL_HOST" ];then
         yum install -y -q zabbix-server-mysql zabbix-web-mysql-scl zabbix-apache-conf-scl

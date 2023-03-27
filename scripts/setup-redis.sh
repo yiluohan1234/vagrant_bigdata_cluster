@@ -10,13 +10,13 @@ install_redis() {
 
     yum install -y -q redis
 
-    # 修改配置文件
+    # Modify the configuration file
     sed -i 's@^bind 127.0.0.1.*@#bind 127.0.0.1 -::1@' /etc/redis.conf
     sed -i 's@^daemonize no.*@daemonize yes@' /etc/redis.conf
     sed -i 's@protected-mode yes@protected-mode no@' /etc/redis.conf
-    # sed -i 's@^# requirepass.*@requirepass LtG\!\&t42@g' /etc/redis.conf 
+    # sed -i 's@^# requirepass.*@requirepass LtG\!\&t42@g' /etc/redis.conf
 
-    # 启动redis并设置开机自启
+    # Start redis and set it to start automatically
     service redis start
     chkconfig redis on
 }

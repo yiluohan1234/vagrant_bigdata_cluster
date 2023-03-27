@@ -17,9 +17,6 @@ setup_maxwell() {
     sed -i "s@^host=.*@host=${HOSTNAME_LIST[2]}@g" ${conf_dir}/config.properties
     sed -i "11a# add"  ${conf_dir}/config.properties
     sed  -i  "/# add/a kafka_topic=gmall_db_m"  ${conf_dir}/config.properties
-
-    # 在数据库中建立一个maxwell 库用于存储 Maxwell的元数据
-    #${mysql_install_dir}/bin/mysql -uroot -p${dbrootpwd} -e "CREATE DATABASE maxwell;GRANT ALL ON maxwell.* TO 'maxwell'@'%' IDENTIFIED BY 'maxwell';GRANT SELECT, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO maxwell@'%';flush privileges;"
 }
 
 install_maxwell() {
