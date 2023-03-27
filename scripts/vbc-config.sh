@@ -64,4 +64,4 @@ CENTOS_BASIC_APPS=("epel-release" "sshpass" "lrzsz" "expect" "unzip" "zip" "vim-
 # mysql
 MYSQL_HOST=${HOSTNAME_LIST[2]}
 MYSQL_USER=root
-MYSQL_PASSWORD=199037
+MYSQL_PASSWORD=000000
