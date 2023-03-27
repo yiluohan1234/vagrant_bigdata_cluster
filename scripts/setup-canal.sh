@@ -17,15 +17,13 @@ setup_canal() {
     sed -i '116s/^/#/' ${CANAL_CONF_DIR}/canal.properties
     sed -i '117s/^#//' ${CANAL_CONF_DIR}/canal.properties
     sed -i "s@^kafka.bootstrap.servers =.*@kafka.bootstrap.servers = ${HOSTNAME_LIST[0]}:9092,${HOSTNAME_LIST[1]}:9092,${HOSTNAME_LIST[2]}:9092@g" ${CANAL_CONF_DIR}/canal.properties
-    
+
 
     # example/instance.properties
     sed -i "s@^canal.instance.master.address=.*@canal.instance.master.address=${HOSTNAME_LIST[2]}:3306@g" ${CANAL_CONF_DIR}/example/instance.properties
     sed -i "s@^# canal.instance.mysql.slaveId=.*@canal.instance.mysql.slaveId=20@g" ${CANAL_CONF_DIR}/example/instance.properties
     sed -i "s@^canal.instance.dbUsername=.*@canal.instance.dbUsername=canal@g" ${CANAL_CONF_DIR}/example/instance.properties
     sed -i "s@^canal.instance.dbPassword=.*@canal.instance.dbPassword=canal@g" ${CANAL_CONF_DIR}/example/instance.properties
-
-    
 }
 
 download_canal() {

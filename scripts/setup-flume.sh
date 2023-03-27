@@ -22,10 +22,10 @@ setup_flume() {
     cp ${res_dir}/file-flume-kafka.conf ${conf_dir}
     cp ${res_dir}/kafka-flume-hdfs.conf ${conf_dir}
 
-    # 将lib文件夹下的guava-11.0.2.jar删除以兼容Hadoop-3.1.3
+    # Delete guava-11.0.2.jar in the lib folder to be compatible with Hadoop-3.1.3
     # rm ${INSTALL_PATH}/${app_name}/lib/guava-11.0.2.jar
 
-    # 更换默认配置
+    # Replace the default host configuration
     sed -i "s@hdp101@${HOSTNAME_LIST[0]}@g" `grep 'hdp101' -rl ${conf_dir}/`
     sed -i "s@hdp102@${HOSTNAME_LIST[1]}@g" `grep 'hdp102' -rl ${conf_dir}/`
     sed -i "s@hdp103@${HOSTNAME_LIST[2]}@g" `grep 'hdp103' -rl ${conf_dir}/`

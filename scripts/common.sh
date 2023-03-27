@@ -8,7 +8,7 @@ VGC_SCRIPTS_DIR=${VGC_SCRIPTS_DIR:-$DEFAULT_SCRIPTS_DIR}
 . $VGC_SCRIPTS_DIR/vbc-config.sh
 . $VGC_SCRIPTS_DIR/vbc-function.sh
 
-# app版本
+# Version information
 # HADOOP_VERSION=hadoop-2.7.7
 HADOOP_VERSION=hadoop-3.2.2
 # HIVE_VERSION=hive-2.3.4
@@ -46,8 +46,8 @@ REDIS_VERSION=redis-5.0.12
 JAVA_ARCHIVE=jdk-8u201-linux-x64.tar.gz
 JAVA_MIRROR_DOWNLOAD=https://repo.huaweicloud.com/java/jdk/8u201-b09/$JAVA_ARCHIVE
 JAVA_DIR_NAME=jdk1.8.0_201
+
 # hadoop
-# 支持版本：3.3.1, 3.3.0, 3.2.2-3.2.0, 3.1.4-3.1.0, 3.0.3-3.0.0, 2.9.2-2.9.0, 2.8.5-2.8.0, 2.7.7-2.7.0等
 #         https://archive.apache.org/dist/hadoop/core/hadoop-2.7.7/hadoop-2.7.7.tar.gz
 # https://mirrors.huaweicloud.com/apache/hadoop/core/hadoop-3.2.2/hadoop-3.2.2.tar.gz
 # https://archive.apache.org/dist => https://mirrors.huaweicloud.com/apache
@@ -61,7 +61,6 @@ HADOOP_PREFIX=$INSTALL_PATH/hadoop
 HADOOP_CONF_DIR=$HADOOP_PREFIX/etc/hadoop
 
 # hive
-# 支持版本：3.1.2-3.1.0, 3.0.0, 2.3.9,-2.3.0, 2.2.0, 2.1.1, 2.1.0, 2.0.1, 2.0.0等
 #         https://archive.apache.org/dist/hive/hive-2.3.4/apache-hive-2.3.4-bin.tar.gz
 # https://mirrors.huaweicloud.com/apache/hive/hive-2.3.4/apache-hive-2.3.4-bin.tar.gz
 HIVE_VERSION_NUM=`get_app_version_num $HIVE_VERSION "-" 2`
@@ -72,7 +71,6 @@ HIVE_RES_DIR=$RESOURCE_PATH/hive
 HIVE_CONF_DIR=$INSTALL_PATH/hive/conf
 
 # hbase
-# 支持版本：2.4.5-2.4.0, 2.3.6-2.3.0, 2.2.7-2.2.0, 2.1.10-2.1.0, 2.0.6-2.0.0等
 #         https://archive.apache.org/dist/hbase/1.2.6/hbase-1.2.6-bin.tar.gz
 # https://mirrors.huaweicloud.com/apache/hbase/2.4.12/hbase-2.4.12-bin.tar.gz
 HBASE_VERSION_NUM=`get_app_version_num $HBASE_VERSION "-" 2`
@@ -83,7 +81,6 @@ HBASE_RES_DIR=$RESOURCE_PATH/hbase
 HBASE_CONF_DIR=$INSTALL_PATH/hbase/conf
 
 # spark
-# 支持版本：具体见下载地址
 #         https://archive.apache.org/dist/spark/spark-2.4.3/spark-2.4.3-bin-hadoop2.7.tgz
 # https://mirrors.huaweicloud.com/apache/spark/spark-3.2.3/spark-3.2.3-bin-hadoop3.2.tgz
 SPARK_VERSION_NUM=`get_app_version_num $SPARK_VERSION "-" 2`
@@ -94,7 +91,6 @@ SPARK_RES_DIR=$RESOURCE_PATH/spark
 SPARK_CONF_DIR=$INSTALL_PATH/spark/conf
 
 # nifi
-# 支持版本：具体见下载地址
 #         https://archive.apache.org/dist/nifi/1.13.0/nifi-1.13.0-bin.tar.gz
 # https://mirrors.huaweicloud.com/apache/nifi/1.13.0/nifi-1.13.0-bin.tar.gz
 NIFI_VERSION_NUM=`get_app_version_num $NIFI_VERSION "-" 2`
@@ -105,7 +101,6 @@ NIFI_RES_DIR=$RESOURCE_PATH/nifi
 NIFI_CONF_DIR=$INSTALL_PATH/nifi/conf
 
 # scala
-# 支持版本：2.10.X, 2.11.X, 2.12.X, 2.13.X
 SCALA_VERSION_NUM=`get_app_version_num $SCALA_VERSION "-" 2`
 SCALA_ARCHIVE=${SCALA_VERSION}.tgz
 SCALA_DIR_NAME=${SCALA_VERSION}
@@ -115,7 +110,6 @@ SCALA_DIR_NAME=${SCALA_VERSION}
 SCALA_MIRROR_DOWNLOAD=https://downloads.lightbend.com/scala/${SCALA_VERSION_NUM}/$SCALA_ARCHIVE
 
 # sqoop
-# 支持版本：1.99.7-1.99.1, 1.4.7-1.4.2（版本和下载地址要对应）
 #         https://archive.apache.org/dist/sqoop/1.4.7/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
 # https://mirrors.huaweicloud.com/apache/sqoop/1.4.7/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
 SQOOP_VERSION_NUM=`get_app_version_num $SQOOP_VERSION "-" 2`
@@ -126,7 +120,6 @@ SQOOP_RES_DIR=$RESOURCE_PATH/sqoop
 SQOOP_CONF_DIR=$INSTALL_PATH/sqoop/conf
 
 # flink
-# 支持版本：具体见下载地址
 #         https://archive.apache.org/dist/flink/flink-1.12.4/flink-1.12.4-bin-scala_2.11.tgz
 # https://mirrors.huaweicloud.com/apache/flink/flink-1.12.4/flink-1.12.4-bin-scala_2.11.tgz
 FLINK_VERSION_NUM=`get_app_version_num $FLINK_VERSION "-" 2`
@@ -137,7 +130,6 @@ FLINK_RES_DIR=$RESOURCE_PATH/flink
 FLINK_CONF_DIR=$INSTALL_PATH/flink/conf
 
 # flume
-# 支持版本：1.9.0, 1.8.0, 1.7.0, 1.6.0, 1.5.2-1.5.0等
 #        https://archive.apache.org/dist/flume/1.6.0/apache-flume-1.6.0-bin.tar.gz
 # https://mirrors.huaweicloud.com/apache/flume/1.9.0/apache-flume-1.9.0-bin.tar.gz
 FLUME_VERSION_NUM=`get_app_version_num $FLUME_VERSION "-" 2`
@@ -148,7 +140,6 @@ FLUME_RES_DIR=$RESOURCE_PATH/flume
 FLUME_CONF_DIR=$INSTALL_PATH/flume/conf
 
 # zookeeper
-# 支持版本：3.7.0, 3.6.3-3.6.0, 3.5.9-3.5.5, 3.4.14-3.4.0, 3.3.6-3.3.3
 #         https://archive.apache.org/dist/zookeeper/zookeeper-3.4.10/zookeeper-3.4.10.tar.gz
 # https://mirrors.huaweicloud.com/apache/zookeeper/zookeeper-3.5.7/apache-zookeeper-3.5.7-bin.tar.gz
 ZOOKEEPER_VERSION_NUM=`get_app_version_num $ZOOKEEPER_VERSION "-" 2`
@@ -159,7 +150,6 @@ ZOOKEEPER_RES_DIR=$RESOURCE_PATH/zookeeper
 ZOOKEEPER_CONF_DIR=$INSTALL_PATH/zookeeper/conf
 
 # kafka
-# 支持版本：具体查看下载地址
 #         https://archive.apache.org/dist/kafka/0.11.0.3/kafka_2.11-0.11.0.3.tgz
 # https://mirrors.huaweicloud.com/apache/kafka/3.0.0/kafka_2.12-3.0.0.tgz
 KAFKA_VERSION_NUM=`get_app_version_num $KAFKA_VERSION "-" 2`
@@ -170,7 +160,6 @@ KAFKA_RES_DIR=$RESOURCE_PATH/kafka
 KAFKA_CONF_DIR=$INSTALL_PATH/kafka/config
 
 # phoenix 1.6
-# 支持版本：具体查看下载地址
 #        https://archive.apache.org/dist/phoenix/phoenix-4.16.0/phoenix-hbase-1.6-4.16.0-bin.tar.gz
 # https://mirrors.huaweicloud.com/apache/phoenix/phoenix-4.16.0/phoenix-hbase-1.6-4.16.0-bin.tar.gz
 # PHOENIX_VERSION_NUM=`get_app_version_num $PHOENIX_VERSION "-" 4`
@@ -182,7 +171,6 @@ KAFKA_CONF_DIR=$INSTALL_PATH/kafka/config
 # PHOENIX_CONF_DIR=$INSTALL_PATH/phoenix/conf
 
 # phoenix 2.0
-# 支持版本：具体查看下载地址
 # https://archive.apache.org/dist/phoenix/apache-phoenix-5.0.0-HBase-2.0/bin/apache-phoenix-5.0.0-HBase-2.0-bin.tar.gz
 PHOENIX_VERSION_NUM=`get_app_version_num $PHOENIX_VERSION "-" 3`
 PHOENIX_HBASE_VERSION_NUM=`get_app_version_num $PHOENIX_VERSION "-" 5`
@@ -193,7 +181,6 @@ PHOENIX_RES_DIR=$RESOURCE_PATH/phoenix
 PHOENIX_CONF_DIR=$INSTALL_PATH/phoenix/conf
 
 # mysql_connector
-# 支持版本：具体见下载地址
 #                 http://mirrors.sohu.com/mysql/Connector-J/mysql-connector-java-5.1.49.tar.gz
 # https://repo.huaweicloud.com/mysql/Downloads/Connector-J/mysql-connector-java-5.1.49.tar.gz
 MYSQL_CONNECTOR_VERSION_NUM=`get_app_version_num $MYSQL_CONNECTOR_VERSION "-" 4`
@@ -209,8 +196,6 @@ MYSQL_RES_DIR=$RESOURCE_PATH/mysql
 MYSQL_CONF_DIR=$INSTALL_PATH/mysql
 
 # maven
-# 支持版本：具体见下载地址
-# 注意：Maven 3.3.x 可以构建 Flink，但是不能正确地屏蔽掉指定的依赖。Maven 3.2.5 可以正确地构建库文件
 #        https://archive.apache.org/dist/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.tar.gz
 # https://mirrors.huaweicloud.com/apache/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.tar.gz
 MAVEN_VERSION_NUM=`get_app_version_num $MAVEN_VERSION "-" 2`
@@ -221,7 +206,6 @@ MAVEN_RES_DIR=$RESOURCE_PATH/maven
 MAVEN_CONF_DIR=$INSTALL_PATH/maven/conf
 
 # maxwell
-# 支持版本：具体见下载地址
 # https://ghproxy.com/https://github.com/zendesk/maxwell/releases/download/v1.25.0/maxwell-1.25.0.tar.gz
 MAXWELL_VERSION_NUM=`get_app_version_num $MAXWELL_VERSION "-" 2`
 MAXWELL_ARCHIVE=${MAXWELL_VERSION}.tar.gz
@@ -231,7 +215,6 @@ MAXWELL_RES_DIR=$RESOURCE_PATH/maxwell
 MAXWELL_CONF_DIR=$INSTALL_PATH/maxwell
 
 # nginx
-# 支持版本：具体见下载地址
 # https://nginx.org/download/nginx-1.18.0.tar.gz
 # https://repo.huaweicloud.com/nginx/nginx-1.18.0.tar.gz
 NGINX_VERSION_NUM=`get_app_version_num $NGINX_VERSION "-" 2`
@@ -241,7 +224,6 @@ NGINX_RES_DIR=$RESOURCE_PATH/nginx
 NGINX_CONF_DIR=$INSTALL_PATH/nginx/conf
 
 # es
-# 支持版本：具体见下载地址
 # https://mirrors.huaweicloud.com/elasticsearch/7.12.1/elasticsearch-7.12.1-linux-x86_64.tar.gz
 # https://mirrors.huaweicloud.com/elasticsearch/6.6.0/elasticsearch-6.6.0.tar.gz
 ELASTICSEARCH_VERSION_NUM=`get_app_version_num $ELASTICSEARCH_VERSION "-" 2`
@@ -252,7 +234,6 @@ ELASTICSEARCH_RES_DIR=$RESOURCE_PATH/elasticsearch
 ELASTICSEARCH_CONF_DIR=$INSTALL_PATH/elasticsearch/config
 
 # kibana
-# 支持版本：具体见下载地址
 # https://mirrors.huaweicloud.com/kibana/6.6.0/kibana-6.6.0-linux-x86_64.tar.gz
 KIBANA_VERSION_NUM=`get_app_version_num $KIBANA_VERSION "-" 2`
 KIBANA_ARCHIVE=$KIBANA_VERSION-linux-x86_64.tar.gz
@@ -262,7 +243,6 @@ KIBANA_RES_DIR=$RESOURCE_PATH/kibana
 KIBANA_CONF_DIR=$INSTALL_PATH/kibana/config
 
 # redis
-# 支持版本：具体见下载地址
 # https://mirrors.huaweicloud.com/redis/redis-6.2.1.tar.gz
 # https://repo.huaweicloud.com/redis/redis-6.2.1.tar.gz
 REDIS_VERSION_NUM=`get_app_version_num $REDIS_VERSION "-" 2`
@@ -272,7 +252,6 @@ REDIS_RES_DIR=$RESOURCE_PATH/redis
 REDIS_CONF_DIR=$INSTALL_PATH/redis/conf
 
 # canal
-# 支持版本：具体见下载地址
 # https://ghproxy.com/https://github.com/alibaba/canal/releases/download/canal-1.1.5/canal.deployer-1.1.5.tar.gz
 CANAL_VERSION_NUM=`get_app_version_num $CANAL_VERSION "-" 2`
 CANAL_ARCHIVE=${CANAL_VERSION}.tar.gz

@@ -10,7 +10,7 @@ setup_azkaban() {
     local res_dir=$(eval echo \$${app_name_upper}_RES_DIR)
     local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
 
-    # 编译
+    # Compile
     cd ${INSTALL_PATH}/${AZKABAN_VERSION}
     sed -i "s@mavenCentral()@maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }@g" ${INSTALL_PATH}/${AZKABAN_VERSION}/build.gradle
     ./gradlew build -x test
@@ -28,7 +28,7 @@ setup_azkaban() {
     mv ${INSTALL_PATH}/azkaban/azkaban-db-0.1.0-SNAPSHOT/ ${INSTALL_PATH}/azkaban/azkaban-db
 
     log info "copying over ${app_name} configuration files"
-    # 将resources配置文件拷贝到插件的配置目录
+    # Copy the resources configuration file to the configuration directory of the plugin
     cp -f $res_dir/exec/azkaban.properties ${INSTALL_PATH}/azkaban/exec-server/conf/
     cp -f $res_dir/web/azkaban.properties ${INSTALL_PATH}/azkaban/web-server/conf
     cp -f $res_dir/web/azkaban-users.xml ${INSTALL_PATH}/azkaban/web-server/conf
