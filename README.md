@@ -1,33 +1,33 @@
 # vagrant_bigdata_cluster
 
-## 一、基本介绍
+## Ⅰ. Basic Introduction
 
-本集群创建的组件如下表所示。
+The components created by this cluster are listed in the following table.
 
-| 组件      | hadoop102                                             | hadoop103                     | hadoop104            |
-| :-: | ---  | -------------------------- | ----------------- |
-| OS   | centos7.6  | centos7.6             | centos7.6         |
-| JDK  | jdk1.8                                             | jdk1.8                     | jdk1.8            |
-| HDFS      | NameNode<br/>DataNode | DataNode<br/>JobHistoryServer | DataNode<br/>SecondaryNameNode |
-| YARN      | NodeManager    | ResourceManager<br/>NodeManager | NodeManager       |
-| Hive | Hive | NA | NA |
-| HBase     | HMaster<br>HRegionServer                           | HRegionServer              | HRegionServer     |
-| Spark     | master<br/>worker        | worker                     | worker            |
-| Flink     | StandaloneSessionClusterEntrypoint<br/>TaskManagerRunner | TaskManagerRunner          | TaskManagerRunner |
-| Zookeeper | QuorumPeerMain                                     | QuorumPeerMain             | QuorumPeerMain    |
-| Kafka     | kafka                                              | Kafka                      | Kafka             |
-| Flume     | flume                                              | flume                      | flume             |
-| Scala     | scala                                              | scala                      | scala             |
-| Maven     | mvn                                                | NA                         | NA                |
-| Sqoop     | sqoop                                              | NA                         | NA                |
-| MySQL     | NA                                                 | NA                         | MySQL Server      |
-| Nginx | Nginx | NA | NA |
-| Redis | Redis | NA                            | NA |
-| Elasticsearch | Elasticsearch | Elasticsearch | Elasticsearch |
-| Kibana | Kibana | NA | NA |
+| Component     | hadoop102                                                | hadoop103                       | hadoop104                      |
+| ------------- | -------------------------------------------------------- | ------------------------------- | ------------------------------ |
+| OS            | centos7.6                                                | centos7.6                       | centos7.6                      |
+| JDK           | jdk1.8                                                   | jdk1.8                          | jdk1.8                         |
+| HDFS          | NameNode<br/>DataNode                                    | DataNode<br/>JobHistoryServer   | DataNode<br/>SecondaryNameNode |
+| YARN          | NodeManager                                              | ResourceManager<br/>NodeManager | NodeManager                    |
+| Hive          | Hive                                                     | NA                              | NA                             |
+| HBase         | HMaster                                                  |                                 |                                |
+| HRegionServer | HRegionServer                                            | HRegionServer                   |                                |
+| Spark         | master<br/>worker                                        | worker                          | worker                         |
+| Flink         | StandaloneSessionClusterEntrypoint<br/>TaskManagerRunner | TaskManagerRunner               | TaskManagerRunner              |
+| Zookeeper     | QuorumPeerMain                                           | QuorumPeerMain                  | QuorumPeerMain                 |
+| Kafka         | kafka                                                    | Kafka                           | Kafka                          |
+| Flume         | flume                                                    | flume                           | flume                          |
+| Scala         | scala                                                    | scala                           | scala                          |
+| Maven         | mvn                                                      | NA                              | NA                             |
+| Sqoop         | sqoop                                                    | NA                              | NA                             |
+| MySQL         | NA                                                       | NA                              | MySQL Server                   |
+| Nginx         | Nginx                                                    | NA                              | NA                             |
+| Redis         | Redis                                                    | NA                              | NA                             |
+| Elasticsearch | Elasticsearch                                            | Elasticsearch                   | Elasticsearch                  |
+| Kibana        | Kibana                                                   | NA                              | NA                             |
 
-
-组件版本：
+Component versions:
 
 ```
 Java: 1.8
@@ -43,9 +43,9 @@ Scala: 2.12.16
 Maven: 3.6.1
 Sqoop: 1.4.7
 MySQl Connector: 5.1.49
-MySQL: 5.7.40（yum安装）
-Nginx: 1.20.1（yum安装）
-Redis: 3.2.12（yum安装）
+MySQL: 5.7.40 (yum installation)
+Nginx: 1.20.1 (yum installation)
+Redis: 3.2.12 (yum installation)
 Elasticsearch: 6.6.0
 Kibana: 6.6.0
 Canal: 1.25.0
@@ -54,32 +54,33 @@ Presto: 0.196
 Kylin: 3.0.2
 ```
 
-## 二、基本准备
+## Ⅱ. Basic Preparation
 
-1. 集群默认启动三个节点，每个节点的默认内存是2G，所以你的机器至少需要6G
-2. 我的测试环境软件版本：vagrant 2.2.14， Virtualbox 6.0.14
+1. The cluster defaults to three nodes, and each node has a default memory of 2G, so your machine needs at least 6G.
+2. My test environment software version: vagrant 2.2.14, Virtualbox 6.0.14
 
-## 三、安装集群环境
+## Ⅲ. Install Cluster Environment
 
-1. [下载和安装VirtualBOX](https://www.virtualbox.org/wiki/Downloads)
+1. [Download and install VirtualBOX](https://www.virtualbox.org/wiki/Downloads)
 
-2. [下载和安装vagrant](http://www.atguiguup.com/downloads.html)
+2. [Download and install vagrant](http://www.atguiguup.com/downloads.html)
 
-3. 克隆本项目到本地，并cd到项目所在目录
+3. Clone this project to the local machine and cd to the directory where the project is located.
 
    ```
-   git clone https://github.com/yiluohan1234/vagrant_bigdata_cluster
+   git clone <https://github.com/yiluohan1234/vagrant_bigdata_cluster>
    cd vagrant_bigdata_cluster
    ```
 
-4. 执行`vagrant up` 创建虚拟机
+4. Execute 'vagrant up' to create the virtual machine.
 
-5. 可以通过执行 `vagrant ssh` 登录到你创建的虚拟机，或通过SecureCRT等工具进行登录
+5. You can log in to the virtual machine you created by executing `vagrant ssh` or logging in through tools such as SecureCRT.
 
-6. 如果你想要删除虚拟机，可以通过执行`vagrant destroy` 来实现
+6. If you want to delete a virtual machine, you can do so by executing `vagrant destroy`.
 
-## 四、自定义集群环境配置
-基本目录结构
+## Ⅳ. Customizing the Cluster Environment Configuration
+
+Basic directory structure
 
 ```
 resources
@@ -89,153 +90,150 @@ README.md
 VagrantFile
 ```
 
-你可以通过修改`VagrantFile`、`scripts/common.sh`文件和`resources/组件名称`目录下各个组件的配置文件文件来实现自定义集群。
+You can customize the cluster by modifying the files `VagrantFile`, `scripts/common.sh`, and the configuration files of each component in the `resources/component name` directory.
 
-1. `VagrantFile`
-   这个文件可以设置虚拟机的的版本、个数、名称、主机名、IP、内存、CPU等，根据自己需要更改即可。
+1. `VagrantFile` This file can set the version, number, name, hostname, IP, memory, CPU, etc. of the virtual machine, and can be modified according to your needs.
 
-2. `scripts/common.sh`
-   这个文件可以设置各个组件的版本。
+2. `scripts/common.sh` This file can set the version of each component.
 
-   > 注意：部分组件需要同步更改`XXX_VERSION`和`XXX_MIRROR_DOWNLOAD`，保证能下载到组件版本。
+   > Note: some components need to synchronize changes to XXX_VERSION and XXX_MIRROR_DOWNLOAD to ensure that the component version can be downloaded.
 
+## Ⅴ. Initialization and Startup of Relevant Components After Installing the Cluster
 
-## 五、集群安装完毕后相关组件初始化及启动
+### 1. SSH login
 
-### 1、ssh免登陆
-
-在每台机器上执行以下
+Execute the following command on each machine to enable passwordless login.
 
 ```
 setssh
 ```
 
-### 2、启动hadoop与测试
+### 2. Start Hadoop and Test
 
-#### 1）启动
+#### 1) Startup
 
-在 `hadoop102` 机器上执行以下命令对hadoop集群进行格式化，并启动hdfs和yarn。
+Execute the following commands on the `hadoop102` machine to format and start the Hadoop cluster.
 
 ```
 hdfs namenode -format
 start-dfs.sh
 ```
 
-在 `hadoop103` 机器上执行以下命令，启动yarn和jobhistory。
+Execute the following commands on the `hadoop103` machine to start yarn and jobhistory.
 
 ```
 start-yarn.sh
 mr-jobhistory-daemon.sh start historyserver (mapred --damon)
 ```
 
-或者
+or
 
 ```
 bigstart hdp format
 bigstart hdp start
 ```
 
-#### 2）测试
+#### 2) Test
 
-通过执行下列命令可以测试yarn是否安装成功。
+Execute the following command to test whether yarn is successfully installed.
 
 ```
 yarn jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples*.jar pi 2 100
 ```
 
-### 3、启动Spark（Standalone ）与测试
+### 3. Start Spark (Standalone) and Test
 
-#### 1）启动
+#### 1) Startup
 
-在 `hadoop102` 机器上执行以下命令。
+Execute the following command on the `hadoop102` machine.
 
 ```
 $SPARK_HOME/sbin/start-all.sh
 ```
 
-或者
+or
 
 ```
 bigstart spark start
 ```
 
-#### 2）测试
+#### 2) Test
 
-通过执行下列命令可以测试spark是否安装成功。
+Execute the following command to test whether Spark is successfully installed.
 
 ```
 hdfs dfs -mkdir /spark-log
 
-spark-submit --class org.apache.spark.examples.SparkPi \
---master yarn \
---num-executors 1 \
---executor-cores 2 \
+spark-submit --class org.apache.spark.examples.SparkPi \\\\
+--master yarn \\\\
+--num-executors 1 \\\\
+--executor-cores 2 \\\\
 $SPARK_HOME/examples/jars/spark-examples*.jar 100
 ```
 
-### 4、启动Flink
+### 4. Start Flink
 
-#### 1）启动
+#### 1) Startup
 
-在 `hadoop102` 机器上执行以下命令。
+Execute the following command on the `hadoop102` machine.
 
 ```
 $FLINK_HOME/bin/start-cluster.sh
 ```
 
-或者
+or
 
 ```
 bigstart flink start
 ```
 
-#### 2）测试
+#### 2) Test
 
-通过执行下列命令可以测试Flink是否安装成功。
+Execute the following command to test whether Flink is successfully installed.
 
 ```
-# 批量WordCount
+# Batch WordCount
 flink run $FLINK_HOME/examples/batch/WordCount.jar
 ```
 
-### 5、启动Hive与测试
+### 5. Start Hive and Test
 
-#### 1）启动
+#### 1) Startup
 
-~~在 `hadoop104` 节点登录MySQL数据库，创建hive的元数据库。~~（已在mysql安装时完成，**mysql默认密码为199037**）
+Log in to the MySQL database on the `hadoop104` node to create the hive metadata database.(Completed during MySQL installation, **the default password for MySQL is 199037**)
 
 ```
-# 创建hive的元数据库
+# Create the hive metadata database
 mysql -uroot -p199037 -e "create user 'hive'@'%' IDENTIFIED BY 'hive';GRANT ALL PRIVILEGES ON *.* TO 'hive'@'%' WITH GRANT OPTION;grant all on *.* to 'hive'@'localhost' identified by 'hive';flush privileges;"
 ```
 
-在 `hadoop102` 节点，初始化元数据，看到 schemaTool completed ，即初始化成功！
+On the `hadoop102` node, initialize the metadata. When you see schemaTool completed, the initialization is successful!
 
 ```
 schematool -initSchema -dbType mysql
 ```
-报错：Exception in thread "main" java.lang.NoSuchMethodError: com.google.common.base.Preconditions.checkArgument(ZLjava/lang/String;Ljava/lang/Object;)V
 
-hadoop和hive的两个guava.jar版本不一致
+Error: Exception in thread "main" java.lang.NoSuchMethodError: com.google.common.base.Preconditions.checkArgument(ZLjava/lang/String;Ljava/lang/Object;)V
 
-两个位置分别位于下面两个目录：
+The two guava.jar versions of hadoop and hive are inconsistent.
+
+The two locations are located in the following two directories:
 
 - /usr/local/hive/lib/
 - /usr/local/hadoop/share/hadoop/common/lib/
 
-解决办法：
-删除低版本的那个，将高版本的复制到低版本目录下
+Solution: Delete the lower version, copy the higher version to the lower version directory.
 
-#### 2）Hive服务启动与测试
+#### 2) Hive Service Startup and Test
 
-在 `hadoop102` 节点，创建测试数据
+On the `hadoop102` node, create test data.
 
 ```
-# 创建数据文件
+# Create data file
 vi ~/stu.txt
 ```
 
-内容如下：
+The content is as follows:
 
 ```
 00001,zhangsan
@@ -244,14 +242,14 @@ vi ~/stu.txt
 00004,zhaoliu
 ```
 
-创建库表并加载数据到Hive表
+Create a library table and load data into the Hive table.
 
 ```
-# 启动hive
+# Start Hive
 [atguigu@hadoop102 ~]$ hive
-# 创建表
+# Create table
 hive (default)>  CREATE TABLE stu(id INT,name STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
-# 加载数据
+# Load data
 hive (default)> load data local inpath '/home/atguigu/stu.txt' into table stu;
 
 hive (default)> SET hive.exec.mode.local.auto=true;
@@ -262,7 +260,7 @@ values ('00001','zhangsan'),
 ('00003','wangwu'),
 ('00004','zhaoliu');
 
-# 查看库表
+# View library tables
 hive (default)> select * from stu;
 OK
 1       zhangsan
@@ -271,146 +269,145 @@ OK
 4       zhaoliu
 Time taken: 3.301 seconds, Fetched: 4 row(s)
 ```
-### 6、启动Zookeeper
 
-在 `hadoop102` 节点登录执行以下命令。（注意：不能以root执行）
+### 6. Start Zookeeper
 
-```
-bigstart zookeeper start(或stop)
-```
-
-jpsall查看一下进程：
+Log in to the `hadoop102` node and execute the following command. (Note: cannot be executed as root)
 
 ```
-[atguigu@hadoop102 ~]$ jpsall 
---------------------- hadoop102节点 ---------------------
+bigstart zookeeper start(or stop)
+```
+
+Check the process by running `jpsall`:
+
+```
+[atguigu@hadoop102 ~]$ jpsall
+--------------------- hadoop102 node ---------------------
 2899 QuorumPeerMain
---------------------- hadoop103节点 ---------------------
+--------------------- hadoop103 node ---------------------
 25511 QuorumPeerMain
---------------------- hadoop104节点 ---------------------
+--------------------- hadoop104 node ---------------------
 25993 QuorumPeerMain
 ```
 
 [PrettyZoo](https://github.com/vran-dev/PrettyZoo)
 
-### 7、启动Elasticsearch
+### 7. Start Elasticsearch
 
-在 `hadoop102` 节点登录执行以下命令。（注意：不能以root执行）
-
-```
-bigstart elasticsearch start(或stop)
-```
-
-jpsall查看一下进程：
+Log in to the `hadoop102` node and execute the following command. (Note: do not execute as root)
 
 ```
-[atguigu@hadoop102 ~]$ jpsall 
---------------------- hadoop102节点 ---------------------
+bigstart elasticsearch start (or stop)
+```
+
+Check the process by running `jpsall`:
+
+```
+[atguigu@hadoop102 ~]$ jpsall
+--------------------- hadoop102 node ---------------------
 3185 Kafka
 2899 QuorumPeerMain
 3365 Elasticsearch
---------------------- hadoop103节点 ---------------------
+--------------------- hadoop103 node ---------------------
 25511 QuorumPeerMain
 25800 Kafka
 25964 Elasticsearch
---------------------- hadoop104节点 ---------------------
+--------------------- hadoop104 node ---------------------
 26276 Kafka
 26440 Elasticsearch
 25993 QuorumPeerMain
 ```
 
-访问 http://hadoop102:9200/_cat/nodes?v 查看节点状态。
+Access http://hadoop102:9200/_cat/nodes?v to check the node status.
 
-### 8、启动Kibana
+### 8. Start Kibana
 
-在 `hadoop102` 节点登录执行以下命令。
-
-```
-bigstart kibana start(或stop)
-```
+Log in to the `hadoop102` node and execute the following command.
 
 ```
+bigstart kibana start (or stop)
 WARN: Establishing SSL connection without server's identity verification is not recommended. According to MySQL 5.5.45+, 5.6.26+ and 5.7.6+ requirements SSL connection must be established by default if explicit option isn't set. For compliance with existing applications not using SSL the verifyServerCertificate property is set to 'false'. You need either to explicitly disable SSL by setting useSSL=false, or set useSSL=true and provide truststore for server certificate verification.
 ```
 
-访问 http://hadoop102:5601/ 查看。
+Access http://hadoop102:5601/ to view.
 
-### 9、启动Kafka
+### 9. Start Kafka
 
-#### 1）启动
+#### 1) Start
 
-在 `hadoop102` 节点登录执行以下命令：
+Log in to the `hadoop102` node and execute the following command:
 
 ```
 bigstart zookeeper start
-bigstart kafka start(或stop)
+bigstart kafka start (or stop)
 ```
 
-#### 2）测试
+#### 2) Test
 
-在 `hadoop102` 节点执行以下命令，创建topic：test
+On the `hadoop102` node, execute the following command to create topic: test
 
 ```
-# 2.2之前
+# Before 2.2
 kafka-topics.sh --zookeeper hadoop102:2181,hadoop103:2181,hadoop104:2181/kafka --create --topic test --replication-factor 1 --partitions 3
+
 # 3.0.0
 kafka-topics.sh --bootstrap-server hadoop102:9092,hadoop103:9092,hadoop104:9092 --create --topic test --replication-factor 1 --partitions 3
 ```
 
-[Kafka报错：Exception in thread “main“ joptsimple.UnrecognizedOptionException: zookeeper is not a recogn](https://blog.csdn.net/succing/article/details/127334561)
+[Kafka error: Exception in thread "main" joptsimple.UnrecognizedOptionException: zookeeper is not a recogn](https://blog.csdn.net/succing/article/details/127334561)
 
-在 `hadoop102` 节点执行以下命令，生产者生产数据
+On the `hadoop102` node, the producer produces data by executing the following command:
 
 ```
 kafka-console-producer.sh --broker-list hadoop102:9092,hadoop103:9092,hadoop104:9092 --topic test
 hello world
 ```
 
-在 `hadoop104` 节点执行以下命令，消费者消费数据
+On the `hadoop104` node, the consumer consumes data by executing the following command:
 
 ```
 kafka-console-consumer.sh --bootstrap-server hadoop102:9092,hadoop103:9092,hadoop104:9092 --topic test --from-beginning
 ```
 
-### 10、启动Hbase
+### 10. Start Hbase
 
-#### 1）启动
+#### 1) Start
 
-在 `hadoop102` 节点登录执行以下命令：
+Log in to the `hadoop102` node and execute the following command:
 
 ```
 bigstart zookeeper start
-bigstart hbase start(或stop)
+bigstart hbase start (or stop)
 ```
 
-#### 2）测试
+#### 2) Test
 
 ```
-[atguigu@hadoop102 ~]$ jpsall 
---------------------- hadoop102节点 ---------------------
+[atguigu@hadoop102 ~]$ jpsall
+--------------------- hadoop102 node ---------------------
 1507 DataNode
 5224 HRegionServer
 1401 NameNode
 5065 HMaster
 3099 QuorumPeerMain
---------------------- hadoop103节点 ---------------------
+--------------------- hadoop103 node ---------------------
 1175 DataNode
 2620 QuorumPeerMain
 3372 HRegionServer
---------------------- hadoop104节点 ---------------------
+--------------------- hadoop104 node ---------------------
 1280 SecondaryNameNode
 1218 DataNode
 1988 QuorumPeerMain
 3102 HRegionServer
 ```
 
-## 六. Web UI
+## VI. Web UI
 
-可以通过以下链接访问大数据组件的web页面。
+The web pages of the big data components can be accessed through the following links.
 
-[HDFS](http://hadoop102:9870)
+[HDFS](http://hadoop102:9870/)
 
-[ResourceManager](http://hadoop103:8088)
+[ResourceManager](http://hadoop103:8088/)
 
 [JobHistory](http://hadoop103:19888/jobhistory)
 
