@@ -85,7 +85,7 @@ _service_tool()
         ;;
 
        'maxwell')
-       COMPREPLY=( $(compgen -W 'start stop status' -- $cur ) )
+       COMPREPLY=( $(compgen -W 'start stop restart status' -- $cur ) )
        ;;
 
        'canal')

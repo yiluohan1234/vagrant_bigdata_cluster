@@ -526,39 +526,39 @@ canal(){
 }
 
 Maxwell(){
-    USAGE="Usage: $0 (start|stop|status)"
-    PIDFILE=$INSTALL_PATH/maxwell/maxwell.pid
+    USAGE="Usage: $0 (start|stop|status|restart)"
 
     case $1 in
         start)
-            echo "Staring Maxwell ..."
-            nohup ${INSTALL_PATH}/maxwell/bin/maxwell --config ${INSTALL_PATH}/maxwell/config.properties > /dev/null 2>&1 &
-            echo $! > $PIDFILE
+            result=`ps -ef | grep com.zendesk.maxwell.Maxwell | grep -v grep | wc -l`
+            if [[ $result -lt 1 ]]; then
+                echo "Staring Maxwell ..."
+                nohup ${INSTALL_PATH}/maxwell/bin/maxwell --config ${INSTALL_PATH}/maxwell/config.properties > /dev/null 2>&1 &
+            else
+                echo "Maxwell is running"
+            fi
             ;;
         stop)
-            if [ -f "$PIDFILE" ] ; then
+            result=`ps -ef | grep com.zendesk.maxwell.Maxwell | grep -v grep | wc -l`
+            if [[ $result -gt 0 ]]; then
                 echo "Stoping Maxwell ..."
-                kill `cat $PIDFILE`
-                sleep 1
-                rm -rf $PIDFILE
-                echo "Stop Maxwell success"
+                ps -ef | grep com.zendesk.maxwell.Maxwell | grep -v grep | awk '{print $2}' | xargs kill -9
             else
                 echo "Maxwell is not running"
-                exit 0
             fi
             ;;
         status)
-            if [ -f "$PIDFILE" ] ; then
-                pid=`cat $PIDFILE`
-                if [[ pid -gt 0 ]]
-                then
-                    echo "[$(date '+%Y-%m-%d %T')] Maxwell is running.( pid:$pid )"
-                else
-                    echo "[$(date '+%Y-%m-%d %T')] Maxwell is not running"
-                fi
+            pid=`ps -ef | grep com.zendesk.maxwell.Maxwell | grep -v grep | awk '{print $2}'`
+            result=`ps -ef | grep com.zendesk.maxwell.Maxwell | grep -v grep | wc -l`
+            if [[ $result -gt 0 ]]; then
+                echo "[$(date '+%Y-%m-%d %T')] Maxwell is running.( pid:$pid )"
             else
-                echo "Maxwell is not running"
+                echo "[$(date '+%Y-%m-%d %T')] Maxwell is not running"
             fi
+            ;;
+        restart)
+            Maxwell stop
+            Maxwell start
             ;;
         *)
             echo $USAGE
