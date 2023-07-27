@@ -16,7 +16,7 @@ setup_maxwell() {
     sed -i "s@^kafka.bootstrap.servers=.*@kafka.bootstrap.servers=${HOSTNAME_LIST[0]}:9092,${HOSTNAME_LIST[1]}:9092,${HOSTNAME_LIST[2]}:9092@g" ${conf_dir}/config.properties
     sed -i "s@^host=.*@host=${HOSTNAME_LIST[2]}@g" ${conf_dir}/config.properties
     sed -i "11a# kafka topic"  ${conf_dir}/config.properties
-    sed -i "/# kafka topic/a kafka_topic=gmall"  ${conf_dir}/config.properties
+    sed -i "/# kafka topic/a kafka_topic=topic_db"  ${conf_dir}/config.properties
     sed -i "/password=maxwell/a jdbc_options=useSSL=false&serverTimezone=Asia/Shanghai"  ${conf_dir}/config.properties
 
     # Delete guava-11.0.2.jar in the lib folder to be compatible with Hadoop-3.1.3
