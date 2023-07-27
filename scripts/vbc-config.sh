@@ -40,6 +40,9 @@ IS_GITHUB="false"
 # Whether to delete /vagrant
 IS_DEL_VAGRANT="true"
 
+# dataware version
+DATAWARE_VERSION=shop5
+
 # configuration file directory
 RESOURCE_PATH=$VGC_MAIN_DIR/resources
 

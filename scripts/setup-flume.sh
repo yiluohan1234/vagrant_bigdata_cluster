@@ -25,6 +25,11 @@ setup_flume() {
     # Delete guava-11.0.2.jar in the lib folder to be compatible with Hadoop-3.1.3
     rm ${INSTALL_PATH}/${app_name}/lib/guava-*.jar
 
+    log info "copying $app_name configuration files"
+    mkdir -p ${conf_dir}/job
+    cp ${res_dir}/${DATAWARE_VERSION}/*.conf ${conf_dir}/job
+    cp ${res_dir}/${DATAWARE_VERSION}/*.jar ${conf_dir}/lib
+
     # Replace the default host configuration
     sed -i "s@hdp101@${HOSTNAME_LIST[0]}@g" `grep 'hdp101' -rl ${conf_dir}/`
     sed -i "s@hdp102@${HOSTNAME_LIST[1]}@g" `grep 'hdp102' -rl ${conf_dir}/`
