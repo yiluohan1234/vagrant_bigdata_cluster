@@ -26,7 +26,7 @@ sed -i "s@^SELINUX=.*@SELINUX=disabled@g" /etc/selinux/config
 # Virtual memory expansion
 echo "vm.max_map_count=262144" >> /etc/sysctl.conf
 
-Install basic software: -q (do not display the installation process)
+# Install basic software: -q (do not display the installation process)
 log info "Install epel-release sshpass lrzsz expect unzip zip vim-enhanced lzop dos2unix nmap-ncat net-tools nc wget lsof"
 for app in ${CENTOS_BASIC_APPS[@]};do
     yum install -y -q ${app}
