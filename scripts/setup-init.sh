@@ -61,13 +61,13 @@ install_init(){
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" ${INIT_PATH}/jpsall
     fi
-    sed -i "s@hdp{101..103}@${host_list}@g"  ${INIT_PATH}/xsync
-    sed -i "s@hdp{101..103}@${host_list}@g"  ${INIT_PATH}/xcall
-    sed -i "s@hdp{101..103}@${host_list}@g"  ${INIT_PATH}/jpsall
-    sed -i "s@hdp{101..103}@${host_list}@g"  ${INIT_PATH}/bigstart
-    sed -i "s@hdp101@${HOSTNAME_LIST[0]}@g"  ${INIT_PATH}/bigstart
-    sed -i "s@hdp102@${HOSTNAME_LIST[1]}@g"  ${INIT_PATH}/bigstart
-    sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" ${INIT_PATH}/bigstart
+
+    # Replace the default host configuration
+    sed -i "s@hdp{101..103}@${host_list}@g" `grep 'hdp{101..103}' -rl ${INIT_PATH}/`
+    sed -i "s@hdp101@${HOSTNAME_LIST[0]}@g" `grep 'hdp101' -rl ${INIT_PATH}/`
+    sed -i "s@hdp102@${HOSTNAME_LIST[1]}@g" `grep 'hdp102' -rl ${INIT_PATH}/`
+    sed -i "s@hdp103@${HOSTNAME_LIST[2]}@g" `grep 'hdp103' -rl ${INIT_PATH}/`
+
     if [ -d /vagrant/scripts ];then
         host_list=`cat /vagrant/scripts/vbc-config.sh |grep '^HOSTNAME_LIST'`
         pass_wd=`cat /vagrant/scripts/vbc-config.sh |grep '^PASSWD_LIST'`
@@ -86,6 +86,9 @@ install_init(){
     cp $INIT_PATH/xsync ${INIT_SHELL_BIN}
     cp $INIT_PATH/xcall ${INIT_SHELL_BIN}
     cp $INIT_PATH/GitHub520 ${INIT_SHELL_BIN}
+    cp $INIT_PATH/${DATAWARE_VERSION}/* ${INIT_SHELL_BIN}
+    mkdir -p ${INSTALL_PATH}/dataware/log
+    mkdir -p ${INSTALL_PATH}/dataware/db
 
     cp $INIT_PATH/complete_tool.sh /etc/profile.d
     source /etc/profile.d/complete_tool.sh
