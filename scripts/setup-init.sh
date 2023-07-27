@@ -59,7 +59,7 @@ install_init(){
     # log info "copy init shell to ${INIT_SHELL_BIN}"
     for name in ${HOSTNAME_LIST[@]}; do host_list="${host_list:-} ""$name"; done
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
-        sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" ${INIT_PATH}/jpsall
+        sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${INIT_PATH}/`
     fi
 
     # Replace the default host configuration

@@ -50,43 +50,46 @@ Vagrant.configure("2") do |config|
 
       if i == nodeRange.first
         node.vm.provision "shell" do |s|
+            s.path = "scripts/setup-datax.sh"
+         end
+        node.vm.provision "shell" do |s|
             s.path = "scripts/setup-hive.sh"
             # s.privileged = false
         end
-        node.vm.provision "shell" do |s|
-           s.path = "scripts/setup-kibana.sh"
-        end
-        node.vm.provision "shell" do |s|
-          s.path = "scripts/setup-nginx.sh"
-        end
-        node.vm.provision "shell" do |s|
-           s.path = "scripts/setup-redis.sh"
-        end
-        node.vm.provision "shell" do |s|
-           s.path = "scripts/setup-canal.sh"
-        end
+        # node.vm.provision "shell" do |s|
+        #    s.path = "scripts/setup-kibana.sh"
+        # end
+        # node.vm.provision "shell" do |s|
+        #   s.path = "scripts/setup-nginx.sh"
+        # end
+        # node.vm.provision "shell" do |s|
+        #    s.path = "scripts/setup-redis.sh"
+        # end
+        # node.vm.provision "shell" do |s|
+        #    s.path = "scripts/setup-canal.sh"
+        # end
         node.vm.provision "shell" do |s|
            s.path = "scripts/setup-maxwell.sh"
         end
-        node.vm.provision "shell" do |s|
-          s.path = "scripts/setup-maven.sh"
-        end
+        # node.vm.provision "shell" do |s|
+        #   s.path = "scripts/setup-maven.sh"
+        # end
         # node.vm.provision "shell" do |s|
         #   s.path = "scripts/setup-azkaban.sh"
         # end
-        node.vm.provision "shell" do |s|
-          s.path = "scripts/setup-kylin.sh"
-        end
+        # node.vm.provision "shell" do |s|
+        #   s.path = "scripts/setup-kylin.sh"
+        # end
       end
 
-      node.vm.provision "shell",  path: "scripts/setup-hbase.sh"
+      # node.vm.provision "shell",  path: "scripts/setup-hbase.sh"
       node.vm.provision "shell",  path: "scripts/setup-scala.sh"
       node.vm.provision "shell",  path: "scripts/setup-spark.sh"
-      node.vm.provision "shell",  path: "scripts/setup-sqoop.sh"
+      # node.vm.provision "shell",  path: "scripts/setup-sqoop.sh"
 
-      node.vm.provision "shell",  path: "scripts/setup-phoenix.sh"
+      # node.vm.provision "shell",  path: "scripts/setup-phoenix.sh"
       node.vm.provision "shell",  path: "scripts/setup-flume.sh"
-      node.vm.provision "shell",  path: "scripts/setup-flink.sh"
+      # node.vm.provision "shell",  path: "scripts/setup-flink.sh"
 
 
       node.vm.provision "shell" do |s|
@@ -97,14 +100,14 @@ Vagrant.configure("2") do |config|
         s.path = "scripts/setup-kafka.sh"
         s.args = "-i #{i}"
       end
-      node.vm.provision "shell" do |s|
-        s.path = "scripts/setup-presto.sh"
-        s.args = "-i #{i}"
-      end
-      node.vm.provision "shell" do |s|
-        s.path = "scripts/setup-es.sh"
-        s.args = "-i #{i}"
-      end
+      # node.vm.provision "shell" do |s|
+      #   s.path = "scripts/setup-presto.sh"
+      #   s.args = "-i #{i}"
+      # end
+      # node.vm.provision "shell" do |s|
+      #   s.path = "scripts/setup-es.sh"
+      #   s.args = "-i #{i}"
+      # end
 
       if i == nodeRange.last
         node.vm.provision "shell" do |s|
