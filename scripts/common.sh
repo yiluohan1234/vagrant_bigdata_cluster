@@ -284,4 +284,10 @@ KYLIN_MIRROR_DOWNLOAD=https://mirrors.huaweicloud.com/apache/kylin/apache-$KYLIN
 KYLIN_RES_DIR=$RESOURCE_PATH/kylin
 KYLIN_CONF_DIR=$INSTALL_PATH/kylin/bin
 
+# datax
+DATAX_VERSION_NUM=datax
+DATAX_ARCHIVE=${DATAX_VERSION_NUM}.tar.gz
+DATAX_DIR_NAME=datax
+DATAX_MIRROR_DOWNLOAD=http://datax-opensource.oss-cn-hangzhou.aliyuncs.com/datax.tar.gz
+
 
