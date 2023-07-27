@@ -47,9 +47,15 @@ install_mysql() {
         flush privileges;" --connect-expired-password
 
     # copy configuration file my.cnf
-    cp ${MYSQL_RES_DIR}/my.cnf /etc/
+    sed -i "/[mysqld]/a binlog-do-db=gmall"  /etc/my.cnf
+    sed -i "/[mysqld]/a binlog_format=ROW"  /etc/my.cnf
+    sed -i "/[mysqld]/a log_bin=mysql-bin"  /etc/my.cnf
+    sed -i "/[mysqld]/a server-id=1"  /etc/my.cnf
+
+    #cp ${MYSQL_RES_DIR}/my.cnf /etc/
+
     # restart mysqld
-    systemctl start mysqld.service
+    systemctl restart mysqld.service
 
     # Delete
     yum -y remove mysql57-community-release-el7-11.noarch
