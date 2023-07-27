@@ -25,7 +25,8 @@ sed -i 's@4096@65536@g' /etc/security/limits.d/20-nproc.conf
 sed -i "s@^SELINUX=.*@SELINUX=disabled@g" /etc/selinux/config
 # Virtual memory expansion
 echo "vm.max_map_count=262144" >> /etc/sysctl.conf
-
+# nogpgcheck
+sed -i "s@^gpgcheck=.*@gpgcheck=0@g" /etc/yum.conf
 # Install basic software: -q (do not display the installation process)
 log info "Install epel-release sshpass lrzsz expect unzip zip vim-enhanced lzop dos2unix nmap-ncat net-tools nc wget lsof"
 for app in ${CENTOS_BASIC_APPS[@]};do
