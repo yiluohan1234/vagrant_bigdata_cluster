@@ -26,9 +26,8 @@ setup_flume() {
     rm ${INSTALL_PATH}/${app_name}/lib/guava-*.jar
 
     log info "copying $app_name configuration files"
-    mkdir -p ${conf_dir}/job
-    cp ${res_dir}/${DATAWARE_VERSION}/*.conf ${conf_dir}/job
-    cp ${res_dir}/${DATAWARE_VERSION}/*.jar ${conf_dir}/lib
+    mkdir -p ${INSTALL_PATH}/${app_name}/job
+    cp ${res_dir}/${DATAWARE_VERSION}/*.conf ${INSTALL_PATH}/${app_name}/job
 
     # Replace the default host configuration
     sed -i "s@hdp101@${HOSTNAME_LIST[0]}@g" `grep 'hdp101' -rl ${conf_dir}/`
