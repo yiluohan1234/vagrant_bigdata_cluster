@@ -86,9 +86,7 @@ install_init(){
     cp $INIT_PATH/xsync ${INIT_SHELL_BIN}
     cp $INIT_PATH/xcall ${INIT_SHELL_BIN}
     cp $INIT_PATH/GitHub520 ${INIT_SHELL_BIN}
-    cp $INIT_PATH/${DATAWARE_VERSION}/* ${INIT_SHELL_BIN}
-    mkdir -p ${INSTALL_PATH}/dataware/log
-    mkdir -p ${INSTALL_PATH}/dataware/db
+
 
     cp $INIT_PATH/complete_tool.sh /etc/profile.d
     source /etc/profile.d/complete_tool.sh

@@ -25,14 +25,16 @@ setup_flume() {
     mkdir -p ${INSTALL_PATH}/${app_name}/job
     cp ${res_dir}/${DATAWARE_VERSION}/*.conf ${INSTALL_PATH}/${app_name}/job
 
+    curl -o ${INSTALL_PATH}/${app_name}/lib/ -O -L https://gitee.com/yiluohan1234/vagrant_bigdata/blob/master/dataware/${DATAWARE_VERSION}/flume/flume-interceptor-1.0-SNAPSHOT-jar-with-dependencies.jar
+
     # Replace the default host configuration
     sed -i "s@hdp101@${HOSTNAME_LIST[0]}@g" `grep 'hdp101' -rl ${conf_dir}/`
     sed -i "s@hdp102@${HOSTNAME_LIST[1]}@g" `grep 'hdp102' -rl ${conf_dir}/`
     sed -i "s@hdp103@${HOSTNAME_LIST[2]}@g" `grep 'hdp103' -rl ${conf_dir}/`
 
-    if [ "${IS_KERBEROS}" != "true" ];then
-        sed -i '39,40d' ${conf_dir}/kafka-flume-hdfs.conf
-    fi
+    # if [ "${IS_KERBEROS}" != "true" ];then
+    #     sed -i '39,40d' ${conf_dir}/kafka-flume-hdfs.conf
+    # fi
 
     if [ ${INSTALL_PATH} != /home/vagrant/apps ];then
         sed -i "s@/home/vagrant/apps@${INSTALL_PATH}@g" `grep '/home/vagrant/apps' -rl ${conf_dir}/`

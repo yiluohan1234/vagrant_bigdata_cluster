@@ -10,6 +10,11 @@ install_mysql() {
     rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
     yum -y -q install /root/mysql57-community-release-el7-11.noarch.rpm
     yum -y -q install mysql-community-server
+    # copy configuration file my.cnf
+    sed -i "4abinlog-do-db=gmall" /etc/my.cnf
+    sed -i "4abinlog_format=ROW" /etc/my.cnf
+    sed -i "4alog_bin=mysql-bin" /etc/my.cnf
+    sed -i "4aserver-id=1" /etc/my.cnf
 
     # Start and set up to start automatically
     systemctl start mysqld.service
@@ -45,12 +50,6 @@ install_mysql() {
         CREATE DATABASE gmall CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'; \
         CREATE DATABASE gmall_report CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'; \
         flush privileges;" --connect-expired-password
-
-    # copy configuration file my.cnf
-    sed -i "/[mysqld]/a binlog-do-db=gmall"  /etc/my.cnf
-    sed -i "/[mysqld]/a binlog_format=ROW"  /etc/my.cnf
-    sed -i "/[mysqld]/a log_bin=mysql-bin"  /etc/my.cnf
-    sed -i "/[mysqld]/a server-id=1"  /etc/my.cnf
 
     #cp ${MYSQL_RES_DIR}/my.cnf /etc/
 
