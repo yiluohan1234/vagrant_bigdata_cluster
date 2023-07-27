@@ -46,6 +46,11 @@ install_mysql() {
         CREATE DATABASE gmall_report CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'; \
         flush privileges;" --connect-expired-password
 
+    # copy configuration file my.cnf
+    cp ${MYSQL_RES_DIR}/my.cnf /etc/
+    # restart mysqld
+    systemctl start mysqld.service
+
     # Delete
     yum -y remove mysql57-community-release-el7-11.noarch
     rm -rf /root/mysql57-community-release-el7-11.noarch.rpm
