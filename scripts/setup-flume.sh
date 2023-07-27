@@ -18,10 +18,6 @@ setup_flume() {
     # flume-conf.properties
     cp ${INSTALL_PATH}/${app_name}/conf/flume-conf.properties.template ${INSTALL_PATH}/${app_name}/conf/flume-conf.properties
 
-    cp ${res_dir}/flume-interceptor-1.0-SNAPSHOT-jar-with-dependencies.jar ${INSTALL_PATH}/${app_name}/lib
-    cp ${res_dir}/file-flume-kafka.conf ${conf_dir}
-    cp ${res_dir}/kafka-flume-hdfs.conf ${conf_dir}
-
     # Delete guava-11.0.2.jar in the lib folder to be compatible with Hadoop-3.1.3
     rm ${INSTALL_PATH}/${app_name}/lib/guava-*.jar
 
