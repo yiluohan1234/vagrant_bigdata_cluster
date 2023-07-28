@@ -12,8 +12,8 @@ install_mysql() {
     yum -y -q install mysql-community-server
     # copy configuration file my.cnf
     sed -i "4abinlog-do-db=gmall" /etc/my.cnf
-    sed -i "4abinlog_format=ROW" /etc/my.cnf
-    sed -i "4alog_bin=mysql-bin" /etc/my.cnf
+    sed -i "4abinlog_format=row" /etc/my.cnf
+    sed -i "4alog-bin=mysql-bin" /etc/my.cnf
     sed -i "4aserver-id=1" /etc/my.cnf
 
     # Start and set up to start automatically
