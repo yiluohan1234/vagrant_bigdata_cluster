@@ -44,7 +44,7 @@ install_init(){
     sed -i "/## Same thing without a password/ivagrant   ALL=(ALL)     NOPASSWD:ALL" /etc/sudoers
 
     # Create build log directory
-    APP_LOG=/opt/module/applog/log/
+    APP_LOG=/opt/module/applog
     [ ! -d $APP_LOG ] && mkdir -p $APP_LOG
     chown -R ${DEFAULT_USER}:${DEFAULT_GROUP} $APP_LOG
     [ ! -d ${INSTALL_PATH} ] && mkdir -p ${INSTALL_PATH}
@@ -89,7 +89,9 @@ install_init(){
 
 
     cp $INIT_PATH/complete_tool.sh /etc/profile.d
+    cp $INIT_PATH/main_tool.sh /etc/profile.d
     source /etc/profile.d/complete_tool.sh
+    source /etc/profile.d/main_tool.sh
 
     echo "# init shell bin" >> ${PROFILE}
     echo "export INIT_SHELL_BIN=${INIT_SHELL_BIN}" >> ${PROFILE}

@@ -1,13 +1,30 @@
-complete -F _service_tool main.sh
-_service_tool()
-{    COMPREPLY=()
-   local cur=${COMP_WORDS[COMP_CWORD]}
-   local cmd=${COMP_WORDS[COMP_CWORD-1]}    
-   case $cmd in
-       'main.sh')
-       COMPREPLY=( $(compgen -W 'init host azkaban canal es flink flume hadoop hbase hive jdk kafka kibana mvn maxwell mysql nginx phoenix redis scala spark sqoop zookeeper ssh presto kylin' -- $cur ) )
-       ;;
-       esac
+complete -F _main_tool main
+_main_tool()
+{
+    COMPREPLY=()
+    local cur=${COMP_WORDS[COMP_CWORD]}
+    local cmd=${COMP_WORDS[COMP_CWORD-1]}
+    case $cmd in
+        'main')
+        COMPREPLY=( $(compgen -W 'f1 f2 f3 fa lg db lg_init db_init init' -- $cur ) )
+        ;;
+
+        'f1')
+        COMPREPLY=( $(compgen -W 'start stop' -- $cur ) )
+        ;;
+
+        'f2')
+        COMPREPLY=( $(compgen -W 'start stop' -- $cur ) )
+        ;;
+
+        'f3')
+        COMPREPLY=( $(compgen -W 'start stop' -- $cur ) )
+        ;;
+
+        'fa')
+        COMPREPLY=( $(compgen -W 'start stop' -- $cur ) )
+        ;;
+    esac
     return 0
 }
 

@@ -1,4 +1,5 @@
 #!/bin/bash
+DATAWARE_PATH=/opt/module/dataware
 
 f1(){
     case $1 in
@@ -47,18 +48,59 @@ f3() {
 lg() {
     for i in hdp101 hdp102; do
         echo "========== $i =========="
-        ssh $i "source /etc/profile; cd /opt/module/dataware/log; java -jar gmall2020-mock-log-2021-10-10.jar >/dev/null 2>&1 &"
+        ssh $i "source /etc/profile; cd ${DATAWARE_PATH}/log; java -jar gmall2020-mock-log-2021-10-10.jar >/dev/null 2>&1 &"
     done
 }
 
+log_init(){
+    local date=$1
+    echo "============ 生成 $date log数据 ============"
+    sed -i "s@^mock.date:.*@mock.date: \"$date\"@g" ${DATAWARE_PATH}/log/application.yml
+    ssh hdp101 "source /etc/profile; cd ${DATAWARE_PATH}/log; java -jar gmall2020-mock-log-2021-10-10.jar >/dev/null 2>&1 &"
+}
+
 db() {
-    ssh hadoop102 "source /etc/profile; cd /opt/module/dataware/db; java -jar gmall2020-mock-db-2021-11-14.jar >/dev/null 2>&1 &"
+    ssh hdp101 "source /etc/profile; cd ${DATAWARE_PATH}/db; java -jar gmall2020-mock-db-2021-11-14.jar >/dev/null 2>&1 &"
+}
+
+db_init(){
+    local start_date=$1
+    local last_date=$2
+    local cur_date=$start_date
+
+    date_list=""
+    while [ $cur_date -le $last_date ];
+    do
+      date_list="$date_list $cur_date"
+      cur_date=`date -d "$cur_date +1 day" +"%Y-%m-%d"`
+    done
+
+    for dy in ${date_list}
+    do
+        echo "============ 生成 $dy db数据 ============"
+        if [ "$dy" == "$start_date" ];
+        then
+            flag=`cat ${DATAWARE_PATH}/db/application.properties |grep mock.clear.user |awk -F '=' '{print $2}'`
+            if [ "x$flag" == "x0" ];
+            then
+                sed -i "s@^mock.clear=.*@mock.clear=1@g" ${DATAWARE_PATH}/db/application.properties
+                sed -i "s@^mock.clear.user=.*@mock.clear.user=1@g" ${DATAWARE_PATH}/db/application.properties
+            fi
+        else
+            sed -i "s@^mock.clear=.*@mock.clear=0@g" ${DATAWARE_PATH}/db/application.properties
+            sed -i "s@^mock.clear.user=.*@mock.clear.user=0@g" ${DATAWARE_PATH}/db/application.properties
+        fi
+
+
+        sed -i "s@^mock.date=.*@mock.date=$dy@g" ${DATAWARE_PATH}/db/application.properties
+        ssh hdp101 "source /etc/profile; cd ${DATAWARE_PATH}/db; java -jar gmall2020-mock-db-2021-11-14.jar >/dev/null 2>&1 &"
+    done
 
 }
 
 args()
 {
-    usage="Usage: $0 (f1|f2|f3|lg|db)"
+    usage="Usage: $0 (f1|f2|f3|lg|db|db_init|log_init)"
 
     if [ $# -lt 2 ]; then
         echo $usage
@@ -75,11 +117,26 @@ args()
 	  f3)
 		f3 $2
 		;;
+	  fa)
+		f1 $2
+        f2 $2
+        f3 $2
+		;;
 	  lg)
 		lg $2
 		;;
 	  db)
 		db $2
+		;;
+	  lg_init)
+		lg_init $2
+		;;
+	  db_init)
+		db_init $2 $3
+		;;
+	  init)
+		lg_init $2
+        db_init $2 $3
 		;;
 	  *)
 		echo $usage
