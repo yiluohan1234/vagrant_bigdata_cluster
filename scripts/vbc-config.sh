@@ -32,7 +32,7 @@ IS_KERBEROS="false"
 IS_CHINESE="false"
 
 # Whether to update git
-IS_UPDATE_GIT="false"
+IS_UPDATE_GIT="true"
 
 # Whether to install Github520
 IS_GITHUB="false"

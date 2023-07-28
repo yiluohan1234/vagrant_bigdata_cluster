@@ -222,7 +222,9 @@ download_and_unzip_app() {
     else
         installFromRemote ${archive} ${download_url}
     fi
-    mv ${INSTALL_PATH}/${app_dir_name} ${INSTALL_PATH}/${app_name}
+    if [ "${app_dir_name}" != "${app_name}" ];then
+        mv ${INSTALL_PATH}/${app_dir_name} ${INSTALL_PATH}/${app_name}
+    fi
     chown -R $DEFAULT_USER:$DEFAULT_GROUP ${INSTALL_PATH}/${app_name}
     # rm ${DOWNLOAD_PATH}/${archive}
 }
