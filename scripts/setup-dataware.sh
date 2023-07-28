@@ -15,6 +15,7 @@ install_dataware() {
     mv ${INSTALL_PATH}/tmp/dataware/${DATAWARE_VERSION}/mock/* ${INSTALL_PATH}/dataware
     mv ${INSTALL_PATH}/tmp/dataware/${DATAWARE_VERSION}/flume/*.jar ${INSTALL_PATH}/flume/lib
     #rm -rf ${INSTALL_PATH}/tmp
+    mysql -uroot -p${MYSQL_PASSWORD} -Dgmall < ${INSTALL_PATH}/dataware/db/gmall.sql
 
 }
 if [ "${IS_VAGRANT}" == "true" ];then

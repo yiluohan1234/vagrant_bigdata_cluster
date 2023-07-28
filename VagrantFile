@@ -114,8 +114,8 @@ Vagrant.configure("2") do |config|
           s.path = "scripts/setup-mysql.sh"
         end
       end
-      node.vm.provision "shell",  path: "scripts/setup-dataware.sh"
 
+      node.vm.provision "shell",  path: "scripts/setup-dataware.sh"
       # node.vm.provision "shell",  path: "scripts/setup-kerberos.sh"
       # node.vm.provision "shell",  path: "scripts/setup-zabbix.sh"
       node.vm.provision "shell",  path: "scripts/setup-clean.sh"
