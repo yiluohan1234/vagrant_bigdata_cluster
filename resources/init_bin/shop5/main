@@ -58,7 +58,7 @@ db() {
 
 args()
 {
-    usage="Usage: $0 (dfs|yarn|zk|kafka|spark|flink|hbase|start|stop)"
+    usage="Usage: $0 (f1|f2|f3|lg|db)"
 
     if [ $# -lt 2 ]; then
         echo $usage
