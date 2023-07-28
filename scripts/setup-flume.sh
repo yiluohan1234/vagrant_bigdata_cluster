@@ -25,7 +25,6 @@ setup_flume() {
     mkdir -p ${INSTALL_PATH}/${app_name}/job
     cp ${res_dir}/${DATAWARE_VERSION}/*.conf ${INSTALL_PATH}/${app_name}/job
 
-    curl -o ${INSTALL_PATH}/${app_name}/lib/ -O -L https://gitee.com/yiluohan1234/vagrant_bigdata/blob/master/dataware/${DATAWARE_VERSION}/flume/flume-interceptor-1.0-SNAPSHOT-jar-with-dependencies.jar
 
     # Replace the default host configuration
     sed -i "s@hdp101@${HOSTNAME_LIST[0]}@g" `grep 'hdp101' -rl ${conf_dir}/`
