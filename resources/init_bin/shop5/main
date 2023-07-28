@@ -1,6 +1,10 @@
 #!/bin/bash
-DATAWARE_PATH=/opt/module/dataware
+# log: f1->f2->lg(2020-06-14)
+# db: gen_import_config.sh->mysql_to_hdfs_full.sh all 2020-06-14->f3->db->清除maxwel断点，maxwell修改2020-06-14->mysql_to_kafka_inc_init.sh all
+# drop table maxwell.bootstrap;drop table maxwell.columns;drop table maxwell.databases;drop table maxwell.heartbeats;drop table maxwell.positions;drop table maxwell.schemas;drop table maxwell.tables;
 
+
+INSTALL_PATH=/opt/module
 f1(){
     case $1 in
         start)
@@ -48,31 +52,31 @@ f3() {
 lg() {
     for i in hdp101 hdp102; do
         echo "========== $i =========="
-        ssh $i "source /etc/profile; cd ${DATAWARE_PATH}/log; java -jar gmall2020-mock-log-2021-10-10.jar >/dev/null 2>&1 &"
+        ssh $i "source /etc/profile; cd ${INSTALL_PATH}/dataware/log; java -jar gmall2020-mock-log-2021-10-10.jar >/dev/null 2>&1 &"
     done
 }
 
-log_init(){
-    local date=$1
+lg_init(){
+    local date=`date -d "$1" +"%Y-%m-%d"`
     echo "============ 生成 $date log数据 ============"
-    sed -i "s@^mock.date:.*@mock.date: \"$date\"@g" ${DATAWARE_PATH}/log/application.yml
-    ssh hdp101 "source /etc/profile; cd ${DATAWARE_PATH}/log; java -jar gmall2020-mock-log-2021-10-10.jar >/dev/null 2>&1 &"
+    sed -i "s@^mock.date:.*@mock.date: \"$date\"@g" ${INSTALL_PATH}/dataware/log/application.yml
+    ssh hdp101 "source /etc/profile; cd ${INSTALL_PATH}/dataware/log; java -jar gmall2020-mock-log-2021-10-10.jar >/dev/null 2>&1 &"
 }
 
 db() {
-    ssh hdp101 "source /etc/profile; cd ${DATAWARE_PATH}/db; java -jar gmall2020-mock-db-2021-11-14.jar >/dev/null 2>&1 &"
+    ssh hdp101 "source /etc/profile; cd ${INSTALL_PATH}/dataware/db; java -jar gmall2020-mock-db-2021-11-14.jar >/dev/null 2>&1 &"
 }
 
 db_init(){
-    local start_date=$1
-    local last_date=$2
+    local start_date=`date -d "$1" +"%Y%m%d"`
+    local last_date=`date -d "$2" +"%Y%m%d"`
     local cur_date=$start_date
 
     date_list=""
     while [ $cur_date -le $last_date ];
     do
       date_list="$date_list $cur_date"
-      cur_date=`date -d "$cur_date +1 day" +"%Y-%m-%d"`
+      cur_date=`date -d "$cur_date +1 day" +"%Y%m%d"`
     done
 
     for dy in ${date_list}
@@ -80,29 +84,93 @@ db_init(){
         echo "============ 生成 $dy db数据 ============"
         if [ "$dy" == "$start_date" ];
         then
-            flag=`cat ${DATAWARE_PATH}/db/application.properties |grep mock.clear.user |awk -F '=' '{print $2}'`
+            flag=`cat ${INSTALL_PATH}/dataware/db/application.properties |grep mock.clear.user |awk -F '=' '{print $2}'`
             if [ "x$flag" == "x0" ];
             then
-                sed -i "s@^mock.clear=.*@mock.clear=1@g" ${DATAWARE_PATH}/db/application.properties
-                sed -i "s@^mock.clear.user=.*@mock.clear.user=1@g" ${DATAWARE_PATH}/db/application.properties
+                sed -i "s@^mock.clear=.*@mock.clear=1@g" ${INSTALL_PATH}/dataware/db/application.properties
+                sed -i "s@^mock.clear.user=.*@mock.clear.user=1@g" ${INSTALL_PATH}/dataware/db/application.properties
             fi
         else
-            sed -i "s@^mock.clear=.*@mock.clear=0@g" ${DATAWARE_PATH}/db/application.properties
-            sed -i "s@^mock.clear.user=.*@mock.clear.user=0@g" ${DATAWARE_PATH}/db/application.properties
+            sed -i "s@^mock.clear=.*@mock.clear=0@g" ${INSTALL_PATH}/dataware/db/application.properties
+            sed -i "s@^mock.clear.user=.*@mock.clear.user=0@g" ${INSTALL_PATH}/dataware/db/application.properties
         fi
 
-
-        sed -i "s@^mock.date=.*@mock.date=$dy@g" ${DATAWARE_PATH}/db/application.properties
-        ssh hdp101 "source /etc/profile; cd ${DATAWARE_PATH}/db; java -jar gmall2020-mock-db-2021-11-14.jar >/dev/null 2>&1 &"
+        dy_in=`date -d "$dy" +"%Y-%m-%d"`
+        sed -i "s@^mock.date=.*@mock.date=$dy_in@g" ${INSTALL_PATH}/dataware/db/application.properties
+        ssh hdp101 "source /etc/profile; cd ${INSTALL_PATH}/dataware/db; java -jar gmall2020-mock-db-2021-11-14.jar >/dev/null 2>&1 &"
+        sleep 20s
     done
 
 }
+
+hadoop_init(){
+    echo "--------hadoop format-------"
+    bigstart dfs format
+    echo "--------start hadoop cluster-------"
+    bigstart dfs start
+    echo "--------create hadoop directory and upload spark3.2.3 jars-------"
+    hadoop fs -mkdir /spark-jars
+    hadoop fs -mkdir /spark-log
+    wget -P ${INSTALL_PATH}/ https://mirrors.huaweicloud.com/apache/spark/spark-3.2.3/spark-3.2.3-bin-without-hadoop.tgz
+    tar -zxvf ${INSTALL_PATH}/spark-3.2.3-bin-without-hadoop.tgz -C ${INSTALL_PATH}
+    hadoop fs -put ${INSTALL_PATH}/spark-3.2.3-bin-without-hadoop/jars/* /spark-jars
+    rm -rf ${INSTALL_PATH}/spark-3.2.3-bin-without-hadoop*
+    echo "--------init hive-------"
+    ${INSTALL_PATH}/hive/bin/schematool -initSchema -dbType mysql
+
+}
+
+hive_init(){
+    ${INSTALL_PATH}/hive/bin/hive -f ${INSTALL_PATH}/hdp_gmall/sql/create_table_hive.sql
+    #hadoop fs -mkdir -p /user/hive/jars
+    #hadoop fs -put /opt/module/hive/lib/hivefunction-1.0-SNAPSHOT.jar /user/hive/jars
+    #${INSTALL_PATH}/hive/bin/hive -e "create function gmall.explode_json_array as 'com.atguigu.hive.udtf.ExplodeJSONArray' using jar 'hdfs://${HOSTNAME_LIST[0]}:8020/user/hive/jars/hivefunction-1.0-SNAPSHOT.jar';"
+}
+
+mysql_init(){
+    ssh hdp103 "source /etc/profile; mysql -uroot -p000000 gmall < ${INSTALL_PATH}/dataware/db/gmall.sql"
+    # ssh hdp103 "source /etc/profile;mysql -uroot -p000000 gmall_report < ${INSTALL_PATH}/hdp_gmall/sql/gmall_report.sql"
+}
+
+init()
+{
+    # 启动 Zookeeper集群
+    bigstart zookeeper start
+    # 初始化hadoop和hive，启动hadoop
+    hadoop_init
+    #bigstart kafka start
+    # 启动 Kafka采集集群
+    bigstart kafka start
+    # 启动采集 Flume
+    f1.sh start
+    # 启动日志消费 Flume
+    f2.sh start
+
+    mysql_init
+    lg_init 20200614
+    db_init 20200610 20200614
+
+    # 清除maxwell断点痕迹
+    ssh hdp103 "source /etc/profile; mysql -uroot -p000000 -e 'drop table maxwell.bootstrap;drop table maxwell.columns;drop table maxwell.databases;drop table maxwell.heartbeats;drop table maxwell.positions;drop table maxwell.schemas;drop table maxwell.tables'"
+    sed -i "6amock_date=2020-06-14" ${INSTALL_PATH}/maxwell/config.properties
+    # 启动 maxwell
+    bigstart maxwell start
+    gen_import_config.sh
+    # 启动业务消费 Flume
+    f3.sh start
+    # 全量数据表同步
+    mysql_to_hdfs_full.sh all 2020-06-14
+
+    mysql_to_kafka_inc_init.sh all
+
+}
+
 
 args()
 {
     usage="Usage: $0 (f1|f2|f3|lg|db|db_init|log_init)"
 
-    if [ $# -lt 2 ]; then
+    if [ $# -lt 1 ]; then
         echo $usage
         exit 1
     fi
@@ -117,11 +185,6 @@ args()
 	  f3)
 		f3 $2
 		;;
-	  fa)
-		f1 $2
-        f2 $2
-        f3 $2
-		;;
 	  lg)
 		lg $2
 		;;
@@ -135,8 +198,7 @@ args()
 		db_init $2 $3
 		;;
 	  init)
-		lg_init $2
-        db_init $2 $3
+		init
 		;;
 	  *)
 		echo $usage
