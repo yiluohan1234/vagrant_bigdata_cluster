@@ -11,6 +11,7 @@ install_mysql() {
     yum -y -q install /root/mysql57-community-release-el7-11.noarch.rpm
     yum -y -q install mysql-community-server
     # copy configuration file my.cnf
+    sed -i "4askip_ssl" /etc/my.cnf
     sed -i "4abinlog-do-db=gmall" /etc/my.cnf
     sed -i "4abinlog_format=row" /etc/my.cnf
     sed -i "4alog-bin=mysql-bin" /etc/my.cnf

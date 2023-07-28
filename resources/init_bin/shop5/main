@@ -142,9 +142,9 @@ init()
     # 启动 Kafka采集集群
     bigstart kafka start
     # 启动采集 Flume
-    f1.sh start
+    f1 start
     # 启动日志消费 Flume
-    f2.sh start
+    f2 start
 
     mysql_init
     lg_init 20200614
@@ -157,7 +157,7 @@ init()
     bigstart maxwell start
     gen_import_config.sh
     # 启动业务消费 Flume
-    f3.sh start
+    f3 start
     # 全量数据表同步
     mysql_to_hdfs_full.sh all 2020-06-14
 
