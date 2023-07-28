@@ -1,0 +1,89 @@
+#!/bin/bash
+
+f1(){
+    case $1 in
+        start)
+            for i in hdp101 hdp102
+            do
+                echo " --------启动 $i 采集flume-------"
+                ssh $i "source /etc/profile; nohup /opt/module/flume/bin/flume-ng agent -n a1 -c /opt/module/flume/conf/ -f /opt/module/flume/job/file_to_kafka.conf >/dev/null 2>&1 &"
+            done
+            ;;
+        stop)
+            for i in hdp101 hdp102
+            do
+                echo " --------停止 $i 采集flume-------"
+                ssh $i "ps -ef | grep file_to_kafka | grep -v grep |awk  '{print \$2}' | xargs -n1 kill -9 "
+            done
+            ;;
+    esac
+}
+f2(){
+    case $1 in
+        start)
+            echo " --------启动 hdp103 日志数据flume-------"
+            ssh hdp103 "source /etc/profile; nohup /opt/module/flume/bin/flume-ng agent -n a1 -c /opt/module/flume/conf -f /opt/module/flume/job/kafka_to_hdfs_log.conf >/dev/null 2>&1 &"
+        ;;
+        stop)
+            echo " --------停止 hdp103 日志数据flume-------"
+            ssh hdp103 "ps -ef | grep kafka_to_hdfs_log | grep -v grep |awk '{print \$2}' | xargs -n1 kill"
+        ;;
+    esac
+}
+f3() {
+    case $1 in
+        start)
+            echo " --------启动 hdp103 业务数据flume-------"
+            ssh hdp103 "source /etc/profile; nohup /opt/module/flume/bin/flume-ng agent -n a1 -c /opt/module/flume/conf -f /opt/module/flume/job/kafka_to_hdfs_db.conf >/dev/null 2>&1 &"
+        ;;
+        stop)
+
+            echo " --------停止 hdp103 业务数据flume-------"
+            ssh hdp103 "ps -ef | grep kafka_to_hdfs_db | grep -v grep |awk '{print \$2}' | xargs -n1 kill"
+        ;;
+    esac
+}
+
+lg() {
+    for i in hdp101 hdp102; do
+        echo "========== $i =========="
+        ssh $i "source /etc/profile; cd /opt/module/dataware/log; java -jar gmall2020-mock-log-2021-10-10.jar >/dev/null 2>&1 &"
+    done
+}
+
+db() {
+    ssh hadoop102 "source /etc/profile; cd /opt/module/dataware/db; java -jar gmall2020-mock-db-2021-11-14.jar >/dev/null 2>&1 &"
+
+}
+
+args()
+{
+    usage="Usage: $0 (dfs|yarn|zk|kafka|spark|flink|hbase|start|stop)"
+
+    if [ $# -lt 2 ]; then
+        echo $usage
+        exit 1
+    fi
+
+    case $1 in
+	  f1)
+		f1 $2
+		;;
+	  f2)
+		f2 $2
+		;;
+	  f3)
+		f3 $2
+		;;
+	  lg)
+		lg $2
+		;;
+	  db)
+		db $2
+		;;
+	  *)
+		echo $usage
+		;;
+    esac
+}
+args $@
