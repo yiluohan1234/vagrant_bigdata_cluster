@@ -54,7 +54,7 @@ install_mysql() {
     #cp ${MYSQL_RES_DIR}/my.cnf /etc/
 
     # restart mysqld
-    systemctl restart mysqld.service
+    # systemctl restart mysqld.service
 
     # Delete
     yum -y remove mysql57-community-release-el7-11.noarch
