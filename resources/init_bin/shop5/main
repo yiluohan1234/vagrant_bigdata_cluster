@@ -165,10 +165,64 @@ init()
 
 }
 
+cluster() {
+    case $1 in
+        start)
+        echo ================== 启动 集群 ==================
+
+        # 启动 Zookeeper集群
+        bigstart zookeeper start
+
+        # 启动 Hadoop集群
+        bigstart dfs start
+
+        # 启动 Kafka采集集群
+        bigstart kafka start
+
+        # 启动采集 Flume
+        f1 start
+
+        # 启动日志消费 Flume
+        f2 start
+
+        # 启动业务消费 Flume
+        f3 start
+
+        # 启动 maxwell
+        bigstart maxwell start
+
+        ;;
+    stop)
+        echo ================== 停止 集群 ==================
+
+        # 停止 Maxwell
+        bigstart maxwell stop
+
+        # 停止 业务消费Flume
+        f3 stop
+
+        # 停止 日志消费Flume
+        f2 stop
+
+        # 停止 日志采集Flume
+        f1 stop
+
+        # 停止 Kafka采集集群
+        bigstart kafka stop
+
+        # 停止 Hadoop集群
+        bigstart dfs stop
+
+        # 停止 Zookeeper集群
+        bigstart zookeeper stop
+
+    ;;
+    esac
+}
 
 args()
 {
-    usage="Usage: $0 (f1|f2|f3|lg|db|db_init|log_init)"
+    usage="Usage: $0 (f1|f2|f3|lg|db|db_init|log_init|cluster)"
 
     if [ $# -lt 1 ]; then
         echo $usage
@@ -199,6 +253,9 @@ args()
 		;;
 	  init)
 		init
+		;;
+	  cluster)
+		cluster $2
 		;;
 	  *)
 		echo $usage

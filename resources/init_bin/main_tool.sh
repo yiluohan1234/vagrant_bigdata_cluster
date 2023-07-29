@@ -6,7 +6,7 @@ _main_tool()
     local cmd=${COMP_WORDS[COMP_CWORD-1]}
     case $cmd in
         'main')
-        COMPREPLY=( $(compgen -W 'f1 f2 f3 lg db lg_init db_init init' -- $cur ) )
+        COMPREPLY=( $(compgen -W 'f1 f2 f3 lg db lg_init db_init init cluster' -- $cur ) )
         ;;
 
         'f1')
@@ -21,7 +21,7 @@ _main_tool()
         COMPREPLY=( $(compgen -W 'start stop' -- $cur ) )
         ;;
 
-        'fa')
+        'cluster')
         COMPREPLY=( $(compgen -W 'start stop' -- $cur ) )
         ;;
     esac

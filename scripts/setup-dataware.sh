@@ -8,7 +8,7 @@ if [ -d /vagrant/scripts ];then
     source "/vagrant/scripts/common.sh"
 fi
 
-install_dataware() {
+install_dataware5() {
     local app_name="dataware"
     log info "setup ${app_name}"
     mkdir -p ${INSTALL_PATH}/dataware
@@ -21,9 +21,17 @@ install_dataware() {
     git clone https://gitee.com/yiluohan1234/vagrant_bigdata ${INSTALL_PATH}/tmp
     mv ${INSTALL_PATH}/tmp/dataware/${DATAWARE_VERSION}/mock/* ${INSTALL_PATH}/dataware
     mv ${INSTALL_PATH}/tmp/dataware/${DATAWARE_VERSION}/flume/*.jar ${INSTALL_PATH}/flume/lib
-    #rm -rf ${INSTALL_PATH}/tmp
+    # 替换maxwell
+    current_hostname=`cat /etc/hostname`
+    if [ "$current_hostname" == "${HOSTNAME_LIST[0]}" ];then
+        tar -zxvf ${INSTALL_PATH}/tmp/dataware/${DATAWARE_VERSION}/${MAXWELL_ARCHIVE} -C ${INSTALL_PATH}
+        cp ${INSTALL_PATH}/maxwell/config.properties ${INSTALL_PATH}/${MAXWELL_DIR_NAME}
+        rm -rf ${INSTALL_PATH}/maxwell
+        mv ${INSTALL_PATH}/${MAXWELL_DIR_NAME} ${INSTALL_PATH}/maxwell
+    fi
+    rm -rf ${INSTALL_PATH}/tmp
 
 }
 if [ "${IS_VAGRANT}" == "true" ];then
-    install_dataware
+    install_dataware5
 fi
