@@ -72,6 +72,32 @@ create_property_xml() {
     echo "</configuration>" >> $out
 }
 
+# 将配置转换为xml
+# set_property ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml "fs.defaultFS=hdfs://${HOST_NAME}:9000"
+set_property() {
+    local properties_file=$1
+    local key_value=$2
+    local is_create=$3
+    [ -z "${is_create}" ] && is_create=false
+
+    if [ "${is_create}" == "false" ]
+    then
+        sed -i "/<\/configuration>/Q" ${properties_file}
+    else
+        [ ! -f ${properties_file} ] && touch ${properties_file}
+        echo '<?xml version="1.0" encoding="UTF-8" standalone="no"?>' >> ${properties_file}
+        echo '<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>' >> ${properties_file}
+        echo '<configuration>' >> ${properties_file}
+    fi
+    name=`echo $key_value|cut -d "=" -f 1`
+    value=`echo $key_value|cut -d "=" -f 2-`
+    echo "  <property>" >> ${properties_file}
+    echo "    <name>$name</name>" >> ${properties_file}
+    echo "    <value>$value</value>" >> ${properties_file}
+    echo "  </property>" >> ${properties_file}
+    echo "</configuration>" >> ${properties_file}
+}
+
 # Get the version number of the app
 # eg: get_app_version_num $HIVE_VERSION "-" 2
 get_app_version_num() {
