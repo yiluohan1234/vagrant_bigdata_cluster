@@ -8,6 +8,8 @@ install_mysql() {
     # Install mysql57
     curl -o /root/mysql57-community-release-el7-11.noarch.rpm -O -L http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
     rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
+    # 卸载自带的Mysql-libs
+    rpm -qa | grep -i -E mysql\|mariadb | xargs -n1 sudo rpm -e --nodeps
     yum -y -q install /root/mysql57-community-release-el7-11.noarch.rpm
     yum -y -q install mysql-community-server
     # copy configuration file my.cnf
