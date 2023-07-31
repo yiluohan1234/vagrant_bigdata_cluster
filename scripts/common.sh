@@ -10,37 +10,54 @@ VGC_SCRIPTS_DIR=${VGC_SCRIPTS_DIR:-$DEFAULT_SCRIPTS_DIR}
 
 # Version information
 # HADOOP_VERSION=hadoop-2.7.7
-HADOOP_VERSION=hadoop-3.2.2
+HADOOP_VERSION=hadoop-3.1.3
+
+ZOOKEEPER_VERSION=zookeeper-3.5.7
+# ZOOKEEPER_VERSION=zookeeper-3.6.3
+MYSQL_CONNECTOR_VERSION=mysql-connector-java-5.1.49
 # HIVE_VERSION=hive-2.3.4
-HIVE_VERSION=hive-3.1.3
-# HBASE_VERSION=hbase-1.6.0
-# PHOENIX_VERSION=phoenix-hbase-1.6-4.16.0
-HBASE_VERSION=hbase-2.0.5
-PHOENIX_VERSION=apache-phoenix-5.0.0-HBase-2.0
-# SCALA_VERSION=scala-2.11.11
-SCALA_VERSION=scala-2.12.16
-SPARK_VERSION=spark-3.2.3
-ZOOKEEPER_VERSION=zookeeper-3.6.3
+HIVE_VERSION=hive-3.1.2
+
+# FLUME_VERSION=flume-1.7.0
+FLUME_VERSION=flume-1.9.0
+# KAFKA_VERSION=kafka_2.10-0.10.2.2
 # KAFKA_VERSION=kafka_2.11-2.4.1
 KAFKA_VERSION=kafka_2.12-3.0.0
-# KAFKA_VERSION=kafka_2.10-0.10.2.2
-SQOOP_VERSION=sqoop-1.4.7
-FLINK_VERSION=flink-1.13.4
+# SCALA_VERSION=scala-2.11.11
+SCALA_VERSION=scala-2.12.16
+# SPARK_VERSION=spark-2.1.1
+SPARK_VERSION=spark-3.0.0
+# datax3.0.0
+# superset1.3.2
+# dolphinScheduler2.0.3
+CANAL_VERSION=canal.deployer-1.1.5
+MAXWELL_VERSION=maxwell-1.29.2
+# REDIS_VERSION=redis-5.0.12
+REDIS_VERSION=redis-6.0.8
+# HBASE_VERSION=hbase-1.6.0
+HBASE_VERSION=hbase-2.0.5
+# PHOENIX_VERSION=phoenix-hbase-1.6-4.16.0
+PHOENIX_VERSION=apache-phoenix-5.0.0-HBase-2.0
 
+
+
+
+FLINK_VERSION=flink-1.13.0
+
+SQOOP_VERSION=sqoop-1.4.7
 NIFI_VERSION=nifi-1.13.0
-FLUME_VERSION=flume-1.9.0
+
 MAVEN_VERSION=maven-3.6.1
-MYSQL_CONNECTOR_VERSION=mysql-connector-java-5.1.49
+
 PRESTO_VERSION=presto-server-0.196
 ELASTICSEARCH_VERSION=elasticsearch-6.6.0
 KIBANA_VERSION=kibana-6.6.0
-CANAL_VERSION=canal.deployer-1.1.5
-MAXWELL_VERSION=maxwell-1.29.2
+
 AZKABAN_VERSION=azkaban-3.84.4
 KYLIN_VERSION=kylin-3.0.2
 MYSQL_VERSION=mysql-5.7.35
 NGINX_VERSION=nginx-1.18.0
-REDIS_VERSION=redis-5.0.12
+
 
 # java
 JAVA_ARCHIVE=jdk-8u201-linux-x64.tar.gz
@@ -84,8 +101,10 @@ HBASE_CONF_DIR=$INSTALL_PATH/hbase/conf
 #         https://archive.apache.org/dist/spark/spark-2.4.3/spark-2.4.3-bin-hadoop2.7.tgz
 # https://mirrors.huaweicloud.com/apache/spark/spark-3.2.3/spark-3.2.3-bin-hadoop3.2.tgz
 SPARK_VERSION_NUM=`get_app_version_num $SPARK_VERSION "-" 2`
-SPARK_ARCHIVE=$SPARK_VERSION-bin-hadoop${HADOOP_VERSION_NUM_TWO}.tgz
-SPARK_DIR_NAME=${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION_NUM_TWO}
+#SPARK_ARCHIVE=$SPARK_VERSION-bin-hadoop${HADOOP_VERSION_NUM_TWO}.tgz
+SPARK_ARCHIVE=$SPARK_VERSION-bin-hadoop3.2.tgz
+#SPARK_DIR_NAME=${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION_NUM_TWO}
+SPARK_DIR_NAME=${SPARK_VERSION}-bin-hadoop3.2
 SPARK_MIRROR_DOWNLOAD=$DOWNLOAD_REPO/spark/$SPARK_VERSION/$SPARK_ARCHIVE
 SPARK_RES_DIR=$RESOURCE_PATH/spark
 SPARK_CONF_DIR=$INSTALL_PATH/spark/conf
