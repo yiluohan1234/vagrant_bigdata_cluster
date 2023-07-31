@@ -21,16 +21,16 @@ setup_zookeeper() {
     local conf_dir=$(eval echo \$${app_name_upper}_CONF_DIR)
 
     log info "creating $app_name directories"
-    mkdir -p ${INSTALL_PATH}/zookeeper/data
-    mkdir -p ${INSTALL_PATH}/zookeeper/logs
-    touch ${INSTALL_PATH}/zookeeper/data/myid
+    mkdir -p ${INSTALL_PATH}/zookeeper/zkData
+    mkdir -p ${INSTALL_PATH}/zookeeper/zkLog
+    touch ${INSTALL_PATH}/zookeeper/zkData/myid
 
     log info "modify the ${app_name} configuration files"
     # cp -f ${res_dir}/* ${conf_dir}
 
     # log4j.properties
     log4j_path=${conf_dir}/log4j.properties
-    log_path=${INSTALL_PATH}/${app_name}/logs
+    log_path=${INSTALL_PATH}/${app_name}/zkLog
     sed -i 's@^zookeeper.root.logger=INFO, CONSOLE*@zookeeper.root.logger=INFO, CONSOLE, ROLLINGFILE@' ${log4j_path}
     sed -i 's@^zookeeper.log.dir=.*@zookeeper.log.dir='${log_path}'@' ${log4j_path}
 
@@ -41,17 +41,17 @@ setup_zookeeper() {
 
     # zoo.cfg
     cp ${conf_dir}/zoo_sample.cfg ${conf_dir}/zoo.cfg
-    sed -i "s@^dataDir=.*@dataDir=${INSTALL_PATH}/zookeeper/data@" ${conf_dir}/zoo.cfg
-    echo "dataLogDir=${INSTALL_PATH}/zookeeper/logs" >> ${conf_dir}/zoo.cfg
+    sed -i "s@^dataDir=.*@dataDir=${INSTALL_PATH}/zookeeper/zkData@" ${conf_dir}/zoo.cfg
+    echo "dataLogDir=${INSTALL_PATH}/zookeeper/zkLog" >> ${conf_dir}/zoo.cfg
     length=${#HOSTNAME_LIST[@]}
     for ((i=0; i<$length; i++));do
         echo "server.$(($i+1))=${HOSTNAME_LIST[$i]}:2888:3888" >> ${conf_dir}/zoo.cfg
     done
 
     if [ "${IS_VAGRANT}" == "true" ];then
-        echo $MYID >>${INSTALL_PATH}/zookeeper/data/myid
+        echo $MYID >>${INSTALL_PATH}/zookeeper/zkData/myid
     else
-        echo "1" >> ${INSTALL_PATH}/${app_name}/data/myid
+        echo "1" >> ${INSTALL_PATH}/${app_name}/zkData/myid
     fi
 }
 
@@ -62,9 +62,9 @@ dispatch_zookeeper() {
     for ((i=0; i<$length; i++));do
         current_hostname=`cat /etc/hostname`
         if [ "$current_hostname" != "${HOSTNAME_LIST[$i]}" ];then
-            ssh ${HOSTNAME_LIST[$i]} "mkdir -p ${INSTALL_PATH}/${app_name}/data"
-            ssh ${HOSTNAME_LIST[$i]} "mkdir -p ${INSTALL_PATH}/${app_name}/logs"
-            ssh ${HOSTNAME_LIST[$i]} "echo $(($i+1)) >> ${INSTALL_PATH}/${app_name}/data/myid"
+            ssh ${HOSTNAME_LIST[$i]} "mkdir -p ${INSTALL_PATH}/${app_name}/zkData"
+            ssh ${HOSTNAME_LIST[$i]} "mkdir -p ${INSTALL_PATH}/${app_name}/zkLog"
+            ssh ${HOSTNAME_LIST[$i]} "echo $(($i+1)) >> ${INSTALL_PATH}/${app_name}/zkData/myid"
         fi
     done
 }
