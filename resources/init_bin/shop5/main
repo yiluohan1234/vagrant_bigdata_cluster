@@ -121,13 +121,26 @@ hadoop_init(){
 }
 
 hive_init(){
+    echo "--------hive init-------"
     ${INSTALL_PATH}/hive/bin/hive -f ${INSTALL_PATH}/hdp_gmall/sql/create_table_hive.sql
     #hadoop fs -mkdir -p /user/hive/jars
     #hadoop fs -put /opt/module/hive/lib/hivefunction-1.0-SNAPSHOT.jar /user/hive/jars
     #${INSTALL_PATH}/hive/bin/hive -e "create function gmall.explode_json_array as 'com.atguigu.hive.udtf.ExplodeJSONArray' using jar 'hdfs://${HOSTNAME_LIST[0]}:8020/user/hive/jars/hivefunction-1.0-SNAPSHOT.jar';"
+    # 先上传编译后的hive到/opt/module,然后替换hive
+    echo "--------replace hive-------"
+    HIVE_ARCHIVE=apache-hive-3.1.2-bin.tar.gz
+    HIVE_DIR_NAME=apache-hive-3.1.2-bin
+    tar -zxvf ${INSTALL_PATH}/${HIVE_ARCHIVE} -C ${INSTALL_PATH}
+    cp ${INSTALL_PATH}/hive/conf/hive-site.xml ${INSTALL_PATH}/${HIVE_DIR_NAME}/conf
+    cp ${INSTALL_PATH}/hive/conf/hive-env.sh ${INSTALL_PATH}/${HIVE_DIR_NAME}/conf
+    mv ${INSTALL_PATH}/${HIVE_DIR_NAME}/lib/guava-19.0.jar ${INSTALL_PATH}/${HIVE_DIR_NAME}/lib/guava-19.0.jar_bak
+    cp ${INSTALL_PATH}/hadoop/share/hadoop/common/lib/guava-27.0-jre.jar ${INSTALL_PATH}/${HIVE_DIR_NAME}/lib
+    rm -rf ${INSTALL_PATH}/hive
+    mv ${INSTALL_PATH}/${HIVE_DIR_NAME} ${INSTALL_PATH}/hive
 }
 
 mysql_init(){
+    echo "--------mysql init-------"
     ssh hdp103 "source /etc/profile; mysql -uroot -p000000 gmall < ${INSTALL_PATH}/dataware/db/gmall.sql"
     # ssh hdp103 "source /etc/profile;mysql -uroot -p000000 gmall_report < ${INSTALL_PATH}/hdp_gmall/sql/gmall_report.sql"
 }
@@ -151,7 +164,7 @@ init()
     db_init 20200610 20200614
 
     # 清除maxwell断点痕迹
-    ssh hdp103 "source /etc/profile; mysql -uroot -p000000 -e 'drop table maxwell.bootstrap;drop table maxwell.columns;drop table maxwell.databases;drop table maxwell.heartbeats;drop table maxwell.positions;drop table maxwell.schemas;drop table maxwell.tables'"
+    # ssh hdp103 "source /etc/profile; mysql -uroot -p000000 -e 'drop table maxwell.bootstrap;drop table maxwell.columns;drop table maxwell.databases;drop table maxwell.heartbeats;drop table maxwell.positions;drop table maxwell.schemas;drop table maxwell.tables'"
     sed -i "6amock_date=2020-06-14" ${INSTALL_PATH}/maxwell/config.properties
     # 启动 maxwell
     bigstart maxwell start
