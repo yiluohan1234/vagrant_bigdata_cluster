@@ -130,8 +130,8 @@ hive_init(){
 
 mysql_init(){
     echo "--------mysql init-------"
-    ssh hdp103 "source /etc/profile; mysql -uroot -p000000 gmall < ${INSTALL_PATH}/dataware/db/gmall.sql"
-    # ssh hdp103 "source /etc/profile;mysql -uroot -p000000 gmall_report < ${INSTALL_PATH}/hdp_gmall/sql/gmall_report.sql"
+    ssh hdp103 "source /etc/profile; mysql -uroot -p000000 gmall < ${INSTALL_PATH}/dataware/sql/gmall.sql"
+    ssh hdp103 "source /etc/profile;mysql -uroot -p000000 gmall_report < ${INSTALL_PATH}/dataware/sql/gmall_report.sql"
 }
 
 init()
