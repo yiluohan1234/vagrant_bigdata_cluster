@@ -14,7 +14,7 @@ setup_datax() {
     find ${INSTALL_PATH}/datax/plugin/reader/ -type f -name "._*er" | xargs rm -rf
     find ${INSTALL_PATH}/datax/plugin/writer/ -type f -name "._*er" | xargs rm -rf
 
-    yum install -y MySQL-python
+    yum install -y -q MySQL-python
 }
 
 install_datax() {
