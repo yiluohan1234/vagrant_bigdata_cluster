@@ -108,13 +108,13 @@ hadoop_init(){
     bigstart dfs format
     echo "--------start hadoop cluster-------"
     bigstart dfs start
-    echo "--------create hadoop directory and upload spark3.2.3 jars-------"
+    echo "--------create hadoop directory and upload spark3.0.0 jars-------"
     hadoop fs -mkdir /spark-jars
     hadoop fs -mkdir /spark-log
-    wget -P ${INSTALL_PATH}/ https://mirrors.huaweicloud.com/apache/spark/spark-3.2.3/spark-3.2.3-bin-without-hadoop.tgz
-    tar -zxvf ${INSTALL_PATH}/spark-3.2.3-bin-without-hadoop.tgz -C ${INSTALL_PATH}
-    hadoop fs -put ${INSTALL_PATH}/spark-3.2.3-bin-without-hadoop/jars/* /spark-jars
-    rm -rf ${INSTALL_PATH}/spark-3.2.3-bin-without-hadoop*
+    wget -P ${INSTALL_PATH}/ https://mirrors.huaweicloud.com/apache/spark/spark-3.0.0/spark-3.0.0-bin-without-hadoop.tgz
+    tar -zxvf ${INSTALL_PATH}/spark-3.0.0-bin-without-hadoop.tgz -C ${INSTALL_PATH}
+    hadoop fs -put ${INSTALL_PATH}/spark-3.0.0-bin-without-hadoop/jars/* /spark-jars
+    rm -rf ${INSTALL_PATH}/spark-3.0.0-bin-without-hadoop*
     echo "--------init hive-------"
     ${INSTALL_PATH}/hive/bin/schematool -initSchema -dbType mysql
 
