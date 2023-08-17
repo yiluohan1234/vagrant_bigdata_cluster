@@ -28,13 +28,23 @@ install_dataware5() {
     current_hostname=`cat /etc/hostname`
     if [ "$current_hostname" == "${HOSTNAME_LIST[0]}" ];then
         # 替换maxwell
-        tar -zxvf ${INSTALL_PATH}/tmp/dataware/${DATAWARE_VERSION}/${MAXWELL_ARCHIVE} -C ${INSTALL_PATH}
+        tar -zxf ${INSTALL_PATH}/tmp/dataware/${DATAWARE_VERSION}/${MAXWELL_ARCHIVE} -C ${INSTALL_PATH}
         cp ${INSTALL_PATH}/maxwell/config.properties ${INSTALL_PATH}/${MAXWELL_DIR_NAME}
         rm -rf ${INSTALL_PATH}/maxwell
         mv ${INSTALL_PATH}/${MAXWELL_DIR_NAME} ${INSTALL_PATH}/maxwell
         # spark依赖位置和hive执行引擎
         set_property ${INSTALL_PATH}/hive/conf/hive-site.xml "spark.yarn.jars=hdfs://${HOSTNAME_LIST[0]}:8020/spark-jars/*"
         set_property ${INSTALL_PATH}/hive/conf/hive-site.xml "hive.execution.engine=spark"
+        # --------replace hive-------
+        cat ${INSTALL_PATH}/tmp/dataware/${HIVE_ARCHIVE}.* > ${INSTALL_PATH}/tmp/dataware/${HIVE_ARCHIVE}
+        tar -zxf ${INSTALL_PATH}/tmp/dataware/${HIVE_ARCHIVE} -C ${INSTALL_PATH}
+        cp ${INSTALL_PATH}/hive/conf/hive-site.xml ${INSTALL_PATH}/${HIVE_DIR_NAME}/conf
+        cp ${INSTALL_PATH}/hive/conf/hive-env.sh ${INSTALL_PATH}/${HIVE_DIR_NAME}/conf
+        cp ${INSTALL_PATH}/hive/lib/mysql-connector-java-*.jar ${INSTALL_PATH}/${HIVE_DIR_NAME}/lib
+        # mv ${INSTALL_PATH}/${HIVE_DIR_NAME}/lib/guava-19.0.jar ${INSTALL_PATH}/${HIVE_DIR_NAME}/lib/guava-19.0.jar_bak
+        cp ${INSTALL_PATH}/hadoop/share/hadoop/common/lib/guava-27.0-jre.jar ${INSTALL_PATH}/${HIVE_DIR_NAME}/lib
+        rm -rf ${INSTALL_PATH}/hive
+        mv ${INSTALL_PATH}/${HIVE_DIR_NAME} ${INSTALL_PATH}/hive
     fi
     rm -rf ${INSTALL_PATH}/tmp
 
