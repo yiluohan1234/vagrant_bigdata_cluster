@@ -103,6 +103,22 @@ db_init(){
 
 }
 
+data_mock(){
+    usage="Usage: $0 (date(eg:2021-06-14))"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    date=$1
+    echo "============ 生成 $date log 数据 ============"
+    sed -i "s@^mock.date:.*@mock.date: \"$date\"@g" ${INSTALL_PATH}/dataware/log/application.yml
+    ssh hdp101 "source /etc/profile; cd ${INSTALL_PATH}/dataware/log; java -jar gmall2020-mock-log-2021-10-10.jar >/dev/null 2>&1 &"
+    echo "============ 生成 $date 业务数据 ============"
+    sed -i "s@^mock.date=.*@mock.date=$date@g" ${INSTALL_PATH}/dataware/db/application.properties
+    ssh hdp101 "source /etc/profile; cd ${INSTALL_PATH}/dataware/db; java -jar gmall2020-mock-db-2021-11-14.jar >/dev/null 2>&1 &"
+}
+
 hadoop_init(){
     echo "--------hadoop format-------"
     bigstart dfs format
@@ -255,6 +271,9 @@ args()
 		;;
 	  init)
 		init
+		;;
+	  mock)
+		data_mock $2
 		;;
 	  cluster)
 		cluster $2
