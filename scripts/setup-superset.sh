@@ -15,37 +15,45 @@ install_miniconda() {
     echo 'Successfully installed miniconda...'
     echo -n 'Conda version: '
     $INSTALL_PATH/miniconda3/bin/conda --version
+    $INSTALL_PATH/miniconda3/bin/conda config --set auto_activate_base false
+    $INSTALL_PATH/miniconda3/bin/conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
+    $INSTALL_PATH/miniconda3/bin/conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    $INSTALL_PATH/miniconda3/bin/conda config --set show_channel_urls yes
     echo -e '\n'
     exec bash
 
     source ${PROFILE}
 }
 
-setup_conda(){
+setup_superset(){
 
-    echo "setup conda"
-    conda config --set auto_activate_base false
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
-    conda config --set show_channel_urls yes
+    echo "setup superset"
+    yum install -y -q gcc gcc-c++ libffi-devel python-devel python-pip python-wheel python-setuptools openssl-devel cyrus-sasl-devel openldap-devel
     export FLASK_APP=superset
-    conda create --name superset python=3.7
+    echo y |conda create --name superset python=3.8
     conda activate superset
+    # pip install --upgrade setuptools pip -i https://pypi.douban.com/simple/
+    /opt/module/miniconda3/envs/superset/bin/pip install apache-superset -i https://pypi.douban.com/simple/
+    /opt/module/miniconda3/envs/superset/bin/pip install gunicorn -i https://pypi.douban.com/simple/
+
+    # Initialize the Supetset database
+    superset db upgrade
+    # Create an admin user
+    superset fab create-admin << EOF
+test
+t
+est
+1111@qq.com
+123456
+123456
+EOF
+    # Superset initialization
+    superset init
+
+    gunicorn --workers 5 --timeout 120 --bind hdp101:8787 "superset.app:create_app()" --daemon
+    conda install mysqlclient
 }
 
-yum install -y gcc gcc-c++ libffi-devel python-devel python-pip python-wheel python-setuptools openssl-devel cyrus-sasl-devel openldap-devel
-
-pip install apache-superset -i https://pypi.douban.com/simple/
-pip install pillow -i https://pypi.douban.com/simple/
-pip install gunicorn -i https://pypi.douban.com/simple/
-
-# Initialize the Supetset database
-superset db upgrade
-export FLASK_APP=superset
-# Create an admin user
-superset fab create-admin
-# Superset initialization
-superset init
-
-gunicorn --workers 5 --timeout 120 --bind hdp101:8787 "superset.app:create_app()" --daemon
-conda install mysqlclient
+if [ "${IS_VAGRANT}" == "true" ];then
+    setup_superset
+fi
