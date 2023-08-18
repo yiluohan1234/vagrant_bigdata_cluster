@@ -39,14 +39,15 @@ setup_superset(){
     # Initialize the Supetset database
     superset db upgrade
     # Create an admin user
-    superset fab create-admin << EOF
-test
-t
-est
-1111@qq.com
-123456
-123456
-EOF
+    superset fab create-admin
+    expect -c "
+        spawn superset fab create-admin
+        expect {
+            \"Enter file in which to save the*\" { send \"\r\"; exp_continue}
+            \"Overwrite*\" { send \"n\r\" ; exp_continue}
+            \"Enter passphrase*\" { send \"\r\"; exp_continue}
+            \"Enter same passphrase again:\" { send \"\r\" ; exp_continue}
+        }";
     # Superset initialization
     superset init
 
