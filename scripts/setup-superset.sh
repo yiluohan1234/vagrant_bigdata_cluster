@@ -32,21 +32,27 @@ setup_superset(){
     export FLASK_APP=superset
     echo y |conda create --name superset python=3.8
     conda activate superset
-    # pip install --upgrade setuptools pip -i https://pypi.douban.com/simple/
-    /opt/module/miniconda3/envs/superset/bin/pip install apache-superset -i https://pypi.douban.com/simple/
-    /opt/module/miniconda3/envs/superset/bin/pip install gunicorn -i https://pypi.douban.com/simple/
+    pip install --upgrade setuptools pip
+    /opt/module/miniconda3/envs/superset/bin/pip install apache-superset
+    /opt/module/miniconda3/envs/superset/bin/pip install markupsafe==2.0.1
+    /opt/module/miniconda3/envs/superset/bin/pip install importlib-metadata==4.13.0
+    /opt/module/miniconda3/envs/superset/bin/pip install sqlparse==0.4.3
+    /opt/module/miniconda3/envs/superset/bin/pip install marshmallow_enum
+    mv ${RESOURCE_PATH}/superset/superset_config.py ${INSTALL_PATH}/miniconda3/envs/superset/lib/python3.8/
 
     # Initialize the Supetset database
     superset db upgrade
     # Create an admin user
-    superset fab create-admin
+    # superset fab create-admin
     expect -c "
         spawn superset fab create-admin
         expect {
-            \"Enter file in which to save the*\" { send \"\r\"; exp_continue}
-            \"Overwrite*\" { send \"n\r\" ; exp_continue}
-            \"Enter passphrase*\" { send \"\r\"; exp_continue}
-            \"Enter same passphrase again:\" { send \"\r\" ; exp_continue}
+            \"Username*\" { send \"yiluohan\r\"; exp_continue}
+            \"User first name*\" { send \"yi\r\" ; exp_continue}
+            \"User last name*\" { send \"luohan\r\"; exp_continue}
+            \"Email*\" { send \"1111@qq.com\r\" ; exp_continue}
+            \"Password*\" { send \"123456\r\" ; exp_continue}
+            \"Repeat for confirmation*\" { send \"123456\r\" ; exp_continue}
         }";
     # Superset initialization
     superset init
