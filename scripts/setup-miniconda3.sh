@@ -17,6 +17,11 @@ install_miniconda() {
     echo 'Successfully installed miniconda...'
     echo -n 'Conda version: '
     $INSTALL_PATH/miniconda3/bin/conda --version
+    $INSTALL_PATH/miniconda3/bin/conda config --set auto_activate_base false
+    $INSTALL_PATH/miniconda3/bin/conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
+    $INSTALL_PATH/miniconda3/bin/conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    $INSTALL_PATH/miniconda3/bin/conda config --set show_channel_urls yes
+    rm -rf $INSTALL_PATH/miniconda.sh
     echo -e '\n'
     exec bash
 
