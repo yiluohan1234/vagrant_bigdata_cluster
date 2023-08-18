@@ -22,6 +22,7 @@ install_dataware5() {
     mv ${INSTALL_PATH}/tmp/dataware/${DATAWARE_VERSION}/mock/* ${INSTALL_PATH}/dataware
     mv ${INSTALL_PATH}/tmp/dataware/${DATAWARE_VERSION}/sbin/ ${INSTALL_PATH}/dataware
     mv ${INSTALL_PATH}/tmp/dataware/${DATAWARE_VERSION}/sql/ ${INSTALL_PATH}/dataware
+    mv ${INSTALL_PATH}/tmp/dataware/${DATAWARE_VERSION}/data/date_info.txt ${INSTALL_PATH}/dataware
     mv ${INSTALL_PATH}/tmp/dataware/${DATAWARE_VERSION}/flume/*.jar ${INSTALL_PATH}/flume/lib
     # flume conf
     mkdir -p ${INSTALL_PATH}/flume/job
