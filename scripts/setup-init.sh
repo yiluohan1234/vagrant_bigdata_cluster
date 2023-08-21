@@ -20,27 +20,24 @@ install_init(){
     # change hostname
     hostnamectl set-hostname ${HOSTNAME_LIST[$(( id-1 ))]}
 
-    # Create a hadoop group, create each user and set a password
-    groupadd hadoop
-    # Modify the vagrant user information and add vagrant to the group hadoop
-    usermod -a -G hadoop vagrant
     # Add atguigu user
-    useradd atguigu -g hadoop -d /home/atguigu
+    groupadd ${DEFAULT_GROUP}
+    useradd ${DEFAULT_USER} -g ${DEFAULT_GROUP} -d /home/${DEFAULT_USER}
     # Set password vagrant for atguigu user
-    echo vagrant | passwd --stdin atguigu
+    echo vagrant | passwd --stdin ${DEFAULT_USER}
 
     if [ "${IS_KERBEROS}" == "true" ];then
 
         for user in {"hdfs","yarn","mapred","hive"};
         do
-            useradd $user -g hadoop -d /home/$user
+            useradd $user -g ${DEFAULT_GROUP} -d /home/$user
             # The default password for each user is vagrant
             echo $user | passwd --stdin $user
         done
     fi
 
     # Configure atguigu and vagrant users with root privileges
-    sed -i "/## Same thing without a password/iatguigu   ALL=(ALL)     NOPASSWD:ALL" /etc/sudoers
+    sed -i "/## Same thing without a password/i${DEFAULT_USER}   ALL=(ALL)     NOPASSWD:ALL" /etc/sudoers
     sed -i "/## Same thing without a password/ivagrant   ALL=(ALL)     NOPASSWD:ALL" /etc/sudoers
 
     # Create build log directory
