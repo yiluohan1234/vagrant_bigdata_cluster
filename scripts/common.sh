@@ -57,6 +57,7 @@ AZKABAN_VERSION=azkaban-3.84.4
 KYLIN_VERSION=kylin-3.0.2
 MYSQL_VERSION=mysql-5.7.35
 NGINX_VERSION=nginx-1.18.0
+DOLPHINSCHEDULER_VERSION=dolphinscheduler-2.0.5
 
 
 # java
@@ -309,4 +310,11 @@ DATAX_ARCHIVE=${DATAX_VERSION_NUM}.tar.gz
 DATAX_DIR_NAME=datax
 DATAX_MIRROR_DOWNLOAD=http://datax-opensource.oss-cn-hangzhou.aliyuncs.com/datax.tar.gz
 
-
+# dolphinscheduler
+# https://mirrors.huaweicloud.com/apache/dolphinscheduler/2.0.5/apache-dolphinscheduler-2.0.5-bin.tar.gz
+DOLPHINSCHEDULER_VERSION_NUM=`get_app_version_num $DOLPHINSCHEDULER_VERSION "-" 2`
+DOLPHINSCHEDULER_ARCHIVE=apache-${DOLPHINSCHEDULER_VERSION}-bin.tar.gz
+DOLPHINSCHEDULER_DIR_NAME=apache-${DOLPHINSCHEDULER_VERSION}-bin
+DOLPHINSCHEDULER_MIRROR_DOWNLOAD=https://mirrors.huaweicloud.com/apache/dolphinscheduler/$DOLPHINSCHEDULER_VERSION_NUM/$DOLPHINSCHEDULER_ARCHIVE
+DOLPHINSCHEDULER_RES_DIR=$RESOURCE_PATH/dolphinscheduler
+DOLPHINSCHEDULER_CONF_DIR=$INSTALL_PATH/dolphinscheduler/conf/config

@@ -52,6 +52,9 @@ install_mysql() {
         GRANT all privileges ON ranger.* to 'ranger'@'%' identified by 'ranger'; \
         CREATE DATABASE gmall CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'; \
         CREATE DATABASE gmall_report CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'; \
+        CREATE DATABASE dolphinscheduler DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci; \
+        CREATE USER 'dolphinscheduler'@'%' IDENTIFIED BY 'dolphinscheduler'; \
+        GRANT ALL PRIVILEGES ON dolphinscheduler.* TO 'dolphinscheduler'@'%'; \
         flush privileges;" --connect-expired-password
 
     #cp ${MYSQL_RES_DIR}/my.cnf /etc/

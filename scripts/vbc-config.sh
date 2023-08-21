@@ -14,7 +14,7 @@ PASSWD_LIST=("vagrant" "vagrant" "vagrant")
 
 # default user and group
 DEFAULT_USER=atguigu
-DEFAULT_GROUP=hadoop
+DEFAULT_GROUP=atguigu
 
 # installation directory
 INSTALL_PATH=/opt/module

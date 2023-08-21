@@ -784,6 +784,32 @@ superset(){
     esac
 }
 
+dolphinscheduler(){
+    usage="Usage: $0 (start|stop|format)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            ssh hdp101 "source /etc/profile;$INSTALL_PATH/dolphinscheduler/bin/start-all.sh"
+            ;;
+        stop)
+            ssh hdp101 "source /etc/profile;$INSTALL_PATH/dolphinscheduler/bin/stop-all.sh"
+            ;;
+        restart)
+            dolphinscheduler stop
+            dolphinscheduler start
+            ;;
+        init)
+            ssh hdp101 "$INSTALL_PATH/dolphinscheduler-install/script/create-dolphinscheduler.sh"
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
 args()
 {
     usage="Usage: $0 (dfs|yarn|zk|kafka|spark|flink|hbase|start|stop)"
@@ -862,6 +888,9 @@ args()
 		;;
 	  ranger)
 		ranger $2
+		;;
+	  dolphinscheduler)
+		dolphinscheduler $2
 		;;
 	  *)
 		echo $usage

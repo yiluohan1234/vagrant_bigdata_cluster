@@ -6,7 +6,7 @@ _service_tool()
     local cmd=${COMP_WORDS[COMP_CWORD-1]}
     case $cmd in
         'bigstart')
-        COMPREPLY=( $(compgen -W 'historyserver ranger atlas solr kylin presto dfs yarn hdp spark zookeeper flink hbase kafka kibana elasticsearch redis logger hive maxwell canal azkaban superset' -- $cur ) )
+        COMPREPLY=( $(compgen -W 'historyserver ranger atlas solr kylin presto dfs yarn hdp spark zookeeper flink hbase kafka kibana elasticsearch redis logger hive maxwell canal azkaban superset dolphinscheduler' -- $cur ) )
         ;;
 
         'historyserver')
@@ -100,6 +100,10 @@ _service_tool()
 
         'superset')
         COMPREPLY=( $(compgen -W 'start stop status restart' -- $cur ) )
+        ;;
+
+        'dolphinscheduler')
+        COMPREPLY=( $(compgen -W 'start stop init' -- $cur ) )
         ;;
 
     esac
