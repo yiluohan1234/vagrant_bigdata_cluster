@@ -1,7 +1,7 @@
 #! /bin/bash
- 
+
 for host in hdp{101..103};
 do
-    echo --------- Current hostname is $host, exec $* ----------
+    echo -e "\033[31m--------- Current hostname is $host, exec $* ----------\033[0m"
     ssh $host "$*"
 done
