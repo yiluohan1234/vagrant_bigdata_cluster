@@ -1,0 +1,47 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Config Github Settings
+github_username = "yiluohan1234"
+github_repo     = "vagrant_bigdata_cluster"
+github_branch   = "master"
+github_url      = "https://ghproxy.com/https://raw.githubusercontent.com/#{github_username}/#{github_repo}/#{github_branch}"
+
+# boxes = [
+#     {
+#       :name => "hadoop000", :eth1 => "192.168.10.101", :mem => "4096", :cpu => "2"
+#     }
+# ]
+
+boxes = [
+    {
+      :name => "hdp101", :eth1 => "192.168.10.101", :mem => "4096", :cpu => "2"
+    },
+    {
+      :name => "hdp102", :eth1 => "192.168.10.102", :mem => "4096", :cpu => "2"
+    },
+    {
+      :name => "hdp103", :eth1 => "192.168.10.103", :mem => "4096", :cpu => "2"
+    }
+]
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "centos/7"
+  config.vm.box_version = "1804.02"
+  boxes.each do |opts|
+    config.vm.define opts[:name] do |config|
+      config.vm.hostname = opts[:name]
+      config.ssh.insert_key = false
+      config.vm.provider "virtualbox" do |v|
+        v.customize ["modifyvm", :id, "--name", opts[:name]]
+        v.customize ["modifyvm", :id, "--memory", opts[:mem]]
+        v.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
+      end
+      config.vm.network "private_network", ip: opts[:eth1]
+    end
+  end
+  # 使用shell脚本进行软件安装和配置
+  # Provision Base Packages
+  # config.vm.provision "shell", path: "#{github_url}/scripts/base.sh", args: [github_url, server_swap, server_timezone]
+  config.vm.provision "shell", path: "#{github_url}/scripts/setupenv-bd-competition.sh"
+end
