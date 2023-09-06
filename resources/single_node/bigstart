@@ -25,6 +25,10 @@ dfs(){
         format)
             $INSTALL_PATH/hadoop/bin/hdfs namenode -format
             ;;
+        initTez)
+            hdfs dfs -mkdir -p /tez/0.8.4
+            hdfs dfs -put $INSTALL_PATH/tez/share/tez.tar.gz /tez/0.8.4
+            ;;
         restart)
             dfs stop
             dfs start
@@ -51,7 +55,7 @@ yarn(){
             ;;
         restart)
             yarn stop
-	        yarn start
+            yarn start
             ;;
         *)
             echo $usage
@@ -68,16 +72,16 @@ historyserver(){
     fi
     case $1 in
         start)
-            echo " --------------- Start historyserver ---------------"
+            echo " --------------- 启动 historyserver ---------------"
             $INSTALL_PATH/hadoop/sbin/mr-jobhistory-daemon.sh start historyserver
             ;;
         stop)
-            echo " --------------- Stop historyserver ---------------"
+            echo " --------------- 关闭 historyserver ---------------"
             $INSTALL_PATH/hadoop/sbin/mr-jobhistory-daemon.sh stop historyserver
             ;;
         restart)
             historyserver stop
-	        historyserver start
+            historyserver start
             ;;
         *)
             echo $usage
@@ -112,7 +116,6 @@ hadoop(){
     esac
 }
 
-
 hbase(){
     usage="Usage(hbase): $0 (start|stop)"
 
@@ -143,20 +146,20 @@ hive(){
             metapid=$(check_process HiveMetastore 9083)
             cmd="nohup hive --service metastore > $HIVE_LOG_DIR/metastore.log 2>&1 &"
             cmd=$cmd" sleep 4; hdfs dfsadmin -safemode wait >/dev/null 2>&1"
-            [ -z "$metapid" ] && eval $cmd || echo "Metastroe have started"
+            [ -z "$metapid" ] && eval $cmd || echo "Metastroe服务已启动"
             server2pid=$(check_process HiveServer2 10000)
             cmd="nohup hive --service hiveserver2 > $HIVE_LOG_DIR/hiveServer2.log 2>&1 &"
-            [ -z "$server2pid" ] && eval $cmd || echo "HiveServer2 have started"
+            [ -z "$server2pid" ] && eval $cmd || echo "HiveServer2服务已启动"
             ;;
         stop)
             metapid=$(check_process HiveMetastore 9083)
-            [ "$metapid" ] && kill $metapid || echo "Metastore is not started"
+            [ "$metapid" ] && kill $metapid || echo "Metastore服务未启动"
             server2pid=$(check_process HiveServer2 10000)
-            [ "$server2pid" ] && kill $server2pid || echo "HiveServer2 is not started"
+            [ "$server2pid" ] && kill $server2pid || echo "HiveServer2服务未启动"
             ;;
         status)
-            check_process HiveMetastore 9083 >/dev/null && echo "Metastore is running normally" || echo "Metastore running abnormally"
-            check_process HiveServer2 10000 >/dev/null && echo "HiveServer2 is running normally" || echo "HiveServer2 running abnormally"
+            check_process HiveMetastore 9083 >/dev/null && echo "Metastore服务运行正常" || echo "Metastore服务运行异常"
+            check_process HiveServer2 10000 >/dev/null && echo "HiveServer2服务运行正常" || echo "HiveServer2服务运行异常"
             ;;
         "initSchema")
             schematool -initSchema -dbType mysql
@@ -195,7 +198,7 @@ zk(){
             ;;
     esac
 }
-
+#一键启动集群
 kafka(){
     usage="Usage: $0 (start|stop)"
 
@@ -258,7 +261,7 @@ flink(){
 
 args()
 {
-    usage="Usage: $0 (dfs|yarn|zk|kafka|spark|flink|hbase|)"
+    usage="Usage: $0 (dfs|yarn|zk|kafka|spark|flink|hbase|start|stop)"
 
     if [ $# -lt 2 ]; then
         echo $usage
@@ -266,39 +269,39 @@ args()
     fi
 
     case $1 in
-      dfs)
-        dfs $2
-        ;;
-      yarn)
-        yarn $2
-        ;;
-      historyserver)
-        historyserver $2
-        ;;
-      hdp)
-        hadoop $2
-        ;;
-      spark)
-        spark $2
-        ;;
-      zookeeper)
-        zk $2
-        ;;
-      flink)
-        flink $2
-        ;;
-      hbase)
-        hbase $2
-        ;;
-      kafka)
-        kafka $2
-        ;;
-      hive)
-        hive $2
-        ;;
-      *)
-        echo $usage
-        ;;
+	  dfs)
+		dfs $2
+		;;
+	  yarn)
+		yarn $2
+		;;
+	  historyserver)
+		historyserver $2
+		;;
+	  hdp)
+		hadoop $2
+		;;
+	  spark)
+		spark $2
+		;;
+	  zookeeper)
+		zk $2
+		;;
+	  flink)
+		flink $2
+		;;
+	  hbase)
+		hbase $2
+		;;
+	  kafka)
+		kafka $2
+		;;
+	  hive)
+		hive $2
+		;;
+	  *)
+		echo $usage
+		;;
     esac
 }
 args $@
