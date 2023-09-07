@@ -60,22 +60,20 @@ set_property() {
 
 wget_mysql_connector(){
     local cp_path=$1
-    local file=mysql-connector-java-5.1.49.tar.gz
-    local url=https://repo.huaweicloud.com/mysql/Downloads/Connector-J/mysql-connector-java-5.1.49.tar.gz
+    local file=mysql-connector-java-5.1.47.jar
+    local url=https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.47/mysql-connector-java-5.1.47.jar
     if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
     then
         curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
     fi
-    tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
-    cp ${INSTALL_PATH}/${file:0:27}/${file:0:27}.jar $cp_path
-    rm -rf ${INSTALL_PATH}/${file:0:27}
+    cp ${DEFAULT_DOWNLOAD_DIR}/${file} $cp_path
 }
 
 install_init(){
     echo "install init"
     # 安装git
-    rpm -ivh https://opensource.wandisco.com/git/wandisco-git-release-7-2.noarch.rpm
-    yum install -y -q git
+    # rpm -ivh https://opensource.wandisco.com/git/wandisco-git-release-7-2.noarch.rpm
+    # yum install -y -q git
     # ssh 设置允许密码登录
     sed -i 's@^PasswordAuthentication no@PasswordAuthentication yes@g' /etc/ssh/sshd_config
     sed -i 's@^#PubkeyAuthentication yes@PubkeyAuthentication yes@g' /etc/ssh/sshd_config
@@ -85,18 +83,18 @@ install_init(){
     yum install -y -q net-tools vim-enhanced sshpass expect wget
 
     # 配置vagrant用户具有root权限
-    sed -i "/## Same thing without a password/ivagrant   ALL=(ALL)     NOPASSWD:ALL" /etc/sudoers
+    # sed -i "/## Same thing without a password/ivagrant   ALL=(ALL)     NOPASSWD:ALL" /etc/sudoers
 
     # 添加hosts
     sed -i '/^127.0.1.1/'d /etc/hosts
-    echo "192.168.10.101  ${HOST_NAME}" >> /etc/hosts
+    echo "192.168.10.111  ${HOST_NAME}" >> /etc/hosts
 
     # 修改DNS
     sed -i "s@^nameserver.*@nameserver 114.114.114.114@" /etc/resolv.conf
 
     # 创建安装目录
     mkdir /opt/module
-    chown -R vagrant:vagrant /opt/
+    # chown -R vagrant:vagrant /opt/
     complete_url=https://ghproxy.com/https://raw.githubusercontent.com/yiluohan1234/vagrant_bigdata_cluster/master/resources/init_bin/complete_tool.sh
     bigstart_url=https://ghproxy.com/https://raw.githubusercontent.com/yiluohan1234/vagrant_bigdata_cluster/master/resources/single_node/bigstart
     curl -o /vagrant/complete_tool.sh -O -L ${complete_url}
@@ -498,8 +496,8 @@ install_ssh
 install_hive
 install_scala
 install_spark
-install_zk
-install_hbase
-install_phoenix
-install_kafka
+#install_zk
+#install_hbase
+#install_phoenix
+#install_kafka
 install_tez
