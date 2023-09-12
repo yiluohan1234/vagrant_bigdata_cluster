@@ -29,6 +29,9 @@ dfs(){
             hdfs dfs -mkdir -p /tez/0.8.4
             hdfs dfs -put $INSTALL_PATH/tez/share/tez.tar.gz /tez/0.8.4
             ;;
+        initSpark)
+            hdfs dfs -mkdir -p /spark-log
+            ;;
         restart)
             dfs stop
             dfs start

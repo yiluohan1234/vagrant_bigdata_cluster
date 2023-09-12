@@ -32,7 +32,7 @@ _service_tool()
        ;;
 
        'dfs')
-       COMPREPLY=( $(compgen -W 'start stop format restart initTez' -- $cur ) )
+       COMPREPLY=( $(compgen -W 'start stop format restart initTez initSpark' -- $cur ) )
        ;;
 
        'yarn')
