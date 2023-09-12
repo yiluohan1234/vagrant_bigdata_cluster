@@ -116,6 +116,35 @@ hadoop(){
     esac
 }
 
+hdp(){
+    usage="Usage: $0 (start|stop|format)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            $INSTALL_PATH/hadoop/sbin/start-dfs.sh
+            $INSTALL_PATH/hadoop/sbin/start-yarn.sh
+            ;;
+        stop)
+            $INSTALL_PATH/hadoop/sbin/stop-dfs.sh
+            $INSTALL_PATH/hadoop/sbin/stop-yarn.sh
+            ;;
+        restart)
+            hdp stop
+            hdp start
+            ;;
+        format)
+            ssh hadoop "$INSTALL_PATH/hadoop/bin/hdfs namenode -format"
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
 hbase(){
     usage="Usage(hbase): $0 (start|stop)"
 
@@ -279,7 +308,7 @@ args()
 		historyserver $2
 		;;
 	  hdp)
-		hadoop $2
+		hdp $2
 		;;
 	  spark)
 		spark $2
