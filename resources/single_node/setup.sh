@@ -132,7 +132,7 @@ install_jdk()
         echo "export JAVA_HOME=${INSTALL_PATH}/${app}" >> /etc/profile
         echo 'export JRE_HOME=${JAVA_HOME}/jre' >> /etc/profile
         echo 'export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib' >> /etc/profile
-        echo 'export PATH=${JAVA_HOME}/bin:${JAVA_HOME}/sbin:$${JRE_HOME}/bin:$PATH' >> /etc/profile
+        echo 'export PATH=${JAVA_HOME}/bin:${JAVA_HOME}/sbin:${JRE_HOME}/bin:$PATH' >> /etc/profile
         echo -e "\n" >> /etc/profile
         source /etc/profile
     fi
