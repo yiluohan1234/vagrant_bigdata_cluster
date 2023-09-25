@@ -6,7 +6,7 @@ DEFAULT_DOWNLOAD_DIR=${DEFAULT_DOWNLOAD_DIR:-$DEFAULT_DOWNLOAD_DIR}
 [ ! -d $DEFAULT_DOWNLOAD_DIR ] && mkdir -p $DEFAULT_DOWNLOAD_DIR
 INSTALL_PATH=/opt/module
 HOST_NAME=hadoop000
-JAVA_URL=https://repo.huaweicloud.com/java/jdk/8u201-b09/jdk-8u201-linux-x64.tar.gz
+JAVA_URL=https://repo.huaweicloud.com/java/jdk/8u201-b09/jdk-8u221-linux-x64.tar.gz
 HADOOP_URL=https://mirrors.huaweicloud.com/apache/hadoop/core/hadoop-2.7.7/hadoop-2.7.7.tar.gz
 HIVE_URL=https://mirrors.huaweicloud.com/apache/hive/hive-2.3.4/apache-hive-2.3.4-bin.tar.gz
 SCALA_URL=https://downloads.lightbend.com/scala/2.11.12/scala-2.11.12.tgz
@@ -120,12 +120,13 @@ install_jdk()
     # 安装
     if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
     then
-        curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
+        git clone https://gitee.com/yiluohan1234/bdc-dataware ${INSTALL_PATH}/tmp
+        cat ${INSTALL_PATH}/tmp/jdk221/jdk-8u221.* > ${DEFAULT_DOWNLOAD_DIR}/${file}
+        rm -rf ${INSTALL_PATH}/tmp
     fi
-    curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
     tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
-    mv ${INSTALL_PATH}/jdk1.8.0_201 ${INSTALL_PATH}/${app}
- 	  if [ -d ${INSTALL_PATH}/${app} ]
+    mv ${INSTALL_PATH}/jdk1.8.0_221 ${INSTALL_PATH}/${app}
+ 	if [ -d ${INSTALL_PATH}/${app} ]
     then
         # 添加环境变量
         echo "# jdk environment" >> /etc/profile
