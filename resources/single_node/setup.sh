@@ -125,7 +125,7 @@ install_jdk()
     fi
     tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
     mv ${INSTALL_PATH}/jdk1.8.0_221 ${INSTALL_PATH}/${app}
- 	if [ -d ${INSTALL_PATH}/${app} ]
+    if [ -d ${INSTALL_PATH}/${app} ]
     then
         # 添加环境变量
         echo "# jdk environment" >> /etc/profile
