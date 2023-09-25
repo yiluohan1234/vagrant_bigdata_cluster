@@ -121,7 +121,7 @@ install_jdk()
     if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
     then
         git clone https://gitee.com/yiluohan1234/bdc-dataware ${INSTALL_PATH}/tmp
-        cat ${INSTALL_PATH}/tmp/jdk221/jdk-8u221-linux-x64_.* > ${DEFAULT_DOWNLOAD_DIR}/${file}
+        cat ${INSTALL_PATH}/tmp/jdk221/jdk-8u221-linux-x64_* > ${DEFAULT_DOWNLOAD_DIR}/${file}
     fi
     tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
     mv ${INSTALL_PATH}/jdk1.8.0_221 ${INSTALL_PATH}/${app}
