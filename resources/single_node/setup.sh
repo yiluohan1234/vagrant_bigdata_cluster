@@ -9,12 +9,13 @@ HOST_NAME=hadoop000
 JAVA_URL=https://repo.huaweicloud.com/java/jdk/8u201-b09/jdk-8u221-linux-x64.tar.gz
 HADOOP_URL=https://mirrors.huaweicloud.com/apache/hadoop/core/hadoop-2.7.7/hadoop-2.7.7.tar.gz
 HIVE_URL=https://mirrors.huaweicloud.com/apache/hive/hive-2.3.4/apache-hive-2.3.4-bin.tar.gz
-SCALA_URL=https://downloads.lightbend.com/scala/2.11.12/scala-2.11.12.tgz
-SPARK_URL=https://mirrors.huaweicloud.com/apache/spark/spark-2.0.2/spark-2.0.2-bin-hadoop2.7.tgz
-ZOOKEEPER_URL=https://mirrors.huaweicloud.com/apache/zookeeper/zookeeper-3.5.7/apache-zookeeper-3.5.7-bin.tar.gz
-HBASE_URL=https://mirrors.huaweicloud.com/apache/hbase/1.4.8/hbase-1.4.8-bin.tar.gz
-PHOENIX_URL=https://archive.apache.org/dist/phoenix/apache-phoenix-4.14.0-HBase-1.4/bin/apache-phoenix-4.14.0-HBase-1.4-bin.tar.gz
-KAFKA_URL=https://mirrors.huaweicloud.com/apache/kafka/2.4.1/kafka_2.11-2.4.1.tgz
+SCALA_URL=https://downloads.lightbend.com/scala/2.11.11/scala-2.11.11.tgz
+SPARK_URL=https://mirrors.huaweicloud.com/apache/spark/spark-2.4.3/spark-2.4.3-bin-hadoop2.7.tgz
+ZOOKEEPER_URL=https://mirrors.huaweicloud.com/apache/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3-bin.tar.gz
+HBASE_URL=https://mirrors.huaweicloud.com/apache/hbase/1.6.0/hbase-1.6.0-bin.tar.gz
+PHOENIX_URL=https://mirrors.huaweicloud.com/apache/phoenix/phoenix-4.16.0/phoenix-hbase-1.6-4.16.0-bin.tar.gz
+# KAFKA_URL=https://mirrors.huaweicloud.com/apache/kafka/2.4.1/kafka_2.11-2.4.1.tgz
+KAFKA_URL=https://mirrors.huaweicloud.com/apache/kafka/0.10.2.2/kafka_2.11-0.10.2.2.tgz
 TEZ_URL=https://mirrors.huaweicloud.com/apache//tez/0.8.4/apache-tez-0.8.4-bin.tar.gz
 
 setupEnv_app() {
@@ -56,6 +57,26 @@ set_property() {
     echo "    <value>$value</value>" >> ${properties_file}
     echo "  </property>" >> ${properties_file}
     echo "</configuration>" >> ${properties_file}
+}
+
+download_and_unzip_app() {
+    local app_name=$1
+    local app_name_upper=${app_name^^}
+    local url=$(eval echo \$${app_name_upper}_URL)
+    local file=${url##*/}
+
+    echo "install ${app}"
+    # 安装
+    if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
+    then
+        curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
+    fi
+    tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
+    if [[ $file =~ "tgz" ]];then
+        mv ${INSTALL_PATH}/${file%.*} ${INSTALL_PATH}/${app}
+    else
+        mv ${INSTALL_PATH}/${file%%.tar*} ${INSTALL_PATH}/${app}
+    fi
 }
 
 wget_mysql_connector(){
@@ -143,17 +164,7 @@ install_jdk()
 install_hadoop()
 {
     local app=hadoop
-    local url=${HADOOP_URL}
-    local file=${url##*/}
-
-    echo "install ${app}"
-    # 安装
-    if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
-    then
-        curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
-    fi
-    tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
-    mv ${INSTALL_PATH}/${file:0:12} ${INSTALL_PATH}/${app}
+    download_and_unzip_app ${app}
 
     if [ -d ${INSTALL_PATH}/${app} ]
     then
@@ -250,17 +261,8 @@ install_ssh() {
 install_hive()
 {
     local app=hive
-    local url=${HIVE_URL}
-    local file=${url##*/}
+    download_and_unzip_app ${app}
 
-    echo "install ${app}"
-    # 安装
-    if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
-    then
-        curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
-    fi
-    tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
-    mv ${INSTALL_PATH}/${file:0:21} ${INSTALL_PATH}/${app}
     if [ -d ${INSTALL_PATH}/${app} ]
     then
         # 配置 hive-site.xml
@@ -291,17 +293,8 @@ install_hive()
 install_scala()
 {
     local app=scala
-    local url=${SCALA_URL}
-    local file=${url##*/}
+    download_and_unzip_app ${app}
 
-    echo "install ${app}"
-    # 安装
-    if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
-    then
-        curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
-    fi
-    tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
-    mv ${INSTALL_PATH}/${file:0:13} ${INSTALL_PATH}/${app}
     if [ -d ${INSTALL_PATH}/${app} ]
     then
         # 添加环境变量
@@ -312,17 +305,8 @@ install_scala()
 install_spark()
 {
     local app=spark
-    local url=${SPARK_URL}
-    local file=${url##*/}
+    download_and_unzip_app ${app}
 
-    echo "install ${app}"
-    # 安装
-    if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
-    then
-        curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
-    fi
-    tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
-    mv ${INSTALL_PATH}/${file:0:25} ${INSTALL_PATH}/${app}
     if [ -d ${INSTALL_PATH}/${app} ]
     then
         # 配置
@@ -347,7 +331,7 @@ install_spark()
         echo 'spark.executor.extraJavaOptions  -XX:+PrintGCDetails -Dkey=value -Dnumbers="one two three"' >> ${INSTALL_PATH}/${app}/conf/spark-defaults.conf
 
         cp ${INSTALL_PATH}/${app}/conf/slaves.template ${INSTALL_PATH}/${app}/conf/slaves
-        echo '${HOST_NAME}' > ${INSTALL_PATH}/${app}/conf/slaves
+        echo "${HOST_NAME}" > ${INSTALL_PATH}/${app}/conf/slaves
         wget_mysql_connector ${INSTALL_PATH}/${app}/jars
         # 添加环境变量
         setupEnv_app ${app}
@@ -357,17 +341,8 @@ install_spark()
 install_zk()
 {
     local app=zookeeper
-    local url=${ZOOKEEPER_URL}
-    local file=${url##*/}
+    download_and_unzip_app ${app}
 
-    echo "install ${app}"
-    # 安装
-    if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
-    then
-        curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
-    fi
-    tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
-    mv ${INSTALL_PATH}/${file:0:26} ${INSTALL_PATH}/${app}
     if [ -d ${INSTALL_PATH}/${app} ]
     then
         # 配置
@@ -394,6 +369,7 @@ install_hbase()
     fi
     tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
     mv ${INSTALL_PATH}/${file:0:11} ${INSTALL_PATH}/${app}
+
     if [ -d ${INSTALL_PATH}/${app} ]
     then
         # 配置
@@ -413,21 +389,12 @@ install_hbase()
 install_phoenix()
 {
     local app=phoenix
-    local url=${PHOENIX_URL}
-    local file=${url##*/}
+    download_and_unzip_app ${app}
 
-    echo "install ${app}"
-    # 安装
-    if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
-    then
-        curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
-    fi
-    tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
-    mv ${INSTALL_PATH}/${file:0:35} ${INSTALL_PATH}/${app}
     if [ -d ${INSTALL_PATH}/${app} ]
     then
         # 配置
-        cp ${INSTALL_PATH}/${app}/phoenix-4.14.0-HBase-1.4-server.jar ${INSTALL_PATH}/hbase/lib
+        cp ${INSTALL_PATH}/${app}/phoenix*server*jar ${INSTALL_PATH}/hbase/lib
         cp ${INSTALL_PATH}/hbase/conf/hbase-site.xml ${INSTALL_PATH}/phoenix/bin
         # 添加环境变量
         setupEnv_app ${app}
@@ -437,17 +404,8 @@ install_phoenix()
 install_kafka()
 {
     local app=kafka
-    local url=${KAFKA_URL}
-    local file=${url##*/}
+    download_and_unzip_app ${app}
 
-    echo "install ${app}"
-    # 安装
-    if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
-    then
-        curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
-    fi
-    tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
-    mv ${INSTALL_PATH}/${file:0:16} ${INSTALL_PATH}/${app}
     if [ -d ${INSTALL_PATH}/${app} ]
     then
         # 配置
@@ -455,6 +413,9 @@ install_kafka()
         sed -i 's@^#listeners=.*@listeners='${value}'@' ${INSTALL_PATH}/${app}/config/server.properties
         sed -i 's@^#advertised.listeners=.*@advertised.listeners='${value}'@' ${INSTALL_PATH}/${app}/config/server.properties
         sed -i "s@^zookeeper.connect=.*@zookeeper.connect=${HOST_NAME}:2181/kafka@" ${INSTALL_PATH}/${app}/config/server.properties
+        sed -i "s@^zookeeper.connect=.*@zookeeper.connect=${HOST_NAME}:2181@" ${INSTALL_PATH}/${app}/config/consumer.properties
+        sed -i "s@^bootstrap.servers=.*@bootstrap.servers=${HOST_NAME}:9092@" ${INSTALL_PATH}/${app}/config/producer.properties
+
 
         # 添加环境变量
         setupEnv_app ${app}
@@ -464,17 +425,8 @@ install_kafka()
 install_tez()
 {
     local app=tez
-    local url=${TEZ_URL}
-    local file=${url##*/}
+    download_and_unzip_app ${app}
 
-    echo "install ${app}"
-    # 安装
-    if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
-    then
-        curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
-    fi
-    tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
-    mv ${INSTALL_PATH}/${file:0:20} ${INSTALL_PATH}/${app}
     if [ -d ${INSTALL_PATH}/${app} ]
     then
         # 配置
@@ -490,16 +442,16 @@ install_tez()
     fi
 }
 
-install_init
+# install_init
 install_jdk
 install_hadoop
-install_mysql
-install_ssh
+# install_mysql
+# install_ssh
 install_hive
 install_scala
 install_spark
-#install_zk
-#install_hbase
-#install_phoenix
-#install_kafka
+install_zk
+install_hbase
+install_phoenix
+install_kafka
 install_tez
