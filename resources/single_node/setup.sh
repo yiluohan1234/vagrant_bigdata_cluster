@@ -451,7 +451,7 @@ install_kafka()
     if [ -d ${INSTALL_PATH}/${app} ]
     then
         # 配置
-        value="listeners=PLAINTEXT://${HOST_NAME}:9092"
+        value="PLAINTEXT://${HOST_NAME}:9092"
         sed -i 's@^#listeners=.*@listeners='${value}'@' ${INSTALL_PATH}/${app}/config/server.properties
         sed -i 's@^#advertised.listeners=.*@advertised.listeners='${value}'@' ${INSTALL_PATH}/${app}/config/server.properties
         sed -i "s@^zookeeper.connect=.*@zookeeper.connect=${HOST_NAME}:2181/kafka@" ${INSTALL_PATH}/${app}/config/server.properties
