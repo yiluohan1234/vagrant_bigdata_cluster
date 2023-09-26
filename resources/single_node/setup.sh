@@ -23,7 +23,7 @@ setupEnv_app() {
     local type_name=$2
     echo "creating $app_name environment variables"
     local app_path=${INSTALL_PATH}/$app_name
-    local app_name_uppercase=$(echo $app_name | tr '[a-z]' '[A-Z]')
+    local app_name_uppercase=${app_name^^}
     echo "# $app_name environment" >> /etc/profile
     echo "export ${app_name_uppercase}_HOME=$app_path" >> /etc/profile
     if [ ! -n "$type_name" ];then
