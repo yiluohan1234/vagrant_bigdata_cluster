@@ -12,8 +12,8 @@ HIVE_URL=https://mirrors.huaweicloud.com/apache/hive/hive-2.3.4/apache-hive-2.3.
 SCALA_URL=https://downloads.lightbend.com/scala/2.11.11/scala-2.11.11.tgz
 SPARK_URL=https://mirrors.huaweicloud.com/apache/spark/spark-2.4.3/spark-2.4.3-bin-hadoop2.7.tgz
 ZOOKEEPER_URL=https://mirrors.huaweicloud.com/apache/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3-bin.tar.gz
-HBASE_URL=https://mirrors.huaweicloud.com/apache/hbase/1.6.0/hbase-1.6.0-bin.tar.gz
-PHOENIX_URL=https://mirrors.huaweicloud.com/apache/phoenix/phoenix-4.16.0/phoenix-hbase-1.6-4.16.0-bin.tar.gz
+HBASE_URL=https://mirrors.huaweicloud.com/apache/hbase/1.4.8/hbase-1.4.8-bin.tar.gz
+PHOENIX_URL=https://mirrors.huaweicloud.com/apache/phoenix/apache-phoenix-4.15.0-HBase-1.4/bin/apache-phoenix-4.15.0-HBase-1.4-bin.tar.gz
 # KAFKA_URL=https://mirrors.huaweicloud.com/apache/kafka/2.4.1/kafka_2.11-2.4.1.tgz
 KAFKA_URL=https://mirrors.huaweicloud.com/apache/kafka/0.10.2.2/kafka_2.11-0.10.2.2.tgz
 TEZ_URL=https://mirrors.huaweicloud.com/apache//tez/0.8.4/apache-tez-0.8.4-bin.tar.gz
@@ -383,7 +383,6 @@ install_hbase()
         set_property ${INSTALL_PATH}/${app}/conf/hbase-site.xml "phoenix.schema.isNamespaceMappingEnabled" "true"
         set_property ${INSTALL_PATH}/${app}/conf/hbase-site.xml "phoenix.schema.mapSystemTablesToNamespace" "true"
         echo -e "${HOST_NAME}" > ${INSTALL_PATH}/${app}/conf/regionservers
-        mv ${INSTALL_PATH}/${app}/lib/slf4j-log4j12-1.7.25.jar ${INSTALL_PATH}/${app}/lib/slf4j-log4j12-1.7.25.jar_bak
         # 添加环境变量
         setupEnv_app ${app}
     fi
