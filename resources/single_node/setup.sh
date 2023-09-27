@@ -381,6 +381,7 @@ install_hbase()
         set_property ${INSTALL_PATH}/${app}/conf/hbase-site.xml "phoenix.schema.isNamespaceMappingEnabled" "true"
         set_property ${INSTALL_PATH}/${app}/conf/hbase-site.xml "phoenix.schema.mapSystemTablesToNamespace" "true"
         echo -e "${HOST_NAME}" > ${INSTALL_PATH}/${app}/conf/regionservers
+        mv ${INSTALL_PATH}/${app}/lib/slf4j-log4j12-1.7.25.jar ${INSTALL_PATH}/${app}/lib/slf4j-log4j12-1.7.25.jar_bak
         # 添加环境变量
         setupEnv_app ${app}
     fi
