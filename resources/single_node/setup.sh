@@ -125,6 +125,8 @@ install_init(){
 
     [ -f /vagrant/bigstart ] && cp /vagrant/bigstart /usr/bin && chmod a+x /usr/bin/bigstart
     [ -f /vagrant/complete_tool.sh ] && cp /vagrant/complete_tool.sh /etc/profile.d
+    rm -rf /root/anaconda-ks.cfg
+    rm -rf /root/original-ks.cfg
 }
 
 install_jdk()
