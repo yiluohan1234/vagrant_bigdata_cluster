@@ -442,11 +442,11 @@ install_tez()
     fi
 }
 
-# install_init
+install_init
 install_jdk
 install_hadoop
-# install_mysql
-# install_ssh
+install_mysql
+install_ssh
 install_hive
 install_scala
 install_spark
