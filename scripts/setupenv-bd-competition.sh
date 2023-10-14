@@ -9,14 +9,8 @@ set_init() {
     # yum clean all && yum makecache
     # yum update
 
-    # 安装基础软件
-    # EPEL是由 Fedora 社区打造，为 RHEL 及衍生发行版如 CentOS、Scientific Linux 等提供高质量软件包的项目
-    echo "install epel-release sshpass unzip zip vim net-tools"
-    CENTOS_BASIC_APPS=("epel-release" "wget" "sshpass" "unzip" "zip" "vim-enhanced" "net-tools")
-    for app in ${CENTOS_BASIC_APPS[@]};do
-        yum install -y -q ${app}
-    done
     # 安装git
+    echo "install git"
     rpm -ivh https://opensource.wandisco.com/git/wandisco-git-release-7-2.noarch.rpm
     yum install -y -q git
     # ssh 设置允许密码登录
@@ -24,6 +18,12 @@ set_init() {
     sed -i 's@^PasswordAuthentication no@PasswordAuthentication yes@g' /etc/ssh/sshd_config
     sed -i 's@^#PubkeyAuthentication yes@PubkeyAuthentication yes@g' /etc/ssh/sshd_config
     systemctl restart sshd.service
+
+    # 安装基础软件
+    CENTOS_BASIC_APPS=("epel-release" "sshpass" "unzip" "zip" "vim-enhanced" "net-tools")
+    for app in ${CENTOS_BASIC_APPS[@]};do
+        yum install -y -q ${app}
+    done
 
     echo "Set the maximum number of file handles, maximum number of threads and maximum number of processes"
     # Set the maximum number of file handles and maximum number of threads
