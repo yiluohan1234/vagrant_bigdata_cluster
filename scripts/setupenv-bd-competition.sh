@@ -4,7 +4,7 @@ set_init() {
     mkdir /etc/yum.repos.d/repo_bak
     mv /etc/yum.repos.d/*.repo /etc/yum.repos.d/repo_bak
     curl -o /etc/yum.repos.d/epel-7.repo  -O -L http://mirrors.aliyun.com/repo/epel-7.repo
-    curl -o /etc/yum.repos.d/Centos-7.repo -O -L http://mirrors.aliyun.com/repo/Centos-7.repo
+    # curl -o /etc/yum.repos.d/Centos-7.repo -O -L http://mirrors.aliyun.com/repo/Centos-7.repo
     # curl -o /etc/yum.repos.d/CentOS7-Base-163.repo -O -L http://mirrors.163.com/.help/CentOS7-Base-163.repo
     yum clean all && yum makecache
     # yum update
