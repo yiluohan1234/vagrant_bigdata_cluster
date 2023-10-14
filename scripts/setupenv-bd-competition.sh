@@ -11,14 +11,14 @@ set_init() {
 
     # 安装基础软件
     # EPEL是由 Fedora 社区打造，为 RHEL 及衍生发行版如 CentOS、Scientific Linux 等提供高质量软件包的项目
-    echo "install unzip zip vim net-tools"
-    CENTOS_BASIC_APPS=("epel-release" "sshpass" "unzip" "zip" "vim-enhanced" "net-tools")
+    echo "install epel-release sshpass unzip zip vim net-tools git"
+    CENTOS_BASIC_APPS=("epel-release" "wget" "sshpass" "unzip" "zip" "vim-enhanced" "net-tools" "git")
     for app in ${CENTOS_BASIC_APPS[@]};do
         yum install -y -q ${app}
     done
     # 安装git
     # rpm -ivh https://opensource.wandisco.com/git/wandisco-git-release-7-2.noarch.rpm
-    yum install -y -q git
+    # yum install -y -q git
     # ssh 设置允许密码登录
     echo "Set ssh"
     sed -i 's@^PasswordAuthentication no@PasswordAuthentication yes@g' /etc/ssh/sshd_config
@@ -75,7 +75,7 @@ download_package() {
         # curl -o /usr/package277/scala-2.11.11.tgz -O -L https://downloads.lightbend.com/scala/2.11.11/scala-2.11.11.tgz
     elif [ "$hostname" == "hdp102" ];then
         echo "download mysql-connector-java-5.1.47"
-        curl -o /usr/package277/mysql-connector-java-5.1.47.jar https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.47/mysql-connector-java-5.1.47.jar
+        curl -o /usr/package277/mysql-connector-java-5.1.47.jar https://mirrors.huaweicloud.com/maven2/mysql/mysql-connector-java/5.1.47/mysql-connector-java-5.1.47.jar
     elif [ "$hostname" == "hdp103" ];then
         echo "download mysql-5.7.35"
         curl -o /usr/package277/mysql-5.7.35-1.el7.x86_64.rpm-bundle.tar  -O -L https://repo.huaweicloud.com/mysql/Downloads/MySQL-5.7/mysql-5.7.35-1.el7.x86_64.rpm-bundle.tar
