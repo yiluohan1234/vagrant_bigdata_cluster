@@ -1,9 +1,9 @@
 #!/bin/bash
 
 set_init() {
-    mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo_bak
-    curl -o /etc/yum.repos.d/CentOS-Base.repo -O -L http://mirrors.aliyun.com/repo/Centos-7.repo
-    yum clean all && yum makecache
+    # mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo_bak
+    # curl -o /etc/yum.repos.d/CentOS-Base.repo -O -L http://mirrors.aliyun.com/repo/Centos-7.repo
+    # yum clean all && yum makecache
     # yum update
 
     # 安装git
