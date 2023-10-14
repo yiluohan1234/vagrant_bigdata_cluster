@@ -9,11 +9,11 @@ set_init() {
     # yum clean all && yum makecache
     # yum update
 
-    # 安装基础软件"epel-release"
+    # 安装基础软件
     # EPEL是由 Fedora 社区打造，为 RHEL 及衍生发行版如 CentOS、Scientific Linux 等提供高质量软件包的项目
     echo "install epel-release sshpass unzip zip vim net-tools git"
-    rpm -ivh http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-    CENTOS_BASIC_APPS=("wget" "sshpass" "unzip" "zip" "vim-enhanced" "net-tools" "git")
+    # rpm -ivh http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    CENTOS_BASIC_APPS=("epel-release" "wget" "sshpass" "unzip" "zip" "vim-enhanced" "net-tools" "git")
     for app in ${CENTOS_BASIC_APPS[@]};do
         yum install -y -q ${app}
     done
