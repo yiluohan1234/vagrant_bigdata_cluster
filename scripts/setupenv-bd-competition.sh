@@ -1,14 +1,21 @@
 #!/bin/bash
 
 set_init() {
-    mkdir /etc/yum.repos.d/repo_bak
-    mv /etc/yum.repos.d/*.repo /etc/yum.repos.d/repo_bak
-    curl -o /etc/yum.repos.d/epel-7.repo  -O -L http://mirrors.aliyun.com/repo/epel-7.repo
+    # mkdir /etc/yum.repos.d/repo_bak
+    # mv /etc/yum.repos.d/*.repo /etc/yum.repos.d/repo_bak
+    # curl -o /etc/yum.repos.d/epel-7.repo  -O -L http://mirrors.aliyun.com/repo/epel-7.repo
     # curl -o /etc/yum.repos.d/Centos-7.repo -O -L http://mirrors.aliyun.com/repo/Centos-7.repo
     # curl -o /etc/yum.repos.d/CentOS7-Base-163.repo -O -L http://mirrors.163.com/.help/CentOS7-Base-163.repo
-    yum clean all && yum makecache
+    # yum clean all && yum makecache
     # yum update
 
+    # 安装基础软件
+    # EPEL是由 Fedora 社区打造，为 RHEL 及衍生发行版如 CentOS、Scientific Linux 等提供高质量软件包的项目
+    echo "install unzip zip vim net-tools"
+    CENTOS_BASIC_APPS=("epel-release" "sshpass" "unzip" "zip" "vim-enhanced" "net-tools")
+    for app in ${CENTOS_BASIC_APPS[@]};do
+        yum install -y -q ${app}
+    done
     # 安装git
     # rpm -ivh https://opensource.wandisco.com/git/wandisco-git-release-7-2.noarch.rpm
     yum install -y -q git
@@ -17,14 +24,6 @@ set_init() {
     sed -i 's@^PasswordAuthentication no@PasswordAuthentication yes@g' /etc/ssh/sshd_config
     sed -i 's@^#PubkeyAuthentication yes@PubkeyAuthentication yes@g' /etc/ssh/sshd_config
     systemctl restart sshd.service
-
-    # 安装基础软件
-    # EPEL是由 Fedora 社区打造，为 RHEL 及衍生发行版如 CentOS、Scientific Linux 等提供高质量软件包的项目
-    echo "install unzip zip vim net-tools"
-    CENTOS_BASIC_APPS=("sshpass" "unzip" "zip" "vim-enhanced" "net-tools") #"epel-release"
-    for app in ${CENTOS_BASIC_APPS[@]};do
-        yum install -y -q ${app}
-    done
 
     echo "Set the maximum number of file handles, maximum number of threads and maximum number of processes"
     # Set the maximum number of file handles and maximum number of threads
