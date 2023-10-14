@@ -1,6 +1,11 @@
 #!/bin/bash
 
 set_init() {
+    # mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo_bak
+    # wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+    # yum clean all && yum makecache
+    # yum update
+
     # 安装git
     rpm -ivh https://opensource.wandisco.com/git/wandisco-git-release-7-2.noarch.rpm
     yum install -y -q git
@@ -63,6 +68,7 @@ download_package() {
         echo "download scala"
         curl -o /usr/package277/scala-2.10.6.tgz -O -L https://distfiles.macports.org/scala2.10/scala-2.10.6.tgz
         curl -o /usr/package277/scala-2.11.11.tgz -O -L https://downloads.lightbend.com/scala/2.11.11/scala-2.11.11.tgz
+    elif [ "$hostname" == "hdp102" ];then
         echo "download mysql-connector-java-5.1.47"
         curl -o /usr/package277/mysql-connector-java-5.1.47.jar https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.47/mysql-connector-java-5.1.47.jar
     elif [ "$hostname" == "hdp103" ];then
