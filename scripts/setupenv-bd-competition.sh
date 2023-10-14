@@ -11,15 +11,14 @@ set_init() {
 
     # 安装基础软件
     # EPEL是由 Fedora 社区打造，为 RHEL 及衍生发行版如 CentOS、Scientific Linux 等提供高质量软件包的项目
-    echo "install epel-release sshpass unzip zip vim net-tools git"
-    # rpm -ivh http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-    CENTOS_BASIC_APPS=("epel-release" "wget" "sshpass" "unzip" "zip" "vim-enhanced" "net-tools" "git")
+    echo "install epel-release sshpass unzip zip vim net-tools"
+    CENTOS_BASIC_APPS=("epel-release" "wget" "sshpass" "unzip" "zip" "vim-enhanced" "net-tools")
     for app in ${CENTOS_BASIC_APPS[@]};do
         yum install -y -q ${app}
     done
     # 安装git
-    # rpm -ivh https://opensource.wandisco.com/git/wandisco-git-release-7-2.noarch.rpm
-    # yum install -y -q git
+    rpm -ivh https://opensource.wandisco.com/git/wandisco-git-release-7-2.noarch.rpm
+    yum install -y -q git
     # ssh 设置允许密码登录
     echo "Set ssh"
     sed -i 's@^PasswordAuthentication no@PasswordAuthentication yes@g' /etc/ssh/sshd_config
