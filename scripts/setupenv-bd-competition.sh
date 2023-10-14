@@ -1,9 +1,9 @@
 #!/bin/bash
 
 set_init() {
-    # mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo_bak
-    # wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
-    # yum clean all && yum makecache
+    mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo_bak
+    curl -o /etc/yum.repos.d/CentOS-Base.repo -O -L http://mirrors.aliyun.com/repo/Centos-7.repo
+    yum clean all && yum makecache
     # yum update
 
     # 安装git
@@ -16,7 +16,8 @@ set_init() {
     systemctl restart sshd.service
 
     # 安装基础软件
-    CENTOS_BASIC_APPS=("epel-release" "sshpass" "unzip" "zip" "vim-enhanced" "net-tools")
+    # EPEL是由 Fedora 社区打造，为 RHEL 及衍生发行版如 CentOS、Scientific Linux 等提供高质量软件包的项目
+    CENTOS_BASIC_APPS=("sshpass" "unzip" "zip" "vim-enhanced" "net-tools") #"epel-release"
     for app in ${CENTOS_BASIC_APPS[@]};do
         yum install -y -q ${app}
     done
