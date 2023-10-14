@@ -20,6 +20,7 @@ set_init() {
 
     # 安装基础软件
     # EPEL是由 Fedora 社区打造，为 RHEL 及衍生发行版如 CentOS、Scientific Linux 等提供高质量软件包的项目
+    echo "install unzip zip vim net-tools"
     CENTOS_BASIC_APPS=("sshpass" "unzip" "zip" "vim-enhanced" "net-tools") #"epel-release"
     for app in ${CENTOS_BASIC_APPS[@]};do
         yum install -y -q ${app}
