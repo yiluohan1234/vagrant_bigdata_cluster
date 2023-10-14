@@ -15,13 +15,13 @@ github_url      = "https://ghproxy.com/https://raw.githubusercontent.com/#{githu
 
 boxes = [
     {
-      :name => "hdp101", :eth1 => "192.168.10.101", :mem => "4096", :cpu => "2"
+      :name => "hdp101", :eth1 => "192.168.10.101", :mem => "6144", :cpu => "2"
     },
     {
-      :name => "hdp102", :eth1 => "192.168.10.102", :mem => "4096", :cpu => "2"
+      :name => "hdp102", :eth1 => "192.168.10.102", :mem => "6144", :cpu => "2"
     },
     {
-      :name => "hdp103", :eth1 => "192.168.10.103", :mem => "4096", :cpu => "2"
+      :name => "hdp103", :eth1 => "192.168.10.103", :mem => "6144", :cpu => "2"
     }
 ]
 
