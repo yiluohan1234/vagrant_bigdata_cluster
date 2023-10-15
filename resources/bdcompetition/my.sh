@@ -37,18 +37,18 @@ fi
 current_hostname=`cat /etc/hostname`
 # master
 if [ "$current_hostname" == "${HOSTNAME_LIST[0]}" ];then
-    sed -i '/centos.pool.ntp.org iburst/s/^/#/g' /etc/ntp.conf 
+    sed -i '/centos.pool.ntp.org iburst/s/^/#/g' /etc/ntp.conf
     # sed -i 's/^server/#&/'  /etc/ntp.conf
     echo "server 127.127.1.0
-fudge 127.127.1.0 stratum 10" >> /etc/ntp.conf 
-    # echo -e "server 127.127.1.0\nfudge 127.127.1.0 stratum 10" >> /etc/ntp.conf 
+fudge 127.127.1.0 stratum 10" >> /etc/ntp.conf
+    # echo -e "server 127.127.1.0\nfudge 127.127.1.0 stratum 10" >> /etc/ntp.conf
     systemctl restart ntpd.service
 fi
 
 # slave1 and slave2
 if [ "$current_hostname" != "${HOSTNAME_LIST[0]}" ];then
-    ntpdate master
-    (crontab -l;echo "*/30 10-17 * * * usr/sbin/ntpdate master")| crontab
+    ntpdate ${HOSTNAME_LIST[0]}
+    (crontab -l;echo "*/30 10-17 * * * usr/sbin/ntpdate ${HOSTNAME_LIST[0]}")| crontab
     crontab -l
 fi
 }
@@ -130,7 +130,7 @@ tar -zxvf ${SOFT_PATH}/hadoop-2.7.7.tar.gz -C ${INSTALL_PATH}/hadoop/
 sed -i "s@^export JAVA_HOME=.*@export JAVA_HOME=${JAVA_HOME}@" ${hadoop_dir}/etc/hadoop/hadoop-env.sh
 
 # core-site.xml
-setkv "fs.default.name=hdfs://master:9000" ${hadoop_dir}/etc/hadoop/core-site.xml
+setkv "fs.default.name=hdfs://${HOSTNAME_LIST[0]}:9000" ${hadoop_dir}/etc/hadoop/core-site.xml
 setkv "hadoop.tmp.dir=/root/hadoopData/tmp" ${hadoop_dir}/etc/hadoop/core-site.xml
 
 # hdfs-site.xml
@@ -144,21 +144,21 @@ setkv "dfs.datanode.use.datanode.hostname=true" ${hadoop_dir}/etc/hadoop/hdfs-si
 echo "export JAVA_HOME=${JAVA_HOME}" >> ${hadoop_dir}/etc/hadoop/yarn-env.sh
 
 # yarn-site.xml
-setkv "yarn.resourcemanager.admin.address=master:18141" ${hadoop_dir}/etc/hadoop/yarn-site.xml
+setkv "yarn.resourcemanager.admin.address=${HOSTNAME_LIST[0]}:18141" ${hadoop_dir}/etc/hadoop/yarn-site.xml
 setkv "yarn.nodemanager.auxservices.mapreduce.shuffle.class=org.apache.hadoop.mapred.shuffleHandler" ${hadoop_dir}/etc/hadoop/yarn-site.xml
 setkv "yarn.nodemanager.aux-services=mapreduce_shuffle" ${hadoop_dir}/etc/hadoop/yarn-site.xml
-setkv "yarn.resourcemanager.hostname=master" ${hadoop_dir}/etc/hadoop/yarn-site.xml
+setkv "yarn.resourcemanager.hostname=${HOSTNAME_LIST[0]}" ${hadoop_dir}/etc/hadoop/yarn-site.xml
 
 # mapred-site.xml
 cp ${hadoop_dir}/etc/hadoop/mapred-site.xml.template ${hadoop_dir}/etc/hadoop/mapred-site.xml
 setkv "mapreduce.framework.name=yarn" ${hadoop_dir}/etc/hadoop/mapred-site.xml
 
 # master and slaves
-echo "master" >> ${hadoop_dir}/etc/hadoop/master
+echo "${HOSTNAME_LIST[0]}" >> ${hadoop_dir}/etc/hadoop/master
 sed -i '1,$d' ${hadoop_dir}/etc/hadoop/slaves
-echo "slave1
-slave2" >> ${hadoop_dir}/etc/hadoop/slaves
-# echo -e "slave1\nslave2" >> ${hadoop_dir}/etc/hadoop/slaves
+echo "${HOSTNAME_LIST[1]}
+${HOSTNAME_LIST[2]}" >> ${hadoop_dir}/etc/hadoop/slaves
+# echo -e "${HOSTNAME_LIST[1]}\n${HOSTNAME_LIST[2]}" >> ${hadoop_dir}/etc/hadoop/slaves
 
 # dispatch
 xsync ${hadoop_dir}
@@ -182,7 +182,7 @@ PASSWORD=`grep 'temporary password' /var/log/mysqld.log|awk -F "root@localhost: 
 
 PORT="3306"
 USERNAME="root"
-mysql -u${USERNAME} -p${PASSWORD} -e "set global validate_password_policy=0; set global validate_password_length=4; ALTER USER 'root'@'localhost' IDENTIFIED BY '123456'; create user 'root'@'%' identified by '123456'; grant all privileges on *.* to 'root'@'%' with grant option; flush privileges;" --connect-expired-password 
+mysql -u${USERNAME} -p${PASSWORD} -e "set global validate_password_policy=0; set global validate_password_length=4; ALTER USER 'root'@'localhost' IDENTIFIED BY '123456'; create user 'root'@'%' identified by '123456'; grant all privileges on *.* to 'root'@'%' with grant option; flush privileges;" --connect-expired-password
 }
 
 sethive(){
@@ -191,7 +191,7 @@ local hive_dir=${INSTALL_PATH}/hive/apache-hive-2.3.4-bin
 current_hostname=`cat /etc/hostname`
 if [ "$current_hostname" == "${HOSTNAME_LIST[0]}" -o "$current_hostname" == "${HOSTNAME_LIST[1]}" ];then
     mkdir ${INSTALL_PATH}/hive
-    tar -zxvf ${SOFT_PATH}/apache-hive-2.3.4-bin.tar.gz -C ${INSTALL_PATH}/hive/ 
+    tar -zxvf ${SOFT_PATH}/apache-hive-2.3.4-bin.tar.gz -C ${INSTALL_PATH}/hive/
     setenv hive ${hive_dir}
     source $PROFILE
 
@@ -209,7 +209,7 @@ if [ "$current_hostname" == "${HOSTNAME_LIST[1]}" ];then
     cp ${SOFT_PATH}/mysql-connector-java-5.1.47.jar ${hive_dir}/lib/
     # hive-site.xml
     setkv "hive.metastore.warehouse.dir=/user/hive_remote/warehouse" ${hive_dir}/conf/hive-site.xml true
-    setkv "javax.jdo.option.ConnectionURL=jdbc:mysql://slave2:3306/hive?createDatabaseIfNotExist=true&amp;characterEncoding=UTF-8&amp;useSSL=false" ${hive_dir}/conf/hive-site.xml
+    setkv "javax.jdo.option.ConnectionURL=jdbc:mysql://${HOSTNAME_LIST[2]}:3306/hive?createDatabaseIfNotExist=true&amp;characterEncoding=UTF-8&amp;useSSL=false" ${hive_dir}/conf/hive-site.xml
     setkv "javax.jdo.option.ConnectionDriverName=com.mysql.jdbc.Driver" ${hive_dir}/conf/hive-site.xml
     setkv "javax.jdo.option.ConnectionUserName=root" ${hive_dir}/conf/hive-site.xml
     setkv "javax.jdo.option.ConnectionPassword=123456" ${hive_dir}/conf/hive-site.xml
@@ -222,7 +222,7 @@ if [ "$current_hostname" == "${HOSTNAME_LIST[0]}" ];then
     # hive-site.xml
     setkv "hive.metastore.warehouse.dir=/user/hive_remote/warehouse" ${hive_dir}/conf/hive-site.xml true
     setkv "hive.metastore.local=false" ${hive_dir}/conf/hive-site.xml
-    setkv "hive.metastore.uris=thrift://slave1:9083" ${hive_dir}/conf/hive-site.xml
+    setkv "hive.metastore.uris=thrift://${HOSTNAME_LIST[1]}:9083" ${hive_dir}/conf/hive-site.xml
 fi
 }
 
@@ -262,7 +262,7 @@ mkdir ${INSTALL_PATH}/spark
 tar -zxvf ${SOFT_PATH}/spark-2.4.3-bin-hadoop2.7.tgz -C ${INSTALL_PATH}/spark/
 # setup
 cp ${spark_dir}/conf/spark-env.sh.template ${spark_dir}/conf/spark-env.sh
-echo "export SPARK_MASTER_IP=master
+echo "export SPARK_MASTER_IP=${HOSTNAME_LIST[0]}
 export SCALA_HOME=${SCALA_HOME}
 export SPARK_WORKER_MEMORY=8g
 export JAVA_HOME=${JAVA_HOME}
@@ -272,8 +272,8 @@ export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop" >> ${spark_dir}/conf/spark-env
 cp ${spark_dir}/conf/slaves.template ${spark_dir}/conf/slaves
 sed -i '1,$d' ${spark_dir}/conf/slaves
 
-echo "slave1
-slave2" >> ${spark_dir}/conf/slaves
+echo "${HOSTNAME_LIST[1]}
+${HOSTNAME_LIST[2]}" >> ${spark_dir}/conf/slaves
 
 # dispatch
 xsync ${spark_dir}
@@ -326,7 +326,7 @@ setssh(){
                 \"Enter same passphrase again:\" { send \"\r\" ; exp_continue}
             }";
     fi
-    
+
     length=${#HOSTNAME_LIST[@]}
     current_hostname=`cat /etc/hostname`
     for ((i=0; i<$length; i++));do
@@ -367,7 +367,7 @@ setenv() {
         echo 'export PATH=$PATH:${'$app_name_uppercase'_HOME}/bin:${'$app_name_uppercase'_HOME}/sbin' >> $PROFILE
     fi
 
-    if [ "$app_name" == "hadoop" ];then 
+    if [ "$app_name" == "hadoop" ];then
         echo 'CLASSPATH=$CLASSPATH:$HADOOP_HOME/lib' >> $PROFILE
     fi
     echo -e "\n" >> /etc/profile
@@ -375,7 +375,7 @@ setenv() {
 
 jpsall() {
 for host in ${HOSTNAME_LIST[*]};
-do 
+do
     echo -e "\033[31m--------------------- $host host ---------------------\033[0m"
     ssh $host "${JAVA_HOME}/bin/jps" | grep -v Jps
 done
@@ -399,7 +399,7 @@ echo "file path is $pdir"
 user=`whoami`
 
 for host in ${HOSTNAME_LIST[*]};
-do 
+do
     current_hostname=`cat /etc/hostname`
     if [ "$current_hostname" != "$host" ];then
         echo "================current host is $host================="
