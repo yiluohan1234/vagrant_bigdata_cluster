@@ -81,13 +81,15 @@ download_and_unzip_app() {
 
 wget_mysql_connector(){
     local cp_path=$1
-    local file=mysql-connector-java-5.1.47.jar
-    local url=https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.47/mysql-connector-java-5.1.47.jar
+    local file=mysql-connector-java-5.1.49.tar.gz
+    local url=https://repo.huaweicloud.com/mysql/Downloads/Connector-J/mysql-connector-java-5.1.49.tar.gz
     if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
     then
         curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
     fi
-    cp ${DEFAULT_DOWNLOAD_DIR}/${file} $cp_path
+    tar -zxvf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${DEFAULT_DOWNLOAD_DIR}/
+    cp ${DEFAULT_DOWNLOAD_DIR}/${file%%.tar*}/${file%%.tar*}.jar $cp_path
+    rm -rf ${DEFAULT_DOWNLOAD_DIR}/${file%%.tar*}
 }
 
 install_init(){
