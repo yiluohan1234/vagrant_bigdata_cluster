@@ -6,6 +6,7 @@ PASSWD_LIST=('vagrant' 'vagrant' 'vagrant')
 INSTALL_PATH=/usr
 PROFILE=/etc/profile
 SOFT_PATH=/usr/package277
+IS_XCALL=false
 
 setip() {
 length=${#HOSTNAME_LIST[@]}
@@ -63,15 +64,21 @@ local java_dir=${INSTALL_PATH}/java/jdk1.8.0_221
 mkdir ${INSTALL_PATH}/java
 tar -zxvf ${SOFT_PATH}/jdk-8u221-linux-x64.tar.gz -C ${INSTALL_PATH}/java/
 #setenv java ${java_dir}
-# dispatch
-xsync ${java_dir}
-# set environment
-length=${#HOSTNAME_LIST[@]}
-for ((i=0; i<$length; i++));do
-    ssh ${HOSTNAME_LIST[$i]} "setenv java ${java_dir}"
-done
-source $PROFILE
-xcall java -version
+if [ "${IS_XCALL}" == "false" ];then
+    # dispatch
+    xsync ${java_dir}
+    # set environment
+    length=${#HOSTNAME_LIST[@]}
+    for ((i=0; i<$length; i++));do
+        ssh ${HOSTNAME_LIST[$i]} "setenv java ${java_dir}"
+    done
+    source $PROFILE
+    xcall java -version
+else
+    setenv java ${java_dir}
+    source $PROFILE
+    java -version
+fi
 }
 
 setzk363() {
@@ -165,18 +172,23 @@ echo "${HOSTNAME_LIST[1]}
 ${HOSTNAME_LIST[2]}" >> ${hadoop_dir}/etc/hadoop/slaves
 # echo -e "${HOSTNAME_LIST[1]}\n${HOSTNAME_LIST[2]}" >> ${hadoop_dir}/etc/hadoop/slaves
 
-# dispatch
-xsync ${hadoop_dir}
+if [ "${IS_XCALL}" == "false" ];then
+    # dispatch
+    xsync ${hadoop_dir}
 
-# set environment
-length=${#HOSTNAME_LIST[@]}
-for ((i=0; i<$length; i++));do
-    ssh ${HOSTNAME_LIST[$i]} "setenv hadoop ${hadoop_dir} true"
-done
-source $PROFILE
-hadoop namenode -format
-${HADOOP_HOME}/sbin/start-all.sh
-jpsall
+    # set environment
+    length=${#HOSTNAME_LIST[@]}
+    for ((i=0; i<$length; i++));do
+        ssh ${HOSTNAME_LIST[$i]} "setenv hadoop ${hadoop_dir} true"
+    done
+    source $PROFILE
+    hadoop namenode -format
+    ${HADOOP_HOME}/sbin/start-all.sh
+    jpsall
+else
+    setenv hadoop ${hadoop_dir} true
+    source $PROFILE
+fi
 }
 
 setmysql() {
@@ -192,8 +204,14 @@ mysql -u${USERNAME} -p${PASSWORD} -e "set global validate_password_policy=0; set
 
 sethive(){
 local hive_dir=${INSTALL_PATH}/hive/apache-hive-2.3.4-bin
-# master and slave1
+
 current_hostname=`cat /etc/hostname`
+# slave2
+if [ "$current_hostname" == "${HOSTNAME_LIST[2]}" ];then
+    setmysql
+fi
+
+# master and slave1
 if [ "$current_hostname" == "${HOSTNAME_LIST[0]}" -o "$current_hostname" == "${HOSTNAME_LIST[1]}" ];then
     mkdir ${INSTALL_PATH}/hive
     tar -zxvf ${SOFT_PATH}/apache-hive-2.3.4-bin.tar.gz -C ${INSTALL_PATH}/hive/
@@ -235,30 +253,44 @@ setscala211() {
 local scala_dir=${INSTALL_PATH}/scala/scala-2.11.11
 mkdir ${INSTALL_PATH}/scala
 tar -zxvf ${SOFT_PATH}/scala-2.11.11.tgz -C ${INSTALL_PATH}/scala/
-# dispatch
-xsync ${scala_dir}
-# set environment
-length=${#HOSTNAME_LIST[@]}
-for ((i=0; i<$length; i++));do
-    ssh ${HOSTNAME_LIST[$i]} "setenv scala ${scala_dir}"
-done
-source $PROFILE
-xcall scala -version
+
+if [ "${IS_XCALL}" == "false" ];then
+    # dispatch
+    xsync ${scala_dir}
+    # set environment
+    length=${#HOSTNAME_LIST[@]}
+    for ((i=0; i<$length; i++));do
+        ssh ${HOSTNAME_LIST[$i]} "setenv scala ${scala_dir}"
+    done
+    source $PROFILE
+    xcall scala -version
+else
+    setenv scala ${scala_dir}
+    source $PROFILE
+    scala -version
+fi
 }
 
 setscala210() {
 local scala_dir=${INSTALL_PATH}/scala/scala-2.10.6
 mkdir ${INSTALL_PATH}/scala
 tar -zxvf ${SOFT_PATH}/scala-2.10.6.tgz -C ${INSTALL_PATH}/scala/
-# dispatch
-xsync ${scala_dir}
-# set environment
-length=${#HOSTNAME_LIST[@]}
-for ((i=0; i<$length; i++));do
-    ssh ${HOSTNAME_LIST[$i]} "setenv scala ${scala_dir}"
-done
-source $PROFILE
-xcall scala -version
+
+if [ "${IS_XCALL}" == "false" ];then
+    # dispatch
+    xsync ${scala_dir}
+    # set environment
+    length=${#HOSTNAME_LIST[@]}
+    for ((i=0; i<$length; i++));do
+        ssh ${HOSTNAME_LIST[$i]} "setenv scala ${scala_dir}"
+    done
+    source $PROFILE
+    xcall scala -version
+else
+    setenv scala ${scala_dir}
+    source $PROFILE
+    scala -version
+fi
 }
 
 setspark() {
@@ -280,16 +312,21 @@ sed -i '1,$d' ${spark_dir}/conf/slaves
 echo "${HOSTNAME_LIST[1]}
 ${HOSTNAME_LIST[2]}" >> ${spark_dir}/conf/slaves
 
-# dispatch
-xsync ${spark_dir}
-# set environment
-length=${#HOSTNAME_LIST[@]}
-for ((i=0; i<$length; i++));do
-    ssh ${HOSTNAME_LIST[$i]} "setenv spark ${spark_dir}"
-done
-source $PROFILE
-${SPARK_HOME}/sbin/start-all.sh
-jpsall
+if [ "${IS_XCALL}" == "false" ];then
+    # dispatch
+    xsync ${spark_dir}
+    # set environment
+    length=${#HOSTNAME_LIST[@]}
+    for ((i=0; i<$length; i++));do
+        ssh ${HOSTNAME_LIST[$i]} "setenv spark ${spark_dir}"
+    done
+    source $PROFILE
+    ${SPARK_HOME}/sbin/start-all.sh
+    jpsall
+else
+    setenv spark ${spark_dir}
+    source $PROFILE
+fi
 }
 
 # set_property "fs.defaultFS=hdfs://master:9000" ${HADOOP_HOME}/etc/hadoop/core-site.xml true
@@ -410,6 +447,7 @@ do
         echo "================current host is $host================="
         rsync -rvl $pdir/$filename $user@$host:$pdir
     fi
+    source /etc/profile
 done
 
 echo "complate !"
