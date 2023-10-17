@@ -13,7 +13,12 @@ for ((i=0; i<$length; i++));do
     entry="${IP_LIST[$i]} ${HOSTNAME_LIST[$i]}"
     echo "${entry}" >> /etc/hosts
 done
-hostset_ip=`ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'`
+hostset_ip_local_num=`ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|grep 192|wc -l`
+if [ ${hostset_ip_local_num} == 0 ];then
+    hostset_ip=`ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'`
+else
+    hostset_ip=`ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|grep 192`
+fi
 hostset_name=`cat /etc/hosts|grep $hostset_ip|awk '{print $2}'`
 hostnamectl set-hostname $hostset_name
 bash
@@ -201,12 +206,12 @@ if [ "$current_hostname" == "${HOSTNAME_LIST[0]}" -o "$current_hostname" == "${H
 export HIVE_CONF_DIR=${HIVE_HOME}/conf
 export HIVE_AUX_JARS_PATH=${HIVE_HOME}/lib" >> ${hive_dir}/conf/hive-env.sh
     # echo -e "export HADOOP_HOME=${HADOOP_HOME}\nexport HIVE_CONF_DIR=${HIVE_HOME}/conf\nexport HIVE_AUX_JARS_PATH=${HIVE_HOME}/lib" >> ${hive_dir}/conf/hive-env.sh
-    cp ${hive_dir}/lib/jline-2.12.jar ${HADOOP_HOME}/share/hadoop/yarn/lib/ 
+    cp ${hive_dir}/lib/jline-2.12.jar ${HADOOP_HOME}/share/hadoop/yarn/lib
 fi
 # slave1
 if [ "$current_hostname" == "${HOSTNAME_LIST[1]}" ];then
     # mysql driver
-    cp ${SOFT_PATH}/mysql-connector-java-5.1.47.jar ${hive_dir}/lib/
+    cp ${SOFT_PATH}/mysql-connector-java-*.jar ${hive_dir}/lib/
     # hive-site.xml
     setkv "hive.metastore.warehouse.dir=/user/hive_remote/warehouse" ${hive_dir}/conf/hive-site.xml true
     setkv "javax.jdo.option.ConnectionURL=jdbc:mysql://${HOSTNAME_LIST[2]}:3306/hive?createDatabaseIfNotExist=true&amp;characterEncoding=UTF-8&amp;useSSL=false" ${hive_dir}/conf/hive-site.xml
@@ -436,6 +441,9 @@ hdp(){
             ;;
         meta)
             nohup hive --service metastore &
+            ;;
+        create)
+            hive -e "create database if not exists $2"
             ;;
         *)
             echo $usage
