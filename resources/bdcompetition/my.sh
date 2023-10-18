@@ -7,6 +7,46 @@ INSTALL_PATH=/usr
 PROFILE=/etc/profile
 SOFT_PATH=/usr/package277
 
+updateip() {
+local master=$1
+local slave1=$2
+local slave2=$3
+usage="Usage: updateip master_ip slave1_ip slave2_ip(internal)"
+if [ $# -ne 3 ]; then
+    echo $usage
+    exit 1
+fi
+sed -i 's@^IP_LIST=.*@IP_LIST=("'$master'" "'$slave1'" "'$slave2'")@' /etc/profile.d/my.sh
+}
+
+updatepd() {
+local master=`change_string_passwd $1`
+local slave1=`change_string_passwd $2`
+local slave2=`change_string_passwd $3`
+usage="Usage: updatepd master_pd slave1_pd slave2_pd"
+if [ $# -ne 3 ]; then
+    echo $usage
+    exit 1
+fi
+sed -i "s@^PASSWD_LIST=.*@PASSWD_LIST=('$master' '$slave1' '$slave2')@" /etc/profile.d/my.sh
+}
+
+change_string_passwd() {
+local passwd=$1
+local new_passwd=""
+special_char=('@' '!' '$' '&')
+
+len=${#passwd}
+for((i=0;i<$len;i++)){
+    c=${passwd:$i:1}
+    if [[ "${special_char[@]}" =~ "$c" ]];then
+        c='\'$c
+    fi
+    new_passwd=$new_passwd$c
+}
+echo $new_passwd
+}
+
 setip() {
 length=${#HOSTNAME_LIST[@]}
 for ((i=0; i<$length; i++));do
