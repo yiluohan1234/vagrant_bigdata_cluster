@@ -147,6 +147,7 @@ install_jdk()
     then
         git clone https://gitee.com/yiluohan1234/bdc-dataware ${INSTALL_PATH}/tmp
         cat ${INSTALL_PATH}/tmp/jdk221/jdk-8u221-linux-x64_* > ${DEFAULT_DOWNLOAD_DIR}/${file}
+        cp ${INSTALL_PATH}/tmp/scala/scala-2.11.11.tgz ${DEFAULT_DOWNLOAD_DIR}
         rm -rf ${INSTALL_PATH}/tmp
     fi
     tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
