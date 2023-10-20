@@ -53,6 +53,7 @@ download_package() {
         git clone https://gitee.com/yiluohan1234/bdc-dataware /usr/package277/tmp
         cat /usr/package277/tmp/jdk221/jdk-8u221-linux-x64_* > /usr/package277/jdk-8u221-linux-x64.tar.gz
         cp /usr/package277/tmp/scala/* /usr/package277
+        cp /usr/package277/tmp/mysql/* /usr/package277
         rm -rf /usr/package277/tmp
         # curl -o /usr/package277/jdk-8u201-linux-x64.tar.gz -O -L https://repo.huaweicloud.com/java/jdk/8u201-b09/jdk-8u201-linux-x64.tar.gz
         echo "download hadoop"
@@ -73,10 +74,6 @@ download_package() {
         # echo "download scala"
         # curl -o /usr/package277/scala-2.10.6.tgz -O -L https://distfiles.macports.org/scala2.10/scala-2.10.6.tgz
         # curl -o /usr/package277/scala-2.11.11.tgz -O -L https://downloads.lightbend.com/scala/2.11.11/scala-2.11.11.tgz
-    elif [ "$hostname" == "hdp102" ];then
-        echo "download mysql-connector-java-5.1.47"
-        curl -o /usr/package277/mysql-connector-java-5.1.47.jar https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.47/mysql-connector-java-5.1.47.jar
-        curl -o /usr/package277/apache-hive-2.3.4-bin.tar.gz -O -L https://mirrors.huaweicloud.com/apache/hive/hive-2.3.4/apache-hive-2.3.4-bin.tar.gz
     elif [ "$hostname" == "hdp103" ];then
         echo "download mysql-5.7.35"
         curl -o /usr/package277/mysql-5.7.35-1.el7.x86_64.rpm-bundle.tar  -O -L https://repo.huaweicloud.com/mysql/Downloads/MySQL-5.7/mysql-5.7.35-1.el7.x86_64.rpm-bundle.tar
