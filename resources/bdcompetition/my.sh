@@ -2,7 +2,7 @@
 # IP_LIST=("192.168.10.101" "192.168.10.102" "192.168.10.103")
 IP_LIST=("ips" "ips" "ips")
 HOSTNAME_LIST=("master" "slave1" "slave2")
-PASSWD_LIST=('vagrant' 'vagrant' 'vagrant')
+PASSWD_LIST=('passwd' 'passwd' 'passwd')
 INSTALL_PATH=/usr
 PROFILE=/etc/profile
 SOFT_PATH=/usr/package277
@@ -65,10 +65,10 @@ bash
 }
 
 settimezone() {
-echo "before time:"
+echo -e "\033[31m--------- Current timezone is UTC ----------\033[0m"
 date
 timedatectl set-timezone Asia/Shanghai
-echo "after time:"
+echo -e "\033[31m--------- Current timezone is Asia/Shanghai ----------\033[0m"
 date
 }
 
