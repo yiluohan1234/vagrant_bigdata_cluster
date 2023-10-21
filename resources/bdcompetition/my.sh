@@ -79,7 +79,7 @@ setntp() {
 length=${#HOSTNAME_LIST[@]}
 for ((i=0; i<$length; i++));do
     echo -e "\033[31m--------- ${HOSTNAME_LIST[$i]} set ntp ----------\033[0m"
-    ssh ${HOSTNAME_LIST[$i]} "setup_ntp"
+    ssh ${HOSTNAME_LIST[$i]} "source /etc/profile;setup_ntp"
 done
 }
 
@@ -119,7 +119,7 @@ xsync ${java_dir}
 # set environment
 length=${#HOSTNAME_LIST[@]}
 for ((i=0; i<$length; i++));do
-    ssh ${HOSTNAME_LIST[$i]} "setenv java ${java_dir}"
+    ssh ${HOSTNAME_LIST[$i]} "source /etc/profile;setenv java ${java_dir}"
 done
 source $PROFILE
 xcall java -version
@@ -143,7 +143,7 @@ xsync ${zookeeper_dir}
 # set environment
 length=${#HOSTNAME_LIST[@]}
 for ((i=0; i<$length; i++));do
-    ssh ${HOSTNAME_LIST[$i]} "setenv zookeeper ${zookeeper_dir}"
+    ssh ${HOSTNAME_LIST[$i]} "source /etc/profile;setenv zookeeper ${zookeeper_dir}"
     ssh ${HOSTNAME_LIST[$i]} "echo $(($i+1)) >> ${zookeeper_dir}/zkdata/myid"
 done
 source $PROFILE
@@ -169,7 +169,7 @@ xsync ${zookeeper_dir}
 # set environment
 length=${#HOSTNAME_LIST[@]}
 for ((i=0; i<$length; i++));do
-    ssh ${HOSTNAME_LIST[$i]} "setenv zookeeper ${zookeeper_dir}"
+    ssh ${HOSTNAME_LIST[$i]} "source /etc/profile;setenv zookeeper ${zookeeper_dir}"
     ssh ${HOSTNAME_LIST[$i]} "echo $(($i+1)) >> ${zookeeper_dir}/zkdata/myid"
 done
 source $PROFILE
@@ -222,7 +222,7 @@ xsync ${hadoop_dir}
 # set environment
 length=${#HOSTNAME_LIST[@]}
 for ((i=0; i<$length; i++));do
-    ssh ${HOSTNAME_LIST[$i]} "setenv hadoop ${hadoop_dir} true"
+    ssh ${HOSTNAME_LIST[$i]} "source /etc/profile;setenv hadoop ${hadoop_dir} true"
 done
 source $PROFILE
 hadoop namenode -format
@@ -245,7 +245,7 @@ sethive() {
 length=${#HOSTNAME_LIST[@]}
 for ((i=0; i<$length; i++));do
     echo -e "\033[31m--------- ${HOSTNAME_LIST[$i]} set hive ----------\033[0m"
-    ssh ${HOSTNAME_LIST[$i]} "setup_hive"
+    ssh ${HOSTNAME_LIST[$i]} "source /etc/profile;setup_hive"
 done
 }
 
@@ -299,7 +299,7 @@ xsync ${scala_dir}
 # set environment
 length=${#HOSTNAME_LIST[@]}
 for ((i=0; i<$length; i++));do
-    ssh ${HOSTNAME_LIST[$i]} "setenv scala ${scala_dir}"
+    ssh ${HOSTNAME_LIST[$i]} "source /etc/profile;setenv scala ${scala_dir}"
 done
 source $PROFILE
 xcall scala -version
@@ -314,7 +314,7 @@ xsync ${scala_dir}
 # set environment
 length=${#HOSTNAME_LIST[@]}
 for ((i=0; i<$length; i++));do
-    ssh ${HOSTNAME_LIST[$i]} "setenv scala ${scala_dir}"
+    ssh ${HOSTNAME_LIST[$i]} "source /etc/profile;setenv scala ${scala_dir}"
 done
 source $PROFILE
 xcall scala -version
@@ -344,7 +344,7 @@ xsync ${spark_dir}
 # set environment
 length=${#HOSTNAME_LIST[@]}
 for ((i=0; i<$length; i++));do
-    ssh ${HOSTNAME_LIST[$i]} "setenv spark ${spark_dir}"
+    ssh ${HOSTNAME_LIST[$i]} "source /etc/profile;setenv spark ${spark_dir}"
 done
 source $PROFILE
 ${SPARK_HOME}/sbin/start-all.sh
@@ -467,7 +467,8 @@ do
     current_hostname=`cat /etc/hostname`
     if [ "$current_hostname" != "$host" ];then
         echo "================current host is $host================="
-        rsync -rvl $pdir/$filename $user@$host:$pdir
+        #rsync -rvl $pdir/$filename $user@$host:$pdir
+        rsync -rl $pdir/$filename $user@$host:$pdir
     fi
 done
 
@@ -493,7 +494,7 @@ hdp(){
             hadoop start
             ;;
         format)
-            ssh ${HOSTNAME_LIST[0]} "${HADOOP_HOME}/bin/hdfs namenode -format"
+            ssh ${HOSTNAME_LIST[0]} "source /etc/profile;${HADOOP_HOME}/bin/hdfs namenode -format"
             ;;
         init)
             schematool -dbType mysql -initSchema
