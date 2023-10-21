@@ -65,11 +65,14 @@ bash
 }
 
 settimezone() {
-echo -e "\033[31m--------- Current timezone is UTC ----------\033[0m"
-date
-timedatectl set-timezone Asia/Shanghai
-echo -e "\033[31m--------- Current timezone is Asia/Shanghai ----------\033[0m"
-date
+length=${#HOSTNAME_LIST[@]}
+for ((i=0; i<$length; i++));do
+    echo -e "\033[31m--------- Current ${HOSTNAME_LIST[$i]} timezone is UTC ----------\033[0m"
+    ssh ${HOSTNAME_LIST[$i]} "date"
+    ssh ${HOSTNAME_LIST[$i]} "timedatectl set-timezone Asia/Shanghai"
+    echo -e "\033[31m--------- Current ${HOSTNAME_LIST[$i]} timezone is Asia/Shanghai ----------\033[0m"
+    ssh ${HOSTNAME_LIST[$i]} "date"
+done
 }
 
 setntp() {
