@@ -635,7 +635,7 @@ xcall() {
 for host in ${HOSTNAME_LIST[*]};
 do
     echo -e "\033[31m--------- Current hostname is $host, exec $* ----------\033[0m"
-    ssh $host "source /etc/profile;$*"
+    ssh $host "source /etc/profile;$@"
 done
 }
 
