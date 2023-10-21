@@ -617,5 +617,6 @@ for ((i=0; i<$length; i++));do
     fi
     ssh ${HOSTNAME_LIST[$i]} "rm -rf /usr/spark"
     ssh ${HOSTNAME_LIST[$i]} "rm -rf /usr/scala"
+    ssh ${HOSTNAME_LIST[$i]} "sed -i "/# java environment/Q" /etc/profile"
 done
 }
