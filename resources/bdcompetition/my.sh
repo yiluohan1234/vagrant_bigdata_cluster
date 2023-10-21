@@ -87,7 +87,7 @@ setup_ntp() {
 systemctl stop firewalld
 sed -i "s@^SELINUX=.*@SELINUX=disabled@g" /etc/selinux/config
 if [ `yum list installed |grep ntp |wc -l` == 0 ];then
-    yum install -y ntp
+    yum install -y -q ntp
 fi
 
 current_hostname=`cat /etc/hostname`
@@ -112,7 +112,7 @@ fi
 setjava() {
 local java_dir=${INSTALL_PATH}/java/jdk1.8.0_221
 mkdir ${INSTALL_PATH}/java
-tar -zvf ${SOFT_PATH}/jdk-8u221-linux-x64.tar.gz -C ${INSTALL_PATH}/java/
+tar -zxf ${SOFT_PATH}/jdk-8u221-linux-x64.tar.gz -C ${INSTALL_PATH}/java/
 #setenv java ${java_dir}
 # dispatch
 xsync ${java_dir}
@@ -128,7 +128,7 @@ xcall java -version
 setzk363() {
 local zookeeper_dir=${INSTALL_PATH}/zookeeper/apache-zookeeper-3.6.3-bin
 mkdir ${INSTALL_PATH}/zookeeper
-tar -zvf ${SOFT_PATH}/apache-zookeeper-3.6.3-bin.tar.gz -C ${INSTALL_PATH}/zookeeper/
+tar -zxf ${SOFT_PATH}/apache-zookeeper-3.6.3-bin.tar.gz -C ${INSTALL_PATH}/zookeeper/
 # setup
 cp ${zookeeper_dir}/conf/zoo_sample.cfg ${zookeeper_dir}/conf/zoo.cfg
 sed -i "s@^dataDir=.*@dataDir=${zookeeper_dir}/zkdata@" ${zookeeper_dir}/conf/zoo.cfg
@@ -154,7 +154,7 @@ jpsall
 setzk314() {
 local zookeeper_dir=${INSTALL_PATH}/zookeeper/zookeeper-3.4.14
 mkdir ${INSTALL_PATH}/zookeeper
-tar -zvf ${SOFT_PATH}/zookeeper-3.4.14.tar.gz -C ${INSTALL_PATH}/zookeeper/
+tar -zxf ${SOFT_PATH}/zookeeper-3.4.14.tar.gz -C ${INSTALL_PATH}/zookeeper/
 # setup
 cp ${zookeeper_dir}/conf/zoo_sample.cfg ${zookeeper_dir}/conf/zoo.cfg
 sed -i "s@^dataDir=.*@dataDir=${zookeeper_dir}/zkdata@" ${zookeeper_dir}/conf/zoo.cfg
@@ -180,7 +180,7 @@ jpsall
 sethadoop() {
 local hadoop_dir=${INSTALL_PATH}/hadoop/hadoop-2.7.7
 mkdir ${INSTALL_PATH}/hadoop
-tar -zvf ${SOFT_PATH}/hadoop-2.7.7.tar.gz -C ${INSTALL_PATH}/hadoop/
+tar -zxf ${SOFT_PATH}/hadoop-2.7.7.tar.gz -C ${INSTALL_PATH}/hadoop/
 
 # hadoop-env.sh
 sed -i "s@^export JAVA_HOME=.*@export JAVA_HOME=${JAVA_HOME}@" ${hadoop_dir}/etc/hadoop/hadoop-env.sh
@@ -255,7 +255,7 @@ local hive_dir=${INSTALL_PATH}/hive/apache-hive-2.3.4-bin
 current_hostname=`cat /etc/hostname`
 if [ "$current_hostname" == "${HOSTNAME_LIST[0]}" -o "$current_hostname" == "${HOSTNAME_LIST[1]}" ];then
     mkdir ${INSTALL_PATH}/hive
-    tar -zvf ${SOFT_PATH}/apache-hive-2.3.4-bin.tar.gz -C ${INSTALL_PATH}/hive/
+    tar -zxf ${SOFT_PATH}/apache-hive-2.3.4-bin.tar.gz -C ${INSTALL_PATH}/hive/
     setenv hive ${hive_dir}
     source $PROFILE
 
@@ -293,7 +293,7 @@ fi
 setscala211() {
 local scala_dir=${INSTALL_PATH}/scala/scala-2.11.11
 mkdir ${INSTALL_PATH}/scala
-tar -zvf ${SOFT_PATH}/scala-2.11.11.tgz -C ${INSTALL_PATH}/scala/
+tar -zxf ${SOFT_PATH}/scala-2.11.11.tgz -C ${INSTALL_PATH}/scala/
 # dispatch
 xsync ${scala_dir}
 # set environment
@@ -308,7 +308,7 @@ xcall scala -version
 setscala210() {
 local scala_dir=${INSTALL_PATH}/scala/scala-2.10.6
 mkdir ${INSTALL_PATH}/scala
-tar -zvf ${SOFT_PATH}/scala-2.10.6.tgz -C ${INSTALL_PATH}/scala/
+tar -zxf ${SOFT_PATH}/scala-2.10.6.tgz -C ${INSTALL_PATH}/scala/
 # dispatch
 xsync ${scala_dir}
 # set environment
@@ -323,7 +323,7 @@ xcall scala -version
 setspark() {
 local spark_dir=${INSTALL_PATH}/spark/spark-2.4.3-bin-hadoop2.7
 mkdir ${INSTALL_PATH}/spark
-tar -zvf ${SOFT_PATH}/spark-2.4.3-bin-hadoop2.7.tgz -C ${INSTALL_PATH}/spark/
+tar -zxf ${SOFT_PATH}/spark-2.4.3-bin-hadoop2.7.tgz -C ${INSTALL_PATH}/spark/
 # setup
 cp ${spark_dir}/conf/spark-env.sh.template ${spark_dir}/conf/spark-env.sh
 echo "export SPARK_MASTER_IP=${HOSTNAME_LIST[0]}
@@ -378,7 +378,7 @@ setkv() {
 
 setssh(){
     if [ `yum list installed |grep expect |wc -l` == 0 ];then
-        yum install -y expect
+        yum install -y -q expect
     fi
     if [ ! -f ~/.ssh/id_rsa ];then
         expect -c "
