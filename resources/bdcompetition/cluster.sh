@@ -49,6 +49,7 @@ echo $new_passwd
 }
 
 setip() {
+echo "setup hosts"
 length=${#HOSTNAME_LIST[@]}
 for ((i=0; i<$length; i++));do
     entry="${IP_LIST[$i]} ${HOSTNAME_LIST[$i]}"
@@ -66,6 +67,7 @@ bash
 }
 
 settimezone() {
+echo "setup timezone"
 length=${#HOSTNAME_LIST[@]}
 for ((i=0; i<$length; i++));do
     echo -e "\033[31m--------- Current ${HOSTNAME_LIST[$i]} timezone is UTC ----------\033[0m"
@@ -77,6 +79,7 @@ done
 }
 
 setntp() {
+echo "setup ntp"
 length=${#HOSTNAME_LIST[@]}
 for ((i=0; i<$length; i++));do
     echo -e "\033[31m--------- ${HOSTNAME_LIST[$i]} set ntp ----------\033[0m"
@@ -111,6 +114,7 @@ fi
 }
 
 setjava() {
+echo "setup java"
 local java_dir=${INSTALL_PATH}/java/jdk1.8.0_221
 mkdir ${INSTALL_PATH}/java
 tar -zxf ${SOFT_PATH}/jdk-8u221-linux-x64.tar.gz -C ${INSTALL_PATH}/java/
@@ -133,6 +137,7 @@ fi
 }
 
 setzk363() {
+echo "setup zookeeper-3.6.3"
 local zookeeper_dir=${INSTALL_PATH}/zookeeper/apache-zookeeper-3.6.3-bin
 mkdir ${INSTALL_PATH}/zookeeper
 tar -zxf ${SOFT_PATH}/apache-zookeeper-3.6.3-bin.tar.gz -C ${INSTALL_PATH}/zookeeper/
@@ -159,6 +164,7 @@ jpsall
 }
 
 setzk314() {
+echo "setup zookeeper-3.4.14"
 local zookeeper_dir=${INSTALL_PATH}/zookeeper/zookeeper-3.4.14
 mkdir ${INSTALL_PATH}/zookeeper
 tar -zxf ${SOFT_PATH}/zookeeper-3.4.14.tar.gz -C ${INSTALL_PATH}/zookeeper/
@@ -185,6 +191,7 @@ jpsall
 }
 
 sethadoop() {
+echo "setup hadoop"
 local hadoop_dir=${INSTALL_PATH}/hadoop/hadoop-2.7.7
 mkdir ${INSTALL_PATH}/hadoop
 tar -zxf ${SOFT_PATH}/hadoop-2.7.7.tar.gz -C ${INSTALL_PATH}/hadoop/
@@ -243,6 +250,7 @@ fi
 }
 
 setmysql() {
+echo "setup mysql"
 systemctl disable mysqld.service
 systemctl start mysqld.service
 grep "temporary password" /var/log/mysqld.log
@@ -254,6 +262,7 @@ mysql -u${USERNAME} -p${PASSWORD} -e "set global validate_password_policy=0; set
 }
 
 sethive() {
+echo "setup hive"
 length=${#HOSTNAME_LIST[@]}
 for ((i=0; i<$length; i++));do
     echo -e "\033[31m--------- ${HOSTNAME_LIST[$i]} set hive ----------\033[0m"
@@ -309,6 +318,7 @@ fi
 }
 
 setscala211() {
+echo "setup scala"
 local scala_dir=${INSTALL_PATH}/scala/scala-2.11.11
 mkdir ${INSTALL_PATH}/scala
 tar -zxf ${SOFT_PATH}/scala-2.11.11.tgz -C ${INSTALL_PATH}/scala/
@@ -331,6 +341,7 @@ fi
 }
 
 setscala210() {
+echo "setup scala"
 local scala_dir=${INSTALL_PATH}/scala/scala-2.10.6
 mkdir ${INSTALL_PATH}/scala
 tar -zxf ${SOFT_PATH}/scala-2.10.6.tgz -C ${INSTALL_PATH}/scala/
@@ -353,6 +364,7 @@ fi
 }
 
 setspark() {
+echo "setup spark"
 local spark_dir=${INSTALL_PATH}/spark/spark-2.4.3-bin-hadoop2.7
 mkdir ${INSTALL_PATH}/spark
 tar -zxf ${SOFT_PATH}/spark-2.4.3-bin-hadoop2.7.tgz -C ${INSTALL_PATH}/spark/
@@ -475,42 +487,42 @@ setenv() {
 }
 
 jpsall() {
-for host in ${HOSTNAME_LIST[*]};
-do
-    echo -e "\033[31m--------------------- $host host ---------------------\033[0m"
-    ssh $host "${JAVA_HOME}/bin/jps" | grep -v Jps
-done
+    for host in ${HOSTNAME_LIST[*]};
+    do
+        echo -e "\033[31m--------------------- $host host ---------------------\033[0m"
+        ssh $host "${JAVA_HOME}/bin/jps" | grep -v Jps
+    done
 }
 
 xsync() {
-pcount=$#
-if [ $pcount -eq 0 ]
-then
-    echo "no parameter find !";
-    exit;
-fi
-
-p1=$1
-filename=`basename $p1`
-echo "load file $p1 success !"
-
-pdir=`cd -P $(dirname $p1); pwd`
-echo "file path is $pdir"
-
-user=`whoami`
-
-for host in ${HOSTNAME_LIST[*]};
-do
-    current_hostname=`cat /etc/hostname`
-    if [ "$current_hostname" != "$host" ];then
-        echo "================current host is $host================="
-        #rsync -rvl $pdir/$filename $user@$host:$pdir
-        rsync -rl $pdir/$filename $user@$host:$pdir
+    pcount=$#
+    if [ $pcount -eq 0 ]
+    then
+        echo "no parameter find !";
+        exit;
     fi
-    source /etc/profile
-done
 
-echo "complate !"
+    p1=$1
+    filename=`basename $p1`
+    echo "load file $p1 success !"
+
+    pdir=`cd -P $(dirname $p1); pwd`
+    echo "file path is $pdir"
+
+    user=`whoami`
+
+    for host in ${HOSTNAME_LIST[*]};
+    do
+        current_hostname=`cat /etc/hostname`
+        if [ "$current_hostname" != "$host" ];then
+            echo "================current host is $host================="
+            #rsync -rvl $pdir/$filename $user@$host:$pdir
+            rsync -rl $pdir/$filename $user@$host:$pdir
+        fi
+        source /etc/profile
+    done
+
+    echo "complate !"
 }
 
 hdp(){
@@ -633,28 +645,28 @@ spark(){
 }
 
 xcall() {
-for host in ${HOSTNAME_LIST[*]};
-do
-    echo -e "\033[31m--------- Current hostname is $host, exec $* ----------\033[0m"
-    ssh $host "source /etc/profile;$@"
-done
+    for host in ${HOSTNAME_LIST[*]};
+    do
+        echo -e "\033[31m--------- Current hostname is $host, exec $* ----------\033[0m"
+        ssh $host "source /etc/profile;$@"
+    done
 }
 
 envclear() {
-current_hostname=`cat /etc/hostname`
-length=${#HOSTNAME_LIST[@]}
-for ((i=0; i<$length; i++));do
-    echo -e "\033[31m--------- ${HOSTNAME_LIST[$i]} set clear ----------\033[0m"
-    ssh ${HOSTNAME_LIST[$i]} "rm -rf /usr/java"
-    ssh ${HOSTNAME_LIST[$i]} "rm -rf /usr/hadoop"
-    ssh ${HOSTNAME_LIST[$i]} "rm -rf /usr/zookeeper"
-    if [ "$current_hostname" == "${HOSTNAME_LIST[0]}" -o "$current_hostname" == "${HOSTNAME_LIST[1]}" ];then
-        ssh ${HOSTNAME_LIST[$i]} "rm -rf /usr/hive"
-    else
-        rpm -qa | grep -i -E mysql\|mariadb | xargs -n1 sudo rpm -e --nodeps
-    fi
-    ssh ${HOSTNAME_LIST[$i]} "rm -rf /usr/spark"
-    ssh ${HOSTNAME_LIST[$i]} "rm -rf /usr/scala"
-    ssh ${HOSTNAME_LIST[$i]} "sed -i "/# java environment/Q" /etc/profile"
-done
+    current_hostname=`cat /etc/hostname`
+    length=${#HOSTNAME_LIST[@]}
+    for ((i=0; i<$length; i++));do
+        echo -e "\033[31m--------- ${HOSTNAME_LIST[$i]} set clear ----------\033[0m"
+        ssh ${HOSTNAME_LIST[$i]} "rm -rf /usr/java"
+        ssh ${HOSTNAME_LIST[$i]} "rm -rf /usr/hadoop"
+        ssh ${HOSTNAME_LIST[$i]} "rm -rf /usr/zookeeper"
+        if [ "$current_hostname" == "${HOSTNAME_LIST[0]}" -o "$current_hostname" == "${HOSTNAME_LIST[1]}" ];then
+            ssh ${HOSTNAME_LIST[$i]} "rm -rf /usr/hive"
+        else
+            rpm -qa | grep -i -E mysql\|mariadb | xargs -n1 sudo rpm -e --nodeps
+        fi
+        ssh ${HOSTNAME_LIST[$i]} "rm -rf /usr/spark"
+        ssh ${HOSTNAME_LIST[$i]} "rm -rf /usr/scala"
+        ssh ${HOSTNAME_LIST[$i]} "sed -i "/# java environment/Q" /etc/profile"
+    done
 }
