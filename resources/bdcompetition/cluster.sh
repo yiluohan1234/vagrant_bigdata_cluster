@@ -638,3 +638,21 @@ do
     ssh $host "source /etc/profile;$*"
 done
 }
+
+envclear() {
+current_hostname=`cat /etc/hostname`
+length=${#HOSTNAME_LIST[@]}
+for ((i=0; i<$length; i++));do
+    echo -e "\033[31m--------- ${HOSTNAME_LIST[$i]} set clear ----------\033[0m"
+    ssh ${HOSTNAME_LIST[$i]} "rm -rf /usr/java"
+    ssh ${HOSTNAME_LIST[$i]} "rm -rf /usr/hadoop"
+    ssh ${HOSTNAME_LIST[$i]} "rm -rf /usr/zookeeper"
+    if [ "$current_hostname" == "${HOSTNAME_LIST[0]}" -o "$current_hostname" == "${HOSTNAME_LIST[1]}" ];then
+        ssh ${HOSTNAME_LIST[$i]} "rm -rf /usr/hive"
+    else
+        rpm -qa | grep -i -E mysql\|mariadb | xargs -n1 sudo rpm -e --nodeps
+    fi
+    ssh ${HOSTNAME_LIST[$i]} "rm -rf /usr/spark"
+    ssh ${HOSTNAME_LIST[$i]} "rm -rf /usr/scala"
+done
+}
