@@ -260,8 +260,14 @@ done
 
 setup_hive(){
 local hive_dir=${INSTALL_PATH}/hive/apache-hive-2.3.4-bin
-# master and slave1
+
 current_hostname=`cat /etc/hostname`
+# slave2
+if [ "$current_hostname" == "${HOSTNAME_LIST[2]}" ];then
+    setmysql
+fi
+
+# master and slave1
 if [ "$current_hostname" == "${HOSTNAME_LIST[0]}" -o "$current_hostname" == "${HOSTNAME_LIST[1]}" ];then
     mkdir ${INSTALL_PATH}/hive
     tar -zxf ${SOFT_PATH}/apache-hive-2.3.4-bin.tar.gz -C ${INSTALL_PATH}/hive/
