@@ -1,7 +1,10 @@
 setssh() {
 ip=`ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'`
 echo "$ip hadoop000" >> /etc/hosts
-ssh hadoop000
+ssh -o StrictHostKeyChecking=no hadoop000
+#ssh hadoop000
+#cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+#ssh-copy-id hadoop000
 }
 
 sethadoop(){
