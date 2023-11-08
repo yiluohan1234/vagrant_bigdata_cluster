@@ -40,7 +40,7 @@ host_info = get_resource_status()
 df_info = pd.DataFrame(host_info)
 df = pd.merge(df_name, df_info,on='resource_id')
 
-save_file = open("D:/Portable/WindTerm_2.5.0/data.txt", "w")
+save_file = open("C:/Users/cuiyufei/data.txt", "w")
 print("cat > /root/etx.txt <<EOF")
 for index, row in df.iterrows():
     save_file.write(row['resource_name']+"_ip="+row['ip']+"\n")
