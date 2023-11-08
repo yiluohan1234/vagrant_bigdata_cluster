@@ -1,33 +1,33 @@
 alias cv="cd /d/javaEnv/vagrant_bigdata_cluster"
-alias gitup='sed -i "/# GitHub520 Host Start/Q" /etc/hosts && curl https://raw.hellogithub.com/hosts >> /c/Windows/System32/drivers/etc/hosts'
+alias gitup='sed -i "/# GitHub520 Host Start/Q" /c/Windows/System32/drivers/etc/hosts && curl https://raw.hellogithub.com/hosts >> /c/Windows/System32/drivers/etc/hosts'
 alias vup="vagrant up"
-alias vdonw="vagrant halt"
+alias vdown="vagrant halt"
 alias vreload="vagrant reload --provision"
 alias getlogin="python /c/Users/cuiyufei/getLoginInfo.py"
 alias clearauto="sed -i '/"session.autoLogin"/d' /d/Portable/WindTerm_2.5.0/.wind/profiles/default.v10/terminal/user.sessions"
 HOSTS_PATH=/c/Windows/System32/drivers/etc/hosts
 SESSION_PATH=/d/Portable/WindTerm_2.5.0/.wind/profiles/default.v10/terminal/user.sessions
 DATA_PATH=/d/Portable/WindTerm_2.5.0/data.txt
+PYTHON_FILE=/c/Users/cuiyufei/getLoginInfo.py
+
 setclear() {
 sed -i '/"session.autoLogin"/d' ${SESSION_PATH}
+sed -i "/# Qingjiao Host Start/Q" ${HOSTS_PATH}
 }
 
 setvar() {
-if [ `cat ${DATA_PATH} |grep 'master' |wc -l` != 0 ];then
-    set_host_ip master `get_item master_public_ip`
-fi
-if [ `cat ${DATA_PATH} |grep 'slave1' |wc -l` != 0 ];then
-    set_host_ip slave1 `get_item slave1_public_ip`
-fi
-if [ `cat ${DATA_PATH} |grep 'slave2' |wc -l` != 0 ];then
-    set_host_ip slave2 `get_item slave2_public_ip`
-fi
-if [ `cat ${DATA_PATH} |grep 'Hadoop/Hive/Spark' |wc -l` != 0 ];then
-    set_host_ip hadoop000 `get_item Hadoop/Hive/Spark_public_ip`
-fi
-if [ `cat ${DATA_PATH} |grep jupyter |wc -l` != 0 ];then
-    set_host_ip jupyter `get_item jupyter_public_ip`
-fi
+python ${PYTHON_FILE}
+echo "# Qingjiao Host Start" >> ${HOSTS_PATH}
+HOSTNAME_LIST=("master" "slave1" "slave2" "Hadoop/Hive/Spark" "jupyter")
+for host in ${HOSTNAME_LIST[@]};do
+    if [ `cat ${DATA_PATH} |grep ${host} |wc -l` != 0 ];then
+        if [ "${host}" == "Hadoop/Hive/Spark" ];then
+            set_host_ip hadoop000 `get_item ${host}_public_ip`
+        else
+            set_host_ip ${host} `get_item ${host}_public_ip`
+        fi
+    fi
+done
 }
 
 get_item() {
