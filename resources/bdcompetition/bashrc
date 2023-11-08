@@ -1,0 +1,98 @@
+alias cv="cd /d/javaEnv/vagrant_bigdata_cluster"
+alias gitup='sed -i "/# GitHub520 Host Start/Q" /etc/hosts && curl https://raw.hellogithub.com/hosts >> /c/Windows/System32/drivers/etc/hosts'
+alias vup="vagrant up"
+alias vdonw="vagrant halt"
+alias vreload="vagrant reload --provision"
+alias getlogin="python /c/Users/cuiyufei/getLoginInfo.py"
+alias clearauto="sed -i '/"session.autoLogin"/d' /d/Portable/WindTerm_2.5.0/.wind/profiles/default.v10/terminal/user.sessions"
+HOSTS_PATH=/c/Windows/System32/drivers/etc/hosts
+SESSION_PATH=/d/Portable/WindTerm_2.5.0/.wind/profiles/default.v10/terminal/user.sessions
+DATA_PATH=/d/Portable/WindTerm_2.5.0/data.txt
+setclear() {
+sed -i '/"session.autoLogin"/d' ${SESSION_PATH}
+}
+
+setvar() {
+if [ `cat ${DATA_PATH} |grep 'master' |wc -l` != 0 ];then
+    set_host_ip master `get_item master_public_ip`
+fi
+if [ `cat ${DATA_PATH} |grep 'slave1' |wc -l` != 0 ];then
+    set_host_ip slave1 `get_item slave1_public_ip`
+fi
+if [ `cat ${DATA_PATH} |grep 'slave2' |wc -l` != 0 ];then
+    set_host_ip slave2 `get_item slave2_public_ip`
+fi
+if [ `cat ${DATA_PATH} |grep 'Hadoop/Hive/Spark' |wc -l` != 0 ];then
+    set_host_ip hadoop000 `get_item Hadoop/Hive/Spark_public_ip`
+fi
+if [ `cat ${DATA_PATH} |grep jupyter |wc -l` != 0 ];then
+    set_host_ip jupyter `get_item jupyter_public_ip`
+fi
+}
+
+get_item() {
+local type=$1
+local path=${2:-$DATA_PATH}
+if [ -f ${path} ];then
+    ret=`cat ${path} |grep ${type} |awk -F '=' '{print $2}'`
+    echo ${ret}
+else
+    echo "$path not exists!"
+fi
+}
+clusterip() {
+local master=$1
+local slave1=$2
+local slave2=$3
+usage="Usage: clusterip master_external_ip slave1_external_ip slave2_external_ip"
+if [ $# -ne 3 ]; then
+    echo $usage
+    exit 1
+fi
+if [ `cat /c/Windows/System32/drivers/etc/hosts|grep master|wc -l` != 0 ];then
+    sed -i '/master/d' ${HOSTS_PATH}
+    sed -i '/slave1/d' ${HOSTS_PATH}
+    sed -i '/slave2/d' ${HOSTS_PATH}
+fi
+echo "$master master" >> ${HOSTS_PATH}
+echo "$slave1 slave1" >> ${HOSTS_PATH}
+echo "$slave2 slave2" >> ${HOSTS_PATH}
+}
+singleip() {
+usage="Usage: singleip hadoop000_external_ip"
+if [ $# -ne 1 ]; then
+    echo $usage
+    exit 1
+fi
+local hadoop000=$1
+if [ `cat /c/Windows/System32/drivers/etc/hosts|grep master|wc -l` != 0 ];then
+    sed -i '/hadoop000/d' ${HOSTS_PATH}
+fi
+echo "$hadoop000 hadoop000" >> ${HOSTS_PATH}
+}
+jupyterip() {
+usage="Usage: jupyterip jupyter_external_ip"
+if [ $# -ne 1 ]; then
+    echo $usage
+    exit 1
+fi
+local jupyter=$1
+if [ `cat /c/Windows/System32/drivers/etc/hosts|grep jupyter|wc -l` != 0 ];then
+    sed -i '/jupyter/d' ${HOSTS_PATH}
+fi
+echo "$jupyter jupyter" >> ${HOSTS_PATH}
+}
+set_host_ip() {
+local host_name=$1
+local host_ip=$2
+usage="Usage: set_host_ip host_name external_ip"
+if [ $# -ne 2 ]; then
+    echo $usage
+    exit 1
+fi
+
+if [ `cat /c/Windows/System32/drivers/etc/hosts |grep ${host_name} |wc -l` != 0 ];then
+    sed -i "/${host_name}/d" ${HOSTS_PATH}
+fi
+echo "$host_ip $host_name" >> ${HOSTS_PATH}
+}

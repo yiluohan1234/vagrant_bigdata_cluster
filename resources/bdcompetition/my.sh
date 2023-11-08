@@ -6,6 +6,23 @@ PASSWD_LIST=('passwd' 'passwd' 'passwd')
 INSTALL_PATH=/usr
 PROFILE=/etc/profile
 SOFT_PATH=/usr/package277
+DATA_PATH=/root/etx.txt
+
+setvar() {
+updateip `get_item master_ip` `get_item slave1_ip` `get_item slave2_ip`
+updatepd `get_item master_password` `get_item slave1_password` `get_item slave2_password`
+}
+
+get_item() {
+local type=$1
+local path=${2:-$DATA_PATH}
+if [ -f ${path} ];then
+    ret=`cat ${path} |grep ${type} |awk -F '=' '{print $2}'`
+    echo ${ret}
+else
+    echo "$path not exists!"
+fi
+}
 
 updateip() {
 local master=$1
