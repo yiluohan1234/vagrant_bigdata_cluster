@@ -5,7 +5,7 @@ import pandas as pd
 #https://api-prod.qingjiao.art/api/match/record/123110/resource/list
 def get_resource_list():
     ret = []
-    file = "C:\\Users\\cuiyufei\\resource_list.json"
+    file = "C:\\resource_list.json"
     with open(file,'r', encoding='utf8') as f:
         data = json.load(f)
 
@@ -21,7 +21,7 @@ def get_resource_list():
 #https://api.region-bj02.qingjiao.link//api/v3/virtual-resource/all/status
 def get_resource_status():
     ret = []
-    file = "C:\\Users\\cuiyufei\\resource_status.json"
+    file = "C:\\resource_status.json"
     with open(file,'r', encoding='utf8') as f:
         data = json.load(f)
 
@@ -40,7 +40,7 @@ host_info = get_resource_status()
 df_info = pd.DataFrame(host_info)
 df = pd.merge(df_name, df_info,on='resource_id')
 
-save_file = open("C:/Users/cuiyufei/data.txt", "w")
+save_file = open("C:/host_info.txt", "w")
 print("cat > /root/etx.txt <<EOF")
 for index, row in df.iterrows():
     save_file.write(row['resource_name']+"_ip="+row['ip']+"\n")

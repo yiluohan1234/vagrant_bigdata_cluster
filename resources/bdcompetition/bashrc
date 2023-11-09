@@ -7,8 +7,8 @@ alias getlogin="python /c/Users/cuiyufei/getLoginInfo.py"
 alias clearauto="sed -i '/"session.autoLogin"/d' /d/Portable/WindTerm_2.5.0/.wind/profiles/default.v10/terminal/user.sessions"
 HOSTS_PATH=/c/Windows/System32/drivers/etc/hosts
 SESSION_PATH=/d/Portable/WindTerm_2.5.0/.wind/profiles/default.v10/terminal/user.sessions
-DATA_PATH=/d/Portable/WindTerm_2.5.0/data.txt
-PYTHON_FILE=/c/Users/cuiyufei/getLoginInfo.py
+DATA_PATH=/c/host_info.txt
+PYTHON_FILE=/c/getLoginInfo.py
 
 setclear() {
 sed -i '/"session.autoLogin"/d' ${SESSION_PATH}
@@ -40,7 +40,6 @@ else
     echo "$path not exists!"
 fi
 }
-
 clusterip() {
 local master=$1
 local slave1=$2
@@ -97,3 +96,6 @@ if [ `cat /c/Windows/System32/drivers/etc/hosts |grep ${host_name} |wc -l` != 0 
 fi
 echo "$host_ip $host_name" >> ${HOSTS_PATH}
 }
+# >>>> Vagrant command completion (start)
+. D:/Apps/Scoop/apps/vagrant/2.3.7/embedded/gems/gems/vagrant-2.3.7/contrib/bash/completion.sh
+# <<<<  Vagrant command completion (end)
