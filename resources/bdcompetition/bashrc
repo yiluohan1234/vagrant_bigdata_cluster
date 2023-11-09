@@ -15,21 +15,6 @@ sed -i '/"session.autoLogin"/d' ${SESSION_PATH}
 sed -i "/# Qingjiao Host Start/Q" ${HOSTS_PATH}
 }
 
-setvar() {
-python ${PYTHON_FILE}
-echo "# Qingjiao Host Start" >> ${HOSTS_PATH}
-HOSTNAME_LIST=("master" "slave1" "slave2" "Hadoop/Hive/Spark" "jupyter")
-for host in ${HOSTNAME_LIST[@]};do
-    if [ `cat ${DATA_PATH} |grep ${host} |wc -l` != 0 ];then
-        if [ "${host}" == "Hadoop/Hive/Spark" ];then
-            set_host_ip hadoop000 `get_item ${host}_public_ip`
-        else
-            set_host_ip ${host} `get_item ${host}_public_ip`
-        fi
-    fi
-done
-}
-
 get_item() {
 local type=$1
 local path=${2:-$DATA_PATH}
@@ -40,6 +25,7 @@ else
     echo "$path not exists!"
 fi
 }
+
 clusterip() {
 local master=$1
 local slave1=$2
@@ -58,6 +44,7 @@ echo "$master master" >> ${HOSTS_PATH}
 echo "$slave1 slave1" >> ${HOSTS_PATH}
 echo "$slave2 slave2" >> ${HOSTS_PATH}
 }
+
 singleip() {
 usage="Usage: singleip hadoop000_external_ip"
 if [ $# -ne 1 ]; then
@@ -70,6 +57,7 @@ if [ `cat /c/Windows/System32/drivers/etc/hosts|grep master|wc -l` != 0 ];then
 fi
 echo "$hadoop000 hadoop000" >> ${HOSTS_PATH}
 }
+
 jupyterip() {
 usage="Usage: jupyterip jupyter_external_ip"
 if [ $# -ne 1 ]; then
@@ -82,6 +70,7 @@ if [ `cat /c/Windows/System32/drivers/etc/hosts|grep jupyter|wc -l` != 0 ];then
 fi
 echo "$jupyter jupyter" >> ${HOSTS_PATH}
 }
+
 set_host_ip() {
 local host_name=$1
 local host_ip=$2
@@ -96,6 +85,18 @@ if [ `cat /c/Windows/System32/drivers/etc/hosts |grep ${host_name} |wc -l` != 0 
 fi
 echo "$host_ip $host_name" >> ${HOSTS_PATH}
 }
-# >>>> Vagrant command completion (start)
-. D:/Apps/Scoop/apps/vagrant/2.3.7/embedded/gems/gems/vagrant-2.3.7/contrib/bash/completion.sh
-# <<<<  Vagrant command completion (end)
+
+setvar() {
+python ${PYTHON_FILE}
+echo "# Qingjiao Host Start" >> ${HOSTS_PATH}
+HOSTNAME_LIST=("master" "slave1" "slave2" "Hadoop/Hive/Spark" "jupyter")
+for host in ${HOSTNAME_LIST[@]};do
+    if [ `cat ${DATA_PATH} |grep ${host} |wc -l` != 0 ];then
+        if [ "${host}" == "Hadoop/Hive/Spark" ];then
+            set_host_ip hadoop000 `get_item ${host}_public_ip`
+        else
+            set_host_ip ${host} `get_item ${host}_public_ip`
+        fi
+    fi
+done
+}
