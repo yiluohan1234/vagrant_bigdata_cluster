@@ -657,6 +657,11 @@ echo "INTO TABLE ${table_name}"
 echo "FIELDS TERMINATED BY '${fields}'"
 echo "LINES TERMINATED BY '${lines}'"
 echo "IGNORE 1 ROWS;\""
+mysql -uroot -p123456 -e "LOAD DATA local INFILE '${file}' \
+INTO TABLE ${table_name} \
+FIELDS TERMINATED BY '${fields}' \
+LINES TERMINATED BY '${lines}' \
+IGNORE 1 ROWS;"
 }
 
 load_hive_data() {
@@ -664,4 +669,5 @@ local file=$1
 local table_name=$2
 
 echo "hive -e \"load data local inpath '${file}' into table ${table_name};\""
+hive -e "load data local inpath '${file}' into table ${table_name};"
 }
