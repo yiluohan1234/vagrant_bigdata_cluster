@@ -645,3 +645,23 @@ for ((i=0; i<$length; i++));do
     ssh ${HOSTNAME_LIST[$i]} "sed -i '/# java environment/Q' /etc/profile"
 done
 }
+
+load_mysql_data() {
+local file=$1
+local table_name=$2
+local fields=${3:-','}
+local lines=${4:-'\n'}
+
+echo "mysql -uroot -p123456 -e \"LOAD DATA local INFILE '${file}'"
+echo "INTO TABLE ${table_name}"
+echo "FIELDS TERMINATED BY '${fields}'"
+echo "LINES TERMINATED BY '${lines}'"
+echo "IGNORE 1 ROWS;\""
+}
+
+load_hive_data() {
+local file=$1
+local table_name=$2
+
+echo "hive -e \"load data local inpath '${file}' into table ${table_name};\""
+}
