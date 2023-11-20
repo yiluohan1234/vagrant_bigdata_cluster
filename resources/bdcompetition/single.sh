@@ -100,7 +100,7 @@ replace_keyword "server.1" "${host_external}:2888:3888" ${file}
 
 replace_hbase_conf(){
 local host_external=$1
-local file=${HBASE_HOME/conf/hbase-site.xml
+local file=${HBASE_HOME}/conf/hbase-site.xml
 # backup
 echo -n "is or not backup? (y/N) "
 read is_backup
