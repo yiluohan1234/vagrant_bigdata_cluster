@@ -1,29 +1,20 @@
 alias cv="cd /d/javaEnv/vagrant_bigdata_cluster"
-alias gitup='sed -i "/# GitHub520 Host Start/Q" /c/Windows/System32/drivers/etc/hosts && curl https://raw.hellogithub.com/hosts >> /c/Windows/System32/drivers/etc/hosts'
+alias gitup='sed -i "/# GitHub520 Host Start/Q" /etc/hosts && curl https://raw.hellogithub.com/hosts >> /c/Windows/System32/drivers/etc/hosts'
 alias vup="vagrant up"
 alias vdown="vagrant halt"
 alias vreload="vagrant reload --provision"
-alias getlogin="python /c/Users/cuiyufei/getLoginInfo.py"
-alias clearauto="sed -i '/"session.autoLogin"/d' /d/Portable/WindTerm_2.5.0/.wind/profiles/default.v10/terminal/user.sessions"
 HOSTS_PATH=/c/Windows/System32/drivers/etc/hosts
 SESSION_PATH=/d/Portable/WindTerm_2.5.0/.wind/profiles/default.v10/terminal/user.sessions
-DATA_PATH=/c/host_info.txt
 PYTHON_FILE=/c/getLoginInfo.py
 
 setclear() {
 sed -i '/"session.autoLogin"/d' ${SESSION_PATH}
-sed -i "/# Qingjiao Host Start/Q" ${HOSTS_PATH}
+echo "# Qingjiao Host Start" ${HOSTS_PATH}
+echo "192.168.10.111 hadoop000" ${HOSTS_PATH}
 }
 
-get_item() {
-local type=$1
-local path=${2:-$DATA_PATH}
-if [ -f ${path} ];then
-    ret=`cat ${path} |grep ${type} |awk -F '=' '{print $2}'`
-    echo ${ret}
-else
-    echo "$path not exists!"
-fi
+setvar() {
+python ${PYTHON_FILE} $1 $2 $3
 }
 
 clusterip() {
@@ -69,34 +60,4 @@ if [ `cat /c/Windows/System32/drivers/etc/hosts|grep jupyter|wc -l` != 0 ];then
     sed -i '/jupyter/d' ${HOSTS_PATH}
 fi
 echo "$jupyter jupyter" >> ${HOSTS_PATH}
-}
-
-set_host_ip() {
-local host_name=$1
-local host_ip=$2
-usage="Usage: set_host_ip host_name external_ip"
-if [ $# -ne 2 ]; then
-    echo $usage
-    exit 1
-fi
-
-if [ `cat /c/Windows/System32/drivers/etc/hosts |grep ${host_name} |wc -l` != 0 ];then
-    sed -i "/${host_name}/d" ${HOSTS_PATH}
-fi
-echo "$host_ip $host_name" >> ${HOSTS_PATH}
-}
-
-setvar() {
-python ${PYTHON_FILE}
-echo "# Qingjiao Host Start" >> ${HOSTS_PATH}
-HOSTNAME_LIST=("master" "slave1" "slave2" "Hadoop/Hive/Spark" "jupyter")
-for host in ${HOSTNAME_LIST[@]};do
-    if [ `cat ${DATA_PATH} |grep ${host} |wc -l` != 0 ];then
-        if [ "${host}" == "Hadoop/Hive/Spark" ];then
-            set_host_ip hadoop000 `get_item ${host}_public_ip`
-        else
-            set_host_ip ${host} `get_item ${host}_public_ip`
-        fi
-    fi
-done
 }
