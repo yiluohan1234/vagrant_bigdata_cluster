@@ -9,8 +9,7 @@ PYTHON_FILE=/c/getLoginInfo.py
 
 setclear() {
 sed -i '/"session.autoLogin"/d' ${SESSION_PATH}
-echo "# Qingjiao Host Start" ${HOSTS_PATH}
-echo "192.168.10.111 hadoop000" ${HOSTS_PATH}
+sed -i "/# Qingjiao Host Start/Q" ${HOSTS_PATH}
 }
 
 setvar() {
