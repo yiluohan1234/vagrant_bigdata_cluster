@@ -82,6 +82,11 @@ local web_server_file=${azkaban_path}/azkaban-web-server-0.1.0-SNAPSHOT/conf/azk
 local exec_server_file=${azkaban_path}/azkaban-exec-server-0.1.0-SNAPSHOT/conf/azkaban.properties
 local web_user_file=${azkaban_path}/azkaban-web-server-0.1.0-SNAPSHOT/conf/azkaban-users.xml
 
+mysql -uroot -p123456 -e "select version();" &>/dev/null
+if [ $? -ne 0 ];then
+    systemctl start mysqld
+fi
+
 mysql -uroot -p123456 -e "create database if not exists azkaban;grant all privileges ON azkaban.* to 'qingjiao'@'%' with grant option;flush privileges;"
 
 [ ! -d ${azkaban_path} ] && mkdir -p ${azkaban_path}
