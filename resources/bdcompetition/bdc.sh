@@ -60,9 +60,9 @@ local val=$2
 local file=$3
 
 # backup
-cp ${file} ${file}_back
+[ ! -f ${file}_back ] && cp ${file} ${file}_back
 
-echo -e "\033[31m--------------------- The keyvalue ---------------------\033[0m"
+echo -e "\033[31m--------------------- ${file} key:value ---------------------\033[0m"
 echo "${key}=${val}"
 
 if [ `cat ${file} |grep "^${key}" |wc -l` -ne 0 ];then
@@ -117,6 +117,7 @@ replace_keyword "jetty.use.ssl" "true" ${web_server_file}
 replace_keyword "jetty.ssl.port" "8443" ${web_server_file}
 replace_keyword "jetty.keystore" "${key_path}" ${web_server_file}
 replace_keyword "jetty.password" "123456" ${web_server_file}
+replace_keyword "jetty.keypassword" "123456" ${web_server_file}
 replace_keyword "jetty.truststore" "${key_path}" ${web_server_file}
 replace_keyword "jetty.trustpassword" "123456" ${web_server_file}
 
@@ -163,7 +164,7 @@ select * from student;
 EOF
 
 echo "type=command" >> /root/data/hivef.job
-echo "hive -f /root/data/hivef.sql" >> /root/data/hivef.job
+echo "command=hive -f /root/data/hivef.sql" >> /root/data/hivef.job
 
 [ -f /root/hivef.zip ] && rm -rf /root/hivef.zip
 zip /root/hivef.zip /root/data/hivef.job
@@ -180,16 +181,16 @@ azkaban(){
     fi
     case $1 in
         start)
-            echo "============ start azkaban-exec-server and azkaban-web-server ============"
-            cd /root/software/azkaban/azkaban-exec-server-0.1.0-SNAPSHOT && bin/start-exec.sh
-            sleep 10s
-            cd /root/software/azkaban/azkaban-exec-server-0.1.0-SNAPSHOT && curl -G "localhost:$(<./executor.port)/executor?action=activate" && echo
-            cd /root/software/azkaban/azkaban-web-server-0.1.0-SNAPSHOT && bin/start-web.sh
+            echo "============ start azkaban-web-and-exec-server ============"
+            cd /root/software/azkaban/azkaban-exec-server-0.1.0-SNAPSHOT && bin/start-exec.sh && cd
+            sleep 3s
+            cd /root/software/azkaban/azkaban-exec-server-0.1.0-SNAPSHOT && curl -G "localhost:$(<./executor.port)/executor?action=activate" && echo && cd
+            cd /root/software/azkaban/azkaban-web-server-0.1.0-SNAPSHOT && bin/start-web.sh && cd
             ;;
         stop)
-            echo "============ stop azkaban-web-server and azkaban-exec-server ============"
-            cd /root/software/azkaban/azkaban-web-server-0.1.0-SNAPSHOT && bin/shutdown-web.sh
-            cd /root/software/azkaban/azkaban-exec-server-0.1.0-SNAPSHOT && bin/shutdown-exec.sh
+            echo "============ stop azkaban-web-and-exec-server ============"
+            cd /root/software/azkaban/azkaban-web-server-0.1.0-SNAPSHOT && bin/shutdown-web.sh && cd
+            cd /root/software/azkaban/azkaban-exec-server-0.1.0-SNAPSHOT && bin/shutdown-exec.sh && cd
             ;;
         *)
             echo $usage
