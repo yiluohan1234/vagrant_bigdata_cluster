@@ -25,6 +25,9 @@ case $1 in
         echo "hdfs dfsadmin -safemode enter/leave/get"
         hdfs dfsadmin -safemode leave
         ;;
+    nocheck)
+        echo 'export HADOOP_SSH_OPTS="-o StrictHostKeyChecking=no"' >> ${HADOOP_HOME}/etc/hadoop/hadoop-env.sh
+        ;;
     *)
         echo $usage
         ;;
@@ -38,7 +41,9 @@ if [ $# -lt 1 ]; then
     echo $usage
     exit 1
 fi
-case $1 in
+local type=$1
+local table_name=${2:-"hive"}
+case $type in
     start)
         systemctl start mysqld
         ;;
@@ -46,7 +51,7 @@ case $1 in
         schematool -dbType mysql -initSchema
         ;;
     create)
-        hive -e "create database if not exists $2;"
+        hive -e "create database if not exists ${table_name};show databases;"
         ;;
     *)
         echo $usage
@@ -62,7 +67,7 @@ local file=$3
 # backup
 [ ! -f ${file}_back ] && cp ${file} ${file}_back
 
-echo -e "\033[31m--------------------- ${file} key:value ---------------------\033[0m"
+echo -e "\033[31m------------------- ${file} key:value -------------------\033[0m"
 echo "${key}=${val}"
 
 if [ `cat ${file} |grep "^${key}" |wc -l` -ne 0 ];then
@@ -90,11 +95,11 @@ fi
 mysql -uroot -p123456 -e "create database if not exists azkaban;grant all privileges ON azkaban.* to 'qingjiao'@'%' with grant option;flush privileges;"
 
 [ ! -d ${azkaban_path} ] && mkdir -p ${azkaban_path}
-tar -zxvf ${azkaban_raw_path}/azkaban-db/build/distributions/azkaban-db-0.1.0-SNAPSHOT.tar.gz -C ${azkaban_path}
+tar -zxf ${azkaban_raw_path}/azkaban-db/build/distributions/azkaban-db-0.1.0-SNAPSHOT.tar.gz -C ${azkaban_path}
 
 mysql -uroot -p123456 azkaban < ${db_file}
 
-tar -zxvf ${azkaban_raw_path}/azkaban-web-server/build/distributions/azkaban-web-server-0.1.0-SNAPSHOT.tar.gz -C ${azkaban_path}
+tar -zxf ${azkaban_raw_path}/azkaban-web-server/build/distributions/azkaban-web-server-0.1.0-SNAPSHOT.tar.gz -C ${azkaban_path}
 
 # gen key
 key_path=${azkaban_path}/azkaban-web-server-0.1.0-SNAPSHOT/keystore
@@ -196,6 +201,155 @@ azkaban(){
             echo "============ stop azkaban-web-and-exec-server ============"
             cd /root/software/azkaban/azkaban-web-server-0.1.0-SNAPSHOT && bin/shutdown-web.sh && cd
             cd /root/software/azkaban/azkaban-exec-server-0.1.0-SNAPSHOT && bin/shutdown-exec.sh && cd
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+# set_property "fs.defaultFS=hdfs://master:9000" ${HADOOP_HOME}/etc/hadoop/core-site.xml true
+setkv() {
+    local key_value=$1
+    local properties_file=$2
+    local is_create=$3
+    [ -z "${is_create}" ] && is_create=false
+
+    if [ "${is_create}" == "false" ]
+    then
+        sed -i "/<\/configuration>/Q" ${properties_file}
+    else
+        [ ! -f ${properties_file} ] && touch ${properties_file}
+        echo '<?xml version="1.0" encoding="UTF-8" standalone="no"?>' >> ${properties_file}
+        echo '<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>' >> ${properties_file}
+        echo '<configuration>' >> ${properties_file}
+    fi
+    name=`echo $key_value|cut -d "=" -f 1`
+    value=`echo $key_value|cut -d "=" -f 2-`
+    echo "  <property>" >> ${properties_file}
+    echo "    <name>$name</name>" >> ${properties_file}
+    echo "    <value>$value</value>" >> ${properties_file}
+    echo "  </property>" >> ${properties_file}
+    echo "</configuration>" >> ${properties_file}
+}
+
+replace_kafka_conf() {
+local host_external=$1
+local host_internal=hadoop000
+local file=${KAFKA_HOME}/config/server.properties
+# backup
+echo -n "is or not backup? (y/N) "
+read is_backup
+if [ "${is_backup}" == "y" ];then
+    cp ${file} ${file}_bak
+fi
+replace_keyword "listeners" "PLAINTEXT://${host_internal}:9092" ${file}
+replace_keyword "host.name" "${host_internal}" ${file}
+replace_keyword "advertised.listeners" "PLAINTEXT://${host_external}:9092" ${file}
+replace_keyword "advertised.host.name" "${host_external}" ${file}
+replace_keyword "zookeeper.connect" "${host_external}:2181" ${file}
+}
+
+replace_zk_conf() {
+local host_external=$1
+local file=${ZOOKEEPER_HOME}/conf/zoo.cfg
+# backup
+echo -n "is or not backup? (y/N) "
+read is_backup
+if [ "${is_backup}" == "y" ];then
+    cp ${file} ${file}_back
+fi
+replace_keyword "server.1" "${host_external}:2888:3888" ${file}
+}
+
+replace_hbase_conf(){
+local host_external=$1
+local file=${HBASE_HOME}/conf/hbase-site.xml
+# backup
+echo -n "is or not backup? (y/N) "
+read is_backup
+if [ "${is_backup}" == "y" ];then
+    cp ${file} ${file}_back
+fi
+sed -i "s/X.X.X.X/${host_external}/" ${file}
+}
+
+kafka(){
+    usage="Usage: kafka (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            ${KAFKA_HOME}/bin/kafka-server-start.sh -daemon ${KAFKA_HOME}/config/server.properties
+            ;;
+        stop)
+            ps -ef | awk '/Kafka/ && !/awk/{print $2}' | xargs kill -9
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+zk(){
+    usage="Usage: zk (start|stop|status)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            ${ZOOKEEPER_HOME}/bin/zkServer.sh start
+            ;;
+        stop)
+            ${ZOOKEEPER_HOME}/bin/zkServer.sh stop
+            ;;
+        status)
+            ${ZOOKEEPER_HOME}/bin/zkServer.sh status
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+hbase(){
+    usage="Usage(hbase): hbase (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            ${HBASE_HOME}/bin/start-hbase.sh
+            ;;
+        stop)
+            ${HBASE_HOME}/bin/stop-hbase.sh
+            ;;
+        *)
+            echo $usage
+            ;;
+    esac
+}
+
+spark(){
+    usage="Usage(spark): spark (start|stop)"
+
+    if [ $# -lt 1 ]; then
+        echo $usage
+        exit 1
+    fi
+    case $1 in
+        start)
+            ${SPARK_HOME}/sbin/start-all.sh
+            ;;
+        stop)
+            ${SPARK_HOME}/sbin/stop-all.sh
             ;;
         *)
             echo $usage
