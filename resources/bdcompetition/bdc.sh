@@ -45,7 +45,10 @@ local type=$1
 local table_name=${2:-"hive"}
 case $type in
     start)
-        systemctl start mysqld
+        mysql -uroot -p123456 -e "select version();" &>/dev/null
+        if [ $? -ne 0 ];then
+            systemctl start mysqld
+        fi
         ;;
     init)
         schematool -dbType mysql -initSchema
@@ -233,7 +236,7 @@ setkv() {
     echo "</configuration>" >> ${properties_file}
 }
 
-replace_kafka_conf() {
+updatekafka() {
 local host_external=$1
 local host_internal=hadoop000
 local file=${KAFKA_HOME}/config/server.properties
@@ -250,7 +253,7 @@ replace_keyword "advertised.host.name" "${host_external}" ${file}
 replace_keyword "zookeeper.connect" "${host_external}:2181" ${file}
 }
 
-replace_zk_conf() {
+updatezk() {
 local host_external=$1
 local file=${ZOOKEEPER_HOME}/conf/zoo.cfg
 # backup
@@ -262,7 +265,7 @@ fi
 replace_keyword "server.1" "${host_external}:2888:3888" ${file}
 }
 
-replace_hbase_conf(){
+updatehbase(){
 local host_external=$1
 local file=${HBASE_HOME}/conf/hbase-site.xml
 # backup
