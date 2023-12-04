@@ -106,7 +106,7 @@ tar -zxf ${azkaban_raw_path}/azkaban-web-server/build/distributions/azkaban-web-
 
 # gen key
 key_path=${azkaban_path}/azkaban-web-server-0.1.0-SNAPSHOT/keystore
-keytool -keystore ${key_path} -alias jetty -genkey -keyalg RSA  << EOF
+keytool -keystore ${key_path} -alias jetty -genkey -keyalg RSA  << eof
 123456
 123456
 
@@ -118,7 +118,7 @@ CN
 Y
 123456
 123456
-EOF
+eof
 
 # modify web server configuration
 echo "web server configuration"
@@ -165,7 +165,7 @@ zip /root/mapreduce.zip /root/data/put.job /root/data/mapreduce.job
 }
 
 hive_azkaban() {
-cat > /root/data/hivef.sql << EOF
+cat > /root/data/hivef.sql << eof
 use default;
 create table if not exists student(id int, name string)
 row format delimited fields terminated by ',';
@@ -174,7 +174,7 @@ insert into student values (1100,'qingjiao');
 insert overwrite local directory '/root/data/student'
 row format delimited fields terminated by '\t'
 select * from student;
-EOF
+eof
 
 echo "type=command" >> /root/data/hivef.job
 echo "command=hive -f /root/data/hivef.sql" >> /root/data/hivef.job
