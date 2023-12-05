@@ -1,3 +1,7 @@
+INSTALL_PATH=/root/software
+PROFILE=/etc/profile
+SOFT_PATH=/root/software
+
 setssh() {
 ip=`ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'`
 echo "$ip hadoop000" >> /etc/hosts
@@ -358,4 +362,44 @@ spark(){
             echo $usage
             ;;
     esac
+}
+
+setsqoop() {
+local sqoop_dir=${INSTALL_PATH}/sqoop-1.4.7.bin__hadoop-2.6.0
+tar -zxf ${SOFT_PATH}/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz -C ${INSTALL_PATH}
+# setup
+cp ${sqoop_dir}/conf/sqoop-env-template.sh ${sqoop_dir}/conf/sqoop-env.sh
+echo "export HADOOP_COMMON_HOME=${HADOOP_HOME}" >> ${sqoop_dir}/conf/sqoop-env.sh
+echo "export HADOOP_MAPRED_HOME=${HADOOP_HOME}" >> ${sqoop_dir}/conf/sqoop-env.sh
+
+cp ${SOFT_PATH}/mysql-connector-java-*.jar ${sqoop_dir}/lib/
+
+# set environment
+setenv sqoop ${sqoop_dir}
+source $PROFILE
+
+# sqoop import --connect "jdbc:mysql://localhost:3306/major?useSSL=false&serverTimezone=UTC" --username root --password 123456 --table school --target-dir '/major/school' --fields-terminated-by ',' -m 1
+# sqoop import --connect "jdbc:mysql://localhost:3306/major?useSSL=false&serverTimezone=UTC" --username root --password 123456 --table professional --target-dir '/major/professional' --fields-terminated-by ',' -m 1
+
+}
+
+setflume() {
+local flume_dir=${INSTALL_PATH}/apache-flume-1.6.0-bin
+tar -zxf ${SOFT_PATH}/apache-flume-1.6.0-bin.tar.gz -C ${INSTALL_PATH}
+# setup
+cp ${sqoop_dir}/conf/flume-env.sh.template ${flume_dir}/conf/flume-env.sh
+sed -i "s@^# export JAVA_HOME=.*@export JAVA_HOME=${JAVA_HOME}@" ${flume_dir}/conf/flume-env.sh
+sed -i 's@^# export JAVA_OPTS=".-*@export JAVA_OPTS="-Xms100m -Xmx2000m -Dcom.sun.management.jmxremote"@' ${conf_dir}/conf/flume-env.sh
+
+mv ${flume_dir}/lib/guava-*.jar ${flume_dir}/lib/guava-*.jar.bak
+
+log4j_path=${flume_dir}/conf/log4j.properties
+log_path=${flume_dir}/logs
+sed -i 's@^flume.log.dir=.*@flume.log.dir='${log_path}'@' ${log4j_path}
+
+# set environment
+setenv flume ${flume_dir}
+source $PROFILE
+#nohup /opt/module/flume/bin/flume-ng agent -n a1 -c /opt/module/flume/conf -f /opt/module/flume/job/kafka_to_hdfs_log.conf >/dev/null 2>&1 &
+
 }
