@@ -395,6 +395,28 @@ source $PROFILE
 
 }
 
+setflume() {
+local flume_dir=${INSTALL_PATH}/flume/apache-flume-1.6.0-bin
+mkdir ${INSTALL_PATH}/flume
+tar -zxf ${SOFT_PATH}/apache-flume-1.6.0-bin.tar.gz -C ${INSTALL_PATH}/flume/
+# setup
+cp ${sqoop_dir}/conf/flume-env.sh.template ${flume_dir}/conf/flume-env.sh
+sed -i "s@^# export JAVA_HOME=.*@export JAVA_HOME=${JAVA_HOME}@" ${flume_dir}/conf/flume-env.sh
+sed -i 's@^# export JAVA_OPTS=".-*@export JAVA_OPTS="-Xms100m -Xmx2000m -Dcom.sun.management.jmxremote"@' ${conf_dir}/conf/flume-env.sh
+
+mv ${flume_dir}/lib/guava-*.jar ${flume_dir}/lib/guava-*.jar.bak
+
+log4j_path=${flume_dir}/conf/log4j.properties
+log_path=${flume_dir}/logs
+sed -i 's@^flume.log.dir=.*@flume.log.dir='${log_path}'@' ${log4j_path}
+
+# set environment
+setenv flume ${flume_dir}
+source $PROFILE
+#nohup /opt/module/flume/bin/flume-ng agent -n a1 -c /opt/module/flume/conf -f /opt/module/flume/job/kafka_to_hdfs_log.conf >/dev/null 2>&1 &
+
+}
+
 # set_property "fs.defaultFS=hdfs://master:9000" ${HADOOP_HOME}/etc/hadoop/core-site.xml true
 setkv() {
     local key_value=$1
