@@ -284,16 +284,21 @@ sed -i "s/X.X.X.X/${host_external}/" ${file}
 kafka(){
     usage="Usage: kafka (start|stop)"
 
+    local type=$1
+    local table_name=${2:-"iotTopic"}
     if [ $# -lt 1 ]; then
         echo $usage
         exit 1
     fi
-    case $1 in
+    case $type in
         start)
             ${KAFKA_HOME}/bin/kafka-server-start.sh -daemon ${KAFKA_HOME}/config/server.properties
             ;;
         stop)
             ps -ef | awk '/Kafka/ && !/awk/{print $2}' | xargs kill -9
+            ;;
+        create)
+            kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 3 --topic ${table_name}
             ;;
         *)
             echo $usage
@@ -324,7 +329,7 @@ zk(){
     esac
 }
 
-hbase(){
+hbases(){
     usage="Usage(hbase): hbase (start|stop)"
 
     if [ $# -lt 1 ]; then
@@ -337,6 +342,10 @@ hbase(){
             ;;
         stop)
             ${HBASE_HOME}/bin/stop-hbase.sh
+            ;;
+        create)
+            echo "create 'default:spark_iot','info'"
+            echo "kafka-console-consumer.sh --bootstrap-server qingjiao:9092 --topic iotTopic --from-beginning"
             ;;
         *)
             echo $usage
