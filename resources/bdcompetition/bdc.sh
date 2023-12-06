@@ -298,7 +298,7 @@ kafka(){
             ps -ef | awk '/Kafka/ && !/awk/{print $2}' | xargs kill -9
             ;;
         create)
-            kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 3 --topic ${table_name}
+            echo "kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 3 --topic ${table_name}"
             ;;
         *)
             echo $usage
@@ -344,7 +344,7 @@ hb(){
             ${HBASE_HOME}/bin/stop-hbase.sh
             ;;
         create)
-            echo "create 'default:spark_iot','info'"
+            echo "echo \"create 'default:spark_iot','info'\" |hbase shell"
             echo "kafka-console-consumer.sh --bootstrap-server qingjiao:9092 --topic iotTopic --from-beginning"
             ;;
         *)
