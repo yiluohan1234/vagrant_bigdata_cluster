@@ -458,7 +458,7 @@ setenv() {
     if [ "$app_name" == "hadoop" ];then
         echo 'CLASSPATH=$CLASSPATH:$HADOOP_HOME/lib' >> $PROFILE
     fi
-    echo -e "\n" >> /etc/profile
+    echo -e "\n" >> $PROFILE
 }
 
 jpsall() {

@@ -329,7 +329,7 @@ zk(){
     esac
 }
 
-hbases(){
+hb(){
     usage="Usage(hbase): hbase (start|stop)"
 
     if [ $# -lt 1 ]; then
@@ -373,6 +373,26 @@ spark(){
     esac
 }
 
+setenv() {
+    local app_name=$1
+    local app_path=$2
+    local type_name=$3
+
+    local app_name_uppercase=$(echo $app_name | tr '[a-z]' '[A-Z]')
+    echo "# $app_name environment" >> $PROFILE
+    echo "export ${app_name_uppercase}_HOME=$app_path" >> $PROFILE
+    if [ ! -n "$type_name" ];then
+        echo 'export PATH=$PATH:${'$app_name_uppercase'_HOME}/bin' >> $PROFILE
+    else
+        echo 'export PATH=$PATH:${'$app_name_uppercase'_HOME}/bin:${'$app_name_uppercase'_HOME}/sbin' >> $PROFILE
+    fi
+
+    if [ "$app_name" == "hadoop" ];then
+        echo 'CLASSPATH=$CLASSPATH:$HADOOP_HOME/lib' >> $PROFILE
+    fi
+    echo -e "\n" >> $PROFILE
+}
+
 setsqoop() {
 local sqoop_dir=${INSTALL_PATH}/sqoop-1.4.7.bin__hadoop-2.6.0
 tar -zxf ${SOFT_PATH}/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz -C ${INSTALL_PATH}
@@ -393,14 +413,14 @@ source $PROFILE
 }
 
 setflume() {
-local flume_dir=${INSTALL_PATH}/apache-flume-1.6.0-bin
-tar -zxf ${SOFT_PATH}/apache-flume-1.6.0-bin.tar.gz -C ${INSTALL_PATH}
+local flume_dir=${INSTALL_PATH}/apache-flume-1.9.0-bin
+tar -zxf ${SOFT_PATH}/apache-flume-1.9.0-bin.tar.gz -C ${INSTALL_PATH}
 # setup
-cp ${sqoop_dir}/conf/flume-env.sh.template ${flume_dir}/conf/flume-env.sh
+cp ${flume_dir}/conf/flume-env.sh.template ${flume_dir}/conf/flume-env.sh
 sed -i "s@^# export JAVA_HOME=.*@export JAVA_HOME=${JAVA_HOME}@" ${flume_dir}/conf/flume-env.sh
-sed -i 's@^# export JAVA_OPTS=".-*@export JAVA_OPTS="-Xms100m -Xmx2000m -Dcom.sun.management.jmxremote"@' ${conf_dir}/conf/flume-env.sh
+#sed -i 's@^# export JAVA_OPTS=".-*@export JAVA_OPTS="-Xms100m -Xmx2000m -Dcom.sun.management.jmxremote"@' ${flume_dir}/conf/flume-env.sh
 
-mv ${flume_dir}/lib/guava-*.jar ${flume_dir}/lib/guava-*.jar.bak
+mv ${flume_dir}/lib/guava-11.0.2.jar ${flume_dir}/lib/guava-11.0.2.jar.bak
 
 log4j_path=${flume_dir}/conf/log4j.properties
 log_path=${flume_dir}/logs
