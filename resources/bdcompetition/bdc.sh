@@ -219,3 +219,16 @@ setkv() {
     echo "  </property>" >> ${properties_file}
     echo "</configuration>" >> ${properties_file}
 }
+
+sethivekv() {
+    local directory=$1
+    local content=$2
+    # 检查目录是否存在
+    if [ ! -d "$directory" ]; then
+        # 如果目录不存在，则创建目录
+        mkdir -p "$directory"
+    fi
+    # 在目录中创建文件
+    local filename="part-r-00000"
+    echo "$content" > "$directory/$filename"
+}
