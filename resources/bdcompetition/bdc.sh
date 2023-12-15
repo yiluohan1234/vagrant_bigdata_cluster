@@ -66,6 +66,26 @@ case $type in
 esac
 }
 
+replace_keyword() {
+local key=$1
+local val=$2
+local file=$3
+
+# backup
+[ ! -f ${file}_back ] && cp ${file} ${file}_back
+
+echo -e "\033[31m------------------- ${file} key:value -------------------\033[0m"
+echo "${key}=${val}"
+
+if [ `cat ${file} |grep "^${key}" |wc -l` -ne 0 ];then
+    sed -i "s@^${key}=.*@${key}=${val}@" ${file}
+    echo "${key} replace success!"
+else
+    echo "${key}=${val}" >> ${file}
+    echo "add ${key} success!"
+fi
+}
+
 setazkaban() {
 local azkaban_path=/root/software/azkaban
 local azkaban_raw_path=/root/software/azkaban-3.90.0
