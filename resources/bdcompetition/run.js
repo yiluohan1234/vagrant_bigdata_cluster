@@ -4,8 +4,8 @@
 // @version      0.1
 // @description  try to take over the world!
 // @author       yiluohan1234
-// @match        http://*/*
-// @match        https://*/*
+// @match        https://blog.csdn.net/*
+// @match        https://www.qingjiaoclass.com/*
 // @connect      127.0.0.1
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
@@ -26,17 +26,17 @@
     }
 
     /**
-	 * 获取选中的文字
-	 */
+     * 获取选中的文字
+     */
     function getSelectText(){
         var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
         return txt.toString();
     }
 
     /**
-	 * 获取答案
-	 * @param title 题目内容
-	 */
+      * 获取答案
+     * @param title 题目内容
+     */
     function getAnswer(title) {
         return new Promise(resolve => {
             GM_xmlhttpRequest({
