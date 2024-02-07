@@ -118,8 +118,8 @@ install_init(){
     # 创建安装目录
     mkdir /opt/module
     # chown -R vagrant:vagrant /opt/
-    complete_url=https://ghproxy.com/https://raw.githubusercontent.com/yiluohan1234/vagrant_bigdata_cluster/master/resources/single_node/complete_tool.sh
-    bigstart_url=https://ghproxy.com/https://raw.githubusercontent.com/yiluohan1234/vagrant_bigdata_cluster/master/resources/single_node/bigstart
+    complete_url=https://raw.githubusercontent.com/yiluohan1234/vagrant_bigdata_cluster/master/resources/single_node/complete_tool.sh
+    bigstart_url=https://raw.githubusercontent.com/yiluohan1234/vagrant_bigdata_cluster/master/resources/single_node/bigstart
     curl -o /vagrant/complete_tool.sh -O -L ${complete_url}
     curl -o /vagrant/bigstart -O -L ${bigstart_url}
     # wget -P /vagrant/ ${complete_url}
