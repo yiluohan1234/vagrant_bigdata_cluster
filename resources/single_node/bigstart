@@ -112,7 +112,7 @@ hadoop(){
             hadoop start
             ;;
         format)
-            ssh hadoop "$INSTALL_PATH/hadoop/bin/hdfs namenode -format"
+            $INSTALL_PATH/hadoop/bin/hdfs namenode -format
             ;;
         *)
             echo $usage
@@ -141,7 +141,7 @@ hdp(){
             hdp start
             ;;
         format)
-            ssh hadoop "$INSTALL_PATH/hadoop/bin/hdfs namenode -format"
+            $INSTALL_PATH/hadoop/bin/hdfs namenode -format
             ;;
         *)
             echo $usage
