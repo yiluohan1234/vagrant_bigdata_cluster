@@ -389,6 +389,13 @@ hdp(){
         create)
             hive -e "create database if not exists $2"
             ;;
+        leave)
+            echo "hdfs dfsadmin -safemode enter/leave/get"
+            hdfs dfsadmin -safemode leave
+            ;;
+        nocheck)
+            echo 'export HADOOP_SSH_OPTS="-o StrictHostKeyChecking=no"' >> ${HADOOP_HOME}/etc/hadoop/hadoop-env.sh
+            ;;
         *)
             echo $usage
             ;;
