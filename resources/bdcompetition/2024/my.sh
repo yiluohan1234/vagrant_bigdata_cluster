@@ -8,44 +8,42 @@ PROFILE=/etc/profile
 SOFT_PATH=/root/software/package
 DATA_PATH=/usr/etx.txt
 
-setvar() {
-updateip `get_item master_ip` `get_item slave1_ip` `get_item slave2_ip`
-updatepd `get_item master_password` `get_item slave1_password` `get_item slave2_password`
-}
+setvar(){
+# 定义三个空数组来存储内部IP、主机名和密码
+local ip_list=()
+local hostname_list=()
+local passwd_list=()
 
-get_item() {
-local type=$1
-local path=${2:-$DATA_PATH}
-if [ -f ${path} ];then
-    ret=`cat ${path} |grep ${type} |awk -F '=' '{print $2}'`
-    echo ${ret}
-else
-    echo "$path not exists!"
-fi
-}
+while IFS=',' read -r hostname internal_ip public_ip password; do
+    ip_list+=("$internal_ip")
+    hostname_list+=("$hostname")
+    passwd_list+=("$password")
+done < ${DATA_PATH}
 
-updateip() {
-local master=$1
-local slave1=$2
-local slave2=$3
-usage="Usage: updateip master_ip slave1_ip slave2_ip(internal)"
-if [ $# -ne 3 ]; then
-    echo $usage
-    exit 1
-fi
-sed -i 's@^IP_LIST=.*@IP_LIST=("'$master'" "'$slave1'" "'$slave2'")@' /etc/profile.d/my.sh
-}
+ip_list_str="IP_LIST=("
+for ip in "${ip_list[@]}"; do
+    ip_list_str+="'$ip' "
+done
+ip_list_str=${ip_list_str% *} # 移除最后一个多余的空格
+ip_list_str+=")"
 
-updatepd() {
-local master=`change_string_passwd $1`
-local slave1=`change_string_passwd $2`
-local slave2=`change_string_passwd $3`
-usage="Usage: updatepd master_pd slave1_pd slave2_pd"
-if [ $# -ne 3 ]; then
-    echo $usage
-    exit 1
-fi
-sed -i "s@^PASSWD_LIST=.*@PASSWD_LIST=('$master' '$slave1' '$slave2')@" /etc/profile.d/my.sh
+host_list_str="HOSTNAME_LIST=("
+for host in "${hostname_list[@]}"; do
+    host_list_str+="'$host' "
+done
+host_list_str=${host_list_str% *} # 移除最后一个多余的空格
+host_list_str+=")"
+
+passwd_list_str="PASSWD_LIST=("
+for host in "${passwd_list[@]}"; do
+    passwd_list_str+="'`change_string_passwd $host`' "
+done
+passwd_list_str=${passwd_list_str% *} # 移除最后一个多余的空格
+passwd_list_str+=")"
+
+sed -i "s@^IP_LIST=.*@$ip_list_str@" /etc/profile.d/my.sh
+sed -i "s@^HOSTNAME_LIST=.*@$host_list_str@" /etc/profile.d/my.sh
+sed -i "s@^PASSWD_LIST=.*@$passwd_list_str@" /etc/profile.d/my.sh
 }
 
 change_string_passwd() {
