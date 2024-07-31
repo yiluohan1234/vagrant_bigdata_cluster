@@ -15,9 +15,11 @@ local hostname_list=()
 local passwd_list=()
 
 while IFS=',' read -r hostname internal_ip public_ip password; do
-    ip_list+=("$internal_ip")
-    hostname_list+=("$hostname")
-    passwd_list+=("$password")
+    if [[ $hostname == "master" || $hostname == "slave1" || $hostname == "slave2" ]];then
+        ip_list+=("$internal_ip")
+        hostname_list+=("$hostname")
+        passwd_list+=("$password")
+    fi
 done < ${DATA_PATH}
 
 ip_list_str="IP_LIST=("
