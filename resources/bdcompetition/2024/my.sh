@@ -270,17 +270,6 @@ setssh(){
     length=${#HOSTNAME_LIST[@]}
     current_hostname=`cat /etc/hostname`
     for ((i=0; i<$length; i++));do
-        # master
-        if [ "$current_hostname" == "${HOSTNAME_LIST[$i]}" ];then
-            expect -c "
-            set timeout 5;
-            spawn ssh-copy-id -i localhost;
-            expect {
-                \"*assword\" { send \"${PASSWD_LIST[$i]}\r\";exp_continue}
-                \"yes/no\" { send \"yes\r\"; exp_continue }
-                eof {exit 0;}
-            }";
-        fi
         expect -c "
             set timeout 5;
             spawn ssh-copy-id -i ${HOSTNAME_LIST[$i]};
