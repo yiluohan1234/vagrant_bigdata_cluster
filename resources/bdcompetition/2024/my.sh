@@ -435,14 +435,13 @@ systemctl start mysqld.service
 # MySQL数据库连接信息
 DB_USER="root"
 DB_PASSWORD="123456"
-DB_NAME="test"
 
+mysql -u$DB_USER -p$DB_PASSWORD -e "CREATE DATABASE test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 # 连接到MySQL数据库并执行SQL语句
 mysql -u$DB_USER -p$DB_PASSWORD << EOF
-
-CREATE DATABASE test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-drop table if exists test.fooditems;
-create table test.fooditems (
+use test;
+drop table if exists fooditems;
+create table fooditems (
 id INT AUTO_INCREMENT PRIMARY KEY,
 city VARCHAR(255),
 food_name VARCHAR(255),
@@ -453,8 +452,8 @@ food_image_link TEXT,
 food_description TEXT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-drop table if exists test.shopping;
-create table test.shopping (
+drop table if exists shopping;
+create table shopping (
 id INT AUTO_INCREMENT PRIMARY KEY,
 city VARCHAR(255),
 shop_name VARCHAR(500),
@@ -470,34 +469,34 @@ visitor_review TEXT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 LOAD DATA local INFILE '/root/travel/hotel/fooditems.csv'
-INTO TABLE test.fooditems
+INTO TABLE fooditems
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS;
 
 LOAD DATA local INFILE '/root/travel/hotel/shopping.csv'
-INTO TABLE test.shopping
+INTO TABLE shopping
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS;
 
-create view test.view_table01 as
+create view view_table01 as
 select substring(visitor_rating, LOCATE('环境：', visitor_rating)+3, 1) '环境评分'
-from test.shopping where shop_name='果戈里书店';
+from shopping where shop_name='果戈里书店';
 
-create view test.view_table02 as
+create view view_table02 as
 select count(distinct(food_name)) '美食个数'
-from test.fooditems where city = '北京' group by city;
+from fooditems where city = '北京' group by city;
 
-ALTER TABLE test.shopping ADD overall_rating_new varchar(255);
-UPDATE test.shopping SET overall_rating_new = SUBSTRING(overall_rating, 1, LOCATE('分', overall_rating)-1);
+ALTER TABLE shopping ADD overall_rating_new varchar(255);
+UPDATE shopping SET overall_rating_new = SUBSTRING(overall_rating, 1, LOCATE('分', overall_rating)-1);
 
-create view test.view_table03 as
-select count(*) '个数' from test.shopping
+create view .view_table03 as
+select count(*) '个数' from .shopping
 where overall_rating_new > 4.5 and ranking !='';
 
-create view test.view_table04 as
-select city from test.fooditems where food_name = '麻豆腐';
+create view view_table04 as
+select city from fooditems where food_name = '麻豆腐';
 EOF
 }
 
@@ -680,6 +679,7 @@ END {
     print "[4.0,4.5):", count2;
     print "[4.5,5.0]:", count3;
 }' /root/travel/hotel/district_etl.csv > /root/part-r-00000
+hdfs dfs -mkdir /hotel_output
 hdfs dfs -put /root/part-r-00000 /hotel_output
 
 }
@@ -942,11 +942,11 @@ plt.title('情感倾向统计')
 plt.xlabel('情感倾向')
 plt.ylabel('计数')
 plt.show()
-plt.savefig('/root/fravel/hotel/columnar.png')
+plt.savefig('/root/travel/hotel/columnar.png')
 EOF
 python /root/travel/hotel/code/M3/M3-T2-S1-1.py
 # 子任务二
-cat > /root/travel/hotel/code/M3/M3-T2-S1-2.py << EOF
+cat > /root/travel/hotel/code/M3/M3-T2-S1-2.py << EOFvi
 # coding:utf-8
 import pandas as pd
 import matplotlib.pyplot as plt
