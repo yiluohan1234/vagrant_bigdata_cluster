@@ -175,6 +175,10 @@ ${HADOOP_HOME}/sbin/start-all.sh
 jpsall
 }
 
+jupyterlab(){
+nohup jupyter lab > /dev/null 2>&1 &
+}
+
 setmysql() {
 echo "setup mysql"
 # 解压数据库
