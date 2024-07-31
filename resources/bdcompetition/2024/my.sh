@@ -430,27 +430,6 @@ for ((i=0; i<$length; i++));do
 done
 }
 
-load_mysql_data() {
-local file=$1
-local table_name=$2
-local fields=${3:-','}
-local lines=${4:-'\n'}
-
-mysql -uroot -p123456 -e "LOAD DATA local INFILE '${file}' \
-INTO TABLE ${table_name} \
-FIELDS TERMINATED BY '${fields}' \
-LINES TERMINATED BY '${lines}' \
-IGNORE 1 ROWS;"
-}
-
-load_hive_data() {
-local file=$1
-local table_name=$2
-
-echo "hive -e \"load data local inpath '${file}' into table ${table_name};\""
-hive -e "load data local inpath '${file}' into table ${table_name};"
-}
-
 hadoop_mysql() {
 systemctl start mysqld.service
 # MySQL数据库连接信息
@@ -460,42 +439,35 @@ DB_NAME="test"
 
 # 连接到MySQL数据库并执行SQL语句
 mysql -u$DB_USER -p$DB_PASSWORD << EOF
-create database if not exists test;
+
+CREATE DATABASE test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 drop table if exists test.fooditems;
 create table test.fooditems (
-`id` INT NOT NULL AUTO_INCREMENT COMMENT '行号',
-`city` VARCHAR(255) NOT NULL COMMENT '城市',
-`food_name` VARCHAR(255) NOT NULL COMMENT '美食名称',
-`likelihood_of_liking` INT NOT NULL COMMENT '喜爱度',
-`restaurant_list` TEXT NOT NULL COMMENT '餐馆列表',
-`food_detail_link` TEXT NOT NULL COMMENT '美食详情链接',
-`food_image_link` TEXT NOT NULL COMMENT '美食图片链接',
-`food_description` TEXT NOT NULL COMMENT '美食介绍',
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='fooditems';
+id INT AUTO_INCREMENT PRIMARY KEY,
+city VARCHAR(255),
+food_name VARCHAR(255),
+likelihood_of_liking INT,
+restaurant_list TEXT,
+food_detail_link TEXT,
+food_image_link TEXT,
+food_description TEXT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 drop table if exists test.shopping;
 create table test.shopping (
-`id` INT NOT NULL AUTO_INCREMENT COMMENT '行号',
-`city` VARCHAR(255) NOT NULL COMMENT '城市',
-`shop_name` VARCHAR(500) NOT NULL COMMENT '购物地名称',
-`address` VARCHAR(50) NOT NULL COMMENT '地址',
-`contact_phone` VARCHAR(100) NOT NULL COMMENT '联系电话',
-`business_hours` VARCHAR(100) NOT NULL COMMENT '营业时间',
-`ranking` VARCHAR(100) NOT NULL COMMENT '排名',
-`overall_rating` VARCHAR(50) NOT NULL COMMENT '综合评分',
-`reviews_count` VARCHAR(50) NOT NULL COMMENT '点评数',
-`review_category` VARCHAR(100) NOT NULL COMMENT '评价类别',
-`visitor_rating` VARCHAR(100) NOT NULL COMMENT '游客评分',
-`visitor_review` TEXT NOT NULL COMMENT '游客评价',
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='shopping';
-
-LOAD DATA local INFILE '/root/travel/hotel/shopping.csv'
-INTO TABLE test.shopping
-FIELDS TERMINATED BY ','
-LINES TERMINATED BY '\n'
-IGNORE 1 ROWS;
+id INT AUTO_INCREMENT PRIMARY KEY,
+city VARCHAR(255),
+shop_name VARCHAR(500),
+address VARCHAR(50),
+contact_phone VARCHAR(100),
+business_hours VARCHAR(100),
+ranking VARCHAR(100),
+overall_rating VARCHAR(50),
+reviews_count VARCHAR(50),
+review_category VARCHAR(100),
+visitor_rating VARCHAR(100),
+visitor_review TEXT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 LOAD DATA local INFILE '/root/travel/hotel/fooditems.csv'
 INTO TABLE test.fooditems
@@ -503,24 +475,29 @@ FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS;
 
+LOAD DATA local INFILE '/root/travel/hotel/shopping.csv'
+INTO TABLE test.shopping
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
 create view test.view_table01 as
 select substring(visitor_rating, LOCATE('环境：', visitor_rating)+3, 1) '环境评分'
-from test.shopping where shop_name='';
+from test.shopping where shop_name='果戈里书店';
 
 create view test.view_table02 as
 select count(distinct(food_name)) '美食个数'
 from test.fooditems where city = '北京' group by city;
 
 ALTER TABLE test.shopping ADD overall_rating_new varchar(255);
-UPDATE test.shopping SET overall_rating_new = SUBSTRING(overall_rating, 1, LOCATE('分', overall _rating)-1);
+UPDATE test.shopping SET overall_rating_new = SUBSTRING(overall_rating, 1, LOCATE('分', overall_rating)-1);
 
 create view test.view_table03 as
 select count(*) '个数' from test.shopping
-where overall_rafing_new > 4.5 and ranking !=';
+where overall_rating_new > 4.5 and ranking !='';
 
 create view test.view_table04 as
-select city from test.fooditems were food_name = '麻豆腐';
-
+select city from test.fooditems where food_name = '麻豆腐';
 EOF
 }
 
@@ -691,6 +668,20 @@ hotel_type_counts = filtered_data.groupby(['商圈','酒店类型']).size().rese
 hotel_type_counts.to_csv('/root/travel/hotel/types.csv', index=None, encoding='UTF-8')
 EOF
 python /root/travel/hotel/code/M2/M2-T3-S3-1.py
+
+awk -F ',' '
+{
+    if ($5 < 4.0) count1++;
+    else if ($5 >= 4.0 && $5 < 4.5) count2++;
+    else if ($5 >= 4.5 && $5 <= 5.0) count3++;
+}
+END {
+    print "[0,4.0):", count1;
+    print "[4.0,4.5):", count2;
+    print "[4.5,5.0]:", count3;
+}' /root/travel/hotel/district_etl.csv > /root/part-r-00000
+hdfs dfs -put /root/part-r-00000 /hotel_output
+
 }
 #=============
 hadoop_plot_one(){
@@ -761,7 +752,7 @@ plt.savefig('/root/travel/hotel/bar.png')
 EOF
 python /root/travel/hotel/code/M3/M3-T1-S1-4.py
 
-cat >> /root/travel/hotel/code/M3/M3-T1-S1-5.py << EOF
+cat > /root/travel/hotel/code/M3/M3-T1-S1-5.py << EOF
 # coding:utf-8
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -784,10 +775,158 @@ EOF
 python /root/travel/hotel/code/M3/M3-T1-S1-5.py
 
 # 子任务二
+cat > /root/travel/hotel/visual1.html << EOF
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="echarts.min.js"></script>
+</head>
+<body>
+        <div style="width: 600px;height:400px"></div>
+
+    <script>
+        var mCharts = echarts.init(document.querySelector("div"))
+        var pieData = [
+		        {value: 7,name: "0~4.0"},
+            {value: 150,name: "4.0~4.5"},
+            {value: 1430,name: "4.5~5.0"}
+        ]
+        var option = {
+            series: [{
+                type: 'pie',
+                data: pieData
+            }]
+        }
+
+        mCharts.setOption(option)
+    </script>
+</body>
+</html>
+EOF
+
+cat > /root/travel/hotel/visual2.html << EOF
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- 引入 ECharts 文件 -->
+    <script src="echarts.min.js"></script>
+</head>
+    <!-- 准备放图表的容器 -->
+<body>
+    <div id="main" style="width: 1200px;height:400px;"></div>
+
+    <!-- 设置参数，初始化图表 -->
+    <script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '商圈酒店数量排名前五'
+        },
+        tooltip: {},
+        legend: {
+            data:['酒店数量']
+        },
+        xAxis: {
+            data: ["近哈尔滨西站","近中央大街","近哈尔滨站","近哈西万达广场","近江北大学城地铁站"]
+        },
+        yAxis: {},
+        series: [{
+            name: '酒店数量',
+            type: 'bar',
+            data: [129, 119,94,76,72]
+        }]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+
+    </script>
+
+</body>
+</html>
+EOF
+
+cat > /root/travel/hotel/visual3.html << EOF
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- 引入 ECharts 文件 -->
+    <script src="echarts.min.js"></script>
+</head>
+    <!-- 准备放图表的容器 -->
+<body>
+    <div id="main" style="width: 1200px;height:400px;"></div>
+
+    <!-- 设置参数，初始化图表 -->
+    <script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+    // 设置图表的配置项
+    var option = {
+        title: {
+            text: '排名前三商圈酒店类型'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: ['四星级', '经济型', '舒适型', '豪华型','高档型']
+        },
+        xAxis: [
+            {
+            data: ['近中央大街'，'近哈尔滨站'，'近哈尔滨西站']
+            }
+        ],
+        yAxis: [
+            {
+            type: 'value'
+            }
+        ],
+        series: [
+            {
+            name: '四星级',
+            type: 'bar',
+            barGap: 0,
+            data: [1, 0, 0]
+            },
+            {
+            name: '经济型',
+            type: 'bar',
+            data: [62,57,78]
+            },
+            {
+            name: '舒适型',
+            type: 'bar',
+            data: [14,9,24]
+            },
+            {
+            name: '豪华型',
+            type: 'bar',
+            data: [5,0,0]
+            },
+            {
+            name: '高档型',
+            type: 'bar',
+            data: [11,8,6]
+            },
+        ]
+      };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+
+    </script>
+</body>
+</html>
+EOF
 }
 hadoop_plot_two(){
 # 子任务一
-cat >> /root/travel/hotel/code/M3/M3-T2-S1-1.py << EOF
+cat > /root/travel/hotel/code/M3/M3-T2-S1-1.py << EOF
 # coding:utf-8
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -807,6 +946,27 @@ plt.savefig('/root/fravel/hotel/columnar.png')
 EOF
 python /root/travel/hotel/code/M3/M3-T2-S1-1.py
 # 子任务二
-
+cat > /root/travel/hotel/code/M3/M3-T2-S1-2.py << EOF
+# coding:utf-8
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.rcParams['font.sans-serif']=['SimHei'] #显示中文
+plt.rcParams['axes.unicode_minus']=False #用来正常显示负号
+# 读取数据
+da = pd.read_csv('/root/travel/hotel/district.csv')
+rates = da[(da['酒店类型']=='舒适型') & ((da['评分']==4.8)|(da['评分']==4.9)|(da['评分']==5.0))]['评分'].value_counts()
+labels = rates.index.tolist()
+values = rates.values.tolist()
+# 创建柱状图
+plt.figure(figsize=(10, 6))
+plt.pie(values, labels=labels)
+plt.title('舒适型酒店高评分数量')
+plt.xlabel('评分')
+plt.ylabel('计数')
+plt.show()
+plt.legend(loc='best')
+plt.savefig('/root/travel/hotel/pie.png')
+EOF
+python /root/travel/hotel/code/M3/M3-T2-S1-2.py
 }
 
