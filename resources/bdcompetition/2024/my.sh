@@ -78,7 +78,7 @@ else
 fi
 hostset_name=`cat /etc/hosts|grep $hostset_ip|tail -1|awk '{print $2}'`
 hostnamectl set-hostname $hostset_name
-bash
+# bash
 }
 
 setjava() {
