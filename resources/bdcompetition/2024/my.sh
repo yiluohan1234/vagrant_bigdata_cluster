@@ -617,7 +617,7 @@ hadoop_data_three(){
 # 内网ip
 ip=`ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'`
 echo "$ip hadoop000" >> /etc/hosts
-hostnamectl set-hostname bigdata && bash
+hostnamectl set-hostname bigdata
 ${HADOOP_HOME}/sbin/start-all.sh
 sleep 3
 hadoop dfsadmin -safemode leave
@@ -672,7 +672,7 @@ hdfs dfs -mkdir /hotel_output
 hdfs dfs -put /root/part-r-00000 /hotel_output
 
 }
-#=============
+
 hadoop_plot_one(){
 # 子任务一
 mkdir -p /root/travel/hotel/code/M3
@@ -935,7 +935,7 @@ plt.savefig('/root/travel/hotel/columnar.png')
 EOF
 python /root/travel/hotel/code/M3/M3-T2-S1-1.py
 # 子任务二
-cat > /root/travel/hotel/code/M3/M3-T2-S1-2.py << EOFvi
+cat > /root/travel/hotel/code/M3/M3-T2-S1-2.py << EOF
 # coding:utf-8
 import pandas as pd
 import matplotlib.pyplot as plt
