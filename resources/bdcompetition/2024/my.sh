@@ -629,8 +629,8 @@ hadoop_data_three(){
 ip=`ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'`
 echo "$ip hadoop000" >> /etc/hosts
 hostnamectl set-hostname bigdata && bash
-start-all.sh
-sleep 6
+${HADOOP_HOME}/sbin/start-all.sh
+sleep 3
 hadoop dfsadmin -safemode leave
 hadoop fs -mkdir /file2_1
 hadoop fs -chmod 777 /file2_1
