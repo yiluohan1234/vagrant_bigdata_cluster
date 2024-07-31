@@ -3,7 +3,7 @@
 IP_LIST=("ips" "ips" "ips")
 HOSTNAME_LIST=("master" "slave1" "slave2")
 PASSWD_LIST=('passwd' 'passwd' 'passwd')
-INSTALL_PATH=/root/software/
+INSTALL_PATH=/root/software
 PROFILE=/etc/profile
 SOFT_PATH=/root/software/package
 DATA_PATH=/usr/etx.txt
