@@ -259,7 +259,7 @@ setkv() {
 }
 
 setssh(){
-    if [ `yum list installed |grep expect |wc -l` == 0 ];then
+    if ! which expect >/dev/null;then
         yum install -y -q expect
     fi
     if [ ! -f ~/.ssh/id_rsa ];then
