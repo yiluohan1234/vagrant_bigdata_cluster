@@ -38,7 +38,7 @@ host_list_str+=")"
 
 passwd_list_str="PASSWD_LIST=("
 for host in "${passwd_list[@]}"; do
-    passwd_list_str+="'`change_string_passwd $host`' "
+    passwd_list_str+="'`escape_special_chars $host`' "
 done
 passwd_list_str=${passwd_list_str% *} # 移除最后一个多余的空格
 passwd_list_str+=")"
@@ -48,20 +48,22 @@ sed -i "s@^HOSTNAME_LIST=.*@$host_list_str@" /etc/profile.d/my.sh
 sed -i "s@^PASSWD_LIST=.*@$passwd_list_str@" /etc/profile.d/my.sh
 }
 
-change_string_passwd() {
-local passwd=$1
-local new_passwd=""
+escape_special_chars() {
+# 函数，用于检查字符串是否包含特殊字符并转义
+local input_str="$1"
+local escaped_str=""
 special_char=('@' '!' '$' '&')
 
-len=${#passwd}
-for((i=0;i<$len;i++)){
-    c=${passwd:$i:1}
-    if [[ "${special_char[@]}" =~ "$c" ]];then
-        c='\'$c
+for ((i=0; i<${#input_str}; i++)); do
+    # 检查当前字符是否在特殊字符数组中
+    if [[ " ${special_char[*]} " =~ "${input_str:i:1} " ]]; then
+        # 如果包含特殊字符，则转义
+        escaped_str+="\\"
     fi
-    new_passwd=$new_passwd$c
-}
-echo $new_passwd
+    # 将当前字符添加到转义后的字符串中
+    escaped_str+="${input_str:i:1}"
+done
+echo "$escaped_str"
 }
 
 setip() {
