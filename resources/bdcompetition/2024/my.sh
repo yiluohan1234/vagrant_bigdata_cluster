@@ -971,3 +971,20 @@ EOF
 python /root/travel/hotel/code/M3/M3-T2-S1-2.py
 }
 
+load_mysql_data() {
+local file=$1
+local table_name=$2
+local fields=${3:-','}
+local lines=${4:-'\n'}
+
+echo "mysql -uroot -p123456 -e \"LOAD DATA local INFILE '${file}'"
+echo "INTO TABLE ${table_name}"
+echo "FIELDS TERMINATED BY '${fields}'"
+echo "LINES TERMINATED BY '${lines}'"
+echo "IGNORE 1 ROWS;\""
+mysql -uroot -p123456 -e "LOAD DATA local INFILE '${file}' \
+INTO TABLE ${table_name} \
+FIELDS TERMINATED BY '${fields}' \
+LINES TERMINATED BY '${lines}' \
+IGNORE 1 ROWS;"
+}
