@@ -375,8 +375,8 @@ hdp(){
             ssh ${HOSTNAME_LIST[0]} "source /etc/profile;${HADOOP_HOME}/sbin/stop-all.sh"
             ;;
         restart)
-            hadoop stop
-            hadoop start
+            hdp stop
+            hdp start
             ;;
         format)
             ssh ${HOSTNAME_LIST[0]} "source /etc/profile;${HADOOP_HOME}/bin/hdfs namenode -format"
