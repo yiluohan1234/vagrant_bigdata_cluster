@@ -182,8 +182,8 @@ nohup jupyter lab > /dev/null 2>&1 &
 }
 
 getlog(){
-assist_dir=`ps -ef |grep aliyun-assist|grep -v grep|awk '{print $8}' | awk -F'/' '{print $(NF-1)"/"$NF}'`
-assist_log=${assist_dir}/log/aliyun_assist_main.log
+assist_dir=`ps -ef |grep aliyun-assist|grep -v grep|awk '{print $8}'`
+assist_log=${assist_dir%/*}/log/aliyun_assist_main.log
 echo ${assist_log}
 }
 
