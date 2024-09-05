@@ -447,6 +447,8 @@ setssh(){
     if [ `yum list installed |grep expect |wc -l` == 0 ];then
         # yum install -y -q expect
         curl -o /root/expect-5.45-14.el7_1.x86_64.rpm -O -L https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/resources/bdcompetition/other/expect-5.45-14.el7_1.x86_64.rpm
+        curl -o /root/tcl-8.5.13-8.el7.x86_64.rpm -O -L https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/resources/bdcompetition/other/tcl-8.5.13-8.el7.x86_64.rpm
+        yum install -y -q /root/tcl-8.5.13-8.el7.x86_64.rpm
         yum install -y -q /root/expect-5.45-14.el7_1.x86_64.rpm
     fi
     if [ ! -f ~/.ssh/id_rsa ];then
