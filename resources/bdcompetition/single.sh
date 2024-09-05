@@ -287,9 +287,16 @@ source $PROFILE
 }
 
 lab(){
-nohup jupyter lab > /dev/null 2>&1 &
+jupyter_lab_num=`ps -ef |grep jupyter-lab |grep -v grep|wc -l`
+if [ ${jupyter_lab_num} == 0 ];then
+    nohup jupyter lab > /dev/null 2>&1 &
+fi
+
 }
 
 notebook(){
-nohup jupyter notebook > /dev/null 2>&1 &
+jupyter_notebook_num=`ps -ef |grep jupyter-notebook |grep -v grep|wc -l`
+if [ ${jupyter_notebook_num} == 0 ];then
+    nohup jupyter notebook > /dev/null 2>&1 &
+fi
 }
