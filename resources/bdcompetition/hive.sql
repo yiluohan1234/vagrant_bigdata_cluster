@@ -1,3 +1,6 @@
+-- 创建shop数据库
+create database shop;
+
 -- 切换到default数据库
 use shop;
 
@@ -15,7 +18,7 @@ stock int,
 status int)
 row format delimited fields terminated by ',';
 
-load data local inpath '/root/data/shop/product.txt' into table product;
+load data local inpath '/root/shop/product.txt' into table product;
 
 -- 创建地区表area，并上传本地数据至表内
 create table if not exists area(
@@ -23,7 +26,7 @@ area_id string,
 area_name string)
 row format delimited fields terminated by ',';
 
-load data local inpath '/root/data/shop/area.txt' into table area;
+load data local inpath '/root/shop/area.txt' into table area;
 
 -- 创建用户点击信息user_click，并上传本地数据至表内
 create table if not exists user_click(
@@ -35,7 +38,7 @@ action_type string,
 area_id string)
 row format delimited fields terminated by ',';
 
-load data local inpath '/root/data/shop/user_click.txt' into table user_click;
+load data local inpath '/root/shop/user_click.txt' into table user_click;
 
 -- 创建用户点击商品日志表clicklog，解析user_click用户点击信息表中的product_id
 create table if not exists clicklog(
