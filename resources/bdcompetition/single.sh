@@ -1,3 +1,7 @@
+INSTALL_PATH=/root/software
+PROFILE=/etc/profile
+SOFT_PATH=/root/software
+
 setssh() {
 ip=`ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'`
 echo "$ip hadoop000" >> /etc/hosts
