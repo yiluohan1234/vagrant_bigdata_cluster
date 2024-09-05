@@ -2,13 +2,22 @@ INSTALL_PATH=/root/software
 PROFILE=/etc/profile
 SOFT_PATH=/root/software
 
-setssh() {
+sethadoop000() {
 ip=`ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'`
 echo "$ip hadoop000" >> /etc/hosts
 ssh -o StrictHostKeyChecking=no hadoop000
 #ssh hadoop000
 #cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 #ssh-copy-id hadoop000
+}
+
+setbigdata(){
+ip=`ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'`
+name="bigdata"
+echo "$ip $name" >> /etc/hosts
+ssh-keygen -R $name && ssh $name
+hostname $name && bash
+bash /root/software/script/hybigdata.sh start
 }
 
 hdp(){
@@ -27,6 +36,13 @@ case $1 in
         ;;
     format)
         hadoop namenode -format
+        ;;
+    leave)
+        echo "hdfs dfsadmin -safemode enter/leave/get"
+        hdfs dfsadmin -safemode leave
+        ;;
+    nocheck)
+        echo 'export HADOOP_SSH_OPTS="-o StrictHostKeyChecking=no"' >> ${HADOOP_HOME}/etc/hadoop/hadoop-env.sh
         ;;
     *)
         echo $usage
@@ -268,4 +284,12 @@ setenv flume ${flume_dir}
 source $PROFILE
 #nohup /opt/module/flume/bin/flume-ng agent -n a1 -c /opt/module/flume/conf -f /opt/module/flume/job/kafka_to_hdfs_log.conf >/dev/null 2>&1 &
 
+}
+
+lab(){
+nohup jupyter lab > /dev/null 2>&1 &
+}
+
+notebook(){
+nohup jupyter notebook > /dev/null 2>&1 &
 }
