@@ -570,7 +570,7 @@ hdp(){
             schematool -dbType mysql -initSchema
             ;;
         meta)
-            nohup hive --service metastore &
+            nohup hive --service metastore > /dev/null 2>&1 &
             ;;
         create)
             hive -e "create database if not exists $2"
@@ -703,6 +703,14 @@ setenv flume ${flume_dir}
 source $PROFILE
 #nohup /opt/module/flume/bin/flume-ng agent -n a1 -c /opt/module/flume/conf -f /opt/module/flume/job/kafka_to_hdfs_log.conf >/dev/null 2>&1 &
 
+}
+
+lab(){
+nohup jupyter lab > /dev/null 2>&1 &
+}
+
+notebook(){
+nohup jupyter notebook > /dev/null 2>&1 &
 }
 
 envclear() {
