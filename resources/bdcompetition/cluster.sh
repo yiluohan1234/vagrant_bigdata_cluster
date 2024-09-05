@@ -6,50 +6,68 @@ PASSWD_LIST=('passwd' 'passwd' 'passwd')
 INSTALL_PATH=/usr
 PROFILE=/etc/profile
 SOFT_PATH=/usr/package277
+DATA_PATH=/usr/etx.txt
 IS_XCALL=false
 
-updateip() {
-local master=$1
-local slave1=$2
-local slave2=$3
-usage="Usage: updateip master_ip slave1_ip slave2_ip(internal)"
-if [ $# -ne 3 ]; then
-    echo $usage
-    exit 1
-fi
-sed -i 's@^IP_LIST=.*@IP_LIST=("'$master'" "'$slave1'" "'$slave2'")@' /etc/profile.d/my.sh
+setvar(){
+# 定义三个空数组来存储内部IP、主机名和密码
+local ip_list=()
+local hostname_list=()
+local passwd_list=()
+
+while IFS=',' read -r hostname internal_ip public_ip password; do
+    if [[ $hostname == "master" || $hostname == "slave1" || $hostname == "slave2" ]];then
+        ip_list+=("$internal_ip")
+        hostname_list+=("$hostname")
+        passwd_list+=("$password")
+    fi
+done < ${DATA_PATH}
+
+ip_list_str="IP_LIST=("
+for ip in "${ip_list[@]}"; do
+    ip_list_str+="'$ip' "
+done
+ip_list_str=${ip_list_str% *} # 移除最后一个多余的空格
+ip_list_str+=")"
+
+host_list_str="HOSTNAME_LIST=("
+for host in "${hostname_list[@]}"; do
+    host_list_str+="'$host' "
+done
+host_list_str=${host_list_str% *} # 移除最后一个多余的空格
+host_list_str+=")"
+
+passwd_list_str="PASSWD_LIST=("
+for host in "${passwd_list[@]}"; do
+    passwd_list_str+="'`escape_special_chars $host`' "
+done
+passwd_list_str=${passwd_list_str% *} # 移除最后一个多余的空格
+passwd_list_str+=")"
+
+sed -i "s@^IP_LIST=.*@$ip_list_str@" /etc/profile.d/my.sh
+sed -i "s@^HOSTNAME_LIST=.*@$host_list_str@" /etc/profile.d/my.sh
+sed -i "s@^PASSWD_LIST=.*@$passwd_list_str@" /etc/profile.d/my.sh
 }
 
-updatepd() {
-local master=`change_string_passwd $1`
-local slave1=`change_string_passwd $2`
-local slave2=`change_string_passwd $3`
-usage="Usage: updatepd master_pd slave1_pd slave2_pd"
-if [ $# -ne 3 ]; then
-    echo $usage
-    exit 1
-fi
-sed -i "s@^PASSWD_LIST=.*@PASSWD_LIST=('$master' '$slave1' '$slave2')@" /etc/profile.d/my.sh
-}
-
-change_string_passwd() {
-local passwd=$1
-local new_passwd=""
+escape_special_chars() {
+# 函数，用于检查字符串是否包含特殊字符并转义
+local input_str="$1"
+local escaped_str=""
 special_char=('@' '!' '$' '&')
 
-len=${#passwd}
-for((i=0;i<$len;i++)){
-    c=${passwd:$i:1}
-    if [[ "${special_char[@]}" =~ "$c" ]];then
-        c='\'$c
+for ((i=0; i<${#input_str}; i++)); do
+    # 检查当前字符是否在特殊字符数组中
+    if [[ " ${special_char[*]} " =~ "${input_str:i:1} " ]]; then
+        # 如果包含特殊字符，则转义
+        escaped_str+="\\"
     fi
-    new_passwd=$new_passwd$c
-}
-echo $new_passwd
+    # 将当前字符添加到转义后的字符串中
+    escaped_str+="${input_str:i:1}"
+done
+echo "$escaped_str"
 }
 
 setip() {
-echo "setup hosts"
 length=${#HOSTNAME_LIST[@]}
 for ((i=0; i<$length; i++));do
     entry="${IP_LIST[$i]} ${HOSTNAME_LIST[$i]}"
@@ -61,9 +79,9 @@ if [ ${hostset_ip_local_num} == 0 ];then
 else
     hostset_ip=`ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|grep 192`
 fi
-hostset_name=`cat /etc/hosts|grep $hostset_ip|awk '{print $2}'`
+hostset_name=`cat /etc/hosts|grep $hostset_ip|tail -1|awk '{print $2}'`
 hostnamectl set-hostname $hostset_name
-bash
+# bash
 }
 
 settimezone() {
@@ -650,6 +668,39 @@ xcall() {
         echo -e "\033[31m--------- Current hostname is $host, exec $* ----------\033[0m"
         ssh $host "source /etc/profile;$@"
     done
+}
+
+setsqoop() {
+local sqoop_dir=${INSTALL_PATH}/sqoop-1.4.7.bin__hadoop-2.6.0
+tar -zxf ${SOFT_PATH}/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz -C ${INSTALL_PATH}
+# setup
+cp ${sqoop_dir}/conf/sqoop-env-template.sh ${sqoop_dir}/conf/sqoop-env.sh
+echo "export HADOOP_COMMON_HOME=${HADOOP_HOME}" >> ${sqoop_dir}/conf/sqoop-env.sh
+echo "export HADOOP_MAPRED_HOME=${HADOOP_HOME}" >> ${sqoop_dir}/conf/sqoop-env.sh
+
+cp ${SOFT_PATH}/mysql-connector-java-*.jar ${sqoop_dir}/lib/
+
+# set environment
+setenv sqoop ${sqoop_dir}
+source $PROFILE
+
+# sqoop import --connect "jdbc:mysql://localhost:3306/major?useSSL=false&serverTimezone=UTC" --username root --password 123456 --table school --target-dir '/major/school' --fields-terminated-by ',' -m 1
+# sqoop import --connect "jdbc:mysql://localhost:3306/major?useSSL=false&serverTimezone=UTC" --username root --password 123456 --table professional --target-dir '/major/professional' --fields-terminated-by ',' -m 1
+
+}
+
+setflume() {
+local flume_dir=${INSTALL_PATH}/apache-flume-1.9.0-bin
+tar -zxf ${SOFT_PATH}/apache-flume-1.9.0-bin.tar.gz -C ${INSTALL_PATH}
+# setup
+cp ${flume_dir}/conf/flume-env.sh.template ${flume_dir}/conf/flume-env.sh
+sed -i "s@^# export JAVA_HOME=.*@export JAVA_HOME=${JAVA_HOME}@" ${flume_dir}/conf/flume-env.sh
+
+# set environment
+setenv flume ${flume_dir}
+source $PROFILE
+#nohup /opt/module/flume/bin/flume-ng agent -n a1 -c /opt/module/flume/conf -f /opt/module/flume/job/kafka_to_hdfs_log.conf >/dev/null 2>&1 &
+
 }
 
 envclear() {
