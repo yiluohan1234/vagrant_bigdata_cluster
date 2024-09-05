@@ -447,7 +447,7 @@ setssh(){
     if [ `yum list installed |grep expect |wc -l` == 0 ];then
         # yum install -y -q expect
         curl -o /root/expect-5.45-14.el7_1.x86_64.rpm -O -L https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/resources/bdcompetition/expect-5.45-14.el7_1.x86_64.rpm
-        yum install -y -q expect-5.45-14.el7_1.x86_64.rpm
+        yum install -y -q /root/expect-5.45-14.el7_1.x86_64.rpm
     fi
     if [ ! -f ~/.ssh/id_rsa ];then
         expect -c "
