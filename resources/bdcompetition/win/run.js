@@ -4,7 +4,6 @@
 // @version      0.1
 // @description  try to take over the world!
 // @author       yiluohan1234
-// @match        https://blog.csdn.net/*
 // @match        https://www.qingjiaoclass.com/*
 // @connect      127.0.0.1
 // @grant        GM_xmlhttpRequest
@@ -26,17 +25,17 @@
     }
 
     /**
-     * 获取选中的文字
-     */
+	 * 获取选中的文字
+	 */
     function getSelectText(){
         var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
         return txt.toString();
     }
 
     /**
-      * 获取答案
-     * @param title 题目内容
-     */
+	 * 获取答案
+	 * @param title 题目内容
+	 */
     function getAnswer(title) {
         return new Promise(resolve => {
             GM_xmlhttpRequest({
@@ -50,7 +49,7 @@
                     let json = JSON.parse(res.response);
                     if (json.code === 200) {
                         console.log("request success!\nresult:", json.data)
-                        resolve(json.data[0].answer)
+                        resolve(json.data[0].answer+json.data.length)
                     } else {
                         console.log("request failed!\nmsg:", json.msg)
                     }
