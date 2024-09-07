@@ -490,3 +490,12 @@ case $1 in
         ;;
 esac
 }
+
+##########################################################################################
+web(){
+    echo "hdfs dfs -mkdir /data"
+    echo "hdfs dfs -put /root/service/yunan/*.txt /data"
+    echo "hdfs dfs -cp /output_log/part-r-00000 /data/log_processed.txt"
+    echo "hdfs dfs -cp /output_ip/part-r-00000 /data/ip_processed.txt"
+    echo "hdfs dfs -text /data/log_processed.txt |sed -n '500,505p' > /root/service/yunan/result/log_processed_500.txt"
+}
