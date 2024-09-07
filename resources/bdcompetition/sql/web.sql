@@ -41,7 +41,7 @@ access_url string,
 times int
 );
 
-insert overwirte table asses_url_top
+insert overwrite table asses_url_top
 select
 row_NUMBER() over (order by COUNT(*) desc ) as rank,
 access_url,

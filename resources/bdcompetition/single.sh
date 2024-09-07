@@ -18,7 +18,7 @@ sed -i "/$name/s/^/#/g" /etc/hosts
 echo "$ip $name" >> /etc/hosts
 ssh-keygen -R $name && ssh $name
 hostname $name && bash
-bash /root/software/script/hybigdata.sh start
+# bash /root/software/script/hybigdata.sh start
 }
 
 hdp(){
@@ -447,4 +447,46 @@ sethivekv() {
     # 在目录中创建文件
     local filename="part-r-00000"
     echo "$content" > "$directory/$filename"
+}
+
+hybigdata() {
+if [ $# == 0 ] ;then
+    echo "参数不能为空，必需指定一个参数，[start|stop]启动或停止Hadoop集群！"
+    exit
+fi
+
+case $1 in
+    "start")
+        echo "正在启动 MySQL 服务..."
+        systemctl start mysqld.service
+        echo "正在启动 ZooKeeper 服务..."
+        $ZOOKEEPER_HOME/bin/zkServer.sh start
+        echo "正在启动 Hadoop 集群..."
+        $HADOOP_HOME/sbin/start-all.sh
+        echo "正在启动 historyserver 历史服务器..."
+        $HADOOP_HOME/bin/mapred --daemon start historyserver
+        echo "正在启动 Kafka 集群..."
+        $KAFKA_HOME/bin/kafka-server-start.sh -daemon $KAFKA_HOME/config/server.properties
+        echo "正在启动 Hive Metastore 元数据服务..."
+        nohup hive --service metastore > /dev/null 2>&1 &
+        echo "正在启动 HiveServer2 服务（端口为 10000）..."
+        nohup hiveserver2 > /dev/null 2>&1 &
+        ;;
+    "stop")
+        echo "正在关闭 MySQL 服务..."
+        systemctl stop mysqld.service
+        echo "正在关闭 Kafka 集群..."
+        $KAFKA_HOME/bin/kafka-server-stop.sh
+        echo "正在关闭 Hadoop 集群..."
+        $HADOOP_HOME/sbin/stop-all.sh
+        echo "正在关闭 historyserver 历史服务器..."
+        $HADOOP_HOME/bin/mapred --daemon stop historyserver
+        echo "正在关闭 ZooKeeper 服务..."
+        $ZOOKEEPER_HOME/bin/zkServer.sh stop
+        echo "正在关闭 Hive Metastore 元数据服务..."
+        ps -ef | grep HiveMetaStore | grep -v grep | awk '{print $2}' | xargs -n1 kill -9
+        echo "正在关闭 HiveServer2 服务..."
+        ps -ef | grep hiveserver2 | grep -v grep | awk '{print $2}' | xargs -n1 kill -9
+        ;;
+esac
 }
