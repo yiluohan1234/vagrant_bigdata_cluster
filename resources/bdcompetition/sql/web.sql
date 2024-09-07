@@ -22,7 +22,7 @@ source_url string comment 'Referrer URL'
 comment 'Table to store web access logs'
 row format delimited fields terminated by '\t';
 
-load data local inpath '/root/service/yunan/ip.txt' into table ip;
+load data inpath '/data/ip_processed.txt' into table ip;
 load data inpath '/data/log_processed.txt' into table log;
 
 create table ip_log_num(
