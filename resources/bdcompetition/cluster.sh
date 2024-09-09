@@ -333,6 +333,7 @@ if [ "$current_hostname" == "${HOSTNAME_LIST[0]}" ];then
     setkv "hive.metastore.local=false" ${hive_dir}/conf/hive-site.xml
     setkv "hive.metastore.uris=thrift://${HOSTNAME_LIST[1]}:9083" ${hive_dir}/conf/hive-site.xml
 fi
+source $PROFILE
 }
 
 setscala211() {
