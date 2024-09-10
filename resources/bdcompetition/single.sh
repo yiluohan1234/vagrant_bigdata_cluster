@@ -3,9 +3,10 @@ PROFILE=/etc/profile
 SOFT_PATH=/root/software
 
 sethadoop000() {
+hostname=${1:-"hadoop000"}
 ip=`ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'`
-echo "$ip hadoop000" >> /etc/hosts
-ssh -o StrictHostKeyChecking=no hadoop000
+echo "$ip $hostname" >> /etc/hosts
+ssh -o StrictHostKeyChecking=no $hostname
 #ssh hadoop000
 #cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 #ssh-copy-id hadoop000
@@ -13,7 +14,7 @@ ssh -o StrictHostKeyChecking=no hadoop000
 
 setbigdata(){
 ip=`ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'`
-name="bigdata"
+name=${1:-"bigdata"}
 sed -i "/$name/s/^/#/g" /etc/hosts
 echo "$ip $name" >> /etc/hosts
 ssh-keygen -R $name && ssh $name
