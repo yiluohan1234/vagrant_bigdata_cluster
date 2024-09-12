@@ -1,3 +1,6 @@
+#!/bin/bash
+INSTALL_PATH=/opt/module
+
 check_process(){
     pid=$(ps -ef 2>/dev/null | grep -v grep | grep -i $1 | awk '{print $2}')
     ppid=$(netstat -nltp 2>/dev/null | grep $2 | awk '{print $7}' | cut -d '/' -f 1)
@@ -14,17 +17,17 @@ dfs(){
     fi
     case $1 in
         start)
-            $HADOOP_HOME/sbin/start-dfs.sh
+            $INSTALL_PATH/hadoop/sbin/start-dfs.sh
             ;;
         stop)
-            $HADOOP_HOME/sbin/stop-dfs.sh
+            $INSTALL_PATH/hadoop/sbin/stop-dfs.sh
             ;;
         format)
-            $HADOOP_HOME/bin/hdfs namenode -format
+            $INSTALL_PATH/hadoop/bin/hdfs namenode -format
             ;;
         initTez)
             hdfs dfs -mkdir -p /tez/0.8.4
-            hdfs dfs -put $TEZ_HOME/share/tez.tar.gz /tez/0.8.4
+            hdfs dfs -put $INSTALL_PATH/tez/share/tez.tar.gz /tez/0.8.4
             hdfs dfs -mkdir -p /spark-log
             ;;
         initSpark)
@@ -49,10 +52,10 @@ yarn(){
     fi
     case $1 in
         start)
-            $HADOOP_HOME/sbin/start-yarn.sh
+            $INSTALL_PATH/hadoop/sbin/start-yarn.sh
             ;;
         stop)
-            $HADOOP_HOME/sbin/stop-yarn.sh
+            $INSTALL_PATH/hadoop/sbin/stop-yarn.sh
             ;;
         restart)
             yarn stop
@@ -74,11 +77,11 @@ historyserver(){
     case $1 in
         start)
             echo " --------------- 启动 historyserver ---------------"
-            $HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver
+            $INSTALL_PATH/hadoop/sbin/mr-jobhistory-daemon.sh start historyserver
             ;;
         stop)
             echo " --------------- 关闭 historyserver ---------------"
-            $HADOOP_HOME/sbin/mr-jobhistory-daemon.sh stop historyserver
+            $INSTALL_PATH/hadoop/sbin/mr-jobhistory-daemon.sh stop historyserver
             ;;
         restart)
             historyserver stop
@@ -99,17 +102,17 @@ hadoop(){
     fi
     case $1 in
         start)
-            $HADOOP_HOME/sbin/start-all.sh
+            $INSTALL_PATH/hadoop/sbin/start-all.sh
             ;;
         stop)
-            $HADOOP_HOME/sbin/stop-all.sh
+            $INSTALL_PATH/hadoop/sbin/stop-all.sh
             ;;
         restart)
             hadoop stop
             hadoop start
             ;;
         format)
-            $HADOOP_HOME/bin/hdfs namenode -format
+            $INSTALL_PATH/hadoop/bin/hdfs namenode -format
             ;;
         *)
             echo $usage
@@ -126,19 +129,19 @@ hdp(){
     fi
     case $1 in
         start)
-            $HADOOP_HOME/sbin/start-dfs.sh
-            $HADOOP_HOME/sbin/start-yarn.sh
+            $INSTALL_PATH/hadoop/sbin/start-dfs.sh
+            $INSTALL_PATH/hadoop/sbin/start-yarn.sh
             ;;
         stop)
-            $HADOOP_HOME/sbin/stop-dfs.sh
-            $HADOOP_HOME/sbin/stop-yarn.sh
+            $INSTALL_PATH/hadoop/sbin/stop-dfs.sh
+            $INSTALL_PATH/hadoop/sbin/stop-yarn.sh
             ;;
         restart)
             hdp stop
             hdp start
             ;;
         format)
-            $HADOOP_HOME/bin/hdfs namenode -format
+            $INSTALL_PATH/hadoop/bin/hdfs namenode -format
             ;;
         *)
             echo $usage
@@ -155,10 +158,10 @@ hbase(){
     fi
     case $1 in
         start)
-            $HBASE_HOME/bin/start-hbase.sh
+            $INSTALL_PATH/hbase/bin/start-hbase.sh
             ;;
         stop)
-            $HBASE_HOME/bin/stop-hbase.sh
+            $INSTALL_PATH/hbase/bin/stop-hbase.sh
             ;;
         *)
             echo $usage
@@ -168,7 +171,7 @@ hbase(){
 
 hive(){
     USAGE="Usage: $0 (start|stop|status)"
-    HIVE_LOG_DIR=$HIVE_HOME/logs
+    HIVE_LOG_DIR=$INSTALL_PATH/hive/logs
     [ ! -d ${HIVE_LOG_DIR} ] && mkdir ${HIVE_LOG_DIR}
 
     case $1 in
@@ -215,13 +218,13 @@ zk(){
     fi
     case $1 in
         start)
-            $ZOOKEEPER_HOME/bin/zkServer.sh start
+            $INSTALL_PATH/zookeeper/bin/zkServer.sh start
             ;;
         stop)
-            $ZOOKEEPER_HOME/bin/zkServer.sh stop
+            $INSTALL_PATH/zookeeper/bin/zkServer.sh stop
             ;;
         status)
-            $ZOOKEEPER_HOME/bin/zkServer.sh status
+            $INSTALL_PATH/zookeeper/bin/zkServer.sh status
             ;;
         *)
             echo $usage
@@ -238,7 +241,7 @@ kafka(){
     fi
     case $1 in
         start)
-            $KAFKA_HOME/bin/kafka-server-start.sh -daemon $KAFKA_HOME/config/server.properties
+            $INSTALL_PATH/kafka/bin/kafka-server-start.sh -daemon $INSTALL_PATH/kafka/config/server.properties
             ;;
         stop)
             ps -ef | awk '/Kafka/ && !/awk/{print $2}' | xargs kill -9
@@ -258,10 +261,10 @@ spark(){
     fi
     case $1 in
         start)
-            $SPARK_HOME/sbin/start-all.sh
+            $INSTALL_PATH/spark/sbin/start-all.sh
             ;;
         stop)
-            $SPARK_HOME/sbin/stop-all.sh
+            $INSTALL_PATH/spark/sbin/stop-all.sh
             ;;
         *)
             echo $usage
@@ -278,10 +281,10 @@ flink(){
     fi
     case $1 in
         start)
-            $FLINK_HOME/bin/start-cluster.sh
+            $INSTALL_PATH/flink/bin/start-cluster.sh
             ;;
         stop)
-            $FLINK_HOME/bin/stop-cluster.sh
+            $INSTALL_PATH/flink/bin/stop-cluster.sh
             ;;
         *)
             echo $usage
@@ -291,7 +294,7 @@ flink(){
 
 args()
 {
-    usage="Usage: $0 (dfs|yarn|historyserver|hdp|spark|zookeeper|flink|hbase|kafka|hive)"
+    usage="Usage: $0 (dfs|yarn|zk|kafka|spark|flink|hbase|start|stop)"
 
     if [ $# -lt 2 ]; then
         echo $usage
