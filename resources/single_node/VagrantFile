@@ -17,7 +17,7 @@ boxes = [
 
 Vagrant.configure(2) do |config|
   config.vm.box = "centos/7"
-  config.vm.box_version = "1804.02"
+  config.vm.box_version = "1804.02" # 2004.01
   boxes.each do |opts|
     config.vm.define opts[:name] do |config|
       config.vm.hostname = opts[:name]
