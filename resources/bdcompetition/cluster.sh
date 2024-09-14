@@ -298,7 +298,7 @@ local hadoop_dir=${INSTALL_PATH}/hadoop-3.1.3
 tar -zxf ${SOFTWARE_PATH}/hadoop-3.1.3.tar.gz -C ${INSTALL_PATH}/
 
 # hadoop-env.sh
-sed -i "s@^export JAVA_HOME=.*@export JAVA_HOME=${JAVA_HOME}@" ${hadoop_dir}/etc/hadoop/hadoop-env.sh
+sed -i "s@^# export JAVA_HOME.*@export JAVA_HOME=${JAVA_HOME}@" ${hadoop_dir}/etc/hadoop/hadoop-env.sh
 echo "export HDFS_NAMENODE_USER=root" >>${hadoop_dir}/etc/hadoop/hadoop-env.sh
 echo "export HDFS_DATANODE_USER=root" >>${hadoop_dir}/etc/hadoop/hadoop-env.sh
 echo "export HDFS_SECONDARYNAMENODE_USER=root" >>${hadoop_dir}/etc/hadoop/hadoop-env.sh
@@ -313,14 +313,17 @@ setkv "hadoop.proxyuser.root.hosts=*" ${hadoop_dir}/etc/hadoop/core-site.xml
 setkv "hadoop.proxyuser.root.groups=*" ${hadoop_dir}/etc/hadoop/core-site.xml
 
 # hdfs-site.xml
-setkv "dfs.namenode.http-address=${HOST_NAME}:9870" ${hadoop_dir}/etc/hadoop/hdfs-site.xml
-setkv "dfs.namenode.secondary.http-address=${HOST_NAME}:9868" ${hadoop_dir}/etc/hadoop/hdfs-site.xml
+setkv "dfs.namenode.http-address=${HOSTNAME_LIST[0]}:9870" ${hadoop_dir}/etc/hadoop/hdfs-site.xml
+setkv "dfs.namenode.secondary.http-address=${HOSTNAME_LIST[2]}:9868" ${hadoop_dir}/etc/hadoop/hdfs-site.xml
 setkv "dfs.replication=2" ${hadoop_dir}/etc/hadoop/hdfs-site.xml
 setkv "dfs.namenode.name.dir=/var/bigdata/dfs/name" ${hadoop_dir}/etc/hadoop/hdfs-site.xml
 setkv "dfs.datanode.data.dir=/var/bigdata/dfs/data" ${hadoop_dir}/etc/hadoop/hdfs-site.xml
 setkv "dfs.permissions=false" ${hadoop_dir}/etc/hadoop/hdfs-site.xml
 setkv "dfs.datanode.use.datanode.hostname=true" ${hadoop_dir}/etc/hadoop/hdfs-site.xml
-setkv "dfs.namenode.heartbeat.recheck-interval=600s" ${hadoop_dir}/etc/hadoop/core-site.xml
+setkv "dfs.namenode.heartbeat.recheck-interval=60000" ${hadoop_dir}/etc/hadoop/hdfs-site.xml
+setkv "dfs.permissions.enabled=true" ${hadoop_dir}/etc/hadoop/hdfs-site.xml
+setkv "dfs.webhdfs.enabled=true" ${hadoop_dir}/etc/hadoop/hdfs-site.xml
+setkv "dfs.permissions.superusergroup=root" ${hadoop_dir}/etc/hadoop/hdfs-site.xml
 
 # yarn-env.sh
 echo "export JAVA_HOME=${JAVA_HOME}" >> ${hadoop_dir}/etc/hadoop/yarn-env.sh
