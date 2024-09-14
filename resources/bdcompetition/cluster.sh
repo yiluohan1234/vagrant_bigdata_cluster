@@ -5,7 +5,10 @@ HOSTNAME_LIST=("master" "slave1" "slave2")
 PASSWD_LIST=('passwd' 'passwd' 'passwd')
 INSTALL_PATH=/usr
 PROFILE=/etc/profile
+# 2.7.7版本
 SOFT_PATH=/usr/package277
+# 3.1.3版本
+SOFTWARE_PATH=/root/software/package
 DATA_PATH=/usr/etx.txt
 IS_XCALL=false
 
@@ -16,7 +19,7 @@ local hostname_list=()
 local passwd_list=()
 
 while IFS=',' read -r hostname internal_ip public_ip password; do
-    if [[ $hostname == "master" || $hostname == "slave1" || $hostname == "slave2" ]];then
+    if [[ $hostname == "master" || $hostname == "slave1" || $hostname == "slave2" || $hostname == "node01" || $hostname == "node02" || $hostname == "node03" ]];then
         ip_list+=("$internal_ip")
         hostname_list+=("$hostname")
         passwd_list+=("$password")
@@ -131,11 +134,33 @@ if [ "$current_hostname" != "${HOSTNAME_LIST[0]}" ];then
 fi
 }
 
-setjava() {
+setjava221() {
 echo "setup java"
 local java_dir=${INSTALL_PATH}/java/jdk1.8.0_221
 mkdir ${INSTALL_PATH}/java
 tar -zxf ${SOFT_PATH}/jdk-8u221-linux-x64.tar.gz -C ${INSTALL_PATH}/java/
+#setenv java ${java_dir}
+if [ "${IS_XCALL}" == "false" ];then
+    # dispatch
+    xsync ${java_dir}
+    # set environment
+    length=${#HOSTNAME_LIST[@]}
+    for ((i=0; i<$length; i++));do
+        ssh ${HOSTNAME_LIST[$i]} "source /etc/profile;setenv java ${java_dir}"
+    done
+    source $PROFILE
+    xcall java -version
+else
+    setenv java ${java_dir}
+    source $PROFILE
+    java -version
+fi
+}
+
+setjava212() {
+echo "setup java"
+local java_dir=${INSTALL_PATH}/jdk1.8.0_212
+tar -zxf ${SOFTWARE_PATH}/jdk-8u212-linux-x64.tar.gz -C ${INSTALL_PATH}/
 #setenv java ${java_dir}
 if [ "${IS_XCALL}" == "false" ];then
     # dispatch
@@ -247,6 +272,77 @@ sed -i '1,$d' ${hadoop_dir}/etc/hadoop/slaves
 echo "${HOSTNAME_LIST[1]}
 ${HOSTNAME_LIST[2]}" >> ${hadoop_dir}/etc/hadoop/slaves
 # echo -e "${HOSTNAME_LIST[1]}\n${HOSTNAME_LIST[2]}" >> ${hadoop_dir}/etc/hadoop/slaves
+
+if [ "${IS_XCALL}" == "false" ];then
+    # dispatch
+    xsync ${hadoop_dir}
+
+    # set environment
+    length=${#HOSTNAME_LIST[@]}
+    for ((i=0; i<$length; i++));do
+        ssh ${HOSTNAME_LIST[$i]} "source /etc/profile;setenv hadoop ${hadoop_dir} true"
+    done
+    source $PROFILE
+    hadoop namenode -format
+    ${HADOOP_HOME}/sbin/start-all.sh
+    jpsall
+else
+    setenv hadoop ${hadoop_dir} true
+    source $PROFILE
+fi
+}
+
+sethadoop313() {
+echo "setup hadoop313"
+local hadoop_dir=${INSTALL_PATH}/hadoop-3.1.3
+tar -zxf ${SOFTWARE_PATH}/hadoop-3.1.3.tar.gz -C ${INSTALL_PATH}/
+
+# hadoop-env.sh
+sed -i "s@^export JAVA_HOME=.*@export JAVA_HOME=${JAVA_HOME}@" ${hadoop_dir}/etc/hadoop/hadoop-env.sh
+echo "export HDFS_NAMENODE_USER=root" >>${hadoop_dir}/etc/hadoop/hadoop-env.sh
+echo "export HDFS_DATANODE_USER=root" >>${hadoop_dir}/etc/hadoop/hadoop-env.sh
+echo "export HDFS_SECONDARYNAMENODE_USER=root" >>${hadoop_dir}/etc/hadoop/hadoop-env.sh
+echo "export YARN_RESOURCEMANAGER_USER=root" >>${hadoop_dir}/etc/hadoop/hadoop-env.sh
+echo "export YARN_NODEMANAGER_USER=root" >>${hadoop_dir}/etc/hadoop/hadoop-env.sh
+
+# core-site.xml
+setkv "fs.default.name=hdfs://${HOSTNAME_LIST[0]}:9000" ${hadoop_dir}/etc/hadoop/core-site.xml
+setkv "hadoop.tmp.dir=${hadoop_dir}/data" ${hadoop_dir}/etc/hadoop/core-site.xml
+setkv "hadoop.http.staticuser.user=root" ${hadoop_dir}/etc/hadoop/core-site.xml
+setkv "hadoop.proxyuser.root.hosts=*" ${hadoop_dir}/etc/hadoop/core-site.xml
+setkv "hadoop.proxyuser.root.groups=*" ${hadoop_dir}/etc/hadoop/core-site.xml
+
+# hdfs-site.xml
+setkv "dfs.namenode.http-address=${HOST_NAME}:9870" ${hadoop_dir}/etc/hadoop/hdfs-site.xml
+setkv "dfs.namenode.secondary.http-address=${HOST_NAME}:9868" ${hadoop_dir}/etc/hadoop/hdfs-site.xml
+setkv "dfs.replication=2" ${hadoop_dir}/etc/hadoop/hdfs-site.xml
+setkv "dfs.namenode.name.dir=/var/bigdata/dfs/name" ${hadoop_dir}/etc/hadoop/hdfs-site.xml
+setkv "dfs.datanode.data.dir=/var/bigdata/dfs/data" ${hadoop_dir}/etc/hadoop/hdfs-site.xml
+setkv "dfs.permissions=false" ${hadoop_dir}/etc/hadoop/hdfs-site.xml
+setkv "dfs.datanode.use.datanode.hostname=true" ${hadoop_dir}/etc/hadoop/hdfs-site.xml
+setkv "dfs.namenode.heartbeat.recheck-interval=600s" ${hadoop_dir}/etc/hadoop/core-site.xml
+
+# yarn-env.sh
+echo "export JAVA_HOME=${JAVA_HOME}" >> ${hadoop_dir}/etc/hadoop/yarn-env.sh
+
+# yarn-site.xml
+setkv "yarn.nodemanager.aux-services=mapreduce_shuffle" ${hadoop_dir}/etc/hadoop/yarn-site.xml
+setkv "yarn.resourcemanager.hostname=${HOSTNAME_LIST[0]}" ${hadoop_dir}/etc/hadoop/yarn-site.xml
+setkv "yarn.nodemanager.env-whitelist=JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_MAPRED_HOME" ${hadoop_dir}/etc/hadoop/yarn-site.xml
+
+# mapred-site.xml
+setkv "mapreduce.framework.name=yarn" ${hadoop_dir}/etc/hadoop/mapred-site.xml
+setkv "mapreduce.jobhistory.address=${HOSTNAME_LIST[0]}:10020" ${hadoop_dir}/etc/hadoop/mapred-site.xml
+setkv "mapreduce.jobhistory.webapp.address=${HOSTNAME_LIST[0]}:19888" ${hadoop_dir}/etc/hadoop/mapred-site.xml
+setkv "yarn.app.mapreduce.am.env=HADOOP_MAPRED_HOME=${hadoop_dir}" ${hadoop_dir}/etc/hadoop/mapred-site.xml
+setkv "mapreduce.map.env=HADOOP_MAPRED_HOME=${hadoop_dir}" ${hadoop_dir}/etc/hadoop/mapred-site.xml
+setkv "mapreduce.reduce.env=HADOOP_MAPRED_HOME=${hadoop_dir}" ${hadoop_dir}/etc/hadoop/mapred-site.xml
+
+# workers
+sed -i '1,$d' ${hadoop_dir}/etc/hadoop/workers
+echo "${HOSTNAME_LIST[0]}
+${HOSTNAME_LIST[1]}
+${HOSTNAME_LIST[2]}" >> ${hadoop_dir}/etc/hadoop/workers
 
 if [ "${IS_XCALL}" == "false" ];then
     # dispatch
