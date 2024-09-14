@@ -120,10 +120,10 @@ install_init(){
     echo "install init"
     mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
     curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
-    yum makecache
+    yum clean all && yum makecache && yum -y update
     # 安装git
-    rpm -ivh https://opensource.wandisco.com/git/wandisco-git-release-7-2.noarch.rpm
-    yum install -y -q git
+    # rpm -ivh https://opensource.wandisco.com/git/wandisco-git-release-7-2.noarch.rpm
+    # yum install -y -q git
     # ssh 设置允许密码登录
     sed -i 's@^PasswordAuthentication no@PasswordAuthentication yes@g' /etc/ssh/sshd_config
     sed -i 's@^#PubkeyAuthentication yes@PubkeyAuthentication yes@g' /etc/ssh/sshd_config
