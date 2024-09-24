@@ -8,7 +8,7 @@ INSTALL_PATH=/root/software
 HOST_NAME=bigdata
 PROFILE=/etc/profile
 JAVA_URL=https://qingjiao-image-build-assets.oss-cn-beijing.aliyuncs.com/centos_7_hadoop3.1.3/jdk-8u212-linux-x64.tar.gz
-HADOOP_URL=https://mirrors.huaweicloud.com/apache/hadoop/common/hadoop-3.3.3/hadoop-3.3.3.tar.gz
+HADOOP_URL=https://mirrors.huaweicloud.com/apache/hadoop/common/hadoop-3.1.3/hadoop-3.1.3.tar.gz
 HIVE_URL=https://mirrors.huaweicloud.com/apache/hive/hive-3.1.2/apache-hive-3.1.2-bin.tar.gz
 SCALA_URL=https://downloads.lightbend.com/scala/2.11.11/scala-2.11.11.tgz
 SPARK_URL=https://mirrors.huaweicloud.com/apache/spark/spark-3.0.0/spark-3.0.0-bin-without-hadoop.tgz
@@ -180,7 +180,7 @@ install_jdk()
         # 添加环境变量
         echo "# jdk environment" >> $PROFILE
         echo "export JAVA_HOME=${INSTALL_PATH}/jdk1.8.0_212" >> $PROFILE
-        echo 'export PATH=${JAVA_HOME}/bin' >> $PROFILE
+        echo 'export PATH=${JAVA_HOME}/bin:$PATH' >> $PROFILE
         echo -e "\n" >> $PROFILE
         source $PROFILE
     fi
