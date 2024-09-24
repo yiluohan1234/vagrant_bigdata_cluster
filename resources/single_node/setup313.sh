@@ -9,7 +9,7 @@ HOST_NAME=bigdata
 PROFILE=/etc/profile
 JAVA_URL=https://qingjiao-image-build-assets.oss-cn-beijing.aliyuncs.com/centos_7_hadoop3.1.3/jdk-8u212-linux-x64.tar.gz
 HADOOP_URL=https://mirrors.huaweicloud.com/apache/hadoop/common/hadoop-3.1.3/hadoop-3.1.3.tar.gz
-HIVE_URL=https://mirrors.huaweicloud.com/apache/hive/hive-3.1.2/apache-hive-3.1.2-bin.tar.gz
+HIVE_URL=https://qingjiao-image-build-assets.oss-cn-beijing.aliyuncs.com/centos_7_hadoop3.1.3/apache-hive-3.1.2-bin.tar.gz
 SCALA_URL=https://downloads.lightbend.com/scala/2.11.11/scala-2.11.11.tgz
 SPARK_URL=https://mirrors.huaweicloud.com/apache/spark/spark-3.0.0/spark-3.0.0-bin-without-hadoop.tgz
 ZOOKEEPER_URL=https://mirrors.huaweicloud.com/apache/zookeeper/zookeeper-3.5.7/apache-zookeeper-3.5.7-bin.tar.gz
@@ -45,6 +45,7 @@ setenv() {
         echo 'export HDFS_ZKFC_USER=root' >> $PROFILE
     fi
     echo -e "\n" >> $PROFILE
+    source $PROFILE
 }
 
 get_app_dir(){
@@ -97,9 +98,9 @@ download_and_unzip_app() {
     fi
     tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
     # if [[ $file =~ "tgz" ]];then
-    #     mv ${INSTALL_PATH}/${file%.*} ${app_dir}
+    #     mv ${INSTALL_PATH}/${file%.*} ${INSTALL_PATH}/${app}
     # else
-    #     mv ${INSTALL_PATH}/${file%%.tar*} ${app_dir}
+    #     mv ${INSTALL_PATH}/${file%%.tar*} ${INSTALL_PATH}/${app}
     # fi
 }
 
@@ -145,8 +146,8 @@ install_init(){
     # 创建安装目录
     mkdir ${INSTALL_PATH}
     # chown -R vagrant:vagrant /opt/
-    complete_url=https://raw.githubusercontent.com/yiluohan1234/vagrant_bigdata_cluster/master/resources/single_node/complete_tool.sh
-    bigstart_url=https://raw.githubusercontent.com/yiluohan1234/vagrant_bigdata_cluster/master/resources/single_node/bigstart
+    complete_url= https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/resources/single_node/complete_tool.sh
+    bigstart_url= https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/resources/single_node/bigstart
     curl -o /vagrant/complete_tool.sh -O -L ${complete_url}
     curl -o /vagrant/bigstart -O -L ${bigstart_url}
     # wget -P /vagrant/ ${complete_url}
@@ -158,8 +159,7 @@ install_init(){
     rm -rf /root/original-ks.cfg
 }
 
-install_jdk()
-{
+install_jdk() {
     local app=java
     local url=${JAVA_URL}
     local file=${url##*/}
@@ -184,11 +184,9 @@ install_jdk()
         echo -e "\n" >> $PROFILE
         source $PROFILE
     fi
-
 }
 
-install_hadoop()
-{
+install_hadoop() {
     local app=hadoop
     local app_name_upper=${app^^}
     local url=$(eval echo \$${app_name_upper}_URL)
@@ -333,7 +331,7 @@ install_hive()
     if [ -d ${app_dir} ]
     then
         # 配置 hive-site.xml
-        setkv "jdbc:mysql://${HOST_NAME}:3306/hivedb?createDatabaseIfNotExist=true&amp;useSSL=false&amp;useUnicode=true&amp;characterEncoding=UTF-8" ${app_dir}/conf/hive-site.xml true
+        setkv "javax.jdo.option.ConnectionURL=jdbc:mysql://${HOST_NAME}:3306/hivedb?createDatabaseIfNotExist=true&amp;useSSL=false&amp;useUnicode=true&amp;characterEncoding=UTF-8" ${app_dir}/conf/hive-site.xml true
         setkv "javax.jdo.option.ConnectionDriverName=com.mysql.jdbc.Driver" ${app_dir}/conf/hive-site.xml
         setkv "javax.jdo.option.ConnectionUserName=root" ${app_dir}/conf/hive-site.xml
         setkv "javax.jdo.option.ConnectionPassword=123456" ${app_dir}/conf/hive-site.xml
@@ -356,6 +354,9 @@ install_hive()
 
 
         wget_mysql_connector ${app_dir}/lib
+        mv ${app_dir}/lib/log4j-slf4j-impl-2.10.0.jar ${app_dir}/lib/log4j-slf4j-impl-2.10.0.jar_bak
+        mv ${app_dir}/lib/guava-19.0.jar ${app_dir}/lib/guava-19.0.jar_bak
+        cp ${HADOOP_HOME}/share/hadoop/common/lib/guava-27.0-jre.jar ${app_dir}/lib/
         # 添加环境变量
         setenv ${app} ${app_dir}
     fi

@@ -6,7 +6,8 @@ DEFAULT_DOWNLOAD_DIR=${DEFAULT_DOWNLOAD_DIR:-$DEFAULT_DOWNLOAD_DIR}
 [ ! -d $DEFAULT_DOWNLOAD_DIR ] && mkdir -p $DEFAULT_DOWNLOAD_DIR
 INSTALL_PATH=/opt/module
 HOST_NAME=hadoop000
-JAVA_URL=https://repo.huaweicloud.com/java/jdk/8u201-b09/jdk-8u221-linux-x64.tar.gz
+JAVA_URL_201=https://repo.huaweicloud.com/java/jdk/8u201-b09/jdk-8u201-linux-x64.tar.gz
+JAVA_URL_221=https://qingjiao-image-build-assets.oss-cn-beijing.aliyuncs.com/centos_7_hadoop2.7.7/jdk-8u221-linux-x64.tar.gz
 HADOOP_URL=https://mirrors.huaweicloud.com/apache/hadoop/core/hadoop-2.7.7/hadoop-2.7.7.tar.gz
 HIVE_URL=https://mirrors.huaweicloud.com/apache/hive/hive-2.3.4/apache-hive-2.3.4-bin.tar.gz
 SCALA_URL=https://downloads.lightbend.com/scala/2.11.11/scala-2.11.11.tgz
@@ -94,6 +95,9 @@ wget_mysql_connector(){
 
 install_init(){
     echo "install init"
+    mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+    curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
+    yum clean all && yum makecache && yum -y update
     # 安装git
     rpm -ivh https://opensource.wandisco.com/git/wandisco-git-release-7-2.noarch.rpm
     yum install -y -q git
@@ -118,8 +122,8 @@ install_init(){
     # 创建安装目录
     mkdir /opt/module
     # chown -R vagrant:vagrant /opt/
-    complete_url=https://raw.githubusercontent.com/yiluohan1234/vagrant_bigdata_cluster/master/resources/single_node/complete_tool.sh
-    bigstart_url=https://raw.githubusercontent.com/yiluohan1234/vagrant_bigdata_cluster/master/resources/single_node/bigstart
+    complete_url= https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/resources/single_node/complete_tool.sh
+    bigstart_url= https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/resources/single_node/bigstart
     curl -o /vagrant/complete_tool.sh -O -L ${complete_url}
     curl -o /vagrant/bigstart -O -L ${bigstart_url}
     # wget -P /vagrant/ ${complete_url}
@@ -164,6 +168,34 @@ install_jdk()
         source /etc/profile
     fi
 
+}
+
+install_jdk221()
+{
+    local app=java
+    local url=${JAVA_URL_221}
+    local file=${url##*/}
+    if [ `yum list installed | grep java-${jdk_version}|wc -l` -gt 0 ];then
+        yum -y remove java-${jdk_version}-openjdk*
+        yum -y remove tzdata-java.noarch
+    fi
+
+    echo "install ${app}"
+    # 安装
+    if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
+    then
+        curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
+    fi
+    tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
+    if [ -d ${INSTALL_PATH}/jdk1.8.0_221 ]
+    then
+        # 添加环境变量
+        echo "# jdk environment" >> $PROFILE
+        echo "export JAVA_HOME=${INSTALL_PATH}/jdk1.8.0_221" >> $PROFILE
+        echo 'export PATH=${JAVA_HOME}/bin:$PATH' >> $PROFILE
+        echo -e "\n" >> $PROFILE
+        source $PROFILE
+    fi
 }
 
 install_hadoop()
