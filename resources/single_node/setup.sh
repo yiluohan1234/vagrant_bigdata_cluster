@@ -224,6 +224,8 @@ install_hadoop()
         set_property ${INSTALL_PATH}/${app}/etc/hadoop/yarn-site.xml "yarn.nodemanager.vmem-check-enabled" "false"
         cp ${INSTALL_PATH}/${app}/etc/hadoop/mapred-site.xml.template ${INSTALL_PATH}/${app}/etc/hadoop/mapred-site.xml
         set_property ${INSTALL_PATH}/${app}/etc/hadoop/mapred-site.xml "mapreduce.framework.name" "yarn"
+        # 防止大部分资源都被Application Master占用，而导致Map/Reduce Task无法执行
+        sed -i "s@0.1@0.8@g" ${app}/etc/hadoop/capacity-scheduler.xml
         # slaves
         echo -e "${HOST_NAME}" > ${INSTALL_PATH}/${app}/etc/hadoop/slaves
         echo "export JAVA_HOME=${INSTALL_PATH}/java" >> ${INSTALL_PATH}/${app}/etc/hadoop/yarn-env.sh
