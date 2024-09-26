@@ -6,6 +6,7 @@ DEFAULT_DOWNLOAD_DIR=${DEFAULT_DOWNLOAD_DIR:-$DEFAULT_DOWNLOAD_DIR}
 [ ! -d $DEFAULT_DOWNLOAD_DIR ] && mkdir -p $DEFAULT_DOWNLOAD_DIR
 INSTALL_PATH=/opt/module
 HOST_NAME=hadoop000
+PROFILE=/etc/profile
 JAVA_URL_201=https://repo.huaweicloud.com/java/jdk/8u201-b09/jdk-8u201-linux-x64.tar.gz
 JAVA_URL_221=https://qingjiao-image-build-assets.oss-cn-beijing.aliyuncs.com/centos_7_hadoop2.7.7/jdk-8u221-linux-x64.tar.gz
 HADOOP_URL=https://mirrors.huaweicloud.com/apache/hadoop/core/hadoop-2.7.7/hadoop-2.7.7.tar.gz
@@ -225,7 +226,7 @@ install_hadoop()
         cp ${INSTALL_PATH}/${app}/etc/hadoop/mapred-site.xml.template ${INSTALL_PATH}/${app}/etc/hadoop/mapred-site.xml
         set_property ${INSTALL_PATH}/${app}/etc/hadoop/mapred-site.xml "mapreduce.framework.name" "yarn"
         # 防止大部分资源都被Application Master占用，而导致Map/Reduce Task无法执行
-        sed -i "s@0.1@0.8@g" ${app}/etc/hadoop/capacity-scheduler.xml
+        sed -i "s@0.1@0.8@g" ${INSTALL_PATH}/${app}/etc/hadoop/capacity-scheduler.xml
         # slaves
         echo -e "${HOST_NAME}" > ${INSTALL_PATH}/${app}/etc/hadoop/slaves
         echo "export JAVA_HOME=${INSTALL_PATH}/java" >> ${INSTALL_PATH}/${app}/etc/hadoop/yarn-env.sh
@@ -482,7 +483,7 @@ install_tez()
 }
 
 install_init
-install_jdk
+install_jdk221
 install_hadoop
 install_mysql
 install_ssh
