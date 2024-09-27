@@ -146,8 +146,8 @@ install_init(){
     # 创建安装目录
     mkdir ${INSTALL_PATH}
     # chown -R vagrant:vagrant /opt/
-    complete_url= https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/resources/single_node/complete_tool.sh
-    bigstart_url= https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/resources/single_node/bigstart313
+    complete_url=https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/resources/single_node/complete_tool.sh
+    bigstart_url=https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/resources/single_node/bigstart313
     curl -o /vagrant/complete_tool.sh -O -L ${complete_url}
     curl -o /vagrant/bigstart -O -L ${bigstart_url}
     # wget -P /vagrant/ ${complete_url}
