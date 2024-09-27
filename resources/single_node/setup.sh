@@ -440,7 +440,7 @@ install_phoenix()
         cp ${INSTALL_PATH}/${app}/phoenix*server*jar ${INSTALL_PATH}/hbase/lib
         cp ${INSTALL_PATH}/hbase/conf/hbase-site.xml ${INSTALL_PATH}/phoenix/bin
         # 添加环境变量
-        setupEnv_app ${app}
+        setenv ${app} ${INSTALL_PATH}/${app}
     fi
 }
 
@@ -461,7 +461,7 @@ install_kafka()
 
 
         # 添加环境变量
-        setupEnv_app ${app}
+        setenv ${app} ${INSTALL_PATH}/${app}
     fi
 }
 
