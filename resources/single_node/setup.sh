@@ -20,29 +20,29 @@ PHOENIX_URL=https://mirrors.huaweicloud.com/apache/phoenix/apache-phoenix-4.15.0
 KAFKA_URL=https://mirrors.huaweicloud.com/apache/kafka/0.10.2.2/kafka_2.11-0.10.2.2.tgz
 TEZ_URL=https://mirrors.huaweicloud.com/apache//tez/0.8.4/apache-tez-0.8.4-bin.tar.gz
 
-setupEnv_app() {
+setenv() {
     local app_name=$1
-    local type_name=$2
-    echo "creating $app_name environment variables"
-    local app_path=${INSTALL_PATH}/$app_name
-    local app_name_uppercase=${app_name^^}
+    local app_path=$2
+    local type_name=$3
+
+    local app_name_uppercase=$(echo $app_name | tr '[a-z]' '[A-Z]')
     echo "# $app_name environment" >> $PROFILE
     echo "export ${app_name_uppercase}_HOME=$app_path" >> $PROFILE
     if [ ! -n "$type_name" ];then
-        echo 'export PATH=${'$app_name_uppercase'_HOME}/bin:$PATH' >> $PROFILE
+        echo 'export PATH=$PATH:${'$app_name_uppercase'_HOME}/bin' >> $PROFILE
     else
-        echo 'export PATH=${'$app_name_uppercase'_HOME}/bin:${'$app_name_uppercase'_HOME}/sbin:$PATH' >> $PROFILE
+        echo 'export PATH=$PATH:${'$app_name_uppercase'_HOME}/bin:${'$app_name_uppercase'_HOME}/sbin' >> $PROFILE
     fi
     echo -e "\n" >> $PROFILE
+    source $PROFILE
 }
 
 # 将配置转换为xml
-# set_property ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml "fs.defaultFS" "hdfs://${HOST_NAME}:9000"
-set_property() {
-    local properties_file=$1
-    local name=$2
-    local value=$3
-    local is_create=$4
+# setkv "fs.defaultFS=hdfs://master:9000" ${HADOOP_HOME}/etc/hadoop/core-site.xml true
+setkv() {
+    local key_value=$1
+    local properties_file=$2
+    local is_create=$3
     [ -z "${is_create}" ] && is_create=false
 
     if [ "${is_create}" == "false" ]
@@ -54,6 +54,8 @@ set_property() {
         echo '<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>' >> ${properties_file}
         echo '<configuration>' >> ${properties_file}
     fi
+    name=`echo $key_value|cut -d "=" -f 1`
+    value=`echo $key_value|cut -d "=" -f 2-`
     echo "  <property>" >> ${properties_file}
     echo "    <name>$name</name>" >> ${properties_file}
     echo "    <value>$value</value>" >> ${properties_file}
@@ -89,16 +91,16 @@ wget_mysql_connector(){
     then
         curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
     fi
-    tar -zxvf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${DEFAULT_DOWNLOAD_DIR}/
+    tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${DEFAULT_DOWNLOAD_DIR}/
     cp ${DEFAULT_DOWNLOAD_DIR}/${file%%.tar*}/${file%%.tar*}.jar $cp_path
     rm -rf ${DEFAULT_DOWNLOAD_DIR}/${file%%.tar*}
 }
 
 install_init(){
     echo "install init"
-    mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
-    curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
-    yum clean all && yum makecache && yum -y update
+    # mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+    # curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
+    # yum clean all && yum makecache && yum -y update
     # 安装git
     rpm -ivh https://opensource.wandisco.com/git/wandisco-git-release-7-2.noarch.rpm
     yum install -y -q git
@@ -123,8 +125,8 @@ install_init(){
     # 创建安装目录
     mkdir /opt/module
     # chown -R vagrant:vagrant /opt/
-    complete_url= https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/resources/single_node/complete_tool.sh
-    bigstart_url= https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/resources/single_node/bigstart
+    complete_url=https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/resources/single_node/complete_tool.sh
+    bigstart_url=https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/resources/single_node/bigstart
     curl -o /vagrant/complete_tool.sh -O -L ${complete_url}
     curl -o /vagrant/bigstart -O -L ${bigstart_url}
     # wget -P /vagrant/ ${complete_url}
@@ -188,11 +190,12 @@ install_jdk221()
         curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
     fi
     tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
-    if [ -d ${INSTALL_PATH}/jdk1.8.0_221 ]
+    mv ${INSTALL_PATH}/jdk1.8.0_221 ${INSTALL_PATH}/java
+    if [ -d ${INSTALL_PATH}/java ]
     then
         # 添加环境变量
         echo "# jdk environment" >> $PROFILE
-        echo "export JAVA_HOME=${INSTALL_PATH}/jdk1.8.0_221" >> $PROFILE
+        echo "export JAVA_HOME=${INSTALL_PATH}/java" >> $PROFILE
         echo 'export PATH=${JAVA_HOME}/bin:$PATH' >> $PROFILE
         echo -e "\n" >> $PROFILE
         source $PROFILE
@@ -208,30 +211,30 @@ install_hadoop()
     then
         # 配置 hadoop-env.sh core-site.xml hdfs-site.xml yarn-site.xml mapred-site.xml slaves
         sed -i "s@^export JAVA_HOME=.*@export JAVA_HOME=${INSTALL_PATH}/java@" ${INSTALL_PATH}/${app}/etc/hadoop/hadoop-env.sh
-        set_property ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml "fs.defaultFS" "hdfs://${HOST_NAME}:9000"
-        set_property ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml "hadoop.tmp.dir" "${INSTALL_PATH}/hadoop/hadoopdata"
-        set_property ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml "hadoop.http.staticuser.user" "root"
-        set_property ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml "hadoop.proxyuser.root.hosts" "*"
-        set_property ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml "hadoop.proxyuser.root.groups" "*"
-        set_property ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml "hadoop.proxyuser.root.users" "*"
-        set_property ${INSTALL_PATH}/${app}/etc/hadoop/hdfs-site.xml "dfs.replication" "1"
-        set_property ${INSTALL_PATH}/${app}/etc/hadoop/hdfs-site.xml "dfs.datanode.name.dir" "${INSTALL_PATH}/hadoop/hadoopdata/name"
-        set_property ${INSTALL_PATH}/${app}/etc/hadoop/hdfs-site.xml "dfs.datanode.data.dir" "${INSTALL_PATH}/hadoop/hadoopdata/data"
-        set_property ${INSTALL_PATH}/${app}/etc/hadoop/hdfs-site.xml "dfs.webhdfs.enabled" "true"
-        set_property ${INSTALL_PATH}/${app}/etc/hadoop/hdfs-site.xml "dfs.permissions.enabled" "false"
-        set_property ${INSTALL_PATH}/${app}/etc/hadoop/yarn-site.xml "yarn.nodemanager.aux-services" "mapreduce_shuffle"
-        set_property ${INSTALL_PATH}/${app}/etc/hadoop/yarn-site.xml "yarn.resourcemanager.hostname" "${HOST_NAME}"
-        set_property ${INSTALL_PATH}/${app}/etc/hadoop/yarn-site.xml "yarn.nodemanager.aux-services.mapreduce.shuffle.class" "org.apache.hadoop.mapred.ShuffleHandler"
-        set_property ${INSTALL_PATH}/${app}/etc/hadoop/yarn-site.xml "yarn.nodemanager.vmem-check-enabled" "false"
+        setkv "fs.defaultFS=hdfs://${HOST_NAME}:9000" ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml
+        setkv "hadoop.tmp.dir=${INSTALL_PATH}/hadoop/hadoopdata" ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml
+        setkv "hadoop.http.staticuser.user=root" ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml
+        setkv "hadoop.proxyuser.root.hosts=*" ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml
+        setkv "hadoop.proxyuser.root.groups=*" ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml
+        setkv "hadoop.proxyuser.root.users=*" ${INSTALL_PATH}/${app}/etc/hadoop/core-site.xml
+        setkv "dfs.replication=1" ${INSTALL_PATH}/${app}/etc/hadoop/hdfs-site.xml
+        setkv "dfs.datanode.name.dir=${INSTALL_PATH}/hadoop/hadoopdata/name" ${INSTALL_PATH}/${app}/etc/hadoop/hdfs-site.xml
+        setkv "dfs.datanode.data.dir=${INSTALL_PATH}/hadoop/hadoopdata/data" ${INSTALL_PATH}/${app}/etc/hadoop/hdfs-site.xml
+        setkv "dfs.webhdfs.enabled=true" ${INSTALL_PATH}/${app}/etc/hadoop/hdfs-site.xml
+        setkv "dfs.permissions.enabled=false" ${INSTALL_PATH}/${app}/etc/hadoop/hdfs-site.xml
+        setkv "yarn.nodemanager.aux-services=mapreduce_shuffle" ${INSTALL_PATH}/${app}/etc/hadoop/yarn-site.xml
+        setkv "yarn.resourcemanager.hostname=${HOST_NAME}" ${INSTALL_PATH}/${app}/etc/hadoop/yarn-site.xml
+        setkv "yarn.nodemanager.aux-services.mapreduce.shuffle.class=org.apache.hadoop.mapred.ShuffleHandler" ${INSTALL_PATH}/${app}/etc/hadoop/yarn-site.xml
+        setkv "yarn.nodemanager.vmem-check-enabled=false" ${INSTALL_PATH}/${app}/etc/hadoop/yarn-site.xml
         cp ${INSTALL_PATH}/${app}/etc/hadoop/mapred-site.xml.template ${INSTALL_PATH}/${app}/etc/hadoop/mapred-site.xml
-        set_property ${INSTALL_PATH}/${app}/etc/hadoop/mapred-site.xml "mapreduce.framework.name" "yarn"
+        setkv "mapreduce.framework.name=yarn" ${INSTALL_PATH}/${app}/etc/hadoop/mapred-site.xml
         # 防止大部分资源都被Application Master占用，而导致Map/Reduce Task无法执行
         sed -i "s@0.1@0.8@g" ${INSTALL_PATH}/${app}/etc/hadoop/capacity-scheduler.xml
         # slaves
         echo -e "${HOST_NAME}" > ${INSTALL_PATH}/${app}/etc/hadoop/slaves
         echo "export JAVA_HOME=${INSTALL_PATH}/java" >> ${INSTALL_PATH}/${app}/etc/hadoop/yarn-env.sh
         # 添加环境变量
-        setupEnv_app ${app} sbin
+        setenv ${app} ${INSTALL_PATH}/${app} sbin
     fi
 }
 
@@ -306,27 +309,27 @@ install_hive()
     if [ -d ${INSTALL_PATH}/${app} ]
     then
         # 配置 hive-site.xml
-        set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "javax.jdo.option.ConnectionURL" "jdbc:mysql://${HOST_NAME}:3306/hive?createDatabaseIfNotExist=true&amp;useSSL=false" true
-        set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "javax.jdo.option.ConnectionDriverName" "com.mysql.jdbc.Driver"
-        set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "javax.jdo.option.ConnectionUserName" "hive"
-        set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "javax.jdo.option.ConnectionPassword" "hive"
-        set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.metastore.schema.verification" "false"
-        set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "datanucleus.schema.autoCreateALL" "true"
-        set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.cli.print.current.db" "true"
-        set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.cli.print.header" "true"
-        set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.metastore.local" "false"
-        set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.server2.thrift.port" "10000"
-        set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.server2.thrift.bind.host" "${HOST_NAME}"
-        set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.metastore.uris" "thrift://${HOST_NAME}:9083"
-        set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.exec.mode.local.auto" "true"
-        set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.strict.checks.cartesian.product" "false"
-        set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.exec.dynamic.partition" "true"
-        set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.exec.dynamic.partition.mode" "nonstrict"
-        set_property ${INSTALL_PATH}/${app}/conf/hive-site.xml "hive.execution.engine" "tez"
+        setkv "javax.jdo.option.ConnectionURL=jdbc:mysql://${HOST_NAME}:3306/hive?createDatabaseIfNotExist=true&amp;useSSL=false" ${INSTALL_PATH}/${app}/conf/hive-site.xml true
+        setkv "javax.jdo.option.ConnectionDriverName=com.mysql.jdbc.Driver" ${INSTALL_PATH}/${app}/conf/hive-site.xml
+        setkv "javax.jdo.option.ConnectionUserName=hive" ${INSTALL_PATH}/${app}/conf/hive-site.xml
+        setkv "javax.jdo.option.ConnectionPassword=hive" ${INSTALL_PATH}/${app}/conf/hive-site.xml
+        setkv "hive.metastore.schema.verification=false" ${INSTALL_PATH}/${app}/conf/hive-site.xml
+        setkv "datanucleus.schema.autoCreateALL=true" ${INSTALL_PATH}/${app}/conf/hive-site.xml
+        setkv "hive.cli.print.current.db=true" ${INSTALL_PATH}/${app}/conf/hive-site.xml
+        setkv "hive.cli.print.header=true" ${INSTALL_PATH}/${app}/conf/hive-site.xml
+        setkv "hive.metastore.local=false" ${INSTALL_PATH}/${app}/conf/hive-site.xml
+        setkv "hive.server2.thrift.port=10000" ${INSTALL_PATH}/${app}/conf/hive-site.xml
+        setkv "hive.server2.thrift.bind.host=${HOST_NAME}" ${INSTALL_PATH}/${app}/conf/hive-site.xml
+        setkv "hive.metastore.uris=thrift://${HOST_NAME}:9083" ${INSTALL_PATH}/${app}/conf/hive-site.xml
+        setkv "hive.exec.mode.local.auto=true" ${INSTALL_PATH}/${app}/conf/hive-site.xml
+        setkv "hive.strict.checks.cartesian.product=false" ${INSTALL_PATH}/${app}/conf/hive-site.xml
+        setkv "hive.exec.dynamic.partition=true" ${INSTALL_PATH}/${app}/conf/hive-site.xml
+        setkv "hive.exec.dynamic.partition.mode=nonstrict" ${INSTALL_PATH}/${app}/conf/hive-site.xml
+        setkv "hive.execution.engine=tez" ${INSTALL_PATH}/${app}/conf/hive-site.xml
 
         wget_mysql_connector ${INSTALL_PATH}/${app}/lib
         # 添加环境变量
-        setupEnv_app ${app}
+        setenv ${app} ${INSTALL_PATH}/${app}
     fi
 }
 
@@ -338,7 +341,7 @@ install_scala()
     if [ -d ${INSTALL_PATH}/${app} ]
     then
         # 添加环境变量
-        setupEnv_app ${app}
+        setenv ${app} ${INSTALL_PATH}/${app}
     fi
 }
 
@@ -374,7 +377,7 @@ install_spark()
         echo "${HOST_NAME}" > ${INSTALL_PATH}/${app}/conf/slaves
         wget_mysql_connector ${INSTALL_PATH}/${app}/jars
         # 添加环境变量
-        setupEnv_app ${app}
+        setenv ${app} ${INSTALL_PATH}/${app}
     fi
 }
 
@@ -391,7 +394,7 @@ install_zk()
         mkdir -p ${INSTALL_PATH}/${app}/data
         echo "1" >> ${INSTALL_PATH}/${app}/data/myid
         # 添加环境变量
-        setupEnv_app ${app}
+        setenv ${app} ${INSTALL_PATH}/${app}
     fi
 }
 
@@ -415,14 +418,14 @@ install_hbase()
         # 配置
         sed -i "s@^# export HBASE_MANAGES_ZK=.*@export HBASE_MANAGES_ZK=false@" ${INSTALL_PATH}/${app}/conf/hbase-env.sh
         sed -i "s@^# export JAVA_HOME=.*@export JAVA_HOME=${INSTALL_PATH}/java@" ${INSTALL_PATH}/${app}/conf/hbase-env.sh
-        set_property ${INSTALL_PATH}/${app}/conf/hbase-site.xml "hbase.rootdir" "hdfs://${HOST_NAME}:9000/hbase"
-        set_property ${INSTALL_PATH}/${app}/conf/hbase-site.xml "hbase.zookeeper.quorum" "${HOST_NAME}"
-        set_property ${INSTALL_PATH}/${app}/conf/hbase-site.xml "hbase.cluster.distributed" "true"
-        set_property ${INSTALL_PATH}/${app}/conf/hbase-site.xml "phoenix.schema.isNamespaceMappingEnabled" "true"
-        set_property ${INSTALL_PATH}/${app}/conf/hbase-site.xml "phoenix.schema.mapSystemTablesToNamespace" "true"
+        setkv "hbase.rootdir=hdfs://${HOST_NAME}:9000/hbase" ${INSTALL_PATH}/${app}/conf/hbase-site.xml
+        setkv "hbase.zookeeper.quorum=${HOST_NAME}" ${INSTALL_PATH}/${app}/conf/hbase-site.xml
+        setkv "hbase.cluster.distributed=true" ${INSTALL_PATH}/${app}/conf/hbase-site.xml
+        setkv "phoenix.schema.isNamespaceMappingEnabled=true" ${INSTALL_PATH}/${app}/conf/hbase-site.xml
+        setkv "phoenix.schema.mapSystemTablesToNamespace=true" ${INSTALL_PATH}/${app}/conf/hbase-site.xml
         echo -e "${HOST_NAME}" > ${INSTALL_PATH}/${app}/conf/regionservers
         # 添加环境变量
-        setupEnv_app ${app}
+        setenv ${app} ${INSTALL_PATH}/${app}
     fi
 }
 
@@ -470,8 +473,8 @@ install_tez()
     if [ -d ${INSTALL_PATH}/${app} ]
     then
         # 配置
-        set_property ${INSTALL_PATH}/hive/conf/tez-site.xml "tez.lib.uris" '${fs.defaultFS}/tez/0.8.4/tez.tar.gz' true
-        set_property ${INSTALL_PATH}/hive/conf/tez-site.xml "tez.container.max.java.heap.fraction" "0.2"
+        setkv 'tez.lib.uris=${fs.defaultFS}/tez/0.8.4/tez.tar.gz' ${INSTALL_PATH}/hive/conf/tez-site.xml true
+        setkv "tez.container.max.java.heap.fraction=0.2" ${INSTALL_PATH}/hive/conf/tez-site.xml
         rm -rf ${INSTALL_PATH}/tez/lib/slf4j-log4j12-*.jar
         # 添加环境变量
         echo "# tez environment"
