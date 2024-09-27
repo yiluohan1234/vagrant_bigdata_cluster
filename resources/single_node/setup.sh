@@ -26,14 +26,14 @@ setupEnv_app() {
     echo "creating $app_name environment variables"
     local app_path=${INSTALL_PATH}/$app_name
     local app_name_uppercase=${app_name^^}
-    echo "# $app_name environment" >> /etc/profile
-    echo "export ${app_name_uppercase}_HOME=$app_path" >> /etc/profile
+    echo "# $app_name environment" >> $PROFILE
+    echo "export ${app_name_uppercase}_HOME=$app_path" >> $PROFILE
     if [ ! -n "$type_name" ];then
-        echo 'export PATH=${'$app_name_uppercase'_HOME}/bin:$PATH' >> /etc/profile
+        echo 'export PATH=${'$app_name_uppercase'_HOME}/bin:$PATH' >> $PROFILE
     else
-        echo 'export PATH=${'$app_name_uppercase'_HOME}/bin:${'$app_name_uppercase'_HOME}/sbin:$PATH' >> /etc/profile
+        echo 'export PATH=${'$app_name_uppercase'_HOME}/bin:${'$app_name_uppercase'_HOME}/sbin:$PATH' >> $PROFILE
     fi
-    echo -e "\n" >> /etc/profile
+    echo -e "\n" >> $PROFILE
 }
 
 # 将配置转换为xml
@@ -160,13 +160,13 @@ install_jdk()
     if [ -d ${INSTALL_PATH}/${app} ]
     then
         # 添加环境变量
-        echo "# jdk environment" >> /etc/profile
-        echo "export JAVA_HOME=${INSTALL_PATH}/${app}" >> /etc/profile
-        echo 'export JRE_HOME=${JAVA_HOME}/jre' >> /etc/profile
-        echo 'export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib' >> /etc/profile
-        echo 'export PATH=${JAVA_HOME}/bin:${JAVA_HOME}/sbin:${JRE_HOME}/bin:$PATH' >> /etc/profile
-        echo -e "\n" >> /etc/profile
-        source /etc/profile
+        echo "# jdk environment" >> $PROFILE
+        echo "export JAVA_HOME=${INSTALL_PATH}/${app}" >> $PROFILE
+        echo 'export JRE_HOME=${JAVA_HOME}/jre' >> $PROFILE
+        echo 'export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib' >> $PROFILE
+        echo 'export PATH=${JAVA_HOME}/bin:${JAVA_HOME}/sbin:${JRE_HOME}/bin:$PATH' >> $PROFILE
+        echo -e "\n" >> $PROFILE
+        source $PROFILE
     fi
 
 }
@@ -475,10 +475,10 @@ install_tez()
         rm -rf ${INSTALL_PATH}/tez/lib/slf4j-log4j12-*.jar
         # 添加环境变量
         echo "# tez environment"
-        echo "export TEZ_CONF_DIR=${INSTALL_PATH}/hive/conf" >> /etc/profile
-        echo "export TEZ_JARS=${INSTALL_PATH}/tez/*:${INSTALL_PATH}/tez/lib/*" >> /etc/profile
-        echo 'export HADOOP_CLASSPATH=$TEZ_CONF_DIR:$TEZ_JARS:$HADOOP_CLASSPATH' >> /etc/profile
-        echo -e "\n" >> /etc/profile
+        echo "export TEZ_CONF_DIR=${INSTALL_PATH}/hive/conf" >> $PROFILE
+        echo "export TEZ_JARS=${INSTALL_PATH}/tez/*:${INSTALL_PATH}/tez/lib/*" >> $PROFILE
+        echo 'export HADOOP_CLASSPATH=$TEZ_CONF_DIR:$TEZ_JARS:$HADOOP_CLASSPATH' >> $PROFILE
+        echo -e "\n" >> $PROFILE
     fi
 }
 
