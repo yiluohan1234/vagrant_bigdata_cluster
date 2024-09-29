@@ -8,7 +8,8 @@ INSTALL_PATH=/root/software
 HOST_NAME=bigdata
 PROFILE=/etc/profile
 JAVA_URL=https://qingjiao-image-build-assets.oss-cn-beijing.aliyuncs.com/centos_7_hadoop3.1.3/jdk-8u212-linux-x64.tar.gz
-HADOOP_URL=https://mirrors.huaweicloud.com/apache/hadoop/common/hadoop-3.1.3/hadoop-3.1.3.tar.gz
+HADOOP_URL313=https://mirrors.huaweicloud.com/apache/hadoop/common/hadoop-3.1.3/hadoop-3.1.3.tar.gz
+HADOOP_URL333=https://mirrors.huaweicloud.com/apache/hadoop/common/hadoop-3.3.3/hadoop-3.3.3.tar.gz
 HIVE_URL=https://qingjiao-image-build-assets.oss-cn-beijing.aliyuncs.com/centos_7_hadoop3.1.3/apache-hive-3.1.2-bin.tar.gz
 SCALA_URL=https://downloads.lightbend.com/scala/2.12.11/scala-2.12.11.tgz
 SPARK_URL=https://mirrors.huaweicloud.com/apache/spark/spark-3.0.0/spark-3.0.0-bin-without-hadoop.tgz
@@ -106,15 +107,18 @@ download_and_unzip_app() {
 
 wget_mysql_connector(){
     local cp_path=$1
-    local file=mysql-connector-java-5.1.49.tar.gz
-    local url=https://repo.huaweicloud.com/mysql/Downloads/Connector-J/mysql-connector-java-5.1.49.tar.gz
+    # local file=mysql-connector-java-5.1.49.tar.gz
+    # local url=https://repo.huaweicloud.com/mysql/Downloads/Connector-J/mysql-connector-java-5.1.49.tar.gz
+    local file=mysql-connector-java-5.1.47-bin.jar
+    local url=https://mirrors.huaweicloud.com/apache/hadoop/common/hadoop-3.1.3/mysql-connector-java-5.1.47-bin.jar
     if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
     then
         curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
     fi
-    tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${DEFAULT_DOWNLOAD_DIR}/
-    cp ${DEFAULT_DOWNLOAD_DIR}/${file%%.tar*}/${file%%.tar*}.jar $cp_path
-    rm -rf ${DEFAULT_DOWNLOAD_DIR}/${file%%.tar*}
+    # tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${DEFAULT_DOWNLOAD_DIR}/
+    # cp ${DEFAULT_DOWNLOAD_DIR}/${file%%.tar*}/${file%%.tar*}.jar $cp_path
+    # rm -rf ${DEFAULT_DOWNLOAD_DIR}/${file%%.tar*}
+    cp ${DEFAULT_DOWNLOAD_DIR}/${file} $cp_path
 }
 
 install_init(){
@@ -186,10 +190,75 @@ install_jdk() {
     fi
 }
 
-install_hadoop() {
+install_hadoop313() {
     local app=hadoop
     local app_name_upper=${app^^}
-    local url=$(eval echo \$${app_name_upper}_URL)
+    local url=$(eval echo \$${app_name_upper}_URL313)
+    local app_dir=${INSTALL_PATH}/`get_app_dir $url`
+    download_and_unzip_app ${app}
+
+    if [ -d ${app_dir} ]
+    then
+        # 配置 hadoop-env.sh core-site.xml hdfs-site.xml yarn-site.xml mapred-site.xml slaves
+        echo "export JAVA_HOME=${INSTALL_PATH}/jdk1.8.0_212" >> ${app_dir}/etc/hadoop/hadoop-env.sh
+        setkv "fs.defaultFS=hdfs://${HOST_NAME}:8020" ${app_dir}/etc/hadoop/core-site.xml
+        setkv "hadoop.tmp.dir=${app_dir}/hadoopDatas" ${app_dir}/etc/hadoop/core-site.xml
+        # 缓冲区大小，实际工作中根据服务器性能动态调整；默认值4096
+        setkv "io.file.buffer.size=4096" ${app_dir}/etc/hadoop/core-site.xml
+        # 开启HDFS的垃圾桶机制，删除掉的数据可以从垃圾桶中回收，单位分钟；默认值0
+        setkv "fs.trash.interval=10080" ${app_dir}/etc/hadoop/core-site.xml
+        # 配置代理用户提交任务到集群
+        setkv "hadoop.proxyuser.root.hosts=*" ${app_dir}/etc/hadoop/core-site.xml
+        setkv "hadoop.proxyuser.root.groups=*" ${app_dir}/etc/hadoop/core-site.xml
+        setkv "hadoop.http.staticuser.user=root" ${app_dir}/etc/hadoop/core-site.xml
+        setkv "hadoop.security.authorization=true" ${app_dir}/etc/hadoop/core-site.xml
+        setkv "dfs.namenode.http-address=${HOST_NAME}:9870" ${app_dir}/etc/hadoop/hdfs-site.xml
+        setkv "dfs.namenode.secondary.http-address=${HOST_NAME}:9868" ${app_dir}/etc/hadoop/hdfs-site.xml
+        setkv "dfs.datanode.name.dir=${app_dir}/hadoopDatas/namenodeDatas" ${app_dir}/etc/hadoop/hdfs-site.xml
+        setkv "dfs.datanode.data.dir=${app_dir}/hadoopDatas/datanodeDatas" ${app_dir}/etc/hadoop/hdfs-site.xml
+        setkv "dfs.namenode.edits.dir=${app_dir}/hadoopDatas/dfs/nn/edits" ${app_dir}/etc/hadoop/hdfs-site.xml
+        setkv "dfs.namenode.checkpoint.dir=${app_dir}/hadoopDatas/dfs/snn/name" ${app_dir}/etc/hadoop/hdfs-site.xml
+        setkv "dfs.namenode.checkpoint.edits.dir=${app_dir}/hadoopDatas/dfs/nn/snn/edits" ${app_dir}/etc/hadoop/hdfs-site.xml
+        setkv "dfs.replication=1" ${app_dir}/etc/hadoop/hdfs-site.xml
+        setkv "dfs.permissions.enabled=true" ${app_dir}/etc/hadoop/hdfs-site.xml
+        setkv "dfs.webhdfs.enabled=true" ${app_dir}/etc/hadoop/hdfs-site.xml
+        setkv "dfs.permissions.superusergroup=root" ${app_dir}/etc/hadoop/hdfs-site.xml
+        setkv "yarn.nodemanager.aux-services=mapreduce_shuffle" ${app_dir}/etc/hadoop/yarn-site.xml
+        setkv "yarn.resourcemanager.hostname=${HOST_NAME}" ${app_dir}/etc/hadoop/yarn-site.xml
+        setkv "yarn.resourcemanager.bind-host=${HOST_NAME}" ${app_dir}/etc/hadoop/yarn-site.xml
+        setkv "yarn.nodemanager.bind-host=${HOST_NAME}" ${app_dir}/etc/hadoop/yarn-site.xml
+        setkv "yarn.resourcemanager.webapp.address=0.0.0.0:0" ${app_dir}/etc/hadoop/yarn-site.xml
+        setkv "yarn.resourcemanager.webapp.https.address=0.0.0.0:0" ${app_dir}/etc/hadoop/yarn-site.xml
+        setkv "yarn.nodemanager.webapp.address=0.0.0.0:0" ${app_dir}/etc/hadoop/yarn-site.xml
+        setkv "yarn.nodemanager.webapp.https.address=0.0.0.0:0" ${app_dir}/etc/hadoop/yarn-site.xml
+        setkv "yarn.nodemanager.env-whitelist=JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_MAPRED_HOME" ${app_dir}/etc/hadoop/yarn-site.xml
+        setkv "yarn.nodemanager.pmem-check-enabled=false" ${app_dir}/etc/hadoop/yarn-site.xml
+        setkv "yarn.scheduler.minimum-allocation-mb=512" ${app_dir}/etc/hadoop/yarn-site.xml
+        setkv "yarn.scheduler.maximum-allocation-mb=4096" ${app_dir}/etc/hadoop/yarn-site.xml
+        setkv "yarn.nodemanager.resource.memory-mb=4096" ${app_dir}/etc/hadoop/yarn-site.xml
+        setkv "yarn.nodemanager.vmem-check-enabled=false" ${app_dir}/etc/hadoop/yarn-site.xml
+        setkv "yarn.log-aggregation-enable=true" ${app_dir}/etc/hadoop/yarn-site.xml
+        setkv "yarn.log.server.url=http://${HOST_NAME}:19888/jobhistory/logs" ${app_dir}/etc/hadoop/yarn-site.xml
+
+        # cp ${app_dir}/etc/hadoop/mapred-site.xml.template ${app_dir}/etc/hadoop/mapred-site.xml
+        setkv "mapreduce.framework.name=yarn" ${app_dir}/etc/hadoop/mapred-site.xml
+        setkv "mapreduce.jobhistory.address=${HOST_NAME}:10020" ${app_dir}/etc/hadoop/mapred-site.xml
+        setkv "mapreduce.jobhistory.webapp.address=${HOST_NAME}:19888" ${app_dir}/etc/hadoop/mapred-site.xml
+        setkv "yarn.app.mapreduce.am.env=HADOOP_MAPRED_HOME=${app_dir}" ${app_dir}/etc/hadoop/mapred-site.xml
+        setkv "mapreduce.map.env=HADOOP_MAPRED_HOME=${app_dir}" ${app_dir}/etc/hadoop/mapred-site.xml
+        setkv "mapreduce.reduce.env=HADOOP_MAPRED_HOME=${app_dir}" ${app_dir}/etc/hadoop/mapred-site.xml
+        # slaves
+        echo -e "${HOST_NAME}" > ${app_dir}/etc/hadoop/workers
+        echo "export JAVA_HOME=${INSTALL_PATH}/jdk1.8.0_212" >> ${app_dir}/etc/hadoop/yarn-env.sh
+        # 添加环境变量
+        setenv ${app} ${app_dir} sbin
+    fi
+}
+
+install_hadoop333() {
+    local app=hadoop
+    local app_name_upper=${app^^}
+    local url=$(eval echo \$${app_name_upper}_URL333)
     local app_dir=${INSTALL_PATH}/`get_app_dir $url`
     download_and_unzip_app ${app}
 
