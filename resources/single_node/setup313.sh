@@ -123,9 +123,9 @@ wget_mysql_connector(){
 
 install_init(){
     echo "install init"
-    mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
-    curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
-    yum clean all && yum makecache && yum -y update
+    # mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+    # curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
+    # yum clean all && yum makecache && yum -y update
     # 安装git
     # rpm -ivh https://opensource.wandisco.com/git/wandisco-git-release-7-2.noarch.rpm
     # yum install -y -q git
@@ -135,7 +135,7 @@ install_init(){
     systemctl restart sshd.service
 
     # 安装基础软件
-    yum install -y -q net-tools vim-enhanced sshpass expect wget
+    # yum install -y -q net-tools vim-enhanced sshpass expect wget
 
     # 配置vagrant用户具有root权限
     # sed -i "/## Same thing without a password/ivagrant   ALL=(ALL)     NOPASSWD:ALL" /etc/sudoers
@@ -269,6 +269,7 @@ install_hadoop() {
 }
 
 install_mysql() {
+    echo "install mysql57"
     # 安装mysql57
     curl -o /root/mysql57-community-release-el7-11.noarch.rpm -O -L http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
     rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
@@ -287,7 +288,7 @@ install_mysql() {
     local PORT="3306"
 
     mysql -u${USERNAME} -p${PASSWORD} -e "set global validate_password_policy=0; \
-        set global validate_password_length=4; \
+        set global validate_password_length=6; \
         ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}'; \
         use mysql; \
         update user set host='%' where user='root'; \
@@ -301,6 +302,7 @@ install_mysql() {
 }
 
 install_ssh() {
+    echo "install ssh"
     local HOSTNAME_LIST=("${HOST_NAME}" "localhost")
     local PASSWD_LIST=("vagrant" "vagrant")
     if [ `yum list installed |grep expect |wc -l` == 0 ];then
