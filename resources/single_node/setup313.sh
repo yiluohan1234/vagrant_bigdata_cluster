@@ -110,7 +110,7 @@ wget_mysql_connector(){
     # local file=mysql-connector-java-5.1.49.tar.gz
     # local url=https://repo.huaweicloud.com/mysql/Downloads/Connector-J/mysql-connector-java-5.1.49.tar.gz
     local file=mysql-connector-java-5.1.47-bin.jar
-    local url=https://mirrors.huaweicloud.com/apache/hadoop/common/hadoop-3.1.3/mysql-connector-java-5.1.47-bin.jar
+    local url=https://qingjiao-image-build-assets.oss-cn-beijing.aliyuncs.com/centos_7_hadoop3.1.3/mysql-connector-java-5.1.47-bin.jar
     if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
     then
         curl -o ${DEFAULT_DOWNLOAD_DIR}/${file} -O -L ${url}
@@ -123,9 +123,9 @@ wget_mysql_connector(){
 
 install_init(){
     echo "install init"
-    # mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
-    # curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
-    # yum clean all && yum makecache && yum -y update
+    mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+    curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
+    yum clean all && yum makecache && yum -y update
     # 安装git
     # rpm -ivh https://opensource.wandisco.com/git/wandisco-git-release-7-2.noarch.rpm
     # yum install -y -q git
@@ -135,7 +135,7 @@ install_init(){
     systemctl restart sshd.service
 
     # 安装基础软件
-    # yum install -y -q net-tools vim-enhanced sshpass expect wget
+    yum install -y -q net-tools vim-enhanced sshpass expect wget
 
     # 配置vagrant用户具有root权限
     # sed -i "/## Same thing without a password/ivagrant   ALL=(ALL)     NOPASSWD:ALL" /etc/sudoers
@@ -263,7 +263,7 @@ install_hadoop() {
         # 添加环境变量
         if [ $version == "313" ];
         then
-            setenv ${app} ${app_dir} sbin
+            setenv ${app}${version} ${app_dir} sbin
         fi
     fi
 }
@@ -535,8 +535,8 @@ install_ssh
 install_hive
 install_scala
 install_spark
-install_zk
-install_kafka
-install_sqoop
-install_flume
-install_flink
+# install_zk
+# install_kafka
+# install_sqoop
+# install_flume
+# install_flink
