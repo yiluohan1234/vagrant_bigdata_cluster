@@ -33,7 +33,7 @@ setenv() {
         echo 'export PATH=$PATH:${'$app_name_uppercase'_HOME}/bin:${'$app_name_uppercase'_HOME}/sbin' >> $PROFILE
     fi
 
-    if [ "$app_name" == "hadoop313" ];then
+    if [ "$app_name" == "hadoop" ];then
         # 部署FLink On Yarn的时候用到的，但是会导致Hive产生大量info日志，所以先屏蔽掉
         # echo 'export HADOOP_CLASSPATH=`hadoop classpath`' >> $PROFILE
         echo 'export HDFS_NAMENODE_USER=root' >> $PROFILE
@@ -123,9 +123,9 @@ wget_mysql_connector(){
 
 install_init(){
     echo "install init"
-    mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
-    curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
-    yum clean all && yum makecache && yum -y update
+    # mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+    # curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
+    # yum clean all && yum makecache && yum -y update
     # 安装git
     # rpm -ivh https://opensource.wandisco.com/git/wandisco-git-release-7-2.noarch.rpm
     # yum install -y -q git
@@ -135,7 +135,7 @@ install_init(){
     systemctl restart sshd.service
 
     # 安装基础软件
-    yum install -y -q net-tools vim-enhanced sshpass expect wget
+    # yum install -y -q net-tools vim-enhanced sshpass expect wget
 
     # 配置vagrant用户具有root权限
     # sed -i "/## Same thing without a password/ivagrant   ALL=(ALL)     NOPASSWD:ALL" /etc/sudoers
@@ -263,7 +263,7 @@ install_hadoop() {
         # 添加环境变量
         if [ $version == "313" ];
         then
-            setenv ${app}${version} ${app_dir} sbin
+            setenv ${app} ${app_dir} sbin
         fi
     fi
 }
@@ -527,14 +527,14 @@ install_flink() {
     fi
 }
 install_init
-install_jdk
-install_hadoop 313
-install_hadoop 333
-install_mysql
-install_ssh
-install_hive
-install_scala
-install_spark
+# install_jdk
+# install_hadoop 313
+# install_hadoop 333
+# install_mysql
+# install_ssh
+# install_hive
+# install_scala
+# install_spark
 # install_zk
 # install_kafka
 # install_sqoop
