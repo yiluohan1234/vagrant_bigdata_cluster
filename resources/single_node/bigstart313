@@ -31,7 +31,10 @@ dfs(){
             hdfs dfs -mkdir -p /spark-log
             ;;
         initSpark)
-            hdfs dfs -mkdir -p /spark-log
+            hdfs dfs -mkdir -p /spark/log
+            hdfs dfs -mkdir -p /spark/jars
+            hdfs dfs -put $INSTALL_PATH/spark-3.0.0-bin-without-hadoop/jars/*.jar /spark/jars
+            ln -s $INSTALL_PATH/spark-3.0.0-bin-without-hadoop $INSTALL_PATH/spark
             ;;
         restart)
             dfs stop

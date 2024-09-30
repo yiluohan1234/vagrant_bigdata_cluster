@@ -8,8 +8,8 @@ INSTALL_PATH=/root/software
 HOST_NAME=bigdata
 PROFILE=/etc/profile
 JAVA_URL=https://qingjiao-image-build-assets.oss-cn-beijing.aliyuncs.com/centos_7_hadoop3.1.3/jdk-8u212-linux-x64.tar.gz
-HADOOP_URL=https://mirrors.huaweicloud.com/apache/hadoop/common/hadoop-3.1.3/hadoop-3.1.3.tar.gz
-HADOOP_URL333=https://mirrors.huaweicloud.com/apache/hadoop/common/hadoop-3.3.3/hadoop-3.3.3.tar.gz
+HADOOP313_URL=https://mirrors.huaweicloud.com/apache/hadoop/common/hadoop-3.1.3/hadoop-3.1.3.tar.gz
+HADOOP333_URL=https://mirrors.huaweicloud.com/apache/hadoop/common/hadoop-3.3.3/hadoop-3.3.3.tar.gz
 HIVE_URL=https://qingjiao-image-build-assets.oss-cn-beijing.aliyuncs.com/centos_7_hadoop3.1.3/apache-hive-3.1.2-bin.tar.gz
 SCALA_URL=https://downloads.lightbend.com/scala/2.12.11/scala-2.12.11.tgz
 SPARK_URL=https://mirrors.huaweicloud.com/apache/spark/spark-3.0.0/spark-3.0.0-bin-without-hadoop.tgz
@@ -91,7 +91,7 @@ download_and_unzip_app() {
     local url=$(eval echo \$${app_name_upper}_URL)
     local file=${url##*/}
 
-    echo "install ${app}"
+    echo "install ${app_name}"
     # 安装
     if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
     then
@@ -191,16 +191,26 @@ install_jdk() {
 }
 
 install_hadoop() {
+    local version=$1
     local app=hadoop
     local app_name_upper=${app^^}
-    local url=$(eval echo \$${app_name_upper}_URL)
+    local url=$(eval echo \$${app_name_upper}${version}_URL)
     local app_dir=${INSTALL_PATH}/`get_app_dir $url`
-    download_and_unzip_app ${app}
+    download_and_unzip_app ${app}${version}
 
     if [ -d ${app_dir} ]
     then
         # 配置 hadoop-env.sh core-site.xml hdfs-site.xml yarn-site.xml mapred-site.xml slaves
         echo "export JAVA_HOME=${INSTALL_PATH}/jdk1.8.0_212" >> ${app_dir}/etc/hadoop/hadoop-env.sh
+        # echo 'export HDFS_NAMENODE_USER=root' >> ${app_dir}/etc/hadoop/hadoop-env.sh
+        # # 指定Hadoop各个进程节点在启动时使用root用户身份运行，解决Hadoop各进程节点启动找不到用户问题
+        # echo 'export HDFS_DATANODE_USER=root' >> ${app_dir}/etc/hadoop/hadoop-env.sh
+        # echo 'export HDFS_SECONDARYNAMENODE_USER=root' >> ${app_dir}/etc/hadoop/hadoop-env.sh
+        # echo 'export YARN_RESOURCEMANAGER_USER=root' >> ${app_dir}/etc/hadoop/hadoop-env.sh
+        # echo 'export YARN_NODEMANAGER_USER=root' >> ${app_dir}/etc/hadoop/hadoop-env.sh
+        # echo 'export HDFS_JOURNALNODE_USER=root' >> ${app_dir}/etc/hadoop/hadoop-env.sh
+        # echo 'export HDFS_ZKFC_USER=root' >> ${app_dir}/etc/hadoop/hadoop-env.sh
+
         setkv "fs.defaultFS=hdfs://${HOST_NAME}:8020" ${app_dir}/etc/hadoop/core-site.xml
         setkv "hadoop.tmp.dir=${app_dir}/hadoopDatas" ${app_dir}/etc/hadoop/core-site.xml
         # 缓冲区大小，实际工作中根据服务器性能动态调整；默认值4096
@@ -289,7 +299,7 @@ install_mysql() {
 
 install_ssh() {
     local HOSTNAME_LIST=("${HOST_NAME}" "localhost")
-    local PASSWD_LIST=("vagrant" "vagrant"vi )
+    local PASSWD_LIST=("vagrant" "vagrant")
     if [ `yum list installed |grep expect |wc -l` == 0 ];then
         # yum install -y -q expect
         curl -o /root/expect-5.45-14.el7_1.x86_64.rpm -O -L https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/resources/bdcompetition/other/expect-5.45-14.el7_1.x86_64.rpm
@@ -359,7 +369,7 @@ install_hive()
 
         wget_mysql_connector ${app_dir}/lib
         mv ${app_dir}/lib/log4j-slf4j-impl-2.10.0.jar ${app_dir}/lib/log4j-slf4j-impl-2.10.0.jar_bak
-        mv ${app_dir}/lib/guava-19.0.jar ${app_dir}/lib/guava-19.0.jar_bak
+        # mv ${app_dir}/lib/guava-19.0.jar ${app_dir}/lib/guava-19.0.jar_bak
         cp ${HADOOP_HOME}/share/hadoop/common/lib/guava-27.0-jre.jar ${app_dir}/lib/
         # 添加环境变量
         setenv ${app} ${app_dir}
@@ -393,8 +403,8 @@ install_spark()
     then
         # 配置
         cp ${app_dir}/conf/spark-env.sh.template ${app_dir}/conf/spark-env.sh
-        echo 'export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop' >> ${app_dir}/conf/spark-env.sh
-        echo 'export YARN_CONF_DIR=$HADOOP_HOME/etc/hadoop' >> ${app_dir}/conf/spark-env.sh
+        echo 'export HADOOP_CONF_DIR='${INSTALL_PATH}'/hadoop-3.3.3/etc/hadoop' >> ${app_dir}/conf/spark-env.sh
+        echo 'export YARN_CONF_DIR='${INSTALL_PATH}'/hadoop-3.3.3/etc/hadoop' >> ${app_dir}/conf/spark-env.sh
         echo 'export SPARK_DIST_CLASSPATH=$('${INSTALL_PATH}'/hadoop-3.3.3/bin/hadoop classpath)' >> ${app_dir}/conf/spark-env.sh
 
         cp ${app_dir}/conf/spark-defaults.conf.template ${app_dir}/conf/spark-defaults.conf
