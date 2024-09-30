@@ -33,7 +33,7 @@ setenv() {
         echo 'export PATH=$PATH:${'$app_name_uppercase'_HOME}/bin:${'$app_name_uppercase'_HOME}/sbin' >> $PROFILE
     fi
 
-    if [ "$app_name" == "hadoop" ];then
+    if [ "$app_name" == "hadoop13" ];then
         # 部署FLink On Yarn的时候用到的，但是会导致Hive产生大量info日志，所以先屏蔽掉
         # echo 'export HADOOP_CLASSPATH=`hadoop classpath`' >> $PROFILE
         echo 'export HDFS_NAMENODE_USER=root' >> $PROFILE
