@@ -33,7 +33,7 @@ setenv() {
         echo 'export PATH=$PATH:${'$app_name_uppercase'_HOME}/bin:${'$app_name_uppercase'_HOME}/sbin' >> $PROFILE
     fi
 
-    if [ "$app_name" == "hadoop13" ];then
+    if [ "$app_name" == "hadoop313" ];then
         # 部署FLink On Yarn的时候用到的，但是会导致Hive产生大量info日志，所以先屏蔽掉
         # echo 'export HADOOP_CLASSPATH=`hadoop classpath`' >> $PROFILE
         echo 'export HDFS_NAMENODE_USER=root' >> $PROFILE
@@ -288,7 +288,7 @@ install_mysql() {
     local PORT="3306"
 
     mysql -u${USERNAME} -p${PASSWORD} -e "set global validate_password_policy=0; \
-        set global validate_password_length=6; \
+        set global validate_password_length=4; \
         ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}'; \
         use mysql; \
         update user set host='%' where user='root'; \
@@ -374,8 +374,8 @@ install_hive()
 
         wget_mysql_connector ${app_dir}/lib
         mv ${app_dir}/lib/log4j-slf4j-impl-2.10.0.jar ${app_dir}/lib/log4j-slf4j-impl-2.10.0.jar_bak
-        # mv ${app_dir}/lib/guava-19.0.jar ${app_dir}/lib/guava-19.0.jar_bak
-        cp ${HADOOP_HOME}/share/hadoop/common/lib/guava-27.0-jre.jar ${app_dir}/lib/
+        mv ${app_dir}/lib/guava-19.0.jar ${app_dir}/lib/guava-19.0.jar_bak
+        cp ${INSTALL_PATH}/hadoop-3.1.3/share/hadoop/common/lib/guava-27.0-jre.jar ${app_dir}/lib/
         # 添加环境变量
         setenv ${app} ${app_dir}
     fi
@@ -423,7 +423,7 @@ install_spark()
         echo "${HOST_NAME}" > ${app_dir}/conf/slaves
         wget_mysql_connector ${app_dir}/jars
         # 添加环境变量
-        setenv ${app} ${INSTALL}/${app}
+        setenv ${app} ${INSTALL_PATH}/${app}
     fi
 }
 
