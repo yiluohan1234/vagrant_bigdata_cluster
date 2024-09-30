@@ -261,7 +261,10 @@ install_hadoop() {
         echo -e "${HOST_NAME}" > ${app_dir}/etc/hadoop/workers
         echo "export JAVA_HOME=${INSTALL_PATH}/jdk1.8.0_212" >> ${app_dir}/etc/hadoop/yarn-env.sh
         # 添加环境变量
-        setenv ${app} ${app_dir} sbin
+        if [ $version == "313" ];
+        then
+            setenv ${app} ${app_dir} sbin
+        fi
     fi
 }
 
@@ -418,7 +421,7 @@ install_spark()
         echo "${HOST_NAME}" > ${app_dir}/conf/slaves
         wget_mysql_connector ${app_dir}/jars
         # 添加环境变量
-        setenv ${app} ${app_dir}
+        setenv ${app} ${INSTALL}/${app}
     fi
 }
 
@@ -523,7 +526,8 @@ install_flink() {
 }
 install_init
 install_jdk
-install_hadoop
+install_hadoop 313
+install_hadoop 333
 install_mysql
 install_ssh
 install_hive
