@@ -288,10 +288,10 @@ install_mysql() {
     local PORT="3306"
 
     mysql -u${USERNAME} -p${PASSWORD} -e "set global validate_password_policy=0; \
+        set global validate_password_length=4; \
         ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}'; \
         use mysql; \
         update user set host='%' where user='root'; \
-        GRANT ALL PRIVILEGES ON *.* TO 'hive'@'%' WITH GRANT OPTION; \
         flush privileges;" --connect-expired-password
 
     # 删除
@@ -525,11 +525,11 @@ install_flink() {
         setenv ${app} ${app_dir}
     fi
 }
-install_init
+# install_init
 # install_jdk
 # install_hadoop 313
 # install_hadoop 333
-# install_mysql
+install_mysql
 # install_ssh
 # install_hive
 # install_scala
@@ -539,3 +539,4 @@ install_init
 # install_sqoop
 # install_flume
 # install_flink
+
