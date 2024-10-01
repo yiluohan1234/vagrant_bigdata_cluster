@@ -525,15 +525,15 @@ install_flink() {
         setenv ${app} ${app_dir}
     fi
 }
-# install_init
-# install_jdk
-# install_hadoop 313
-# install_hadoop 333
+install_init
+install_jdk
+install_hadoop 313
+install_hadoop 333
 install_mysql
-# install_ssh
-# install_hive
-# install_scala
-# install_spark
+install_ssh
+install_hive
+install_scala
+install_spark
 # install_zk
 # install_kafka
 # install_sqoop
