@@ -344,10 +344,18 @@ install_hive()
     local url=$(eval echo \$${app_name_upper}_URL)
     local app_dir=${INSTALL_PATH}/`get_app_dir $url`
 
-    download_and_unzip_app ${app}
+    # download_and_unzip_app ${app}
 
     if [ -d ${app_dir} ]
     then
+        # 下载hive
+        curl -o ${DEFAULT_DOWNLOAD_DIR}/apache-hive-3.1.2-bin_0 -O -L https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/bdc-dataware/hive312/apache-hive-3.1.2-bin_0
+        curl -o ${DEFAULT_DOWNLOAD_DIR}/apache-hive-3.1.2-bin_1 -O -L https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/bdc-dataware/hive312/apache-hive-3.1.2-bin_1
+        curl -o ${DEFAULT_DOWNLOAD_DIR}/apache-hive-3.1.2-bin_2 -O -L https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/hive312/apache-hive-3.1.2-bin_2
+        curl -o ${DEFAULT_DOWNLOAD_DIR}/apache-hive-3.1.2-bin_3 -O -L https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/bdc-dataware/hive312/apache-hive-3.1.2-bin_3
+        cat ${DEFAULT_DOWNLOAD_DIR}/apache-hive-3.1.2-bin_* > ${DEFAULT_DOWNLOAD_DIR}/apache-hive-3.1.2-bin.tar.gz
+        curl -o ${DEFAULT_DOWNLOAD_DIR}/scala-2.12.11.tgz -O -L https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/scala/scala-2.12.11.tgz
+        rm -rf ${DEFAULT_DOWNLOAD_DIR}/apache-hive-3.1.2-bin_*
         # 配置 hive-site.xml
         setkv "javax.jdo.option.ConnectionURL=jdbc:mysql://${HOST_NAME}:3306/hivedb?createDatabaseIfNotExist=true&amp;useSSL=false&amp;useUnicode=true&amp;characterEncoding=UTF-8" ${app_dir}/conf/hive-site.xml true
         setkv "javax.jdo.option.ConnectionDriverName=com.mysql.jdbc.Driver" ${app_dir}/conf/hive-site.xml
