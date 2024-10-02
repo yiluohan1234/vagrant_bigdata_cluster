@@ -127,8 +127,8 @@ install_init(){
     curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
     yum clean all && yum makecache #&& yum -y update
     # 安装git
-    # rpm -ivh https://opensource.wandisco.com/git/wandisco-git-release-7-2.noarch.rpm
-    # yum install -y -q git
+    rpm -ivh https://opensource.wandisco.com/git/wandisco-git-release-7-2.noarch.rpm
+    yum install -y -q git
     # ssh 设置允许密码登录
     sed -i 's@^PasswordAuthentication no@PasswordAuthentication yes@g' /etc/ssh/sshd_config
     sed -i 's@^#PubkeyAuthentication yes@PubkeyAuthentication yes@g' /etc/ssh/sshd_config
@@ -343,19 +343,22 @@ install_hive()
     local app_name_upper=${app^^}
     local url=$(eval echo \$${app_name_upper}_URL)
     local app_dir=${INSTALL_PATH}/`get_app_dir $url`
+    local file=${url##*/}
 
     # download_and_unzip_app ${app}
+    echo "install ${app}"
+    # 安装
+    if [ ! -f ${DEFAULT_DOWNLOAD_DIR}/${file} ]
+    then
+        git clone https://gitee.com/yiluohan1234/bdc-dataware ${INSTALL_PATH}/tmp
+        cat ${INSTALL_PATH}/tmp/hive312/apache-hive-3.1.2-bin_* > ${DEFAULT_DOWNLOAD_DIR}/${file}
+        cp ${INSTALL_PATH}/tmp/scala/scala-2.12.11.tgz ${DEFAULT_DOWNLOAD_DIR}
+        rm -rf ${INSTALL_PATH}/tmp
+    fi
+    tar -zxf ${DEFAULT_DOWNLOAD_DIR}/${file} -C ${INSTALL_PATH}
 
     if [ -d ${app_dir} ]
     then
-        # 下载hive
-        curl -o ${DEFAULT_DOWNLOAD_DIR}/apache-hive-3.1.2-bin_0 -O -L https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/bdc-dataware/hive312/apache-hive-3.1.2-bin_0
-        curl -o ${DEFAULT_DOWNLOAD_DIR}/apache-hive-3.1.2-bin_1 -O -L https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/bdc-dataware/hive312/apache-hive-3.1.2-bin_1
-        curl -o ${DEFAULT_DOWNLOAD_DIR}/apache-hive-3.1.2-bin_2 -O -L https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/hive312/apache-hive-3.1.2-bin_2
-        curl -o ${DEFAULT_DOWNLOAD_DIR}/apache-hive-3.1.2-bin_3 -O -L https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/bdc-dataware/hive312/apache-hive-3.1.2-bin_3
-        cat ${DEFAULT_DOWNLOAD_DIR}/apache-hive-3.1.2-bin_* > ${DEFAULT_DOWNLOAD_DIR}/apache-hive-3.1.2-bin.tar.gz
-        curl -o ${DEFAULT_DOWNLOAD_DIR}/scala-2.12.11.tgz -O -L https://gitee.com/yiluohan1234/vagrant_bigdata_cluster/raw/master/scala/scala-2.12.11.tgz
-        rm -rf ${DEFAULT_DOWNLOAD_DIR}/apache-hive-3.1.2-bin_*
         # 配置 hive-site.xml
         setkv "javax.jdo.option.ConnectionURL=jdbc:mysql://${HOST_NAME}:3306/hivedb?createDatabaseIfNotExist=true&amp;useSSL=false&amp;useUnicode=true&amp;characterEncoding=UTF-8" ${app_dir}/conf/hive-site.xml true
         setkv "javax.jdo.option.ConnectionDriverName=com.mysql.jdbc.Driver" ${app_dir}/conf/hive-site.xml
