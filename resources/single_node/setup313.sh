@@ -550,4 +550,4 @@ install_spark
 # install_sqoop
 # install_flume
 # install_flink
-
+chown root:root -R ${INSTALL_PATH}
