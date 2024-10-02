@@ -381,8 +381,8 @@ install_hive()
 
         wget_mysql_connector ${app_dir}/lib
         mv ${app_dir}/lib/log4j-slf4j-impl-2.10.0.jar ${app_dir}/lib/log4j-slf4j-impl-2.10.0.jar_bak
-        mv ${app_dir}/lib/guava-19.0.jar ${app_dir}/lib/guava-19.0.jar_bak
-        cp ${INSTALL_PATH}/hadoop-3.1.3/share/hadoop/common/lib/guava-27.0-jre.jar ${app_dir}/lib/
+        # mv ${app_dir}/lib/guava-19.0.jar ${app_dir}/lib/guava-19.0.jar_bak
+        # cp ${INSTALL_PATH}/hadoop-3.1.3/share/hadoop/common/lib/guava-27.0-jre.jar ${app_dir}/lib/
         # 添加环境变量
         setenv ${app} ${app_dir}
     fi
