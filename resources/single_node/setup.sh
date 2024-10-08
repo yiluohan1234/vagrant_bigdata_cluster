@@ -100,7 +100,7 @@ install_init(){
     echo "install init"
     mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
     curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
-    yum clean all && yum makecache && yum -y update
+    yum clean all && yum makecache #&& yum -y update
     # 安装git
     rpm -ivh https://opensource.wandisco.com/git/wandisco-git-release-7-2.noarch.rpm
     yum install -y -q git
