@@ -835,3 +835,42 @@ for ((i=0; i<$length; i++));do
     ssh ${HOSTNAME_LIST[$i]} "sed -i '/# java environment/Q' /etc/profile"
 done
 }
+
+create_hive_table() {
+    local database_name=$1
+    local table_name=$2
+    local fields_txt="/root/hive.txt"
+
+    # 声明一个空数组
+    lines=()
+
+    # 读取文件的每一行到数组
+    while IFS= read -r line
+    do
+        lines+=("$line")
+    done < "$fields_txt"
+
+    # 使用printf将数组转换为以逗号分隔的字符串
+    # 注意：这种方法会移除数组中元素之间的所有空格
+    fields_def=$(printf ",\n%s" "${lines[@]}")
+    fields_def=${fields_def:2}  # 移除字符串开头的逗号
+
+    # Hive表创建语句的初始部分
+    local create_table_sql="CREATE TABLE IF NOT EXISTS ${database_name}.${table_name} (
+${fields_def})"
+    end_str="
+-- COMMENT 'Test'
+-- partitioned by (dt string, hr string)
+-- clustered by (customer_id) into 10 buckets
+row format delimited fields terminated by '\t'
+-- collection items terminated by ','
+-- map keys terminated by ':'
+-- stored by TEXTFILE
+-- location '/behavior/dim/dim_date'
+-- tblproperties('skip.header.line.count'='1');
+"
+    create_table_sql+=$end_str
+
+    # 打印出创建的表语句
+    echo "${create_table_sql}"
+}
