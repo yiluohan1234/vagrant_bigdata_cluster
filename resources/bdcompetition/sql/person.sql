@@ -76,11 +76,12 @@ group by occupation
 order by cnt desc, occupation limit 5;
 
 -- 8.统计性别对于收入的影响
+set hive.strict.checks.cartesian.product=false;
 insert overwrite local directory '/root/college016/'
 row format delimited fields terminated by '\t'
 select sex, round(v/s, 2) per from
 (select sex, count(*) v from person where income='>50K' group by sex order by v desc)t1
-join
+cross join
 (select count(*) s from person where income='>50K')t2;
 
 -- 9.统计教育程度对于收入的影响
