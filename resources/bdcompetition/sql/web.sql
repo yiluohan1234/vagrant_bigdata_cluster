@@ -50,3 +50,104 @@ from log
 group by access_url
 order by times desc
 limit 10;
+
+-- 创建用于存储来源类型统计信息的新表
+CREATE TABLE IF NOT EXISTS source_url_info (
+source VARCHAR(50),
+count INT,
+ratio DECIMAL(10, 2)
+);
+
+-- 插入统计结果
+INSERT INTO TABLE source_url_info
+SELECT
+CASE
+    WHEN source_url LIKE '%www.pdd.com%' THEN 'Access via PDD'
+    WHEN source_url LIKE '%www.google.com%' THEN 'Access via Google'
+    WHEN source_url LIKE '%www.baidu.com%' THEN 'Access via Baidu'
+    WHEN LENGTH(source_url) < 5 THEN 'Access directly via URL'
+    ELSE 'Access via other means'
+END AS source,
+COUNT(*) AS count,
+-- 计算比例
+ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) AS ratio
+FROM log
+GROUP BY
+CASE
+    WHEN source_url LIKE '%www.pdd.com%' THEN 'Access via PDD'
+    WHEN source_url LIKE '%www.google.com%' THEN 'Access via Google'
+    WHEN source_url LIKE '%www.baidu.com%' THEN 'Access via Baidu'
+    WHEN LENGTH(source_url) < 5 THEN 'Access directly via URL'
+    ELSE 'Access via other means'
+END;
+
+-- 创建用于存储每小时浏览量和访客量的新表
+CREATE TABLE IF NOT EXISTS pv_uv (
+hour STRING,
+pv BIGINT,
+uv BIGINT
+);
+
+-- 插入统计结果
+INSERT INTO TABLE pv_uv
+SELECT
+-- 提取访问时间的小时信息
+SUBSTRING(access_time, 13, 2) AS hour,
+-- 计算每个小时内的浏览量（PV）
+COUNT(*) AS pv,
+-- 计算每个小时内的不同访客数（UV）
+COUNT(DISTINCT ip) AS uv
+FROM log
+WHERE SUBSTRING(access_time, 1, 11) = '22/Aug/2017'
+GROUP BY SUBSTRING(access_time, 13, 2)
+ORDER BY
+-- 创建用于存储log表中IP地址对应十进制数的临时表
+CREATE TABLE IF NOT EXISTS log_tmp (
+    ip BIGINT
+);
+
+-- 将转换后的IP地址插入到log_tmp表中
+INSERT INTO TABLE log_tmp
+SELECT
+CAST(SUBSTRING_INDEX(ip, '.', 1) AS INT) * POW(256, 3) +
+CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(ip, '.', 2), '.', -1) AS INT) * POW(256, 2) +
+CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(ip, '.', 3), '.', -1) AS INT) * POW(256, 1) +
+CAST(SUBSTRING_INDEX(ip, '.', -1) AS INT) * POW(256, 0) AS ip
+FROM
+log;
+
+-- 创建用于存储“北京市东城区”对应的所有IP地址十进制数的临时表
+CREATE TABLE IF NOT EXISTS ip_tmp (
+ip_start BIGINT,
+ip_end BIGINT,
+location STRING
+);
+
+-- 将转换后的IP地址范围插入到ip_tmp表中
+INSERT INTO TABLE ip_tmp
+SELECT
+CAST(SUBSTRING_INDEX(ip_start, '.', 1) AS INT) * POW(256, 3) +
+CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(ip_start, '.', 2), '.', -1) AS INT) * POW(256, 2) +
+CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(ip_start, '.', 3), '.', -1) AS INT) * POW(256, 1) +
+CAST(SUBSTRING_INDEX(ip_start, '.', -1) AS INT) * POW(256, 0) AS ip_start,
+CAST(SUBSTRING_INDEX(ip_end, '.', 1) AS INT) * POW(256, 3) +
+CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(ip_end, '.', 2), '.', -1) AS INT) * POW(256, 2) +
+CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(ip_end, '.', 3), '.', -1) AS INT) * POW(256, 1) +
+CAST(SUBSTRING_INDEX(ip_end, '.', -1) AS INT) * POW(256, 0) AS ip_end,
+location
+FROM ip
+WHERE location = '北京市东城区';
+
+-- 创建用于存储属于“北京市东城区”的浏览记录数量的表
+CREATE TABLE IF NOT EXISTS ip_num (
+    ip_num BIGINT
+);
+
+-- 将计算结果插入到ip_num表中
+INSERT INTO TABLE ip_num
+SELECT
+COUNT(*) AS ip_num
+FROM
+log_tmp lt
+JOIN ip_tmp it
+ON lt.ip BETWEEN it.ip_start AND it.ip_end;
