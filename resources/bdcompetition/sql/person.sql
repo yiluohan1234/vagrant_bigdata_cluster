@@ -1,10 +1,10 @@
--- 创建hive数据库
+-- 创建数据库
 CREATE DATABASE IF NOT EXISTS hive;
 
--- 切换到hive数据库
+-- 切换到数据库
 use hive;
 
--- 创建数据表格loan，并上传本地数据至表内
+-- 创建数据表格，并上传本地数据至表内
 create table if not exists person(
 age double,
 workclass string,

@@ -1,7 +1,7 @@
 -- 创建shop数据库
 create database shop;
 
--- 切换到default数据库
+-- 切换到数据库
 use shop;
 
 
