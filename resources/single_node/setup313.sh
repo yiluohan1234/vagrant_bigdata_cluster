@@ -495,8 +495,8 @@ install_sqoop() {
     if [ -d ${app_dir} ]
     then
         cp ${app_dir}/conf/sqoop-env-template.sh ${app_dir}/conf/sqoop-env.sh
-        sed -i "s@^#export HADOOP_COMMON_HOME=.*@HADOOP_COMMON_HOME=${INSTALL_PATH}/hadoop-3.3.3@" ${app_dir}/conf/sqoop-env.sh
-        sed -i "s@^#export HADOOP_MAPRED_HOME=.*@HADOOP_MAPRED_HOME=${INSTALL_PATH}/hadoop-3.3.3@" ${app_dir}/conf/sqoop-env.sh
+        sed -i "s@^#export HADOOP_COMMON_HOME=.*@HADOOP_COMMON_HOME=${INSTALL_PATH}/hadoop-3.1.3@" ${app_dir}/conf/sqoop-env.sh
+        sed -i "s@^#export HADOOP_MAPRED_HOME=.*@HADOOP_MAPRED_HOME=${INSTALL_PATH}/hadoop-3.1.3@" ${app_dir}/conf/sqoop-env.sh
         sed -i "s@^#export HIVE_HOME=.*@HIVE_HOME=${INSTALL_PATH}/apache-hive-3.1.2-bin@" ${app_dir}/conf/sqoop-env.sh
         wget_mysql_connector ${app_dir}/lib/
 
