@@ -874,3 +874,57 @@ row format delimited fields terminated by '\t'
     # 打印出创建的表语句
     echo "${create_table_sql}"
 }
+
+create_mysql_table() {
+    local table_name=$1
+    local path="/root/schema.csv"
+
+    table_name_cn=`head -1 "$path" | cut -d "," -f 1`
+    primary_keys=$(awk -F, '$7=="Y" {printf ",`%s`", $2}' "$path" | cut -c 2-)
+    lines=()
+
+    # 读取数据行
+    while read -r line || [ -n "$line" ]
+    do
+        column_name=$(echo $line | cut -d "," -f 2)
+        column_exp=$(echo $line | cut -d "," -f 3)
+        type=$(echo $line | cut -d "," -f 4)
+        null_key=$(echo $line | cut -d "," -f 8)
+        index_key=$(echo $line | cut -d "," -f 9)
+        default_value=$(echo $line | cut -d "," -f 10)
+        auto_increment=$(echo $line | cut -d "," -f 11)
+
+        column_name=$(echo "$column_name" | tr '[:upper:]' '[:lower:]')
+        type=$(echo "$type" | tr '[:lower:]' '[:upper:]')
+        null_key_str=$(if [ "$null_key" == "Y" ]; then echo "NULL"; else echo "NOT NULL"; fi)
+        default_value_str=$(if [ -n "$default_value" ]; then echo " DEFAULT '$default_value'"; fi)
+        auto_increment_str=$(if [ "$auto_increment" == "Y" ]; then echo " AUTO_INCREMENT"; fi)
+        column_exp_str=" COMMENT '$column_exp'"
+        lines+=("    \`${column_name}\` ${type} ${null_key_str}${auto_increment_str}${default_value_str}${column_exp_str}")
+        if [ "$index_key" == "Y" ]; then
+            lines+=("    KEY \`idx_${table_name}_${column_name}\` (\`${column_name}\`) USING BTREE")
+        fi
+    done < "$path"
+
+    # 添加主键
+    if [ -n "$primary_keys" ]; then
+        lines+=("    PRIMARY KEY (${primary_keys})")
+    fi
+    fields_def=$(printf ",\n%s" "${lines[@]}")
+    fields_def=${fields_def:2}  # 移除字符串开头的逗号
+    local create_mysql_sql="create table if not exists ${table_name} (
+${fields_def}"
+    create_mysql_sql+="
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='${table_name_cn}';"
+    echo "${create_mysql_sql}"
+}
+
+load_mysql_data() {
+    local table_name=$1
+    local file_path=$2
+    echo "LOAD DATA local INFILE '${file_path}'
+INTO TABLE ${table_name}
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\\n'
+IGNORE 1 ROWS;"
+}
