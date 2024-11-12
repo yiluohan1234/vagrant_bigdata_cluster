@@ -355,6 +355,16 @@ create_hive_table() {
     local table_name=$2
     local fields_txt="/root/hive.txt"
 
+    if [ $# -lt 2 ]; then
+        echo "Usage: create_hive_table database table"
+        return 1
+    fi
+
+    if [ ! -f "$fields_txt" ]; then
+        echo -e "Please create file $fields_txt\ncolumn_name\tcolumn_type"
+        return 1
+    fi
+
     # 声明一个空数组
     lines=()
 
@@ -392,6 +402,16 @@ row format delimited fields terminated by '\t'
 create_mysql_table() {
     local table_name=$1
     local path="/root/schema.csv"
+
+    if [ $# -lt 1 ]; then
+        echo "Usage: create_mysql_table table"
+        return 1
+    fi
+
+    if [ ! -f "$path" ]; then
+        echo -e "Please create file $path\ntable_name,column_name,column_chinese,column_type,column_describe,is_key,is_null,is_index,default_value,is_increment"
+        return 1
+    fi
 
     table_name_cn=`head -1 "$path" | cut -d "," -f 1`
     primary_keys=$(awk -F, '$7=="Y" {printf ",`%s`", $2}' "$path" | cut -c 2-)
