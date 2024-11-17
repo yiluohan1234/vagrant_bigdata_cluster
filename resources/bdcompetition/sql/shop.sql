@@ -1,5 +1,5 @@
 -- 创建shop数据库
-create database shop;
+create database if not exists shop;
 
 -- 切换到数据库
 use shop;

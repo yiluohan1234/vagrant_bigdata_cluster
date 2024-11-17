@@ -1,7 +1,7 @@
-create database web;
+create database if not EXISTS web;
 use web;
 
-create Table ip(
+create Table if not EXISTS ip(
 ip_start string comment 'Start IP',
 ip_end string comment 'End IP',
 location string comment 'Location',
@@ -10,7 +10,7 @@ isp string comment 'ISP information'
 comment 'Ip address information table'
 row format delimited fields terminated by '\t';
 
-CREATE TABLE log(
+CREATE TABLE if not EXISTS log(
 id BIGINT comment 'LOG ID',
 ip string comment 'User IP address',
 access_time string comment 'Access time',
@@ -25,7 +25,7 @@ row format delimited fields terminated by '\t';
 load data inpath '/data/ip_processed.txt' into table ip;
 load data inpath '/data/log_processed.txt' into table log;
 
-create table ip_log_num(
+create table if not EXISTS ip_log_num(
 type string,
 num int
 );
@@ -35,7 +35,7 @@ select 'log', count(*) as num from web.log where log.status='301'
 union all
 select 'ip', count(*) from web.ip where ip.location='IANA';
 
-create table asses_url_top(
+create table if not EXISTS asses_url_top(
 rank int,
 access_url string,
 times int
