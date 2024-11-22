@@ -504,9 +504,10 @@ case $1 in
 esac
 }
 
-create_hive_table() {
+createHTable() {
     local database_name=$1
     local table_name=$2
+    local sep=${3:-"\t"}
     local fields_txt="/root/hive.txt"
 
     if [ $# -lt 2 ]; then
@@ -540,7 +541,7 @@ ${fields_def})"
 -- COMMENT 'Test'
 -- partitioned by (dt string, hr string)
 -- clustered by (customer_id) into 10 buckets
-row format delimited fields terminated by '\t'
+row format delimited fields terminated by '${sep}'
 -- collection items terminated by ','
 -- map keys terminated by ':'
 -- stored by TEXTFILE
@@ -551,9 +552,10 @@ row format delimited fields terminated by '\t'
 
     # 打印出创建的表语句
     echo "${create_table_sql}"
+    echo "load data local inpath 'path' into table table_name;"
 }
 
-create_mysql_table() {
+createMTable() {
     local table_name=$1
     local path="/root/schema.csv"
 
