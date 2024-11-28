@@ -618,3 +618,19 @@ FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\\n'
 IGNORE 1 ROWS;"
 }
+
+setmysql() {
+#sed -i "/\[mysqld\]/ a\skip-grant-tables" /etc/my.cnf
+mysql -uroot -p123456 -e "select version();" &>/dev/null
+if [ $? -ne 0 ];then
+    echo "setup mysql"
+    #systemctl disable mysqld.service
+    systemctl start mysqld.service
+    grep "temporary password" /var/log/mysqld.log
+    PASSWORD=`grep 'temporary password' /var/log/mysqld.log|awk -F "root@localhost: " '{print $2}'`
+
+    PORT="3306"
+    USERNAME="root"
+    mysql -u${USERNAME} -p${PASSWORD} -e "set global validate_password_policy=0; set global validate_password_length=4; ALTER USER 'root'@'localhost' IDENTIFIED BY '123456'; create user 'root'@'%' identified by '123456'; grant all privileges on *.* to 'root'@'%' with grant option; flush privileges;" --connect-expired-password
+fi
+}

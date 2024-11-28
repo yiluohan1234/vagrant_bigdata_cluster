@@ -13,11 +13,12 @@ HADOOP333_URL=https://mirrors.huaweicloud.com/apache/hadoop/common/hadoop-3.3.3/
 HIVE_URL=https://qingjiao-image-build-assets.oss-cn-beijing.aliyuncs.com/centos_7_hadoop3.1.3/apache-hive-3.1.2-bin.tar.gz
 SCALA_URL=https://downloads.lightbend.com/scala/2.12.11/scala-2.12.11.tgz
 SPARK_URL=https://mirrors.huaweicloud.com/apache/spark/spark-3.0.0/spark-3.0.0-bin-without-hadoop.tgz
-ZOOKEEPER_URL=https://mirrors.huaweicloud.com/apache/zookeeper/zookeeper-3.5.7/apache-zookeeper-3.5.7-bin.tar.gz
+ZOOKEEPER_URL=https://mirrors.huaweicloud.com/apache/zookeeper/zookeeper-3.8.4/apache-zookeeper-3.8.4-bin.tar.gz
 KAFKA_URL=https://mirrors.huaweicloud.com/apache/kafka/2.4.1/kafka_2.12-2.4.1.tgz
 SQOOP_URL=https://mirrors.huaweicloud.com/apache/sqoop/1.4.7/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
 FLUME_URL=https://mirrors.huaweicloud.com/apache/flume/1.11.0/apache-flume-1.11.0-bin.tar.gz
 FLINK_URL=https://mirrors.huaweicloud.com/apache/flink/flink-1.14.0/flink-1.14.0-bin-scala_2.12.tgz
+DOLPHINSCHEDULER_URL=https://mirrors.huaweicloud.com/apache/dolphinscheduler/3.2.2/apache-dolphinscheduler-3.2.2-bin.tar.gz
 
 setenv() {
     local app_name=$1
@@ -531,6 +532,67 @@ install_flink() {
 
     if [ -d ${app_dir} ]
     then
+
+        # 添加环境变量
+        setenv ${app} ${app_dir}
+    fi
+}
+
+install_dolphinscheduler() {
+    local app=dolphinscheduler
+    local app_name_upper=${app^^}
+    local url=$(eval echo \$${app_name_upper}_URL)
+    local app_dir=${INSTALL_PATH}/`get_app_dir $url`
+    download_and_unzip_app ${app}
+
+    if [ -d ${app_dir} ]
+    then
+        curl -o ${app_dir}/bin/env/install_env.sh -O -L https://github.com/apache/dolphinscheduler/raw/3.1.8-release/script/env/install_env.sh
+        curl -o ${app_dir}/bin/install.sh -O -L https://github.com/apache/dolphinscheduler/raw/3.1.8-release/script/install.sh
+        mysql -uroot -p123456 -e "create database dolphinscheduler default character set utf8 default collate utf8_general_ci;set global validate_password_policy=0;set global validate_password_length=4;grant all privileges on dolphinscheduler.* to 'root'@'%' identified by '123456';flush privileges;"
+        echo 'ips="localhost"' >> ${app_dir}/bin/env/install_env.sh
+        echo 'sshPort="22"' >> ${app_dir}/bin/env/install_env.sh
+        echo 'masters="localhost"' >> ${app_dir}/bin/env/install_env.sh
+        echo 'workers="localhost"' >> ${app_dir}/bin/env/install_env.sh
+        echo 'alertServer="localhost"' >> ${app_dir}/bin/env/install_env.sh
+        echo 'apiServers="localhost"' >> ${app_dir}/bin/env/install_env.sh
+        echo 'installPath=/root/software/dolphinscheduler' >> ${app_dir}/bin/env/install_env.sh
+        echo 'deployUser="root"' >> ${app_dir}/bin/env/install_env.sh
+        echo 'zkRoot="/dolphinscheduler"' >> ${app_dir}/bin/env/install_env.sh
+        # JAVA_HOME, will use it to start DolphinScheduler server
+        echo 'export JAVA_HOME=${JAVA_HOME:-'${JAVA_HOME}'}'  >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+        echo 'export SPRING_CACHE_TYPE=${SPRING_CACHE_TYPE:-none}' >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+        echo 'export SPRING_JACKSON_TIME_ZONE=${SPRING_JACKSON_TIME_ZONE:-"Asia/Shanghai"}' >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+        echo 'export MASTER_FETCH_COMMAND_NUM=${MASTER_FETCH_COMMAND_NUM:-10}' >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+        echo 'export REGISTRY_TYPE=${REGISTRY_TYPE:-zookeeper}' >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+        echo 'export REGISTRY_ZOOKEEPER_CONNECT_STRING=${REGISTRY_ZOOKEEPER_CONNECT_STRING:-localhost:2181}' >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+
+        echo 'export HADOOP_HOME=${HADOOP_HOME:-'${HADOOP_HOME}'}' >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+        echo 'export HADOOP_CONF_DIR=${HADOOP_CONF_DIR:-'${HADOOP_HOME}'}' >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+        echo 'export SPARK_HOME1=${SPARK_HOME1:-'${SPARK_HOME}'}' >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+        echo 'export SPARK_HOME2=${SPARK_HOME2:-'${SPARK_HOME}'}' >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+        echo 'export PYTHON_HOME=${PYTHON_HOME:-/usr/local/python3.10}' >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+        echo 'export HIVE_HOME=${HIVE_HOME:-'${HIVE_HOME}'}' >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+        echo 'export FLINK_HOME=${FLINK_HOME:-/opt/soft/flink}' >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+        echo 'export DATAX_HOME=${DATAX_HOME:-/opt/soft/datax}' >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+        echo 'export SEATUNNEL_HOME=${SEATUNNEL_HOME:-/opt/soft/seatunnel}' >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+        echo 'export CHUNJUN_HOME=${CHUNJUN_HOME:-/opt/soft/chunjun}' >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+        echo 'export PATH=$HADOOP_HOME/bin:$SPARK_HOME1/bin:$SPARK_HOME2/bin:$PYTHON_HOME/bin:$JAVA_HOME/bin:$HIVE_HOME/bin:$PATH' >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+        # mysql
+        # Database related configuration, set database type, username and password
+        echo 'export DATABASE=${DATABASE:-mysql}' >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+        echo 'export SPRING_PROFILES_ACTIVE=${DATABASE}' >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+        echo 'export SPRING_DATASOURCE_URL="jdbc:mysql://bigdata:3306/dolphinscheduler?useUnicode=true&characterEncoding=UTF-8&useSSL=false"' >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+        echo 'export SPRING_DATASOURCE_USERNAME="root"' >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+        echo 'export SPRING_DATASOURCE_PASSWORD="123456"' >> ${app_dir}/bin/env/dolphinscheduler_env.sh
+        cp /root/software/mysql-connector-java-8* ${app_dir}/api-server/libs
+        cp /root/software/mysql-connector-java-8* ${app_dir}/alert-server/libs/
+        cp /root/software/mysql-connector-java-8* ${app_dir}/master-server/libs/
+        cp /root/software/mysql-connector-java-8* ${app_dir}/worker-server/libs/
+        cp /root/software/mysql-connector-java-8* ${app_dir}/tools/libs/
+        cp /root/software/mysql-connector-java-8* ${app_dir}/libs/
+        bash ${app_dir}/tools/bin/upgrade-schema.sh
+        bash ${app_dir}/bin/install.sh
 
         # 添加环境变量
         setenv ${app} ${app_dir}
