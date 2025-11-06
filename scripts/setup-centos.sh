@@ -6,6 +6,9 @@ if [ -d /vagrant/scripts ];then
 fi
 
 log info "Basic configuration"
+mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
+yum clean all && yum makecache #&& yum -y update
 
 # Set timezone
 log info "Set timezone"
